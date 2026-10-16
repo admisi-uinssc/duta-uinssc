@@ -69,9 +69,10 @@ export default function UserDashboard({ user, onLogout }) {
       );
       if (existingInDb && !existingInDb.isAccountApplication && existingInDb.berkasSubmitted) {
         setIsSubmitted(true);
+        const { selectionStage: _stage, selectionMessage: _msg, status: _st, accountStatus: _acc, ...cleanDraft } = existingInDb;
         setFormData(prev => ({
           ...prev,
-          ...existingInDb,
+          ...cleanDraft,
         }));
       }
     };
@@ -146,11 +147,21 @@ export default function UserDashboard({ user, onLogout }) {
 
   const handleSaveDraft = (e) => {
     e.preventDefault();
+    const cleanForm = { ...formData };
+    delete cleanForm.selectionStage;
+    delete cleanForm.selectionMessage;
+    delete cleanForm.accountStatus;
+    delete cleanForm.status;
+
     const users = Auth.getUsers();
     const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
     if (idx !== -1) {
-      users[idx] = { ...users[idx], ...formData };
-      Auth.saveUsers(users);
+      users[idx] = { 
+        ...users[idx], 
+        ...cleanForm,
+        updatedAt: new Date().toISOString()
+      };
+      Auth.saveUsers(users, users[idx]);
       setCurrentUser(users[idx]);
     }
 
@@ -158,16 +169,24 @@ export default function UserDashboard({ user, onLogout }) {
     try {
       const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
       if (existing) {
-        DB.save(DB.getAll().map(i => (i.email || '').toLowerCase() === user.email.toLowerCase() ? {
-          ...i,
-          ...formData,
-          semester: formData.semester,
-          prodi: formData.jurusan || formData.fakultas,
-          updatedAt: new Date().toISOString()
-        } : i));
+        let updatedItem = null;
+        const allDb = DB.getAll().map(i => {
+          if ((i.email || '').toLowerCase() === user.email.toLowerCase()) {
+            updatedItem = {
+              ...i,
+              ...cleanForm,
+              semester: formData.semester,
+              prodi: formData.jurusan || formData.fakultas,
+              updatedAt: new Date().toISOString()
+            };
+            return updatedItem;
+          }
+          return i;
+        });
+        DB.save(allDb, updatedItem);
       } else {
         DB.add({
-          ...formData,
+          ...cleanForm,
           email: user.email,
           semester: formData.semester,
           prodi: formData.jurusan || formData.fakultas,
@@ -206,27 +225,44 @@ export default function UserDashboard({ user, onLogout }) {
       return;
     }
 
+    const cleanForm = { ...formData };
+    delete cleanForm.selectionStage;
+    delete cleanForm.selectionMessage;
+    delete cleanForm.accountStatus;
+    delete cleanForm.status;
+
     // Save or update in DB
     const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
+    let savedAppItem = null;
     if (existing) {
-      DB.save(DB.getAll().map(i => (i.email || '').toLowerCase() === user.email.toLowerCase() ? {
-        ...i,
-        ...formData,
-        semester: formData.semester,
-        prodi: formData.jurusan || formData.fakultas,
-        status: 'pending',
-        selectionStage: 'review',
-        updatedAt: new Date().toISOString()
-      } : i));
+      const allDb = DB.getAll().map(i => {
+        if ((i.email || '').toLowerCase() === user.email.toLowerCase()) {
+          savedAppItem = {
+            ...i,
+            ...cleanForm,
+            semester: formData.semester,
+            prodi: formData.jurusan || formData.fakultas,
+            status: 'pending',
+            selectionStage: 'review',
+            selectionMessage: '',
+            updatedAt: new Date().toISOString()
+          };
+          return savedAppItem;
+        }
+        return i;
+      });
+      DB.save(allDb, savedAppItem);
     } else {
-      DB.add({
-        ...formData,
+      savedAppItem = {
+        ...cleanForm,
         email: user.email,
         semester: formData.semester,
         prodi: formData.jurusan || formData.fakultas,
         status: 'pending',
         selectionStage: 'review',
-      });
+        selectionMessage: '',
+      };
+      DB.add(savedAppItem);
     }
 
     // Update user status in Auth
@@ -235,13 +271,15 @@ export default function UserDashboard({ user, onLogout }) {
     if (idx !== -1) {
       users[idx] = { 
         ...users[idx], 
-        ...formData, 
+        ...cleanForm, 
         semester: formData.semester,
         berkasSubmitted: true, 
-        selectionStage: users[idx].selectionStage || 'review',
-        status: 'Tahap Seleksi Berkas' 
+        selectionStage: 'review',
+        selectionMessage: '',
+        status: 'Menunggu Review',
+        updatedAt: new Date().toISOString()
       };
-      Auth.saveUsers(users);
+      Auth.saveUsers(users, users[idx]);
       setCurrentUser(users[idx]);
     }
 

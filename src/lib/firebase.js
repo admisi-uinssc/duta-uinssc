@@ -180,6 +180,17 @@ export async function syncUserToCloud(user) {
       ...user,
       updatedAt: new Date().toISOString()
     }, { merge: true });
+
+    // Also sync to numeric ID doc if different to avoid split state
+    if (user.id && String(user.id) !== docId) {
+      try {
+        const altRef = doc(db, 'duta_users', String(user.id));
+        await setDoc(altRef, {
+          ...user,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      } catch (e) {}
+    }
   } catch (err) {
     console.warn('Could not sync user to Firestore:', err);
   }
