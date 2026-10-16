@@ -1,0 +1,280 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+:root {
+  --navy: #16324A;
+  --gold: #C49E59;
+  --gold-dark: #b58d4a;
+  --bg: #ffffff;
+  --bg-alt: #f8fafc;
+  --white: #ffffff;
+  --text: #16324A;
+  --text-dark: #1f2937;
+  --text-mid: #4b5563;
+  --text-light: #9ca3af;
+  --border: #e5e7eb;
+  --border-soft: #f3f4f6;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-fira: 'Fira Sans', sans-serif;
+  --font: 'Fira Sans', var(--font-fira), sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Fira Sans', var(--font-fira), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-dark);
+  background-color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+  overflow-x: clip; /* Aman mencegah horizontal scroll tanpa merusak vertical scroll */
+  max-width: 100vw;
+}
+
+/* HILANGKAN SCROLLBAR */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* Typography Utils */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  color: var(--navy);
+}
+
+p {
+  margin: 0;
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+}
+
+.section-pad {
+  padding: 5rem 0;
+}
+.page-wrapper > section {
+  padding-top: calc(5rem + 76px) !important;
+}
+
+.bg-alt {
+  background-color: var(--bg-alt);
+}
+
+/* Shared UI */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+  line-height: 1.2;
+}
+.btn-lg { padding: 0.95rem 2.25rem; font-size: 1rem; }
+.btn-sm { padding: 0.5rem 1.15rem; font-size: 0.8rem; }
+.btn-gold { background: var(--gold); color: #fff; }
+.btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(196,158,89,0.35); }
+.btn-outline-gold { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); }
+.btn-outline-gold:hover { background: var(--gold); color: #fff; }
+
+.heading-lg { font-size: 2.75rem; font-weight: 800; margin-bottom: 1.25rem; letter-spacing: -1px; line-height: 1.2; }
+.heading-lg span { color: var(--gold); }
+.lead { font-size: 1.125rem; color: var(--text-mid); line-height: 1.65; font-weight: 400; margin-bottom: 2.5rem; max-width: 720px; }
+.eyebrow { display: inline-block; font-size: 0.75rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.75rem; }
+
+.section-header { text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-soft);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ========================================================
+   USER DASHBOARD — RESPONSIVE STYLES & MOBILE BOTTOM NAV
+   ======================================================== */
+.user-dashboard-container {
+  display: flex;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
+  background: #f8fafc;
+  font-family: 'Fira Sans', sans-serif;
+  color: #1e293b;
+  overflow: hidden;
+}
+
+.user-dashboard-sidebar {
+  width: 260px;
+  height: 100vh;
+  background: #16324A;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  left: 0;
+  overflow-y: hidden;
+  user-select: none;
+}
+
+.user-dashboard-mobile-header {
+  display: none;
+}
+
+.user-dashboard-bottom-nav {
+  display: none;
+}
+
+.user-dashboard-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  .user-dashboard-container {
+    flex-direction: column;
+  }
+
+  .user-dashboard-sidebar {
+    display: none !important;
+  }
+
+  .user-dashboard-desktop-header {
+    display: none !important;
+  }
+
+  .user-dashboard-mobile-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.25rem;
+    background: #16324A;
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .user-dashboard-main {
+    padding-bottom: 90px !important;
+  }
+
+  .user-dashboard-main > main {
+    padding: 1.25rem 1rem 90px !important;
+  }
+
+  /* Form responsive rules to prevent cramping on mobile HP */
+  .form-responsive-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  .form-responsive-grid input,
+  .form-responsive-grid select,
+  .form-responsive-grid textarea {
+    font-size: 1rem !important;
+    padding: 0.875rem 1rem !important;
+  }
+
+  .user-dashboard-bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    align-items: stretch;
+    justify-content: space-around;
+    padding: 0 0.5rem;
+  }
+
+  .user-bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 6px 0;
+    font-family: inherit;
+  }
+
+  .user-bottom-nav-item.active {
+    color: #C49E59 !important;
+    font-weight: 700;
+  }
+
+  .user-bottom-nav-item svg {
+    width: 20px;
+    height: 20px;
+  }
+}
