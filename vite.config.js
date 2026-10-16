@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  base: './',
+  base: process.env.GITHUB_ACTIONS ? '/duta-uinssc/' : '/',
   plugins: [react()],
   resolve: {
     alias: {
