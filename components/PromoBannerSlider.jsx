@@ -96,34 +96,37 @@ export default function PromoBannerSlider() {
             >
               <div className="promo-image-wrapper" style={{ position: 'relative' }}>
                 <Image 
-                  src={banner.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'} 
+                  src={banner.img || ''} 
                   alt={banner.title || 'Promo Banner Duta Kampus'} 
                   fill 
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: 'contain' }}
+                  fallbackSrc="/assets/logo-main.png"
                 />
-                <div 
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(to right, rgba(22, 50, 74, 0.75) 0%, rgba(22, 50, 74, 0.25) 60%, transparent 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '1.5rem 2.5rem'
-                  }}
-                >
-                  <div style={{ maxWidth: '520px', color: '#fff' }}>
-                    {banner.title && (
-                      <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff', margin: '0 0 0.35rem' }}>
-                        {banner.title}
-                      </h3>
-                    )}
-                    {banner.subtitle && (
-                      <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.85)', margin: 0, fontWeight: 400 }}>
-                        {banner.subtitle}
-                      </p>
-                    )}
+                {(banner.title || banner.subtitle) && (
+                  <div 
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(to right, rgba(22, 50, 74, 0.75) 0%, rgba(22, 50, 74, 0.25) 60%, transparent 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '1.5rem 2.5rem'
+                    }}
+                  >
+                    <div style={{ maxWidth: '520px', color: '#fff' }}>
+                      {banner.title && (
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff', margin: '0 0 0.35rem' }}>
+                          {banner.title}
+                        </h3>
+                      )}
+                      {banner.subtitle && (
+                        <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.85)', margin: 0, fontWeight: 400 }}>
+                          {banner.subtitle}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </Link>
           ))}

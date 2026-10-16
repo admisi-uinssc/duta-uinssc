@@ -459,15 +459,30 @@
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 1;
+  background: var(--navy);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.promo-image-wrapper img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  display: block;
 }
 @media (max-width: 768px) {
   .promo-container {
     padding: 0 1rem;
   }
   .promo-slide {
-    flex: 0 0 92% !important;
+    flex: 0 0 100% !important;
   }
   .promo-image-wrapper {
-    aspect-ratio: 2.4 / 1;
+    aspect-ratio: 4 / 1 !important;
+    border-radius: 12px;
+  }
+  .promo-image-wrapper img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
   }
 }
