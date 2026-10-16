@@ -66,8 +66,8 @@ export { app, auth, db, firebaseConfig };
 // ZERO-READ SMART CACHE & SYNC HELPERS
 // ==========================================
 
-// Cooldown 10 menit untuk sync berkala guna memanipulasi & menghemat kuota reads Firebase
-export const SYNC_COOLDOWN_MS = 10 * 60 * 1000;
+// Fast cooldown 5 detik untuk sync agar perubahan pendaftar langsung tampil tanpa hapus cache
+export const SYNC_COOLDOWN_MS = 5 * 1000;
 
 export function getLastSyncTime() {
   if (typeof window === 'undefined') return 0;
@@ -81,22 +81,7 @@ export function getLastSyncTime() {
 export async function smartSyncAll(force = false) {
   if (!db) return { success: false, reason: 'offline' };
   
-  const lastSync = getLastSyncTime();
-  const now = Date.now();
-  
-  const localAppsRaw = typeof window !== 'undefined' ? localStorage.getItem('dutauinssc_pendaftar') : null;
-  const localUsersRaw = typeof window !== 'undefined' ? localStorage.getItem('dutauinssc_users') : null;
-  const isLocalEmpty = !localAppsRaw || localAppsRaw === '[]' || !localUsersRaw || localUsersRaw === '[]';
-
-  // Jika bukan force, data lokal sudah ada, dan belum lewat cooldown, gunakan cache
-  if (!force && !isLocalEmpty && (now - lastSync < SYNC_COOLDOWN_MS)) {
-    return { 
-      success: true, 
-      fromCache: true, 
-      message: 'Data aktif dari cache lokal.' 
-    };
-  }
-
+  // Selalu ambil data langsung dari cloud secara online tanpa harus hapus cache
   try {
     // 1. Ambil pendaftar dari cloud (Deduplikasi cerdas berdasarkan Email / NIM / ID)
     const cloudApps = await fetchApplicantsFromCloud();
@@ -256,6 +241,61 @@ export function listenToUserFromCloud(identifier, callback) {
   }
 }
 
+/**
+ * Direct lookup for a single applicant dossier by email or ID in Firestore
+ */
+export async function fetchApplicantFromCloudByIdentifier(identifier) {
+  if (!db || !identifier) return null;
+  const clean = String(identifier).trim().toLowerCase();
+  
+  // 1. Direct get by email document ID
+  try {
+    const directDoc = await getDoc(doc(db, 'duta_applicants', clean));
+    if (directDoc.exists()) {
+      return directDoc.data();
+    }
+  } catch (e) {}
+
+  // 2. Query by email field
+  try {
+    const qEmail = query(collection(db, 'duta_applicants'), where('email', '==', clean), limit(1));
+    const snapEmail = await getDocs(qEmail);
+    if (!snapEmail.empty) {
+      return snapEmail.docs[0].data();
+    }
+  } catch (err) {}
+
+  // 3. Query by numeric ID if identifier is numeric
+  try {
+    const directIdDoc = await getDoc(doc(db, 'duta_applicants', String(identifier)));
+    if (directIdDoc.exists()) {
+      return directIdDoc.data();
+    }
+  } catch (e) {}
+
+  return null;
+}
+
+/**
+ * Real-time listener for a single applicant dossier document (Instant HP sync)
+ */
+export function listenToApplicantFromCloud(identifier, callback) {
+  if (!db || !identifier || typeof callback !== 'function') return () => {};
+  const clean = String(identifier).trim().toLowerCase();
+  try {
+    const appRef = doc(db, 'duta_applicants', clean);
+    return onSnapshot(appRef, (snapshot) => {
+      if (snapshot.exists()) {
+        callback(snapshot.data());
+      }
+    }, (err) => {
+      console.warn('Applicant dossier sync notice:', err);
+    });
+  } catch (err) {
+    return () => {};
+  }
+}
+
 
 /**
  * Fetch all users from Firestore
@@ -279,11 +319,23 @@ export async function fetchUsersFromCloud() {
 export async function syncApplicantToCloud(applicant) {
   if (!db || !applicant) return;
   try {
-    const appRef = doc(db, 'duta_applicants', String(applicant.id));
+    const docId = String(applicant.id || applicant.email).toLowerCase();
+    const appRef = doc(db, 'duta_applicants', docId);
     await setDoc(appRef, {
       ...applicant,
       updatedAt: new Date().toISOString()
     }, { merge: true });
+
+    // Also sync to email doc ID if applicant has email and it differs
+    if (applicant.email && String(applicant.email).toLowerCase() !== docId) {
+      try {
+        const emailRef = doc(db, 'duta_applicants', String(applicant.email).toLowerCase());
+        await setDoc(emailRef, {
+          ...applicant,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      } catch (e) {}
+    }
   } catch (err) {
     console.warn('Could not sync applicant dossier to Firestore:', err);
   }
@@ -302,6 +354,42 @@ export async function fetchApplicantsFromCloud() {
   } catch (err) {
     console.warn('Could not fetch applicants from Firestore:', err);
     return null;
+  }
+}
+
+/**
+ * Real-time listener for all applicants in Firestore (Instant updates in Admin)
+ */
+export function listenToApplicantsFromCloud(callback) {
+  if (!db || typeof callback !== 'function') return () => {};
+  try {
+    return onSnapshot(collection(db, 'duta_applicants'), (snap) => {
+      const list = [];
+      snap.forEach(d => list.push(d.data()));
+      callback(list);
+    }, (err) => {
+      console.warn('Applicants real-time sync notice:', err);
+    });
+  } catch (err) {
+    return () => {};
+  }
+}
+
+/**
+ * Real-time listener for all registered users in Firestore (Instant updates in Admin)
+ */
+export function listenToUsersFromCloud(callback) {
+  if (!db || typeof callback !== 'function') return () => {};
+  try {
+    return onSnapshot(collection(db, 'duta_users'), (snap) => {
+      const list = [];
+      snap.forEach(d => list.push(d.data()));
+      callback(list);
+    }, (err) => {
+      console.warn('Users real-time sync notice:', err);
+    });
+  } catch (err) {
+    return () => {};
   }
 }
 

@@ -266,7 +266,7 @@ export const DriveStorage = {
         berkasSubmitted: true,
         updatedAt: new Date().toISOString()
       };
-      Auth.saveUsers(users);
+      Auth.saveUsers(users, users[uIdx]);
     }
 
     // 2. Update in DB (dutauinssc_pendaftar)
@@ -283,7 +283,20 @@ export const DriveStorage = {
         berkasSubmitted: true,
         updatedAt: new Date().toISOString()
       };
-      DB.save(applicants);
+      DB.save(applicants, applicants[aIdx]);
+    } else {
+      const u = uIdx !== -1 ? users[uIdx] : {};
+      const newApp = {
+        ...u,
+        email: cleanKey,
+        [docKey]: docData,
+        berkas: { [docKey]: docData },
+        berkasSubmitted: true,
+        status: 'pending',
+        selectionStage: 'review',
+        updatedAt: new Date().toISOString()
+      };
+      DB.add(newApp);
     }
 
     window.dispatchEvent(new Event('storage'));

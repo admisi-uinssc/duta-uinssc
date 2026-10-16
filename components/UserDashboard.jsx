@@ -5,7 +5,7 @@ import { Auth } from '../lib/auth';
 import { DB, formatDateTime } from '../lib/db';
 import { DOSSIER_DOCUMENTS, evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
-import { listenToUserFromCloud } from '../lib/firebase';
+import { listenToUserFromCloud, fetchApplicantFromCloudByIdentifier, listenToApplicantFromCloud } from '../lib/firebase';
 import DocumentPreviewModal from './DocumentPreviewModal';
 
 export default function UserDashboard({ user, onLogout }) {
@@ -39,16 +39,16 @@ export default function UserDashboard({ user, onLogout }) {
     motivasi: user.motivasi || '',
     visi: user.visi || '',
     // 10 Berkas Dokumen Persyaratan
-    docSuratPernyataan: user.docSuratPernyataan || '',
-    docCv: user.docCv || '',
-    docSuratRekomendasi: user.docSuratRekomendasi || '',
-    docSertifikatPrestasi: user.docSertifikatPrestasi || '',
-    docFotoLengkap: user.docFotoLengkap || '',
-    docMotivationLetter: user.docMotivationLetter || '',
-    docBuktiFollow: user.docBuktiFollow || '',
-    docKtm: user.docKtm || '',
-    docTranskripNilai: user.docTranskripNilai || '',
-    docBuktiDiterima: user.docBuktiDiterima || '',
+    docSuratPernyataan: user.docSuratPernyataan || user.berkas?.docSuratPernyataan || '',
+    docCv: user.docCv || user.berkas?.docCv || '',
+    docSuratRekomendasi: user.docSuratRekomendasi || user.berkas?.docSuratRekomendasi || '',
+    docSertifikatPrestasi: user.docSertifikatPrestasi || user.berkas?.docSertifikatPrestasi || '',
+    docFotoLengkap: user.docFotoLengkap || user.berkas?.docFotoLengkap || '',
+    docMotivationLetter: user.docMotivationLetter || user.berkas?.docMotivationLetter || '',
+    docBuktiFollow: user.docBuktiFollow || user.berkas?.docBuktiFollow || '',
+    docKtm: user.docKtm || user.berkas?.docKtm || '',
+    docTranskripNilai: user.docTranskripNilai || user.berkas?.docTranskripNilai || '',
+    docBuktiDiterima: user.docBuktiDiterima || user.berkas?.docBuktiDiterima || '',
   });
 
   const [isSubmitted, setIsSubmitted] = useState(user.berkasSubmitted || false);
@@ -63,17 +63,41 @@ export default function UserDashboard({ user, onLogout }) {
         if (fresh.berkasSubmitted) {
           setIsSubmitted(true);
         }
+        setFormData(prev => ({
+          ...prev,
+          docSuratPernyataan: prev.docSuratPernyataan || fresh.docSuratPernyataan || fresh.berkas?.docSuratPernyataan || '',
+          docCv: prev.docCv || fresh.docCv || fresh.berkas?.docCv || '',
+          docSuratRekomendasi: prev.docSuratRekomendasi || fresh.docSuratRekomendasi || fresh.berkas?.docSuratRekomendasi || '',
+          docSertifikatPrestasi: prev.docSertifikatPrestasi || fresh.docSertifikatPrestasi || fresh.berkas?.docSertifikatPrestasi || '',
+          docFotoLengkap: prev.docFotoLengkap || fresh.docFotoLengkap || fresh.berkas?.docFotoLengkap || '',
+          docMotivationLetter: prev.docMotivationLetter || fresh.docMotivationLetter || fresh.berkas?.docMotivationLetter || '',
+          docBuktiFollow: prev.docBuktiFollow || fresh.docBuktiFollow || fresh.berkas?.docBuktiFollow || '',
+          docKtm: prev.docKtm || fresh.docKtm || fresh.berkas?.docKtm || '',
+          docTranskripNilai: prev.docTranskripNilai || fresh.docTranskripNilai || fresh.berkas?.docTranskripNilai || '',
+          docBuktiDiterima: prev.docBuktiDiterima || fresh.docBuktiDiterima || fresh.berkas?.docBuktiDiterima || '',
+        }));
       }
       const existingInDb = DB.getAll().find(
         (item) => (item.email || '').toLowerCase() === (user.email || '').toLowerCase()
       );
-      if (existingInDb && !existingInDb.isAccountApplication && existingInDb.berkasSubmitted) {
-        setIsSubmitted(true);
-        // Exclude admin-controlled fields so formData never pollutes them
+      if (existingInDb && !existingInDb.isAccountApplication) {
+        if (existingInDb.berkasSubmitted) {
+          setIsSubmitted(true);
+        }
         const { selectionStage: _stage, selectionMessage: _msg, status: _st, accountStatus: _acc, ...cleanDraft } = existingInDb;
         setFormData(prev => ({
           ...prev,
           ...cleanDraft,
+          docSuratPernyataan: cleanDraft.docSuratPernyataan || cleanDraft.berkas?.docSuratPernyataan || prev.docSuratPernyataan,
+          docCv: cleanDraft.docCv || cleanDraft.berkas?.docCv || prev.docCv,
+          docSuratRekomendasi: cleanDraft.docSuratRekomendasi || cleanDraft.berkas?.docSuratRekomendasi || prev.docSuratRekomendasi,
+          docSertifikatPrestasi: cleanDraft.docSertifikatPrestasi || cleanDraft.berkas?.docSertifikatPrestasi || prev.docSertifikatPrestasi,
+          docFotoLengkap: cleanDraft.docFotoLengkap || cleanDraft.berkas?.docFotoLengkap || prev.docFotoLengkap,
+          docMotivationLetter: cleanDraft.docMotivationLetter || cleanDraft.berkas?.docMotivationLetter || prev.docMotivationLetter,
+          docBuktiFollow: cleanDraft.docBuktiFollow || cleanDraft.berkas?.docBuktiFollow || prev.docBuktiFollow,
+          docKtm: cleanDraft.docKtm || cleanDraft.berkas?.docKtm || prev.docKtm,
+          docTranskripNilai: cleanDraft.docTranskripNilai || cleanDraft.berkas?.docTranskripNilai || prev.docTranskripNilai,
+          docBuktiDiterima: cleanDraft.docBuktiDiterima || cleanDraft.berkas?.docBuktiDiterima || prev.docBuktiDiterima,
         }));
       }
     };
@@ -99,9 +123,59 @@ export default function UserDashboard({ user, onLogout }) {
       }
     });
 
+    // Live applicant dossier Firestore sync: instant sync on HP and new devices
+    fetchApplicantFromCloudByIdentifier(user.email).then(cloudApp => {
+      if (cloudApp) {
+        setIsSubmitted(true);
+        setFormData(prev => ({
+          ...prev,
+          ...cloudApp,
+          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || prev.docSuratPernyataan,
+          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || prev.docCv,
+          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || prev.docSuratRekomendasi,
+          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || prev.docSertifikatPrestasi,
+          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || prev.docFotoLengkap,
+          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || prev.docMotivationLetter,
+          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || prev.docBuktiFollow,
+          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || prev.docKtm,
+          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || prev.docTranskripNilai,
+          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || prev.docBuktiDiterima,
+        }));
+        // Cache in local DB so DB.getAll() has it on HP
+        const currentList = DB.getAll();
+        const k = (cloudApp.email || String(cloudApp.id)).toLowerCase();
+        const map = new Map();
+        currentList.forEach(a => map.set((a.email || String(a.id)).toLowerCase(), a));
+        map.set(k, { ...(map.get(k) || {}), ...cloudApp });
+        localStorage.setItem('dutauinssc_pendaftar', JSON.stringify(Array.from(map.values())));
+        window.dispatchEvent(new Event('storage'));
+      }
+    }).catch(() => {});
+
+    const unsubscribeAppCloud = listenToApplicantFromCloud(user.email, (cloudApp) => {
+      if (cloudApp) {
+        setIsSubmitted(true);
+        setFormData(prev => ({
+          ...prev,
+          ...cloudApp,
+          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || prev.docSuratPernyataan,
+          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || prev.docCv,
+          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || prev.docSuratRekomendasi,
+          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || prev.docSertifikatPrestasi,
+          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || prev.docFotoLengkap,
+          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || prev.docMotivationLetter,
+          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || prev.docBuktiFollow,
+          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || prev.docKtm,
+          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || prev.docTranskripNilai,
+          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || prev.docBuktiDiterima,
+        }));
+      }
+    });
+
     return () => {
       window.removeEventListener('storage', refreshUserData);
       if (typeof unsubscribeCloud === 'function') unsubscribeCloud();
+      if (typeof unsubscribeAppCloud === 'function') unsubscribeAppCloud();
     };
   }, [user.email]);
 
@@ -148,14 +222,33 @@ export default function UserDashboard({ user, onLogout }) {
 
   const handleSaveDraft = (e) => {
     e.preventDefault();
+    const users = Auth.getUsers();
+    const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
+    const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
+
     const cleanForm = { ...formData };
     delete cleanForm.selectionStage;
     delete cleanForm.selectionMessage;
     delete cleanForm.accountStatus;
     delete cleanForm.status;
 
-    const users = Auth.getUsers();
-    const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
+    // Preserve existing uploaded documents if not replaced in current form state
+    DOSSIER_DOCUMENTS.forEach(d => {
+      if (!cleanForm[d.key]) {
+        cleanForm[d.key] = users[idx]?.[d.key] || users[idx]?.berkas?.[d.key] || existing?.[d.key] || existing?.berkas?.[d.key] || '';
+      }
+    });
+
+    cleanForm.berkas = {
+      ...(users[idx]?.berkas || {}),
+      ...(existing?.berkas || {})
+    };
+    DOSSIER_DOCUMENTS.forEach(d => {
+      if (cleanForm[d.key]) {
+        cleanForm.berkas[d.key] = cleanForm[d.key];
+      }
+    });
+
     if (idx !== -1) {
       users[idx] = { 
         ...users[idx], 
@@ -168,7 +261,6 @@ export default function UserDashboard({ user, onLogout }) {
 
     // Sync immediately to DB so Admin sees semester and all draft updates right away
     try {
-      const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
       if (existing) {
         let updatedItem = null;
         const allDb = DB.getAll().map(i => {
@@ -186,14 +278,15 @@ export default function UserDashboard({ user, onLogout }) {
         });
         DB.save(allDb, updatedItem);
       } else {
-        DB.add({
+        const newItem = {
           ...cleanForm,
           email: user.email,
           semester: formData.semester,
           prodi: formData.jurusan || formData.fakultas,
           status: 'pending',
           selectionStage: 'review',
-        });
+        };
+        DB.add(newItem);
       }
     } catch (err) {
       console.error('Error syncing draft to DB:', err);
@@ -226,14 +319,34 @@ export default function UserDashboard({ user, onLogout }) {
       return;
     }
 
+    const users = Auth.getUsers();
+    const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
+    const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
+
     const cleanForm = { ...formData };
     delete cleanForm.selectionStage;
     delete cleanForm.selectionMessage;
     delete cleanForm.accountStatus;
     delete cleanForm.status;
 
+    // Preserve and populate berkas map
+    DOSSIER_DOCUMENTS.forEach(d => {
+      if (!cleanForm[d.key]) {
+        cleanForm[d.key] = users[idx]?.[d.key] || users[idx]?.berkas?.[d.key] || existing?.[d.key] || existing?.berkas?.[d.key] || '';
+      }
+    });
+
+    cleanForm.berkas = {
+      ...(users[idx]?.berkas || {}),
+      ...(existing?.berkas || {})
+    };
+    DOSSIER_DOCUMENTS.forEach(d => {
+      if (cleanForm[d.key]) {
+        cleanForm.berkas[d.key] = cleanForm[d.key];
+      }
+    });
+
     // Save or update in DB
-    const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
     let savedAppItem = null;
     if (existing) {
       const allDb = DB.getAll().map(i => {
@@ -246,6 +359,7 @@ export default function UserDashboard({ user, onLogout }) {
             status: 'pending',
             selectionStage: 'review',
             selectionMessage: '',
+            berkasSubmitted: true,
             updatedAt: new Date().toISOString()
           };
           return savedAppItem;
@@ -262,13 +376,12 @@ export default function UserDashboard({ user, onLogout }) {
         status: 'pending',
         selectionStage: 'review',
         selectionMessage: '',
+        berkasSubmitted: true,
       };
       DB.add(savedAppItem);
     }
 
     // Update user status in Auth
-    const users = Auth.getUsers();
-    const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
     if (idx !== -1) {
       users[idx] = { 
         ...users[idx], 

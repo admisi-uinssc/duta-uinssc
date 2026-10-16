@@ -50,16 +50,15 @@ export const DB = {
       if (specificItemToSync) {
         syncApplicantToCloud(specificItemToSync);
       } else {
-        const recent = deduped.slice(0, 2);
-        recent.forEach(item => syncApplicantToCloud(item));
+        deduped.forEach(item => syncApplicantToCloud(item));
       }
     }
   },
   add: (item) => {
     const all = DB.getAll();
-    const newItem = { ...item, id: Date.now(), createdAt: new Date().toISOString() };
+    const newItem = { ...item, id: item.id || Date.now(), createdAt: item.createdAt || new Date().toISOString() };
     all.unshift(newItem);
-    DB.save(all);
+    DB.save(all, newItem);
     return newItem;
   },
   insert: (item) => {

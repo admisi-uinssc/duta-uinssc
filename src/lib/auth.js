@@ -35,7 +35,7 @@ export function validateEmailFormat(email) {
   return { isValid: true, message: 'Format email valid.' };
 }
 
-import { syncUserToCloud, fetchUserFromCloudByIdentifier } from './firebase';
+import { syncUserToCloud, fetchUserFromCloudByIdentifier, fetchApplicantFromCloudByIdentifier } from './firebase';
 import { DB } from './db';
 
 export const Auth = {
@@ -183,6 +183,24 @@ export const Auth = {
       };
     }
     localStorage.setItem('dutauinssc_auth_token', userExists.email);
+
+    // Sync applicant dossier too so HP immediately has all submitted berkas and fields
+    try {
+      const cloudApp = await fetchApplicantFromCloudByIdentifier(userExists.email);
+      if (cloudApp) {
+        const pendaftarRaw = localStorage.getItem('dutauinssc_pendaftar');
+        const pendaftarList = pendaftarRaw ? JSON.parse(pendaftarRaw) : [];
+        const existingIdx = pendaftarList.findIndex(p => (p.email || '').toLowerCase() === userExists.email.toLowerCase());
+        if (existingIdx !== -1) {
+          pendaftarList[existingIdx] = { ...pendaftarList[existingIdx], ...cloudApp };
+        } else {
+          pendaftarList.unshift(cloudApp);
+        }
+        localStorage.setItem('dutauinssc_pendaftar', JSON.stringify(pendaftarList));
+        window.dispatchEvent(new Event('storage'));
+      }
+    } catch (e) {}
+
     return { success: true, user: userExists };
   },
 

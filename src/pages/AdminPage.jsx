@@ -9,7 +9,7 @@ import { CMS } from '../lib/cms';
 import { Auth } from '../lib/auth';
 import { FAKULTAS_DATA } from '../lib/fakultasData';
 import { evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
-import { isFirebaseConfigured, firebaseConfig, smartSyncAll, getLastSyncTime } from '../lib/firebase';
+import { isFirebaseConfigured, firebaseConfig, smartSyncAll, getLastSyncTime, listenToApplicantsFromCloud, listenToUsersFromCloud } from '../lib/firebase';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
 import DocumentPreviewModal from '../components/DocumentPreviewModal';
 
@@ -164,7 +164,7 @@ export default function AdminPage() {
   const [userFilterStatus, setUserFilterStatus] = useState('');
   const [userFilterFakultas, setUserFilterFakultas] = useState('');
 
-  // Live real-time sync with localStorage and cross-tab events
+  // Live real-time sync with localStorage, cross-tab events, and Cloud Firestore listeners
   useEffect(() => { 
     const syncAll = () => {
       setApplicants(DB.getAll()); 
@@ -175,14 +175,50 @@ export default function AdminPage() {
     syncAll();
     if (!cmsData) setCmsData(CMS.get());
 
+    // Immediate background cloud sync on page visit so admin never has stale cache
+    smartSyncAll(true).then((res) => {
+      if (res?.success) syncAll();
+    }).catch(() => {});
+
     const unsubUsers = Auth.subscribe(syncAll);
     const unsubDb = DB.subscribe(syncAll);
-    const interval = setInterval(syncAll, 1000);
+
+    // Live cloud Firestore listeners: instant dossier & user updates with ZERO refresh and ZERO cache clearing
+    const unsubCloudApps = listenToApplicantsFromCloud((cloudList) => {
+      if (cloudList && cloudList.length > 0) {
+        const local = DB.getAll();
+        const map = new Map();
+        local.forEach(a => map.set((a.email || a.nim || String(a.id)).toLowerCase(), a));
+        cloudList.forEach(c => {
+          const k = (c.email || c.nim || String(c.id)).toLowerCase();
+          map.set(k, { ...(map.get(k) || {}), ...c });
+        });
+        const merged = Array.from(map.values()).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        localStorage.setItem('dutauinssc_pendaftar', JSON.stringify(merged));
+        setApplicants(merged);
+      }
+    });
+
+    const unsubCloudUsers = listenToUsersFromCloud((cloudUsers) => {
+      if (cloudUsers && cloudUsers.length > 0) {
+        const local = Auth.getUsers();
+        const map = new Map();
+        local.forEach(u => map.set((u.email || u.username || String(u.id)).toLowerCase(), u));
+        cloudUsers.forEach(c => {
+          const k = (c.email || c.username || String(c.id)).toLowerCase();
+          map.set(k, { ...(map.get(k) || {}), ...c });
+        });
+        const merged = Array.from(map.values());
+        localStorage.setItem('dutauinssc_users', JSON.stringify(merged));
+        setRegisteredUsers(merged);
+      }
+    });
 
     return () => {
       unsubUsers();
       unsubDb();
-      clearInterval(interval);
+      if (typeof unsubCloudApps === 'function') unsubCloudApps();
+      if (typeof unsubCloudUsers === 'function') unsubCloudUsers();
     };
   }, []);
 
