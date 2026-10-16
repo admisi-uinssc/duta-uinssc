@@ -9,9 +9,13 @@ import './styles/landing.css';
 import './styles/form.css';
 import './styles/admin.css';
 
+const basename = typeof window !== 'undefined' && window.location.pathname.startsWith('/duta-uinssc') 
+  ? '/duta-uinssc' 
+  : '/';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <App />
     </BrowserRouter>
   </React.StrictMode>
