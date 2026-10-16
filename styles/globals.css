@@ -278,3 +278,244 @@ p {
     height: 20px;
   }
 }
+
+/* ==========================================================================
+   SELECTION ANNOUNCEMENT CARDS (LOLOS & TIDAK LOLOS) - MOBILE OPTIMIZED
+   ========================================================================== */
+.announcement-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 1.75rem 2rem;
+}
+
+.announcement-card-lolos {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1.5px solid #86efac;
+  border-left: 5px solid #16a34a;
+}
+
+.announcement-card-tidak-lolos {
+  background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+  border: 1.5px solid #fecaca;
+  border-left: 5px solid #dc2626;
+}
+
+.announcement-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.announcement-badge-lolos {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #166534;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.announcement-badge-tidak-lolos {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #991b1b;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.announcement-tag {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.announcement-tag-lolos {
+  color: #15803d;
+}
+.announcement-tag-tidak-lolos {
+  color: #991b1b;
+}
+
+.announcement-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+  line-height: 1.35;
+}
+.announcement-title-lolos {
+  color: #14532d;
+}
+.announcement-title-tidak-lolos {
+  color: #991b1b;
+}
+
+.announcement-desc {
+  font-size: 0.925rem;
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+  max-width: 850px;
+}
+.announcement-desc-lolos {
+  color: #166534;
+}
+.announcement-desc-tidak-lolos {
+  color: #7f1d1d;
+}
+
+.announcement-steps-box {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  max-width: 680px;
+}
+.announcement-steps-box-lolos {
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 2px 8px rgba(22, 101, 52, 0.04);
+}
+.announcement-steps-box-tidak-lolos {
+  border: 1px solid #fecaca;
+  box-shadow: 0 2px 8px rgba(153, 27, 27, 0.04);
+}
+
+.announcement-steps-header {
+  font-size: 0.825rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.announcement-steps-header-lolos {
+  color: #14532d;
+}
+.announcement-steps-header-tidak-lolos {
+  color: #991b1b;
+}
+
+.announcement-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.announcement-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.825rem;
+  line-height: 1.5;
+}
+.announcement-step-item-lolos {
+  color: #166534;
+}
+.announcement-step-item-tidak-lolos {
+  color: #7f1d1d;
+}
+
+.announcement-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.announcement-step-num-lolos {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+.announcement-step-num-tidak-lolos {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.announcement-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.8rem 1.75rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Mobile specific overrides for announcements */
+@media (max-width: 640px) {
+  .announcement-card {
+    padding: 1.15rem 1rem !important;
+    border-radius: 14px !important;
+  }
+  .announcement-top-bar {
+    margin-bottom: 0.65rem !important;
+    gap: 0.5rem !important;
+  }
+  .announcement-badge-lolos,
+  .announcement-badge-tidak-lolos {
+    font-size: 0.68rem !important;
+    padding: 3px 10px !important;
+  }
+  .announcement-tag {
+    font-size: 0.75rem !important;
+  }
+  .announcement-title {
+    font-size: 1.125rem !important;
+    line-height: 1.35 !important;
+    margin-bottom: 0.4rem !important;
+  }
+  .announcement-desc {
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 1rem !important;
+  }
+  .announcement-steps-box {
+    padding: 0.85rem 0.9rem !important;
+    margin-bottom: 1rem !important;
+    border-radius: 10px !important;
+  }
+  .announcement-steps-header {
+    font-size: 0.78rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .announcement-step-item {
+    font-size: 0.78rem !important;
+    line-height: 1.45 !important;
+    gap: 8px !important;
+  }
+  .announcement-step-num {
+    min-width: 18px !important;
+    height: 18px !important;
+    font-size: 0.68rem !important;
+  }
+  .announcement-btn {
+    width: 100% !important;
+    padding: 0.85rem 1rem !important;
+    font-size: 0.88rem !important;
+    border-radius: 10px !important;
+  }
+}

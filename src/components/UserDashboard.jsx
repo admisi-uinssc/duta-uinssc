@@ -5,6 +5,7 @@ import { Auth } from '../lib/auth';
 import { DB, formatDateTime } from '../lib/db';
 import { DOSSIER_DOCUMENTS, evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
+import { listenToUserFromCloud } from '../lib/firebase';
 import DocumentPreviewModal from './DocumentPreviewModal';
 
 export default function UserDashboard({ user, onLogout }) {
@@ -52,7 +53,7 @@ export default function UserDashboard({ user, onLogout }) {
 
   const [isSubmitted, setIsSubmitted] = useState(user.berkasSubmitted || false);
 
-  // Sync state from storage to keep live with admin approvals
+  // Sync state from storage and live cloud for instant Lolos/Tidak Lolos announcement updates
   useEffect(() => {
     const refreshUserData = () => {
       const users = Auth.getUsers();
@@ -77,7 +78,29 @@ export default function UserDashboard({ user, onLogout }) {
 
     refreshUserData();
     window.addEventListener('storage', refreshUserData);
-    return () => window.removeEventListener('storage', refreshUserData);
+
+    // Live single-user Firestore listener: instant result updates with 0 wasteful reads
+    const unsubscribeCloud = listenToUserFromCloud(user.email, (cloudUser) => {
+      if (cloudUser) {
+        setCurrentUser(prev => ({ ...prev, ...cloudUser }));
+        if (cloudUser.berkasSubmitted) {
+          setIsSubmitted(true);
+        }
+        try {
+          const allUsers = Auth.getUsers();
+          const idx = allUsers.findIndex(u => (u.email || '').toLowerCase() === (user.email || '').toLowerCase());
+          if (idx !== -1) {
+            allUsers[idx] = { ...allUsers[idx], ...cloudUser };
+            localStorage.setItem('dutauinssc_users', JSON.stringify(allUsers));
+          }
+        } catch (e) {}
+      }
+    });
+
+    return () => {
+      window.removeEventListener('storage', refreshUserData);
+      if (typeof unsubscribeCloud === 'function') unsubscribeCloud();
+    };
   }, [user.email]);
 
   const handleInputChange = (e) => {
@@ -490,11 +513,11 @@ export default function UserDashboard({ user, onLogout }) {
               style={{ borderRadius: '50%' }}
             />
             <div>
-              <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#ffffff', lineHeight: 1.2 }}>
-                Portal Peserta
+              <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.2, letterSpacing: '0.4px' }}>
+                <span style={{ color: 'var(--gold)', fontWeight: 800 }}>PADUKA</span> <span style={{ opacity: 0.45, fontWeight: 400 }}>|</span> dutauinssc
               </div>
-              <div style={{ fontSize: '0.68rem', color: '#C49E59' }}>
-                Duta Kampus 2026
+              <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.75)' }}>
+                Portal Peserta Duta Kampus
               </div>
             </div>
           </div>
@@ -563,61 +586,53 @@ export default function UserDashboard({ user, onLogout }) {
               
               {/* === HASIL KELULUSAN SELEKSI BERKAS (JIKA ADMIN ACC / TOLAK) === */}
               {selectionStage === 'lolos' && (
-                <div
-                  style={{
-                    background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)',
-                    border: '2px solid #86efac',
-                    borderRadius: '16px',
-                    padding: '2rem',
-                    boxShadow: '0 8px 24px rgba(22, 101, 52, 0.08)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                    <span
-                      style={{
-                        background: '#166534',
-                        color: '#ffffff',
-                        fontSize: '0.75rem',
-                        fontWeight: 800,
-                        padding: '4px 12px',
-                        borderRadius: '9999px',
-                        letterSpacing: '0.5px',
-                        textTransform: 'uppercase'
-                      }}
-                    >
-                      LOLOS SELEKSI BERKAS
+                <div className="announcement-card announcement-card-lolos">
+                  <div className="announcement-top-bar">
+                    <span className="announcement-badge-lolos">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>LOLOS SELEKSI BERKAS</span>
                     </span>
-                    <span style={{ fontSize: '0.8rem', color: '#15803d', fontWeight: 600 }}>
-                      Tahap Administrasi
+                    <span className="announcement-tag announcement-tag-lolos">
+                      Tahap Administrasi 2026
                     </span>
                   </div>
 
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#14532d', margin: '0 0 0.75rem' }}>
-                    Selamat, {formData.namaLengkap}! Anda Dinyatakan Lolos Seleksi Berkas
+                  <h3 className="announcement-title announcement-title-lolos">
+                    Selamat, {formData.namaLengkap}!
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#15803d', marginTop: '3px' }}>
+                      Anda Dinyatakan Lolos Seleksi Berkas Administrasi
+                    </div>
                   </h3>
 
-                  <p style={{ fontSize: '0.95rem', color: '#166534', lineHeight: 1.6, margin: '0 0 1.5rem', maxWidth: '850px' }}>
+                  <p className="announcement-desc announcement-desc-lolos">
                     {selectionMessage || DEFAULT_MESSAGES.lolos}
                   </p>
 
-                  <div style={{ background: '#ffffff', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '1rem 1.25rem', marginBottom: '1.5rem', maxWidth: '650px' }}>
-                    <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#14532d', marginBottom: '0.35rem' }}>
-                      Petunjuk Tahapan Lanjutan:
+                  <div className="announcement-steps-box announcement-steps-box-lolos">
+                    <div className="announcement-steps-header announcement-steps-header-lolos">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                      <span>Petunjuk Tahapan Lanjutan:</span>
                     </div>
-                    <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.825rem', color: '#166534', lineHeight: 1.6 }}>
-                      <li>Bergabung ke grup koordinasi calon duta kampus melalui tautan yang dikirimkan ke WhatsApp Anda ({formData.noHp || 'kontak terdaftar'}).</li>
-                      <li>Persiapkan pakaian formal universitas (almamater) untuk sesi wawancara dan uji bakat.</li>
-                      <li>Pantau pembaruan jadwal pada menu Riwayat Pendaftaran.</li>
-                    </ul>
+                    <div className="announcement-steps-list">
+                      <div className="announcement-step-item announcement-step-item-lolos">
+                        <span className="announcement-step-num announcement-step-num-lolos">1</span>
+                        <span>Bergabung ke grup koordinasi calon duta melalui tautan WhatsApp yang dikirimkan ke <strong>{formData.noHp || 'kontak terdaftar'}</strong>.</span>
+                      </div>
+                      <div className="announcement-step-item announcement-step-item-lolos">
+                        <span className="announcement-step-num announcement-step-num-lolos">2</span>
+                        <span>Siapkan pakaian formal institusi (jas almamater) untuk rangkaian sesi wawancara dan uji bakat.</span>
+                      </div>
+                      <div className="announcement-step-item announcement-step-item-lolos">
+                        <span className="announcement-step-num announcement-step-num-lolos">3</span>
+                        <span>Pantau perkembangan linimasa resmi pada menu Riwayat Pendaftaran secara berkala.</span>
+                      </div>
+                    </div>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => setActiveTab('riwayat')}
-                    className="btn btn-gold"
-                    style={{ padding: '0.8rem 1.75rem', fontWeight: 600, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                    className="btn btn-gold announcement-btn"
                   >
                     <span>Lihat Linimasa Lengkap</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -626,42 +641,57 @@ export default function UserDashboard({ user, onLogout }) {
               )}
 
               {selectionStage === 'tidak_lolos' && (
-                <div
-                  style={{
-                    background: '#fef2f2',
-                    border: '1.5px solid #fecaca',
-                    borderRadius: '16px',
-                    padding: '2rem',
-                    boxShadow: '0 4px 16px rgba(153, 27, 27, 0.05)'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                    <span
-                      style={{
-                        background: '#991b1b',
-                        color: '#ffffff',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        padding: '4px 12px',
-                        borderRadius: '9999px',
-                        letterSpacing: '0.5px'
-                      }}
-                    >
-                      PENGUMUMAN SELEKSI BERKAS
+                <div className="announcement-card announcement-card-tidak-lolos">
+                  <div className="announcement-top-bar">
+                    <span className="announcement-badge-tidak-lolos">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <span>HASIL SELEKSI BERKAS</span>
+                    </span>
+                    <span className="announcement-tag announcement-tag-tidak-lolos">
+                      Tahap Administrasi 2026
                     </span>
                   </div>
 
-                  <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#991b1b', margin: '0 0 0.5rem' }}>
-                    Hasil Penilaian Administrasi Berkas
+                  <h3 className="announcement-title announcement-title-tidak-lolos">
+                    Terima Kasih, {formData.namaLengkap}
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#b91c1c', marginTop: '3px' }}>
+                      Hasil Penilaian Seleksi Berkas Administrasi
+                    </div>
                   </h3>
 
-                  <p style={{ fontSize: '0.925rem', color: '#7f1d1d', lineHeight: 1.6, margin: '0 0 1rem', maxWidth: '850px' }}>
+                  <p className="announcement-desc announcement-desc-tidak-lolos">
                     {selectionMessage || DEFAULT_MESSAGES.tidak_lolos}
                   </p>
 
-                  <div style={{ fontSize: '0.825rem', color: '#b91c1c' }}>
-                    Tetap pantau portal kegiatan kampus UIN Siber Syekh Nurjati Cirebon untuk kesempatan dan program pengembangan lainnya.
+                  <div className="announcement-steps-box announcement-steps-box-tidak-lolos">
+                    <div className="announcement-steps-header announcement-steps-header-tidak-lolos">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      <span>Apresiasi & Informasi Kampus:</span>
+                    </div>
+                    <div className="announcement-steps-list">
+                      <div className="announcement-step-item announcement-step-item-tidak-lolos">
+                        <span className="announcement-step-num announcement-step-num-tidak-lolos">1</span>
+                        <span>Apresiasi setinggi-tingginya atas antusiasme dan partisipasi aktif Anda dalam seleksi Duta Kampus 2026.</span>
+                      </div>
+                      <div className="announcement-step-item announcement-step-item-tidak-lolos">
+                        <span className="announcement-step-num announcement-step-num-tidak-lolos">2</span>
+                        <span>Terus asah potensi kepemimpinan dan dedikasi akademik melalui berbagai organisasi di lingkungan kampus.</span>
+                      </div>
+                      <div className="announcement-step-item announcement-step-item-tidak-lolos">
+                        <span className="announcement-step-num announcement-step-num-tidak-lolos">3</span>
+                        <span>Tetap pantau portal kegiatan UIN Siber Syekh Nurjati Cirebon untuk kesempatan dan program institusi berikutnya.</span>
+                      </div>
+                    </div>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('riwayat')}
+                    className="btn btn-outline-gold announcement-btn"
+                  >
+                    <span>Cek Riwayat Dokumen</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
                 </div>
               )}
 
@@ -1277,21 +1307,23 @@ export default function UserDashboard({ user, onLogout }) {
 
               {/* Status Banner */}
               <div
+                className={`announcement-card ${
+                  selectionStage === 'lolos'
+                    ? 'announcement-card-lolos'
+                    : selectionStage === 'tidak_lolos'
+                    ? 'announcement-card-tidak-lolos'
+                    : ''
+                }`}
                 style={{
                   background: selectionStage === 'lolos' 
-                    ? '#f0fdf4' 
+                    ? undefined 
                     : selectionStage === 'tidak_lolos' 
-                    ? '#fef2f2' 
+                    ? undefined 
                     : isSubmitted ? '#fffbeb' : '#f8fafc',
-                  border: `1.5px solid ${
-                    selectionStage === 'lolos' 
-                      ? '#86efac' 
-                      : selectionStage === 'tidak_lolos' 
-                      ? '#fecaca' 
-                      : isSubmitted ? '#fde68a' : '#e2e8f0'
-                  }`,
+                  border: selectionStage === 'lolos' || selectionStage === 'tidak_lolos'
+                    ? undefined
+                    : `1.5px solid ${isSubmitted ? '#fde68a' : '#e2e8f0'}`,
                   borderRadius: '16px',
-                  padding: '1.75rem',
                   boxShadow: 'var(--shadow-sm)'
                 }}
               >

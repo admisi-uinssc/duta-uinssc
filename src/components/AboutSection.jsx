@@ -67,12 +67,12 @@ export default function AboutSection() {
           <div className="about-visual">
             <div className="about-img-wrap" style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', position: 'relative' }}>
               <Image
-                src={aboutData.img || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80'}
+                src={aboutData.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'}
                 alt="Program Duta Kampus UIN SSC"
                 loading="lazy"
                 fill
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                fallbackSrc="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80"
+                fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
               />
               <div className="about-img-accent" style={{ background: 'var(--navy)', color: '#fff', padding: '12px 18px', borderRadius: '10px', zIndex: 2 }}>
                 <strong style={{ color: 'var(--gold)' }}>{aboutData.badgeYear || '2026'}</strong>

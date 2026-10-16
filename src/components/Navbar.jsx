@@ -39,8 +39,11 @@ export default function Navbar() {
         <Link href="/" className="nav-logo">
           <Image src="/assets/logo-circle.png" alt="Logo" width={38} height={38} style={{ filter: 'drop-shadow(0 0 8px rgba(196,158,89,0.35))', height: 38, width: 'auto', borderRadius: '50%' }} />
           <div className="nav-logo-text">
-            <span className="nav-logo-title">Duta Kampus</span>
-            <span className="nav-logo-sub">UIN Siber Syekh Nurjati Cirebon</span>
+            <span className="nav-logo-title desktop-only">Duta Kampus</span>
+            <span className="nav-logo-title mobile-only" style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '0.4px' }}>
+              <span style={{ color: 'var(--gold)', fontWeight: 800 }}>PADUKA</span> <span style={{ opacity: 0.4, fontWeight: 400 }}>|</span> dutauinssc
+            </span>
+            <span className="nav-logo-sub desktop-only">UIN Siber Syekh Nurjati Cirebon</span>
           </div>
         </Link>
 

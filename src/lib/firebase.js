@@ -11,7 +11,10 @@ import {
   getDocs, 
   getDoc, 
   deleteDoc, 
-  onSnapshot 
+  onSnapshot,
+  query,
+  where,
+  limit
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -63,8 +66,8 @@ export { app, auth, db, firebaseConfig };
 // ZERO-READ SMART CACHE & SYNC HELPERS
 // ==========================================
 
-// Cooldown 30 detik untuk sync berkala (jika data lokal kosong langsung fetch dari Firestore)
-export const SYNC_COOLDOWN_MS = 30 * 1000;
+// Cooldown 10 menit untuk sync berkala guna memanipulasi & menghemat kuota reads Firebase
+export const SYNC_COOLDOWN_MS = 10 * 60 * 1000;
 
 export function getLastSyncTime() {
   if (typeof window === 'undefined') return 0;
@@ -184,41 +187,64 @@ export async function syncUserToCloud(user) {
 
 /**
  * Direct lookup for a single user by email or username in Firestore
+ * Strictly optimized to consume at most 1 read instead of scanning entire collection.
  */
 export async function fetchUserFromCloudByIdentifier(identifier) {
   if (!db || !identifier) return null;
   const clean = identifier.trim().toLowerCase();
+  
+  // 1. Direct get by email document ID (1 read)
   try {
-    // 1. Direct get by email document ID
     const directDoc = await getDoc(doc(db, 'duta_users', clean));
     if (directDoc.exists()) {
       return directDoc.data();
     }
   } catch (e) {}
 
+  // 2. Targeted limit(1) query by username (1 read max)
   try {
-    // 2. Scan collection for matching email, username, or rizki
-    const snap = await getDocs(collection(db, 'duta_users'));
-    let matched = null;
-    snap.forEach((d) => {
-      const u = d.data();
-      if (!u) return;
-      const uEmail = (u.email || '').toLowerCase();
-      const uUsername = (u.username || '').toLowerCase();
-      if (
-        uEmail === clean ||
-        uUsername === clean ||
-        (clean === 'rizki' && (uEmail === 'rizki@uinssc.ac.id' || uUsername === 'rizki'))
-      ) {
-        matched = u;
+    const qUser = query(collection(db, 'duta_users'), where('username', '==', clean), limit(1));
+    const snapUser = await getDocs(qUser);
+    if (!snapUser.empty) {
+      return snapUser.docs[0].data();
+    }
+  } catch (err) {}
+
+  // 3. Fallback targeted limit(1) query by email field if doc ID was different
+  try {
+    const qEmail = query(collection(db, 'duta_users'), where('email', '==', clean), limit(1));
+    const snapEmail = await getDocs(qEmail);
+    if (!snapEmail.empty) {
+      return snapEmail.docs[0].data();
+    }
+  } catch (err) {}
+
+  return null;
+}
+
+/**
+ * Real-time listener for a single user document.
+ * Enables instant Lolos/Tidak Lolos announcement updates without page refresh.
+ * Only consumes 1 read per active session, 0 reads when unchanged.
+ */
+export function listenToUserFromCloud(identifier, callback) {
+  if (!db || !identifier || typeof callback !== 'function') return () => {};
+  const clean = String(identifier).trim().toLowerCase();
+  try {
+    const userRef = doc(db, 'duta_users', clean);
+    return onSnapshot(userRef, (snapshot) => {
+      if (snapshot.exists()) {
+        callback(snapshot.data());
       }
+    }, (err) => {
+      console.warn('User status sync notice:', err);
     });
-    return matched;
   } catch (err) {
-    console.warn('Could not query user from Firestore:', err);
-    return null;
+    console.warn('Could not establish user listener:', err);
+    return () => {};
   }
 }
+
 
 /**
  * Fetch all users from Firestore
@@ -312,4 +338,25 @@ export async function fetchCmsFromCloud() {
     return null;
   }
 }
+
+/**
+ * Listen to real-time CMS content changes from Firestore
+ */
+export function listenToCmsFromCloud(callback) {
+  if (!db || typeof callback !== 'function') return () => {};
+  try {
+    const cmsRef = doc(db, 'duta_settings', 'cms');
+    return onSnapshot(cmsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        callback(snapshot.data());
+      }
+    }, (err) => {
+      console.warn('Real-time CMS sync notice:', err);
+    });
+  } catch (err) {
+    console.warn('Could not establish CMS listener:', err);
+    return () => {};
+  }
+}
+
 

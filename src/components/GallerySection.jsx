@@ -33,7 +33,7 @@ export default function GallerySection() {
                 alt={item.caption || `Gallery ${idx + 1}`} 
                 loading="lazy" 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                fallbackSrc="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=800&q=80"
+                fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
               />
               {item.caption && (
                 <div className="gallery-caption">

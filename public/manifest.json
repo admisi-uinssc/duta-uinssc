@@ -1,7 +1,7 @@
 {
-  "name": "Duta Kampus UIN Siber Cirebon 2026",
-  "short_name": "Duta UINSSC",
-  "description": "Aplikasi Resmi Pemilihan Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026",
+  "name": "PADUKA | dutauinssc",
+  "short_name": "PADUKA",
+  "description": "PADUKA - Portal Aplikasi Duta Kampus UIN Siber Syekh Nurjati Cirebon",
   "start_url": "/",
   "id": "/",
   "display": "standalone",

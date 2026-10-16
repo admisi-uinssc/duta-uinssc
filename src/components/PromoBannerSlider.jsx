@@ -96,11 +96,11 @@ export default function PromoBannerSlider() {
             >
               <div className="promo-image-wrapper" style={{ position: 'relative' }}>
                 <Image 
-                  src={banner.img || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&h=400&q=80'} 
+                  src={banner.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'} 
                   alt={banner.title || 'Promo Banner Duta Kampus'} 
                   fill 
                   style={{ objectFit: 'cover' }}
-                  fallbackSrc="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&h=400&q=80"
+                  fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
                 />
                 {(banner.title || banner.subtitle) && (
                   <div 

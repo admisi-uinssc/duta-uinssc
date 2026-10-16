@@ -209,6 +209,7 @@
 @media (max-width: 768px) {
   .desktop-only { display: none !important; }
   .mobile-only { display: block !important; }
+  span.mobile-only { display: inline-block !important; }
 
   .navbar {
     display: flex !important;

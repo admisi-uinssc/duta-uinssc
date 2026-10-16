@@ -33,13 +33,49 @@ export default function ProfilDutaPage() {
             {ambassadors.map((duta) => (
               <div key={duta.id} className="ambassador-card">
                 <div className="ambassador-img-wrapper" style={{ position: 'relative' }}>
-                  <Image 
-                    src={duta.img || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=600&q=80'} 
-                    alt={duta.name} 
-                    fill 
-                    style={{ objectFit: 'cover' }} 
-                    fallbackSrc="https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=600&q=80"
-                  />
+                  {duta.img && !duta.img.includes('unsplash.com') ? (
+                    <Image 
+                      src={duta.img} 
+                      alt={duta.name} 
+                      fill 
+                      style={{ objectFit: 'cover' }} 
+                      fallbackSrc="/assets/logo-circle.png"
+                    />
+                  ) : (
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      background: 'linear-gradient(135deg, #16324A 0%, #0d1e2d 100%)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px'
+                    }}>
+                      <div style={{
+                        width: '64px',
+                        height: '64px',
+                        borderRadius: '50%',
+                        background: 'rgba(196, 158, 89, 0.15)',
+                        border: '2px solid var(--gold)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--gold)',
+                        fontWeight: 800,
+                        fontSize: '1.25rem',
+                        letterSpacing: '1px'
+                      }}>
+                        {duta.name ? duta.name.split(' ').slice(0, 2).map(n => n[0]).join('') : 'DK'}
+                      </div>
+                      <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                        Duta Kampus UINSSC
+                      </span>
+                    </div>
+                  )}
                   {duta.faculty && (
                     <div className="ambassador-badge">
                       {duta.faculty}

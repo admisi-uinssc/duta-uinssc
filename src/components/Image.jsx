@@ -53,6 +53,11 @@ export function formatImageUrl(url) {
   const trimmed = url.trim();
   if (!trimmed) return '';
 
+  // Discard any residual Unsplash mock images so dummy photos never flash on screen
+  if (trimmed.includes('unsplash.com')) {
+    return '/assets/logo-circle.png';
+  }
+
   // Local asset or data URI
   if (trimmed.startsWith('/') || trimmed.startsWith('data:') || trimmed.startsWith('blob:')) {
     return trimmed;
@@ -108,8 +113,13 @@ export default function Image({
     }
 
     // If all candidates failed or not drive, try user-provided fallbackSrc
-    if (fallbackSrc && imgSrc !== fallbackSrc) {
+    if (fallbackSrc && imgSrc !== fallbackSrc && !fallbackSrc.includes('unsplash.com')) {
       setImgSrc(fallbackSrc);
+      return;
+    }
+
+    if (imgSrc !== '/assets/logo-circle.png') {
+      setImgSrc('/assets/logo-circle.png');
       return;
     }
 

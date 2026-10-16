@@ -35,15 +35,17 @@ export default function App() {
   const { pathname } = useLocation();
   const hideMobileNav = pathname === '/admin' || pathname === '/profil' || pathname === '/profil/';
 
-  // Automatic Cloud Backend Sync (Source of Truth)
+  // Automatic Cloud Backend Sync: Only execute on /admin to prevent exhausting Firestore reads on public visitors
   useEffect(() => {
-    try {
-      const rawUsers = localStorage.getItem('dutauinssc_users');
-      const rawApps = localStorage.getItem('dutauinssc_pendaftar');
-      const isMissing = !rawUsers || rawUsers === '[]' || !rawApps || rawApps === '[]';
-      smartSyncAll(isMissing).catch(() => {});
-    } catch (e) {}
-  }, []);
+    if (pathname && pathname.startsWith('/admin')) {
+      try {
+        const rawUsers = localStorage.getItem('dutauinssc_users');
+        const rawApps = localStorage.getItem('dutauinssc_pendaftar');
+        const isMissing = !rawUsers || rawUsers === '[]' || !rawApps || rawApps === '[]';
+        smartSyncAll(isMissing).catch(() => {});
+      } catch (e) {}
+    }
+  }, [pathname]);
 
   return (
     <>

@@ -60,7 +60,7 @@ export const Auth = {
     }
   },
   
-  saveUsers: (users) => {
+  saveUsers: (users, specificUserToSync = null) => {
     if (typeof window !== 'undefined') {
       const list = Array.isArray(users) ? users : [];
       const map = new Map();
@@ -80,8 +80,13 @@ export const Auth = {
         window.dispatchEvent(new CustomEvent('users-updated', { detail: deduped }));
       } catch(e) {}
       
-      // Async sync to Firebase Firestore (Writes only: 1 write, 0 reads)
-      deduped.forEach(u => syncUserToCloud(u));
+      // Async sync to Firebase Firestore: target only modified user to prevent quota exhaustion
+      if (specificUserToSync) {
+        syncUserToCloud(specificUserToSync);
+      } else {
+        const recent = deduped.slice(-2);
+        recent.forEach(u => syncUserToCloud(u));
+      }
     }
   },
 

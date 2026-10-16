@@ -46,7 +46,7 @@ export default function AboutSection() {
           <div className="about-visual">
             <div className="about-img-wrap" style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.06)' }}>
               <img
-                src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80"
+                src="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
                 alt="Duta Kampus UIN SSC"
                 loading="lazy"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}

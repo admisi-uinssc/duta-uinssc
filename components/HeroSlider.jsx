@@ -64,7 +64,7 @@ export default function HeroSlider() {
         <div key={slide.id || idx} className={`slide ${idx === current ? 'active' : ''}`}>
           <img
             className="slide-img"
-            src={slide.img || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1920&q=80'}
+            src={slide.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'}
             alt={`Slide ${idx + 1}`}
             loading={idx === 0 ? 'eager' : 'lazy'}
           />

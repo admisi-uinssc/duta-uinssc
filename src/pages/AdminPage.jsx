@@ -259,7 +259,7 @@ export default function AdminPage() {
       allDb[dbIdx].selectionMessage = finalMsg;
       allDb[dbIdx].status = stage === 'lolos' ? 'diterima' : stage === 'tidak_lolos' ? 'ditolak' : 'pending';
       allDb[dbIdx].updatedAt = new Date().toISOString();
-      DB.save(allDb);
+      DB.save(allDb, allDb[dbIdx]);
     }
 
     // Sync to Auth Users
@@ -269,7 +269,8 @@ export default function AdminPage() {
       allUsers[userIdx].selectionStage = stage;
       allUsers[userIdx].selectionMessage = finalMsg;
       allUsers[userIdx].status = stage === 'lolos' ? 'Lolos Seleksi Berkas' : stage === 'tidak_lolos' ? 'Tidak Lolos' : 'Menunggu Review';
-      Auth.saveUsers(allUsers);
+      allUsers[userIdx].updatedAt = new Date().toISOString();
+      Auth.saveUsers(allUsers, allUsers[userIdx]);
     }
 
     refresh();
@@ -304,7 +305,7 @@ export default function AdminPage() {
         ...(cmsData.slider || []),
         {
           id: Date.now(),
-          img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1920&q=80',
+          img: 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png',
           tag: 'Pendaftaran 2026',
           title1: 'Judul Baru',
           title2: 'Sorotan Emas',
@@ -352,7 +353,7 @@ export default function AdminPage() {
           id: Date.now(),
           title: 'Judul Banner Baru',
           subtitle: 'Informasi atau ajakan singkat',
-          img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&h=400&q=80',
+          img: 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png',
           link: '/login'
         }
       ]
@@ -434,7 +435,7 @@ export default function AdminPage() {
     const newData = { ...cmsData };
     newData.gallery.push({ 
       id: Date.now(), 
-      img: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=800&q=80', 
+      img: 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png', 
       caption: 'Kegiatan Duta Kampus' 
     });
     setCmsData(newData);
@@ -460,7 +461,7 @@ export default function AdminPage() {
   // CMS About Section Helper
   const updateAbout = (field, val) => {
     const defaultAbout = {
-      img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80',
+      img: 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png',
       badgeYear: '2026',
       badgeText: 'Pemilihan Resmi',
       title: 'Program Duta Kampus',
@@ -510,7 +511,7 @@ export default function AdminPage() {
     };
 
     users.unshift(created);
-    Auth.saveUsers(users);
+    Auth.saveUsers(users, created);
 
     // Also sync to applicant DB
     DB.add({
@@ -563,7 +564,7 @@ export default function AdminPage() {
     const cleanEmail = newApplicantForm.email.trim().toLowerCase();
     const existIdx = users.findIndex(u => u.email.toLowerCase() === cleanEmail);
     if (existIdx === -1) {
-      users.unshift({
+      const newUser = {
         id: created.id,
         namaLengkap: newApplicantForm.namaLengkap,
         name: newApplicantForm.namaLengkap,
@@ -576,8 +577,9 @@ export default function AdminPage() {
         selectionStage: newApplicantForm.selectionStage,
         selectionMessage: created.selectionMessage,
         createdAt: new Date().toISOString()
-      });
-      Auth.saveUsers(users);
+      };
+      users.unshift(newUser);
+      Auth.saveUsers(users, newUser);
     }
 
     refresh();
@@ -1939,7 +1941,7 @@ export default function AdminPage() {
                     <label style={{ fontWeight: 700, display: 'block', marginBottom: '0.75rem' }}>Pratinjau Foto & Lencana Langsung</label>
                     <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.08)', aspectRatio: '4/5', maxWidth: '360px', background: 'var(--bg-alt)' }}>
                       <Image 
-                        src={cmsData.about?.img || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80'} 
+                        src={cmsData.about?.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'} 
                         alt="Pratinjau Program"
                         fill
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}

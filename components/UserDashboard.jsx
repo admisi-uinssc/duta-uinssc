@@ -4,12 +4,16 @@ import Image from './Image';
 import { Auth } from '../lib/auth';
 import { DB, formatDateTime } from '../lib/db';
 import { DOSSIER_DOCUMENTS, evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
+import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
+import { listenToUserFromCloud } from '../lib/firebase';
+import DocumentPreviewModal from './DocumentPreviewModal';
 
 export default function UserDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('beranda'); // 'beranda' | 'pendaftaran' | 'riwayat'
   const [saveNotice, setSaveNotice] = useState('');
   const [formAlert, setFormAlert] = useState({ show: false, message: '', type: 'info' });
   const [currentUser, setCurrentUser] = useState(user);
+  const [previewModal, setPreviewModal] = useState({ isOpen: false, docKey: '', docLabel: '', docValue: null });
 
   const triggerAlert = (message, type = 'info') => {
     setFormAlert({ show: true, message, type });
@@ -49,7 +53,7 @@ export default function UserDashboard({ user, onLogout }) {
 
   const [isSubmitted, setIsSubmitted] = useState(user.berkasSubmitted || false);
 
-  // Sync state from storage to keep live with admin approvals
+  // Sync state from storage and live cloud for instant Lolos/Tidak Lolos announcement updates
   useEffect(() => {
     const refreshUserData = () => {
       const users = Auth.getUsers();
@@ -63,7 +67,7 @@ export default function UserDashboard({ user, onLogout }) {
       const existingInDb = DB.getAll().find(
         (item) => (item.email || '').toLowerCase() === (user.email || '').toLowerCase()
       );
-      if (existingInDb) {
+      if (existingInDb && !existingInDb.isAccountApplication && existingInDb.berkasSubmitted) {
         setIsSubmitted(true);
         setFormData(prev => ({
           ...prev,
@@ -74,7 +78,29 @@ export default function UserDashboard({ user, onLogout }) {
 
     refreshUserData();
     window.addEventListener('storage', refreshUserData);
-    return () => window.removeEventListener('storage', refreshUserData);
+
+    // Live single-user Firestore listener: instant result updates with 0 wasteful reads
+    const unsubscribeCloud = listenToUserFromCloud(user.email, (cloudUser) => {
+      if (cloudUser) {
+        setCurrentUser(prev => ({ ...prev, ...cloudUser }));
+        if (cloudUser.berkasSubmitted) {
+          setIsSubmitted(true);
+        }
+        try {
+          const allUsers = Auth.getUsers();
+          const idx = allUsers.findIndex(u => (u.email || '').toLowerCase() === (user.email || '').toLowerCase());
+          if (idx !== -1) {
+            allUsers[idx] = { ...allUsers[idx], ...cloudUser };
+            localStorage.setItem('dutauinssc_users', JSON.stringify(allUsers));
+          }
+        } catch (e) {}
+      }
+    });
+
+    return () => {
+      window.removeEventListener('storage', refreshUserData);
+      if (typeof unsubscribeCloud === 'function') unsubscribeCloud();
+    };
   }, [user.email]);
 
   const handleInputChange = (e) => {
@@ -82,16 +108,40 @@ export default function UserDashboard({ user, onLogout }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileUpload = (docKey, file) => {
+  const handleFileUpload = async (docKey, file, docLabel) => {
     if (!file) return;
-    const fileSummary = `${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
-    setFormData(prev => ({ ...prev, [docKey]: fileSummary }));
-    setSaveNotice(`Berkas ${file.name} berhasil dilampirkan.`);
-    setTimeout(() => setSaveNotice(''), 3000);
+    setSaveNotice(`Mengunggah berkas ${file.name}...`);
+    try {
+      const docData = await DriveStorage.uploadFile(file, {
+        applicantName: formData.namaLengkap,
+        applicantNim: formData.nim,
+        applicantEmail: user.email,
+        docKey,
+        docLabel
+      });
+
+      setFormData(prev => ({ ...prev, [docKey]: docData }));
+      DriveStorage.saveDocument(user.email, docKey, docData);
+      setSaveNotice(`Berkas ${file.name} berhasil disimpan.`);
+    } catch (err) {
+      const errMsg = 'Kendala unggah berkas: ' + (err.message || 'Gagal menyimpan dokumen.');
+      setSaveNotice({ type: 'error', message: errMsg });
+      triggerAlert(errMsg, 'danger');
+    } finally {
+      setTimeout(() => setSaveNotice(''), 4500);
+    }
   };
 
   const handleRemoveFile = (docKey) => {
-    setFormData(prev => ({ ...prev, [docKey]: '' }));
+    const docData = normalizeDocument(formData[docKey]);
+    setFormData(prev => {
+      const next = { ...prev };
+      delete next[docKey];
+      return next;
+    });
+    DriveStorage.deleteDocument(user.email, docKey, docData?.driveId);
+    setSaveNotice('Berkas berhasil dihapus.');
+    setTimeout(() => setSaveNotice(''), 3000);
   };
 
   const handleSaveDraft = (e) => {
@@ -103,14 +153,40 @@ export default function UserDashboard({ user, onLogout }) {
       Auth.saveUsers(users);
       setCurrentUser(users[idx]);
     }
+
+    // Sync immediately to DB so Admin sees semester and all draft updates right away
+    try {
+      const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
+      if (existing) {
+        DB.save(DB.getAll().map(i => (i.email || '').toLowerCase() === user.email.toLowerCase() ? {
+          ...i,
+          ...formData,
+          semester: formData.semester,
+          prodi: formData.jurusan || formData.fakultas,
+          updatedAt: new Date().toISOString()
+        } : i));
+      } else {
+        DB.add({
+          ...formData,
+          email: user.email,
+          semester: formData.semester,
+          prodi: formData.jurusan || formData.fakultas,
+          status: 'pending',
+          selectionStage: 'review',
+        });
+      }
+    } catch (err) {
+      console.error('Error syncing draft to DB:', err);
+    }
+
     setSaveNotice('Draf formulir dan dokumen pendaftaran berhasil disimpan.');
     setTimeout(() => setSaveNotice(''), 3500);
   };
 
   const handleSubmitApplication = (e) => {
     e.preventDefault();
-    if (!formData.ipk || !formData.motivasi) {
-      triggerAlert('Mohon lengkapi data nilai IPK dan esai motivasi sebelum mengirim pendaftaran.', 'danger');
+    if (!formData.ipk) {
+      triggerAlert('Mohon lengkapi data nilai IPK sebelum mengirim pendaftaran.', 'danger');
       return;
     }
 
@@ -133,9 +209,10 @@ export default function UserDashboard({ user, onLogout }) {
     // Save or update in DB
     const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
     if (existing) {
-      DB.save(DB.getAll().map(i => i.email.toLowerCase() === user.email.toLowerCase() ? {
+      DB.save(DB.getAll().map(i => (i.email || '').toLowerCase() === user.email.toLowerCase() ? {
         ...i,
         ...formData,
+        semester: formData.semester,
         prodi: formData.jurusan || formData.fakultas,
         status: 'pending',
         selectionStage: 'review',
@@ -145,6 +222,7 @@ export default function UserDashboard({ user, onLogout }) {
       DB.add({
         ...formData,
         email: user.email,
+        semester: formData.semester,
         prodi: formData.jurusan || formData.fakultas,
         status: 'pending',
         selectionStage: 'review',
@@ -158,6 +236,7 @@ export default function UserDashboard({ user, onLogout }) {
       users[idx] = { 
         ...users[idx], 
         ...formData, 
+        semester: formData.semester,
         berkasSubmitted: true, 
         selectionStage: users[idx].selectionStage || 'review',
         status: 'Tahap Seleksi Berkas' 
@@ -179,7 +258,21 @@ export default function UserDashboard({ user, onLogout }) {
   return (
     <div className="user-dashboard-container">
       {/* SIDEBAR (Desktop) */}
-      <aside className="user-dashboard-sidebar">
+      <aside 
+        className="user-dashboard-sidebar"
+        style={{
+          height: '100vh',
+          maxHeight: '100vh',
+          overflow: 'hidden',
+          position: 'sticky',
+          top: 0,
+          left: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          flexShrink: 0
+        }}
+      >
         {/* Brand Header */}
         <div
           style={{
@@ -364,13 +457,10 @@ export default function UserDashboard({ user, onLogout }) {
         >
           <div>
             <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#16324A', margin: 0 }}>
-              {activeTab === 'beranda' && 'Beranda Peserta'}
-              {activeTab === 'pendaftaran' && 'Pendaftaran Duta & Kelengkapan Berkas'}
-              {activeTab === 'riwayat' && 'Riwayat & Tahapan Seleksi'}
+              {activeTab === 'beranda' && 'Beranda'}
+              {activeTab === 'pendaftaran' && 'Pendaftaran'}
+              {activeTab === 'riwayat' && 'Riwayat'}
             </h2>
-            <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '2px' }}>
-              Universitas Islam Negeri Siber Syekh Nurjati Cirebon
-            </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -423,11 +513,11 @@ export default function UserDashboard({ user, onLogout }) {
               style={{ borderRadius: '50%' }}
             />
             <div>
-              <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#ffffff', lineHeight: 1.2 }}>
-                Portal Calon Duta
+              <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.2, letterSpacing: '0.4px' }}>
+                <span style={{ color: 'var(--gold)', fontWeight: 800 }}>PADUKA</span> <span style={{ opacity: 0.45, fontWeight: 400 }}>|</span> dutauinssc
               </div>
-              <div style={{ fontSize: '0.68rem', color: '#C49E59' }}>
-                UIN SSC 2026
+              <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.75)' }}>
+                Portal Peserta Duta Kampus
               </div>
             </div>
           </div>
@@ -451,29 +541,42 @@ export default function UserDashboard({ user, onLogout }) {
         </div>
 
         {/* TOAST / NOTICE */}
-        {saveNotice && (
-          <div
-            style={{
-              position: 'fixed',
-              top: '1rem',
-              right: '1rem',
-              zIndex: 9999,
-              background: '#16324A',
-              color: '#ffffff',
-              padding: '0.875rem 1.25rem',
-              borderRadius: '8px',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-              borderLeft: '4px solid #C49E59',
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>{saveNotice}</span>
-          </div>
-        )}
+        {saveNotice && (() => {
+          const isErr = typeof saveNotice === 'object' 
+            ? (saveNotice.type === 'error' || saveNotice.type === 'danger')
+            : (saveNotice.toLowerCase().includes('gagal') || saveNotice.toLowerCase().includes('kendala'));
+          const noticeMsg = typeof saveNotice === 'object' ? saveNotice.message : saveNotice;
+
+          return (
+            <div
+              style={{
+                position: 'fixed',
+                top: '1.25rem',
+                right: '1.25rem',
+                zIndex: 9999,
+                background: '#16324A',
+                color: '#ffffff',
+                padding: '0.9rem 1.35rem',
+                borderRadius: '8px',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+                borderLeft: `4px solid ${isErr ? '#ef4444' : '#C49E59'}`,
+                fontSize: '0.86rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.65rem',
+                maxWidth: '440px',
+                lineHeight: 1.45
+              }}
+            >
+              {isErr ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"/></svg>
+              )}
+              <span style={{ fontWeight: 500 }}>{noticeMsg}</span>
+            </div>
+          );
+        })()}
 
         {/* TAB CONTENTS (FULL WIDTH ON DESKTOP, COMFORTABLE ON HP) */}
         <main style={{ padding: '1.75rem 2.5rem', flex: 1, width: '100%', boxSizing: 'border-box' }}>
@@ -483,61 +586,53 @@ export default function UserDashboard({ user, onLogout }) {
               
               {/* === HASIL KELULUSAN SELEKSI BERKAS (JIKA ADMIN ACC / TOLAK) === */}
               {selectionStage === 'lolos' && (
-                <div
-                  style={{
-                    background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)',
-                    border: '2px solid #86efac',
-                    borderRadius: '16px',
-                    padding: '2rem',
-                    boxShadow: '0 8px 24px rgba(22, 101, 52, 0.08)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                    <span
-                      style={{
-                        background: '#166534',
-                        color: '#ffffff',
-                        fontSize: '0.75rem',
-                        fontWeight: 800,
-                        padding: '4px 12px',
-                        borderRadius: '9999px',
-                        letterSpacing: '0.5px',
-                        textTransform: 'uppercase'
-                      }}
-                    >
-                      LOLOS SELEKSI BERKAS
+                <div className="announcement-card announcement-card-lolos">
+                  <div className="announcement-top-bar">
+                    <span className="announcement-badge-lolos">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>LOLOS SELEKSI BERKAS</span>
                     </span>
-                    <span style={{ fontSize: '0.8rem', color: '#15803d', fontWeight: 600 }}>
-                      Tahap Administrasi
+                    <span className="announcement-tag announcement-tag-lolos">
+                      Tahap Administrasi 2026
                     </span>
                   </div>
 
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#14532d', margin: '0 0 0.75rem' }}>
-                    Selamat, {formData.namaLengkap}! Anda Dinyatakan Lolos Seleksi Berkas
+                  <h3 className="announcement-title announcement-title-lolos">
+                    Selamat, {formData.namaLengkap}!
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#15803d', marginTop: '3px' }}>
+                      Anda Dinyatakan Lolos Seleksi Berkas Administrasi
+                    </div>
                   </h3>
 
-                  <p style={{ fontSize: '0.95rem', color: '#166534', lineHeight: 1.6, margin: '0 0 1.5rem', maxWidth: '850px' }}>
+                  <p className="announcement-desc announcement-desc-lolos">
                     {selectionMessage || DEFAULT_MESSAGES.lolos}
                   </p>
 
-                  <div style={{ background: '#ffffff', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '1rem 1.25rem', marginBottom: '1.5rem', maxWidth: '650px' }}>
-                    <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#14532d', marginBottom: '0.35rem' }}>
-                      Petunjuk Tahapan Lanjutan:
+                  <div className="announcement-steps-box announcement-steps-box-lolos">
+                    <div className="announcement-steps-header announcement-steps-header-lolos">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                      <span>Petunjuk Tahapan Lanjutan:</span>
                     </div>
-                    <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.825rem', color: '#166534', lineHeight: 1.6 }}>
-                      <li>Bergabung ke grup koordinasi calon duta kampus melalui tautan yang dikirimkan ke WhatsApp Anda ({formData.noHp || 'kontak terdaftar'}).</li>
-                      <li>Persiapkan pakaian formal universitas (almamater) untuk sesi wawancara dan uji bakat.</li>
-                      <li>Pantau pembaruan jadwal pada menu Riwayat Pendaftaran.</li>
-                    </ul>
+                    <div className="announcement-steps-list">
+                      <div className="announcement-step-item announcement-step-item-lolos">
+                        <span className="announcement-step-num announcement-step-num-lolos">1</span>
+                        <span>Bergabung ke grup koordinasi calon duta melalui tautan WhatsApp yang dikirimkan ke <strong>{formData.noHp || 'kontak terdaftar'}</strong>.</span>
+                      </div>
+                      <div className="announcement-step-item announcement-step-item-lolos">
+                        <span className="announcement-step-num announcement-step-num-lolos">2</span>
+                        <span>Siapkan pakaian formal institusi (jas almamater) untuk rangkaian sesi wawancara dan uji bakat.</span>
+                      </div>
+                      <div className="announcement-step-item announcement-step-item-lolos">
+                        <span className="announcement-step-num announcement-step-num-lolos">3</span>
+                        <span>Pantau perkembangan linimasa resmi pada menu Riwayat Pendaftaran secara berkala.</span>
+                      </div>
+                    </div>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => setActiveTab('riwayat')}
-                    className="btn btn-gold"
-                    style={{ padding: '0.8rem 1.75rem', fontWeight: 600, fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                    className="btn btn-gold announcement-btn"
                   >
                     <span>Lihat Linimasa Lengkap</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -546,42 +641,57 @@ export default function UserDashboard({ user, onLogout }) {
               )}
 
               {selectionStage === 'tidak_lolos' && (
-                <div
-                  style={{
-                    background: '#fef2f2',
-                    border: '1.5px solid #fecaca',
-                    borderRadius: '16px',
-                    padding: '2rem',
-                    boxShadow: '0 4px 16px rgba(153, 27, 27, 0.05)'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                    <span
-                      style={{
-                        background: '#991b1b',
-                        color: '#ffffff',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        padding: '4px 12px',
-                        borderRadius: '9999px',
-                        letterSpacing: '0.5px'
-                      }}
-                    >
-                      PENGUMUMAN SELEKSI BERKAS
+                <div className="announcement-card announcement-card-tidak-lolos">
+                  <div className="announcement-top-bar">
+                    <span className="announcement-badge-tidak-lolos">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <span>HASIL SELEKSI BERKAS</span>
+                    </span>
+                    <span className="announcement-tag announcement-tag-tidak-lolos">
+                      Tahap Administrasi 2026
                     </span>
                   </div>
 
-                  <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#991b1b', margin: '0 0 0.5rem' }}>
-                    Hasil Penilaian Administrasi Berkas
+                  <h3 className="announcement-title announcement-title-tidak-lolos">
+                    Terima Kasih, {formData.namaLengkap}
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#b91c1c', marginTop: '3px' }}>
+                      Hasil Penilaian Seleksi Berkas Administrasi
+                    </div>
                   </h3>
 
-                  <p style={{ fontSize: '0.925rem', color: '#7f1d1d', lineHeight: 1.6, margin: '0 0 1rem', maxWidth: '850px' }}>
+                  <p className="announcement-desc announcement-desc-tidak-lolos">
                     {selectionMessage || DEFAULT_MESSAGES.tidak_lolos}
                   </p>
 
-                  <div style={{ fontSize: '0.825rem', color: '#b91c1c' }}>
-                    Tetap pantau portal kegiatan kampus UIN Siber Syekh Nurjati Cirebon untuk kesempatan dan program pengembangan lainnya.
+                  <div className="announcement-steps-box announcement-steps-box-tidak-lolos">
+                    <div className="announcement-steps-header announcement-steps-header-tidak-lolos">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      <span>Apresiasi & Informasi Kampus:</span>
+                    </div>
+                    <div className="announcement-steps-list">
+                      <div className="announcement-step-item announcement-step-item-tidak-lolos">
+                        <span className="announcement-step-num announcement-step-num-tidak-lolos">1</span>
+                        <span>Apresiasi setinggi-tingginya atas antusiasme dan partisipasi aktif Anda dalam seleksi Duta Kampus 2026.</span>
+                      </div>
+                      <div className="announcement-step-item announcement-step-item-tidak-lolos">
+                        <span className="announcement-step-num announcement-step-num-tidak-lolos">2</span>
+                        <span>Terus asah potensi kepemimpinan dan dedikasi akademik melalui berbagai organisasi di lingkungan kampus.</span>
+                      </div>
+                      <div className="announcement-step-item announcement-step-item-tidak-lolos">
+                        <span className="announcement-step-num announcement-step-num-tidak-lolos">3</span>
+                        <span>Tetap pantau portal kegiatan UIN Siber Syekh Nurjati Cirebon untuk kesempatan dan program institusi berikutnya.</span>
+                      </div>
+                    </div>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('riwayat')}
+                    className="btn btn-outline-gold announcement-btn"
+                  >
+                    <span>Cek Riwayat Dokumen</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
                 </div>
               )}
 
@@ -721,16 +831,13 @@ export default function UserDashboard({ user, onLogout }) {
             </div>
           )}
 
-          {/* TAB 2: PENDAFTARAN DUTA (FORM DENGAN SPACING RAPIH DI HP & FULL WIDTH DI DESKTOP) */}
+          {/* TAB 2: PENDAFTARAN DUTA */}
           {activeTab === 'pendaftaran' && (
             <div style={{ width: '100%', boxSizing: 'border-box' }}>
               <div style={{ marginBottom: '1.75rem' }}>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#16324A', margin: '0 0 0.35rem' }}>
-                  Formulir Pendaftaran & Berkas Calon Duta
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#16324A', margin: '0' }}>
+                  Formulir Pendaftaran
                 </h3>
-                <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>
-                  Lengkapi data profil dan berkas dokumen pendukung Anda secara presisi untuk proses penilaian seleksi administrasi.
-                </p>
               </div>
 
               {/* Status Bar */}
@@ -841,7 +948,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.namaLengkap}
                         onChange={handleInputChange}
                         required
-                        placeholder="Contoh: Rizki Pratama Putra"
+                        placeholder="Nama lengkap"
                         style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
@@ -856,7 +963,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.nim}
                         onChange={handleInputChange}
                         required
-                        placeholder="Contoh: 2308103012"
+                        placeholder="NIM"
                         style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
@@ -871,7 +978,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.fakultas}
                         onChange={handleInputChange}
                         required
-                        placeholder="Contoh: Fakultas Ilmu Tarbiyah dan Keguruan (FITK)"
+                        placeholder="Fakultas"
                         style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
@@ -886,7 +993,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.jurusan}
                         onChange={handleInputChange}
                         required
-                        placeholder="Contoh: Tadris Bahasa Inggris"
+                        placeholder="Program studi"
                         style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
@@ -900,7 +1007,7 @@ export default function UserDashboard({ user, onLogout }) {
                       2. Data Akademik & Kontak Aktif
                     </h4>
                     <p style={{ margin: 0, fontSize: '0.825rem', color: '#64748b' }}>
-                      Informasi semester, nilai IPK kumulatif, serta kontak WhatsApp yang dapat dihubungi panitia.
+                      Informasi semester, nilai IPK kumulatif, serta kontak WhatsApp aktif.
                     </p>
                   </div>
 
@@ -915,8 +1022,11 @@ export default function UserDashboard({ user, onLogout }) {
                         onChange={handleInputChange}
                         style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box', background: '#fff' }}
                       >
+                        <option value="1">Semester 1</option>
                         <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
                         <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
                         <option value="6">Semester 6</option>
                       </select>
                     </div>
@@ -928,7 +1038,7 @@ export default function UserDashboard({ user, onLogout }) {
                       <input
                         type="text"
                         name="ipk"
-                        placeholder="Contoh: 3.75 (skala 4.00)"
+                        placeholder="Contoh: 3.75"
                         value={formData.ipk}
                         onChange={handleInputChange}
                         required
@@ -943,7 +1053,7 @@ export default function UserDashboard({ user, onLogout }) {
                       <input
                         type="tel"
                         name="noHp"
-                        placeholder="Contoh: 081234567890"
+                        placeholder="Nomor WhatsApp"
                         value={formData.noHp}
                         onChange={handleInputChange}
                         required
@@ -953,12 +1063,12 @@ export default function UserDashboard({ user, onLogout }) {
 
                     <div>
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
-                        Alamat Domisili di Cirebon / Sekitarnya <span style={{ color: '#dc2626' }}>*</span>
+                        Alamat Domisili <span style={{ color: '#dc2626' }}>*</span>
                       </label>
                       <input
                         type="text"
                         name="alamat"
-                        placeholder="Contoh: Jl. Perjuangan No. 12, Kesambi, Kota Cirebon"
+                        placeholder="Alamat domisili"
                         value={formData.alamat}
                         onChange={handleInputChange}
                         required
@@ -968,72 +1078,15 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
                 </div>
 
-                {/* SECTION 3: PORTOFOLIO & MOTIVASI */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                  <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem' }}>
-                    <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
-                      3. Rekam Jejak, Prestasi & Motivasi
-                    </h4>
-                    <p style={{ margin: 0, fontSize: '0.825rem', color: '#64748b' }}>
-                      Sampaikan komitmen dan potensi Anda untuk mewakili almamater UIN Siber Cirebon.
-                    </p>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
-                        Prestasi Akademik / Non-Akademik (Opsional)
-                      </label>
-                      <textarea
-                        name="prestasi"
-                        rows={2}
-                        placeholder="Contoh: Juara 1 Debat Bahasa Inggris Tingkat Universitas 2025, Finalis Karya Tulis Ilmiah Al-Quran"
-                        value={formData.prestasi}
-                        onChange={handleInputChange}
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box', fontFamily: 'inherit', resize: 'vertical' }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
-                        Pengalaman Organisasi / Kepanitiaan (Opsional)
-                      </label>
-                      <textarea
-                        name="organisasi"
-                        rows={2}
-                        placeholder="Contoh: Staf Departemen Humas DEMA UIN SSC, Anggota Lembaga Pers Mahasiswa (LPM)"
-                        value={formData.organisasi}
-                        onChange={handleInputChange}
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box', fontFamily: 'inherit', resize: 'vertical' }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
-                        Esai Singkat Motivasi & Kontribusi Menjadi Duta Kampus <span style={{ color: '#dc2626' }}>*</span>
-                      </label>
-                      <textarea
-                        name="motivasi"
-                        rows={4}
-                        placeholder="Jelaskan alasan kuat Anda ingin menjadi Duta Kampus UIN Siber Syekh Nurjati Cirebon dan apa kontribusi nyata yang akan Anda berikan bagi universitas."
-                        value={formData.motivasi}
-                        onChange={handleInputChange}
-                        required
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box', fontFamily: 'inherit', resize: 'vertical' }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 4: 10 BERKAS DOKUMEN PERSYARATAN */}
+                {/* DOKUMEN PERSYARATAN */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                     <div>
                       <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
-                        4. Unggah 10 Dokumen Persyaratan
+                        3. Berkas Dokumen Persyaratan
                       </h4>
                       <p style={{ margin: 0, fontSize: '0.825rem', color: '#64748b' }}>
-                        Sesuai ketentuan resmi Pemilihan Duta Kampus UIN SSC 2026. Format yang didukung: PDF, JPG, PNG, ZIP.
+                        Lampirkan dokumen resmi persyaratan seleksi Pemilihan Duta Kampus 2026.
                       </p>
                     </div>
                     <span style={{ fontSize: '0.8rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: dossierStatus.isComplete ? '#dcfce7' : '#fef9c3', color: dossierStatus.isComplete ? '#166534' : '#854d0e' }}>
@@ -1045,8 +1098,9 @@ export default function UserDashboard({ user, onLogout }) {
                     {DOSSIER_DOCUMENTS.map((doc, idx) => {
                       const isSem1 = String(formData.semester || '').trim() === '1';
                       const isMandatory = doc.required || (doc.id === 'buktiDiterima' && isSem1);
-                      const isUploaded = Boolean(formData[doc.key]);
-                      const fileValue = formData[doc.key];
+                      const docData = normalizeDocument(formData[doc.key], doc.label);
+                      const isUploaded = Boolean(docData);
+                      const fileValue = docData ? docData.name : '';
 
                       return (
                         <div
@@ -1064,12 +1118,9 @@ export default function UserDashboard({ user, onLogout }) {
                         >
                           <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '0.4rem' }}>
-                              <span style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#64748b' }}>
-                                {doc.category}
-                              </span>
                               <span
                                 style={{
-                                  fontSize: '0.7rem',
+                                  fontSize: '0.72rem',
                                   fontWeight: 700,
                                   padding: '2px 8px',
                                   borderRadius: '4px',
@@ -1079,25 +1130,49 @@ export default function UserDashboard({ user, onLogout }) {
                               >
                                 {isMandatory ? 'Wajib' : doc.conditionalNote || 'Tidak Wajib'}
                               </span>
+                              <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                                {doc.formatLabel}
+                              </span>
                             </div>
 
                             <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#16324A', marginBottom: '0.25rem' }}>
                               {idx + 1}. {doc.label}
                             </div>
-                            <div style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.4, marginBottom: '0.5rem' }}>
+                            <div style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.4 }}>
                               {doc.sublabel}
-                            </div>
-                            <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
-                              Format: {doc.formatLabel}
                             </div>
                           </div>
 
                           <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
                             {isUploaded ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', maxWidth: '100%' }}>
-                                <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '170px' }}>
-                                  {fileValue}
-                                </span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', maxWidth: '100%', flexWrap: 'wrap' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setPreviewModal({
+                                    isOpen: true,
+                                    docKey: doc.key,
+                                    docLabel: doc.label,
+                                    docValue: formData[doc.key],
+                                    applicantEmailOrId: user.email,
+                                    applicantName: formData.namaLengkap
+                                  })}
+                                  style={{
+                                    background: '#dcfce7',
+                                    border: '1px solid #86efac',
+                                    color: '#166534',
+                                    cursor: 'pointer',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 700,
+                                    padding: '4px 10px',
+                                    borderRadius: '6px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px'
+                                  }}
+                                >
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                  Lihat / Pratinjau
+                                </button>
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveFile(doc.key)}
@@ -1121,31 +1196,58 @@ export default function UserDashboard({ user, onLogout }) {
                               </span>
                             )}
 
-                            <label
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '5px',
-                                padding: '6px 12px',
-                                borderRadius: '6px',
-                                border: '1px solid #cbd5e1',
-                                background: '#ffffff',
-                                fontSize: '0.78rem',
-                                fontWeight: 600,
-                                color: 'var(--navy)',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s'
-                              }}
-                            >
-                              <input
-                                type="file"
-                                accept={doc.fileTypes}
-                                style={{ display: 'none' }}
-                                onChange={(e) => handleFileUpload(doc.key, e.target.files[0])}
-                              />
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                              <span>{isUploaded ? 'Ganti File' : 'Pilih Berkas'}</span>
-                            </label>
+                            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                              <label
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '5px',
+                                  padding: '5px 10px',
+                                  borderRadius: '6px',
+                                  border: '1px solid #cbd5e1',
+                                  background: '#ffffff',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 600,
+                                  color: 'var(--navy)',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s'
+                                }}
+                              >
+                                <input
+                                  type="file"
+                                  accept={doc.fileTypes}
+                                  style={{ display: 'none' }}
+                                  onChange={(e) => handleFileUpload(doc.key, e.target.files[0], doc.label)}
+                                />
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                <span>{isUploaded ? 'Ganti File' : 'Pilih Berkas'}</span>
+                              </label>
+
+                              <button
+                                type="button"
+                                onClick={() => setPreviewModal({
+                                  isOpen: true,
+                                  docKey: doc.key,
+                                  docLabel: doc.label,
+                                  docValue: formData[doc.key],
+                                  applicantEmailOrId: user.email,
+                                  applicantName: formData.namaLengkap
+                                })}
+                                style={{
+                                  padding: '5px 8px',
+                                  borderRadius: '6px',
+                                  border: '1px solid #cbd5e1',
+                                  background: '#ffffff',
+                                  fontSize: '0.72rem',
+                                  color: 'var(--navy)',
+                                  cursor: 'pointer',
+                                  fontWeight: 600
+                                }}
+                                title="Tautkan Link Google Drive"
+                              >
+                                Tautan Drive
+                              </button>
+                            </div>
                           </div>
                         </div>
                       );
@@ -1205,21 +1307,23 @@ export default function UserDashboard({ user, onLogout }) {
 
               {/* Status Banner */}
               <div
+                className={`announcement-card ${
+                  selectionStage === 'lolos'
+                    ? 'announcement-card-lolos'
+                    : selectionStage === 'tidak_lolos'
+                    ? 'announcement-card-tidak-lolos'
+                    : ''
+                }`}
                 style={{
                   background: selectionStage === 'lolos' 
-                    ? '#f0fdf4' 
+                    ? undefined 
                     : selectionStage === 'tidak_lolos' 
-                    ? '#fef2f2' 
+                    ? undefined 
                     : isSubmitted ? '#fffbeb' : '#f8fafc',
-                  border: `1.5px solid ${
-                    selectionStage === 'lolos' 
-                      ? '#86efac' 
-                      : selectionStage === 'tidak_lolos' 
-                      ? '#fecaca' 
-                      : isSubmitted ? '#fde68a' : '#e2e8f0'
-                  }`,
+                  border: selectionStage === 'lolos' || selectionStage === 'tidak_lolos'
+                    ? undefined
+                    : `1.5px solid ${isSubmitted ? '#fde68a' : '#e2e8f0'}`,
                   borderRadius: '16px',
-                  padding: '1.75rem',
                   boxShadow: 'var(--shadow-sm)'
                 }}
               >
@@ -1465,6 +1569,29 @@ export default function UserDashboard({ user, onLogout }) {
           <span>Keluar</span>
         </button>
       </nav>
+
+      {/* Modal Pratinjau & CRUD Berkas Dokumen */}
+      <DocumentPreviewModal
+        isOpen={previewModal.isOpen}
+        onClose={() => setPreviewModal(prev => ({ ...prev, isOpen: false }))}
+        docKey={previewModal.docKey}
+        docLabel={previewModal.docLabel}
+        docValue={formData[previewModal.docKey] || previewModal.docValue}
+        applicantEmailOrId={user.email}
+        applicantName={formData.namaLengkap}
+        canEdit={true}
+        onUpdated={(newVal) => {
+          if (newVal) {
+            setFormData(prev => ({ ...prev, [previewModal.docKey]: newVal }));
+          } else {
+            setFormData(prev => {
+              const next = { ...prev };
+              delete next[previewModal.docKey];
+              return next;
+            });
+          }
+        }}
+      />
     </div>
   );
 }

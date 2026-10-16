@@ -47,10 +47,58 @@ export default function HomePage() {
       {/* App Hub Menu (Hanya muncul di Mobile lewat CSS) */}
       <section className="hub-section mobile-only">
         <div className="container">
-          <div className="hub-header">
-            <h2>Menu Informasi</h2>
+          <div className="hub-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Menu Informasi</h2>
+            <Link 
+              href="/daftar" 
+              style={{ 
+                fontSize: '0.78rem', 
+                fontWeight: 700, 
+                color: 'var(--gold)', 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '4px',
+                padding: '4px 10px',
+                background: 'rgba(196,158,89,0.1)',
+                borderRadius: '8px',
+                border: '1px solid rgba(196,158,89,0.25)'
+              }}
+            >
+              <span>Daftar</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </Link>
           </div>
+
+          {/* Quick CTA Button khusus Mobile */}
+          <div style={{ marginBottom: '1.25rem' }}>
+            <Link 
+              href="/daftar" 
+              className="btn btn-gold" 
+              style={{ 
+                width: '100%', 
+                justifyContent: 'center', 
+                padding: '0.85rem 1.25rem', 
+                fontWeight: 700, 
+                fontSize: '0.95rem', 
+                borderRadius: '12px', 
+                boxShadow: '0 4px 14px rgba(196,158,89,0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <span>Daftar Duta Kampus 2026</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </Link>
+          </div>
+
           <div className="hub-grid">
+            <Link href="/daftar" className="hub-card" style={{ border: '1.5px solid var(--gold)', background: 'linear-gradient(180deg, #ffffff 0%, #fffdf5 100%)' }}>
+              <div className="hub-icon" style={{ background: 'linear-gradient(135deg, var(--gold) 0%, #b38e46 100%)', color: '#0b1329' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              </div>
+              <span style={{ fontWeight: 700, color: 'var(--navy)' }}>Daftar</span>
+            </Link>
             <Link href="/about" className="hub-card">
               <div className="hub-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -133,13 +181,49 @@ export default function HomePage() {
               {ambassadors.map((duta) => (
                 <div key={duta.id} className="ambassador-card">
                   <div className="ambassador-img-wrapper" style={{ position: 'relative' }}>
-                    <Image 
-                      src={duta.img || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=600&q=80'} 
-                      alt={duta.name} 
-                      fill 
-                      style={{ objectFit: 'cover' }} 
-                      fallbackSrc="https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=600&q=80"
-                    />
+                    {duta.img && !duta.img.includes('unsplash.com') ? (
+                      <Image 
+                        src={duta.img} 
+                        alt={duta.name} 
+                        fill 
+                        style={{ objectFit: 'cover' }} 
+                        fallbackSrc="/assets/logo-circle.png"
+                      />
+                    ) : (
+                      <div style={{
+                        width: '100%',
+                        height: '100%',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        background: 'linear-gradient(135deg, #16324A 0%, #0d1e2d 100%)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}>
+                        <div style={{
+                          width: '64px',
+                          height: '64px',
+                          borderRadius: '50%',
+                          background: 'rgba(196, 158, 89, 0.15)',
+                          border: '2px solid var(--gold)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'var(--gold)',
+                          fontWeight: 800,
+                          fontSize: '1.25rem',
+                          letterSpacing: '1px'
+                        }}>
+                          {duta.name ? duta.name.split(' ').slice(0, 2).map(n => n[0]).join('') : 'DK'}
+                        </div>
+                        <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                          Duta Kampus UINSSC
+                        </span>
+                      </div>
+                    )}
                     {duta.faculty && (
                       <div className="ambassador-badge">
                         {duta.faculty}

@@ -28,7 +28,7 @@ export const DB = {
   getById: (id) => {
     return DB.getAll().find(i => String(i.id) === String(id)) || null;
   },
-  save: (data) => {
+  save: (data, specificItemToSync = null) => {
     if (typeof window !== 'undefined') {
       const list = Array.isArray(data) ? data : [];
       // Deduplicate before saving
@@ -46,8 +46,13 @@ export const DB = {
       localStorage.setItem(DB_KEY, JSON.stringify(deduped));
       window.dispatchEvent(new Event('storage'));
       
-      // Async sync to Firebase Firestore (Writes only: 1 write, 0 reads)
-      deduped.forEach(item => syncApplicantToCloud(item));
+      // Async sync to Firebase Firestore: target only modified dossier to prevent quota exhaustion
+      if (specificItemToSync) {
+        syncApplicantToCloud(specificItemToSync);
+      } else {
+        const recent = deduped.slice(0, 2);
+        recent.forEach(item => syncApplicantToCloud(item));
+      }
     }
   },
   add: (item) => {
