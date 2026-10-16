@@ -95,7 +95,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
   };
 
   // Validate Step 2 and Submit
-  const handleFinalSubmit = (e) => {
+  const handleFinalSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
 
