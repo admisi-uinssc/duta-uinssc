@@ -275,29 +275,80 @@
   .cta-banner { text-align: left; padding: 4rem 1.5rem; }
 
   .benefits-grid, .req-grid, .footer-grid { grid-template-columns: 1fr; }
+
+  /* About Page Mobile Gallery Placement */
+  .about-gallery-mobile-top {
+    display: block;
+    margin-bottom: 2rem;
+  }
+  .about-gallery-desktop-bottom {
+    display: none;
+  }
   
   /* Gallery Mobile Card Slider */
   .gallery-grid {
-    display: flex; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory;
-    gap: 1rem; padding-bottom: 1rem; scrollbar-width: none;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1.15rem;
+    padding: 0.5rem 0.25rem 1.5rem;
+    scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
   .gallery-grid::-webkit-scrollbar { display: none; }
   .gallery-item {
-    flex: 0 0 88%; scroll-snap-align: center;
-    border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); overflow: hidden;
+    flex: 0 0 85%;
+    max-width: 340px;
+    scroll-snap-align: center;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(11, 19, 41, 0.14);
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 4 / 3;
   }
   .gallery-item img {
-    aspect-ratio: 16 / 9; object-fit: cover; height: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
   .gallery-caption {
-    position: relative; inset: auto; background: #fff; padding: 1rem;
-    transform: none; opacity: 1; visibility: visible;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: linear-gradient(to top, rgba(11, 19, 41, 0.95) 0%, rgba(11, 19, 41, 0.65) 60%, transparent 100%) !important;
+    padding: 2.25rem 1rem 0.85rem !important;
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 5 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    box-sizing: border-box;
   }
-  .gallery-caption span { font-size: 0.9rem; color: var(--navy); font-weight: 600; text-align: left; }
+  .gallery-caption span {
+    font-size: 0.875rem !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-align: left !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+    line-height: 1.4;
+    display: block;
+    letter-spacing: 0.2px;
+  }
   .timeline-track { left: 22px; }
   .countdown-row { gap: 0.75rem; }
   .cd-num { min-width: 50px; font-size: 1.5rem; }
+}
+
+/* About Page Desktop Gallery Placement */
+.about-gallery-mobile-top {
+  display: none;
+}
+.about-gallery-desktop-bottom {
+  display: block;
 }
 
 /* AMBASSADOR / PROFIL DUTA */

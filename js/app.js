@@ -21,7 +21,7 @@ const DB = {
 };
 
 const Settings = {
-  get: () => JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"pendaftaranOpen":true,"adminPass":"dutauinssc2026"}'),
+  get: () => JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"pendaftaranOpen":true,"adminUser":"rasikinganteng","adminPass":"ghoriztea2026"}'),
   save: (s) => localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)),
   isPendaftaranOpen: () => Settings.get().pendaftaranOpen,
   toggle: () => { const s = Settings.get(); s.pendaftaranOpen = !s.pendaftaranOpen; Settings.save(s); return s.pendaftaranOpen; },

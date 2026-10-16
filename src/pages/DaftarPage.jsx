@@ -111,7 +111,7 @@ export default function DaftarPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
-      alert('Ukuran foto maksimal 2 MB');
+      setErrors((err) => ({ ...err, foto: 'Ukuran berkas foto maksimal 2 MB.' }));
       return;
     }
     const reader = new FileReader();
@@ -132,7 +132,7 @@ export default function DaftarPage() {
       Auth.updateStatus(data.email, 'Sedang Diverifikasi');
       setSubmitted(true);
     } catch {
-      alert('Terjadi kesalahan saat menyimpan formulir.');
+      setErrors((err) => ({ ...err, submit: 'Terjadi kesalahan sistem saat menyimpan formulir. Silakan coba kembali.' }));
     } finally {
       setSubmitting(false);
     }

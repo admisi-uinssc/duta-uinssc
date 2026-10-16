@@ -196,9 +196,17 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
       {/* General Error Notification */}
       {errors.general && (
         <div style={{ 
-          backgroundColor: '#fef2f2', color: '#b91c1c', 
-          border: '1px solid #fecaca', padding: '0.75rem 1rem', 
-          borderRadius: '8px', marginBottom: '1.25rem', fontSize: '0.85rem'
+          backgroundColor: '#fff5f5',
+          color: '#991b1b', 
+          border: '1px solid #fed7d7',
+          borderLeft: '4px solid #dc2626',
+          padding: '0.85rem 1.15rem', 
+          borderRadius: '8px',
+          marginBottom: '1.25rem',
+          fontSize: '0.85rem',
+          fontWeight: 500,
+          lineHeight: 1.45,
+          boxShadow: '0 2px 6px rgba(220, 38, 38, 0.06)'
         }}>
           {errors.general}
         </div>

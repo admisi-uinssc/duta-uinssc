@@ -101,9 +101,11 @@ export default function UserDashboard({ user, onLogout }) {
       DriveStorage.saveDocument(user.email, docKey, docData);
       setSaveNotice(`Berkas ${file.name} berhasil disimpan.`);
     } catch (err) {
-      alert('Gagal mengunggah berkas: ' + err.message);
+      const errMsg = 'Kendala unggah berkas: ' + (err.message || 'Gagal menyimpan dokumen.');
+      setSaveNotice({ type: 'error', message: errMsg });
+      triggerAlert(errMsg, 'danger');
     } finally {
-      setTimeout(() => setSaveNotice(''), 3500);
+      setTimeout(() => setSaveNotice(''), 4500);
     }
   };
 
@@ -516,29 +518,42 @@ export default function UserDashboard({ user, onLogout }) {
         </div>
 
         {/* TOAST / NOTICE */}
-        {saveNotice && (
-          <div
-            style={{
-              position: 'fixed',
-              top: '1rem',
-              right: '1rem',
-              zIndex: 9999,
-              background: '#16324A',
-              color: '#ffffff',
-              padding: '0.875rem 1.25rem',
-              borderRadius: '8px',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-              borderLeft: '4px solid #C49E59',
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>{saveNotice}</span>
-          </div>
-        )}
+        {saveNotice && (() => {
+          const isErr = typeof saveNotice === 'object' 
+            ? (saveNotice.type === 'error' || saveNotice.type === 'danger')
+            : (saveNotice.toLowerCase().includes('gagal') || saveNotice.toLowerCase().includes('kendala'));
+          const noticeMsg = typeof saveNotice === 'object' ? saveNotice.message : saveNotice;
+
+          return (
+            <div
+              style={{
+                position: 'fixed',
+                top: '1.25rem',
+                right: '1.25rem',
+                zIndex: 9999,
+                background: '#16324A',
+                color: '#ffffff',
+                padding: '0.9rem 1.35rem',
+                borderRadius: '8px',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+                borderLeft: `4px solid ${isErr ? '#ef4444' : '#C49E59'}`,
+                fontSize: '0.86rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.65rem',
+                maxWidth: '440px',
+                lineHeight: 1.45
+              }}
+            >
+              {isErr ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"/></svg>
+              )}
+              <span style={{ fontWeight: 500 }}>{noticeMsg}</span>
+            </div>
+          );
+        })()}
 
         {/* TAB CONTENTS (FULL WIDTH ON DESKTOP, COMFORTABLE ON HP) */}
         <main style={{ padding: '1.75rem 2.5rem', flex: 1, width: '100%', boxSizing: 'border-box' }}>
@@ -1200,7 +1215,7 @@ export default function UserDashboard({ user, onLogout }) {
                                 }}
                                 title="Tautkan Link Google Drive"
                               >
-                                🔗 Drive Link
+                                Tautan Drive
                               </button>
                             </div>
                           </div>
@@ -1345,7 +1360,7 @@ export default function UserDashboard({ user, onLogout }) {
                     {
                       no: '2',
                       title: 'Batch 2: Masa Perpanjangan Berkas',
-                      date: '20 – 27 Oktober 2026',
+                      date: '17 s.d. 26 Oktober 2026',
                       desc: 'Perpanjangan pendaftaran dan verifikasi kelengkapan dokumen oleh tim juri admisi.',
                       isDone: selectionStage === 'lolos',
                       isCurrent: selectionStage === 'review',

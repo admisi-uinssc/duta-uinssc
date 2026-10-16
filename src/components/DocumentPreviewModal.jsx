@@ -16,6 +16,7 @@ export default function DocumentPreviewModal({
   const [driveUrlInput, setDriveUrlInput] = useState('');
   const [uploading, setUploading] = useState(false);
   const [notice, setNotice] = useState('');
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   if (!isOpen) return null;
 
@@ -40,10 +41,10 @@ export default function DocumentPreviewModal({
       setEditing(false);
       if (onUpdated) onUpdated(docData);
     } catch (err) {
-      alert('Gagal mengunggah berkas: ' + err.message);
+      setNotice('Kendala unggah berkas: ' + (err.message || 'Gagal mengunggah berkas.'));
     } finally {
       setUploading(false);
-      setTimeout(() => setNotice(''), 3000);
+      setTimeout(() => setNotice(''), 4000);
     }
   };
 
@@ -60,11 +61,10 @@ export default function DocumentPreviewModal({
     setTimeout(() => setNotice(''), 3000);
   };
 
-  const handleDelete = () => {
-    if (!window.confirm(`Apakah Anda yakin ingin menghapus dokumen "${docLabel}"?`)) return;
-
+  const executeDelete = () => {
     DriveStorage.deleteDocument(applicantEmailOrId, docKey, doc?.driveId);
     if (onUpdated) onUpdated(null);
+    setShowConfirmDelete(false);
     onClose();
   };
 
@@ -174,10 +174,65 @@ export default function DocumentPreviewModal({
               }}
               title="Tutup"
             >
-              ✕
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
         </div>
+
+        {/* Institutional Confirmation Alert for Deletion */}
+        {showConfirmDelete && (
+          <div style={{
+            padding: '1rem 1.5rem',
+            background: '#fff1f2',
+            borderBottom: '1px solid #fecdd3',
+            borderLeft: '4px solid #e11d48',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ fontSize: '0.84rem', color: '#9f1239', lineHeight: 1.45 }}>
+              <strong>Konfirmasi Hapus:</strong> Apakah Anda yakin ingin menghapus dokumen <strong>{docLabel}</strong>? Tindakan ini tidak dapat dibatalkan.
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                type="button"
+                className="btn btn-sm"
+                style={{
+                  background: '#e11d48',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+                onClick={executeDelete}
+              >
+                Hapus Dokumen
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm"
+                style={{
+                  background: '#ffffff',
+                  color: '#475569',
+                  border: '1px solid #cbd5e1',
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+                onClick={() => setShowConfirmDelete(false)}
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Action Bar (CRUD: Edit / Replace / Delete) */}
         {canEdit && (
@@ -186,25 +241,33 @@ export default function DocumentPreviewModal({
               <button
                 type="button"
                 className={`btn btn-sm ${editing ? 'btn-gold' : 'btn-outline-gold'}`}
-                style={{ fontSize: '0.78rem', padding: '5px 12px' }}
+                style={{ fontSize: '0.78rem', padding: '6px 14px', letterSpacing: '0.3px', fontWeight: 600 }}
                 onClick={() => setEditing(!editing)}
               >
-                {editing ? 'Batal Edit' : '✎ Ganti / Edit Berkas'}
+                {editing ? 'Tutup Formulir Perubahan' : 'Perbarui Dokumen'}
               </button>
               {doc && (
                 <button
                   type="button"
                   className="btn btn-sm btn-danger"
-                  style={{ fontSize: '0.78rem', padding: '5px 12px' }}
-                  onClick={handleDelete}
+                  style={{ fontSize: '0.78rem', padding: '6px 14px', letterSpacing: '0.3px', fontWeight: 600 }}
+                  onClick={() => setShowConfirmDelete(true)}
                 >
-                  🗑 Hapus Berkas
+                  Hapus Dokumen
                 </button>
               )}
             </div>
 
             {notice && (
-              <span style={{ fontSize: '0.8rem', color: '#16a34a', fontWeight: 600 }}>
+              <span style={{ 
+                fontSize: '0.78rem', 
+                color: notice.includes('Kendala') || notice.includes('Gagal') ? '#b91c1c' : '#15803d', 
+                fontWeight: 600,
+                background: notice.includes('Kendala') || notice.includes('Gagal') ? '#fef2f2' : '#f0fdf4',
+                padding: '4px 10px',
+                borderRadius: '6px',
+                border: `1px solid ${notice.includes('Kendala') || notice.includes('Gagal') ? '#fecaca' : '#bbf7d0'}`
+              }}>
                 {notice}
               </span>
             )}

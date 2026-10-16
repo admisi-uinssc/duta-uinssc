@@ -22,7 +22,7 @@ export default function GallerySection() {
       <div className="container" style={{ maxWidth: '1480px', margin: '0 auto', padding: '0 1.5rem' }}>
         <div className="section-header text-center" style={{ marginBottom: '3rem' }}>
           <h2 className="heading-lg">Galeri <span>Duta Kampus</span></h2>
-          <p className="lead">Momen-momen inspiratif dari kegiatan Duta Kampus pada periode sebelumnya.</p>
+          <p className="lead">Momen-momen inspiratif kegiatan Duta Kampus UINSSC</p>
         </div>
         
         <div className="gallery-grid">

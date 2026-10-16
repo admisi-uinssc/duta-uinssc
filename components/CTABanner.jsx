@@ -7,8 +7,10 @@ export default function CTABanner() {
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
 
   useEffect(() => {
-    const target = new Date(new Date().getFullYear(), 8, 30).getTime();
-    const timer = setInterval(() => {
+    // Target countdown: Batas akhir Batch 2 (26 Oktober 2026 pukul 23:59:59)
+    const target = new Date(2026, 9, 26, 23, 59, 59).getTime();
+
+    const updateCountdown = () => {
       const now = new Date().getTime();
       const diff = target - now;
       if (diff > 0) {
@@ -18,8 +20,13 @@ export default function CTABanner() {
           m: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
           s: Math.floor((diff % (1000 * 60)) / 1000),
         });
+      } else {
+        setTimeLeft({ d: 0, h: 0, m: 0, s: 0 });
       }
-    }, 1000);
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
     return () => clearInterval(timer);
   }, []);
 

@@ -42,9 +42,8 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-divider"></div>
-        <div className="footer-bottom">
+        <div className="footer-bottom" style={{ justifyContent: 'center', textAlign: 'center' }}>
           <p>© 2026 UIN Siber Syekh Nurjati Cirebon</p>
-          <Link href="/admin" className="admin-link">Halaman Admin</Link>
         </div>
       </div>
     </footer>

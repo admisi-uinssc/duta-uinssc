@@ -189,7 +189,11 @@ export default function AdminPage() {
   const doLogin = (e) => {
     e.preventDefault();
     const s = Settings.get();
-    if (credentials.user === 'admin' && credentials.pass === s.adminPass) {
+    const validUser = (s.adminUser || 'rasikinganteng').trim().toLowerCase();
+    const inputUser = (credentials.user || '').trim().toLowerCase();
+    const validPass = s.adminPass || 'ghoriztea2026';
+
+    if (inputUser === validUser && credentials.pass === validPass) {
       setLoggedIn(true); 
       setLoginError(false);
       if (typeof window !== 'undefined') {
@@ -840,8 +844,7 @@ export default function AdminPage() {
             Masuk ke Panel
           </button>
         </form>
-        <p className="login-hint">Kredensial Default: admin / dutauinssc2026</p>
-        <Link href="/" className="back-to-home">Kembali ke Beranda Publik</Link>
+        <Link href="/" className="back-to-home" style={{ marginTop: '1.25rem', display: 'inline-block' }}>Kembali ke Beranda Publik</Link>
       </div>
     </div>
   );
@@ -993,7 +996,7 @@ export default function AdminPage() {
                           style={{ padding: '4px 10px', fontSize: '0.72rem', fontWeight: 700 }}
                           onClick={() => handleApproveUser(u.email)}
                         >
-                          ✓ Setujui
+                          Setujui
                         </button>
                         <button
                           type="button"
@@ -2034,7 +2037,7 @@ export default function AdminPage() {
                         background: isFirebaseConfigured ? '#dcfce7' : '#fef9c3', 
                         color: isFirebaseConfigured ? '#15803d' : '#854d0e' 
                       }}>
-                        {isFirebaseConfigured ? '✓ Terhubung ke Cloud' : 'Mode Offline / LocalStorage'}
+                        {isFirebaseConfigured ? 'Terhubung ke Cloud' : 'Mode Offline / LocalStorage'}
                       </span>
                     </div>
                     <p style={{ margin: 0 }}>
@@ -2058,7 +2061,7 @@ export default function AdminPage() {
                     </div>
 
                     <button 
-                      type="button"
+                      type="button" 
                       className="btn btn-sm btn-gold" 
                       onClick={handleManualCloudSync}
                       disabled={isSyncingCloud}
@@ -2107,7 +2110,7 @@ export default function AdminPage() {
                         background: driveConfig.scriptUrl ? '#dcfce7' : '#fef9c3', 
                         color: driveConfig.scriptUrl ? '#15803d' : '#854d0e' 
                       }}>
-                        {driveConfig.scriptUrl ? '✓ Terhubung ke Google Apps Script' : 'Mode Penyimpanan Mandiri / Siap Dihubungkan'}
+                        {driveConfig.scriptUrl ? 'Terhubung ke Google Apps Script' : 'Mode Penyimpanan Mandiri / Siap Dihubungkan'}
                       </span>
                     </div>
                     <p style={{ margin: 0 }}>
@@ -2161,7 +2164,7 @@ export default function AdminPage() {
                       disabled={isTestingDrive}
                       onClick={handleTestDriveConnection}
                     >
-                      {isTestingDrive ? '⏳ Menguji Koneksi...' : '⚡ Uji Koneksi Google Apps Script'}
+                      {isTestingDrive ? 'Menguji Koneksi...' : 'Uji Koneksi Google Apps Script'}
                     </button>
 
                     <button
@@ -2169,7 +2172,7 @@ export default function AdminPage() {
                       className="btn btn-outline-gold"
                       onClick={() => setShowScriptModal(true)}
                     >
-                      📄 Lihat & Salin Kode Google Apps Script
+                      Lihat & Salin Kode Google Apps Script
                     </button>
 
                     {driveSaveStatus && (
@@ -2187,11 +2190,12 @@ export default function AdminPage() {
                       borderRadius: '8px',
                       background: driveTestResult.success ? '#f0fdf4' : (driveTestResult.needsPermission ? '#fffbeb' : '#fef2f2'),
                       border: `1px solid ${driveTestResult.success ? '#bbf7d0' : (driveTestResult.needsPermission ? '#fde68a' : '#fecaca')}`,
+                      borderLeft: `4px solid ${driveTestResult.success ? '#16a34a' : (driveTestResult.needsPermission ? '#d97706' : '#dc2626')}`,
                       color: driveTestResult.success ? '#166534' : (driveTestResult.needsPermission ? '#92400e' : '#991b1b'),
                       fontSize: '0.875rem'
                     }}>
-                      <div style={{ fontWeight: 700, marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        {driveTestResult.success ? '✓ Koneksi Google Drive Berhasil!' : (driveTestResult.needsPermission ? '⚠️ Perlu Penyesuaian Izin di Google Apps Script' : '✕ Gagal Terhubung')}
+                      <div style={{ fontWeight: 700, marginBottom: '0.35rem' }}>
+                        {driveTestResult.success ? 'Koneksi Google Drive Berhasil Terhubung' : (driveTestResult.needsPermission ? 'Perlu Penyesuaian Hak Akses di Google Apps Script' : 'Koneksi Gagal Terhubung')}
                       </div>
                       <div>
                         {driveTestResult.success ? (
@@ -2457,7 +2461,9 @@ export default function AdminPage() {
                             color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: '0.72rem', fontWeight: 800, flexShrink: 0, marginTop: '2px'
                           }}>
-                            {doc.filled ? '✓' : idx + 1}
+                            {doc.filled ? (
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            ) : idx + 1}
                           </span>
                           <div>
                             <div style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '0.9rem' }}>{idx + 1}. {doc.label}</div>
@@ -2514,12 +2520,19 @@ export default function AdminPage() {
                                 className="btn btn-sm btn-danger"
                                 style={{ padding: '4px 8px', fontSize: '0.72rem' }}
                                 onClick={() => {
-                                  if (window.confirm(`Hapus berkas "${doc.label}" untuk ${mergedSelectedItem.namaLengkap}?`)) {
-                                    DriveStorage.deleteDocument(mergedSelectedItem.email || mergedSelectedItem.id, doc.key);
-                                    setApplicants(DB.getAll());
-                                    setRegisteredUsers(Auth.getUsers());
-                                    showToast('Berkas berhasil dihapus.');
-                                  }
+                                  askConfirmation({
+                                    title: 'Hapus Berkas Dokumen',
+                                    message: `Apakah Anda yakin ingin menghapus berkas "${doc.label}" untuk ${mergedSelectedItem.namaLengkap}? Tindakan ini bersifat permanen.`,
+                                    confirmText: 'Ya, Hapus Berkas',
+                                    cancelText: 'Batalkan',
+                                    isDestructive: true,
+                                    onConfirm: () => {
+                                      DriveStorage.deleteDocument(mergedSelectedItem.email || mergedSelectedItem.id, doc.key);
+                                      setApplicants(DB.getAll());
+                                      setRegisteredUsers(Auth.getUsers());
+                                      showToast('Berkas berhasil dihapus.');
+                                    }
+                                  });
                                 }}
                               >
                                 Hapus
@@ -3089,7 +3102,7 @@ export default function AdminPage() {
                 onClick={() => setShowScriptModal(false)}
                 style={{ background: '#f1f5f9', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 700 }}
               >
-                ✕
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             </div>
 
@@ -3157,7 +3170,7 @@ function doPost(e) {
                     showToast('Kode Google Apps Script berhasil disalin ke clipboard!');
                   }}
                 >
-                  📋 Salin Seluruh Kode
+                  Salin Seluruh Kode
                 </button>
               </div>
 

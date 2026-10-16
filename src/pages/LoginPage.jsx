@@ -25,7 +25,8 @@ export default function LoginPage() {
   // PWA Install Prompt State
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstalled, setIsInstalled] = useState(false);
-  const [showIosTip, setShowIosTip] = useState(false);
+  const [showInstallGuide, setShowInstallGuide] = useState(false);
+  const [isIosDevice, setIsIosDevice] = useState(false);
 
   useEffect(() => {
     // If already logged in, redirect to profil
@@ -35,6 +36,9 @@ export default function LoginPage() {
     }
 
     if (typeof window !== 'undefined') {
+      const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+      setIsIosDevice(isIos);
+
       if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
         setIsInstalled(true);
       }
@@ -70,13 +74,7 @@ export default function LoginPage() {
       return;
     }
 
-    const isIos = typeof window !== 'undefined' && /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-    if (isIos) {
-      setShowIosTip(prev => !prev);
-      return;
-    }
-
-    alert('Untuk memasang di HP: Buka menu browser Anda (ikon titik tiga atau bagikan) lalu pilih "Tambahkan ke Layar Utama" (Install App).');
+    setShowInstallGuide(prev => !prev);
   };
 
   const handleLoginSubmit = async (e) => {
@@ -232,20 +230,22 @@ export default function LoginPage() {
             {error && (
               <div
                 style={{
-                  backgroundColor: '#fef2f2',
-                  color: '#b91c1c',
-                  border: '1px solid #fecaca',
-                  padding: '0.75rem 1rem',
+                  backgroundColor: '#fff5f5',
+                  color: '#991b1b',
+                  border: '1px solid #fed7d7',
+                  borderLeft: '4px solid #dc2626',
+                  padding: '0.85rem 1.1rem',
                   borderRadius: '8px',
                   fontSize: '0.85rem',
-                  lineHeight: 1.4,
+                  lineHeight: 1.45,
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  gap: '0.75rem'
+                  gap: '0.75rem',
+                  boxShadow: '0 2px 6px rgba(220, 38, 38, 0.06)'
                 }}
               >
-                <span>{error}</span>
+                <span style={{ fontWeight: 500 }}>{error}</span>
                 {isNotFound && (
                   <button
                     type="button"
@@ -255,15 +255,17 @@ export default function LoginPage() {
                       setIsNotFound(false);
                     }}
                     style={{
-                      background: '#b91c1c',
-                      color: '#ffffff',
-                      border: 'none',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
+                      background: 'var(--navy)',
+                      color: 'var(--gold)',
+                      border: '1px solid var(--gold)',
+                      padding: '5px 10px',
+                      borderRadius: '6px',
                       fontSize: '0.75rem',
                       fontWeight: 600,
                       cursor: 'pointer',
-                      whiteSpace: 'nowrap'
+                      whiteSpace: 'nowrap',
+                      letterSpacing: '0.3px',
+                      textTransform: 'uppercase'
                     }}
                   >
                     Daftar Sekarang
@@ -357,7 +359,7 @@ export default function LoginPage() {
                 cursor: isLoading ? 'not-allowed' : 'pointer'
               }}
             >
-              {isLoading ? '⏳ Memverifikasi Akun...' : 'Masuk'}
+              {isLoading ? 'Memverifikasi Akun...' : 'Masuk'}
             </button>
 
             <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: 'var(--text-mid)' }}>
@@ -383,66 +385,95 @@ export default function LoginPage() {
               </button>
             </div>
 
-            {/* PWA Mobile Download / Install Button */}
+            {/* PWA Mobile Portal Card - Strictly Aligned with Key Visual without Icons/Emoticons */}
             <div style={{
-              marginTop: '1.5rem',
+              marginTop: '1.75rem',
               paddingTop: '1.25rem',
-              borderTop: '1px solid #e2e8f0',
+              borderTop: '1px solid var(--border)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-                Akses Lebih Cepat & Mudah
+              <div style={{ 
+                fontSize: '0.72rem', 
+                color: 'var(--text-light)', 
+                marginBottom: '0.6rem', 
+                fontWeight: 700, 
+                letterSpacing: '0.75px', 
+                textTransform: 'uppercase' 
+              }}>
+                Akses Platform Mobile Resmi
               </div>
               <button
                 type="button"
+                id="unduhAplikasiBtn"
                 onClick={handleInstallClick}
                 style={{
                   width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  padding: '0.75rem 1rem',
+                  padding: '0.85rem 1.25rem',
                   borderRadius: '8px',
-                  background: isInstalled ? '#f0fdf4' : 'linear-gradient(135deg, #0b1329 0%, #1e293b 100%)',
-                  color: isInstalled ? '#166534' : '#c49e59',
-                  border: isInstalled ? '1px solid #bbf7d0' : '1px solid #334155',
+                  background: isInstalled ? 'rgba(196, 158, 89, 0.08)' : 'var(--navy)',
+                  color: isInstalled ? 'var(--navy)' : 'var(--gold)',
+                  border: isInstalled ? '1px solid rgba(196, 158, 89, 0.4)' : '1px solid var(--gold)',
                   fontSize: '0.85rem',
                   fontWeight: 700,
+                  letterSpacing: '0.75px',
+                  textTransform: 'uppercase',
                   cursor: 'pointer',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                  transition: 'all 0.2s ease'
+                  boxShadow: isInstalled ? 'none' : '0 4px 14px rgba(11, 19, 41, 0.15)',
+                  transition: 'all 0.2s ease',
+                  textAlign: 'center'
                 }}
               >
-                {isInstalled ? (
-                  <>✓ Aplikasi Duta UINSSC Terpasang</>
-                ) : (
-                  <>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-                      <line x1="12" y1="18" x2="12.01" y2="18" />
-                    </svg>
-                    📲 Pasang / Unduh Aplikasi di HP (PWA)
-                  </>
-                )}
+                {isInstalled ? 'Aplikasi Resmi Terpasang di Perangkat' : 'Unduh Aplikasi'}
               </button>
 
-              {showIosTip && (
+              {showInstallGuide && (
                 <div style={{
-                  marginTop: '0.75rem',
-                  padding: '0.75rem',
-                  background: '#f8fafc',
-                  border: '1px dashed #cbd5e1',
-                  borderRadius: '6px',
-                  fontSize: '0.78rem',
-                  color: '#475569',
+                  marginTop: '0.85rem',
+                  padding: '1.1rem 1.25rem',
+                  background: '#ffffff',
+                  border: '1px solid var(--border)',
+                  borderLeft: '4px solid var(--gold)',
+                  borderRadius: '8px',
+                  fontSize: '0.825rem',
+                  color: 'var(--text-mid)',
                   textAlign: 'left',
-                  lineHeight: 1.45
+                  lineHeight: 1.6,
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.05)'
                 }}>
-                  <strong>Cara Pasang di iPhone (Safari):</strong><br />
-                  1. Ketuk tombol <strong>Share / Bagikan</strong> (ikon kotak dengan panah ke atas di bagian bawah Safari).<br />
-                  2. Gulir ke bawah dan pilih <strong>"Tambah ke Layar Utama" (Add to Home Screen)</strong>.<br />
-                  3. Ketuk <strong>Tambah</strong> di pojok kanan atas.
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.85rem', letterSpacing: '0.2px' }}>
+                      Petunjuk Pemasangan Aplikasi:
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowInstallGuide(false)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--gold)',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        padding: 0,
+                        textDecoration: 'underline'
+                      }}
+                    >
+                      Tutup
+                    </button>
+                  </div>
+                  {isIosDevice ? (
+                    <ol style={{ margin: 0, paddingLeft: '1.25rem' }}>
+                      <li>Buka peramban Safari dan ketuk menu Bagikan (Share).</li>
+                      <li>Pilih menu <strong>Tambah ke Layar Utama</strong> (Add to Home Screen).</li>
+                      <li>Ketuk tombol <strong>Tambah</strong> untuk mengonfirmasi pemasangan.</li>
+                    </ol>
+                  ) : (
+                    <ol style={{ margin: 0, paddingLeft: '1.25rem' }}>
+                      <li>Buka menu opsi peramban melalui ikon titik tiga di sudut atas layar.</li>
+                      <li>Pilih opsi <strong>Instal Aplikasi</strong> atau <strong>Tambahkan ke Layar Utama</strong>.</li>
+                      <li>Konfirmasi proses pemasangan aplikasi ke perangkat Anda.</li>
+                    </ol>
+                  )}
                 </div>
               )}
             </div>

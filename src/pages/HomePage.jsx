@@ -69,7 +69,7 @@ export default function HomePage() {
               </div>
               <span>Manfaat</span>
             </Link>
-            <Link href="/gallery" className="hub-card">
+            <Link href="/about" className="hub-card">
               <div className="hub-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>
               </div>
