@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from './Link';
+import Image from './Image';
 import { CMS } from '../lib/cms';
 
 export default function HeroSlider() {
@@ -62,20 +63,15 @@ export default function HeroSlider() {
     <section className="hero-slider" id="heroSlider">
       {slides.map((slide, idx) => (
         <div key={slide.id || idx} className={`slide ${idx === current ? 'active' : ''}`}>
-          <img
+          <Image
             className="slide-img"
-            src={slide.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'}
+            src={slide.img}
             alt={`Slide ${idx + 1}`}
             loading={idx === 0 ? 'eager' : 'lazy'}
           />
           <div className="slide-overlay" />
           <div className="slide-content">
             <div className="slide-text">
-              {slide.tag && (
-                <span className="slide-tag">
-                  {slide.tag}
-                </span>
-              )}
               <h1 className="slide-title">
                 {slide.title1}
                 {slide.title2 && (

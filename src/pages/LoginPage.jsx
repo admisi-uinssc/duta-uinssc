@@ -43,118 +43,70 @@ export default function LoginPage() {
         setIsInstalled(true);
       }
 
+      // Check if global prompt is already available
+      if (window.deferredPrompt) {
+        setDeferredPrompt(window.deferredPrompt);
+      }
+
       const handleBeforeInstall = (e) => {
         e.preventDefault();
+        window.deferredPrompt = e;
         setDeferredPrompt(e);
+      };
+
+      const handlePromptReady = () => {
+        if (window.deferredPrompt) {
+          setDeferredPrompt(window.deferredPrompt);
+        }
       };
 
       const handleAppInstalled = () => {
         setIsInstalled(true);
         setDeferredPrompt(null);
+        if (typeof window !== 'undefined') window.deferredPrompt = null;
       };
 
       window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+      window.addEventListener('pwa-prompt-ready', handlePromptReady);
       window.addEventListener('appinstalled', handleAppInstalled);
+      window.addEventListener('pwa-app-installed', handleAppInstalled);
 
       return () => {
         window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+        window.removeEventListener('pwa-prompt-ready', handlePromptReady);
         window.removeEventListener('appinstalled', handleAppInstalled);
+        window.removeEventListener('pwa-app-installed', handleAppInstalled);
       };
     }
   }, [router]);
 
   const handleInstallClick = async () => {
-    // 1. If on iOS, initiate immediate download of the PADUKA iOS WebClip Configuration Profile
-    if (isIosDevice) {
-      try {
-        const currentUrl = typeof window !== 'undefined' ? window.location.origin + '/' : 'https://duta.uinssc.ac.id/';
-        const plist = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>PayloadContent</key>
-    <array>
-        <dict>
-            <key>FullScreen</key>
-            <true/>
-            <key>IsRemovable</key>
-            <true/>
-            <key>Label</key>
-            <string>PADUKA</string>
-            <key>PayloadDescription</key>
-            <string>Aplikasi Resmi PADUKA Duta Kampus UIN Siber Cirebon</string>
-            <key>PayloadDisplayName</key>
-            <string>PADUKA WebClip</string>
-            <key>PayloadIdentifier</key>
-            <string>id.ac.uinssc.paduka.webclip</string>
-            <key>PayloadType</key>
-            <string>com.apple.webClip.managed</string>
-            <key>PayloadUUID</key>
-            <string>D92E47B0-3C89-4EA2-BA6B-92DF203B7C10</string>
-            <key>PayloadVersion</key>
-            <integer>1</integer>
-            <key>Precomposed</key>
-            <true/>
-            <key>URL</key>
-            <string>${currentUrl}</string>
-        </dict>
-    </array>
-    <key>PayloadDisplayName</key>
-    <string>PADUKA | dutauinssc</string>
-    <key>PayloadIdentifier</key>
-    <string>id.ac.uinssc.paduka</string>
-    <key>PayloadRemovalDisallowed</key>
-    <false/>
-    <key>PayloadType</key>
-    <string>Configuration</string>
-    <key>PayloadUUID</key>
-    <string>4F2A1098-95D2-47C8-8542-C119842F53AE</string>
-    <key>PayloadVersion</key>
-    <integer>1</integer>
-</dict>
-</plist>`;
-        const blob = new Blob([plist], { type: 'application/x-apple-aspen-config' });
-        const blobUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = 'PADUKA.mobileconfig';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
-      } catch (err) {}
-
-      setShowInstallGuide(true);
+    // 1. If already installed in standalone mode
+    const isStandalone = typeof window !== 'undefined' && (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true
+    );
+    if (isStandalone || isInstalled) {
+      alert('Aplikasi PADUKA sudah terpasang di layar utama HP Anda.');
       return;
     }
 
-    // 2. If Android / Chromium with native PWA install prompt available
-    if (deferredPrompt) {
+    // 2. Direct native OS prompt (Android, Chrome, Edge, Samsung Internet)
+    const promptEvent = deferredPrompt || (typeof window !== 'undefined' ? window.deferredPrompt : null);
+    if (promptEvent) {
       try {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
+        promptEvent.prompt();
+        const { outcome } = await promptEvent.userChoice;
         if (outcome === 'accepted') {
           setIsInstalled(true);
         }
         setDeferredPrompt(null);
+        if (typeof window !== 'undefined') window.deferredPrompt = null;
         return;
-      } catch (e) {}
+      } catch (err) {}
     }
 
-    // 3. Fallback: trigger download of direct standalone web launcher file
-    try {
-      const launcherHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/"><title>PADUKA</title></head><body><script>window.location.replace('/');</script></body></html>`;
-      const blob = new Blob([launcherHtml], { type: 'text/html' });
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = 'PADUKA-Duta-UINSSC.html';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
-    } catch (e) {}
-
+    // 3. Simple fallback guidance (tanpa unduh file html / tanpa tutorial rumit)
     setShowInstallGuide(true);
   };
 
@@ -501,10 +453,19 @@ export default function LoginPage() {
                   cursor: 'pointer',
                   boxShadow: isInstalled ? 'none' : '0 4px 14px rgba(11, 19, 41, 0.15)',
                   transition: 'all 0.2s ease',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
                 }}
               >
-                {isInstalled ? 'Aplikasi PADUKA Terpasang di Perangkat' : 'Unduh Aplikasi PADUKA'}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <span>{isInstalled ? 'Aplikasi PADUKA Sudah Terpasang' : 'Tambahkan ke Layar Utama'}</span>
               </button>
 
               {showInstallGuide && (
@@ -526,81 +487,59 @@ export default function LoginPage() {
                     style={{
                       background: '#ffffff',
                       borderRadius: '16px',
-                      maxWidth: '460px',
+                      maxWidth: '420px',
                       width: '100%',
-                      padding: '1.75rem',
+                      padding: '1.5rem',
                       boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
                       border: '1px solid rgba(196,158,89,0.3)',
                       position: 'relative'
                     }}
                     onClick={e => e.stopPropagation()}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
                       <Image
                         src="/assets/logo-circle.png"
                         alt="PADUKA"
-                        width={44}
-                        height={44}
+                        width={42}
+                        height={42}
                         style={{ borderRadius: '50%', border: '2px solid var(--gold)' }}
                       />
                       <div>
-                        <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--navy)' }}>
-                          Unduh Aplikasi PADUKA
+                        <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)' }}>
+                          Pasang Aplikasi PADUKA
                         </div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--gold)', fontWeight: 600 }}>
-                          Portal Aplikasi Duta Kampus UINSSC
+                          Duta Kampus UIN Siber Cirebon
                         </div>
                       </div>
                     </div>
 
                     {isInstalled ? (
-                      <div style={{ padding: '1rem', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '10px', marginBottom: '1.25rem' }}>
+                      <div style={{ padding: '0.85rem', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '10px', marginBottom: '1.25rem' }}>
                         <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#166534', marginBottom: '4px' }}>
                           Aplikasi Siap Digunakan
                         </div>
                         <p style={{ fontSize: '0.825rem', color: '#15803d', margin: 0, lineHeight: 1.5 }}>
-                          Aplikasi PADUKA sudah aktif dan terpasang pada perangkat Anda. Anda dapat langsung membukanya melalui layar utama.
+                          Aplikasi PADUKA sudah terpasang pada perangkat Anda. Anda dapat langsung membukanya melalui layar utama HP.
                         </p>
                       </div>
                     ) : isIosDevice ? (
-                      <div style={{ marginBottom: '1.25rem' }}>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem' }}>
-                          Langkah Pemasangan di iPhone / iPad (iOS):
+                      <div style={{ padding: '0.5rem 0 1rem' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.4rem' }}>
+                          Pasang di Layar Utama iPhone
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.825rem', color: '#334155', lineHeight: 1.5 }}>
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                            <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', background: 'var(--navy)', color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>1</span>
-                            <span>Buka peramban <strong>Safari</strong> dan ketuk ikon <strong>Bagikan (Share)</strong> di bilah bawah.</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                            <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', background: 'var(--navy)', color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>2</span>
-                            <span>Gulir ke bawah lalu pilih opsi <strong>"Tambahkan ke Layar Utama" (Add to Home Screen)</strong>.</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                            <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', background: 'var(--navy)', color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>3</span>
-                            <span>Ketuk <strong>"Tambah"</strong> di pojok kanan atas. Ikon aplikasi PADUKA akan langsung muncul di beranda HP Anda.</span>
-                          </div>
-                        </div>
+                        <p style={{ fontSize: '0.825rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                          Ketuk tombol <strong>Bagikan</strong> (ikon kotak panah ke atas di bilah bawah Safari), lalu pilih <strong>"Tambah ke Layar Utama"</strong>.
+                        </p>
                       </div>
                     ) : (
-                      <div style={{ marginBottom: '1.25rem' }}>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem' }}>
-                          Langkah Pemasangan di Android / Peramban:
+                      <div style={{ padding: '0.5rem 0 1rem' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.4rem' }}>
+                          Pasang di Layar Utama HP
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.825rem', color: '#334155', lineHeight: 1.5 }}>
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                            <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', background: 'var(--navy)', color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>1</span>
-                            <span>Ketuk ikon menu titik tiga (<strong>⋮</strong>) di sudut kanan atas peramban Google Chrome / browser Anda.</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                            <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', background: 'var(--navy)', color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>2</span>
-                            <span>Pilih opsi <strong>"Instal Aplikasi"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                            <span style={{ minWidth: '22px', height: '22px', borderRadius: '50%', background: 'var(--navy)', color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>3</span>
-                            <span>Konfirmasi pemasangan. Aplikasi PADUKA akan langsung terpasang dan dapat dibuka secara instan.</span>
-                          </div>
-                        </div>
+                        <p style={{ fontSize: '0.825rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                          Ketuk menu titik tiga (<strong>⋮</strong>) di sudut kanan atas browser, lalu pilih <strong>"Instal aplikasi"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.
+                        </p>
                       </div>
                     )}
 
@@ -616,11 +555,10 @@ export default function LoginPage() {
                         borderRadius: '10px',
                         justifyContent: 'center',
                         display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px'
+                        alignItems: 'center'
                       }}
                     >
-                      <span>Selesai & Mengerti</span>
+                      <span>Mengerti</span>
                     </button>
                   </div>
                 </div>

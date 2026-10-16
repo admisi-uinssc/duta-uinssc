@@ -232,12 +232,12 @@
   .nav-logo img, .nav-logo-circle { display: none !important; }
   .nav-logo-text { display: none !important; }
   .nav-logo::after {
-    content: 'dutauinssc';
+    content: 'PADUKA | dutauinssc';
     font-family: var(--font-fira);
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 800;
     color: var(--navy);
-    letter-spacing: -0.5px;
+    letter-spacing: -0.2px;
   }
   .nav-links, .nav-cta, .nav-right-group { display: none !important; }
   

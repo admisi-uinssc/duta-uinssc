@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from './Image';
+import Link from './Link';
 import { Auth } from '../lib/auth';
 
 export default function Navbar() {
@@ -56,7 +56,7 @@ export default function Navbar() {
             </span>
             <div className="nav-dropdown">
               <Link href="/about" className="nav-dropdown-item" onClick={closeMenu}>Program</Link>
-              <Link href="/tentang/profil-duta" className="nav-dropdown-item" onClick={closeMenu}>Profil Duta Kampus</Link>
+              <Link href="/profil-duta" className="nav-dropdown-item" onClick={closeMenu}>Profil Duta Kampus</Link>
             </div>
           </li>
           <li><Link href="/gallery" className="nav-link" onClick={closeMenu}>Galeri</Link></li>

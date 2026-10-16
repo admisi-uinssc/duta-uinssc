@@ -47,57 +47,21 @@ export default function HomePage() {
       {/* App Hub Menu (Hanya muncul di Mobile lewat CSS) */}
       <section className="hub-section mobile-only">
         <div className="container">
-          <div className="hub-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Menu Informasi</h2>
-            <Link 
-              href="/daftar" 
-              style={{ 
-                fontSize: '0.78rem', 
-                fontWeight: 700, 
-                color: 'var(--gold)', 
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '4px',
-                padding: '4px 10px',
-                background: 'rgba(196,158,89,0.1)',
-                borderRadius: '8px',
-                border: '1px solid rgba(196,158,89,0.25)'
-              }}
-            >
-              <span>Daftar</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </Link>
-          </div>
-
-          {/* Quick CTA Button khusus Mobile */}
-          <div style={{ marginBottom: '1.25rem' }}>
-            <Link 
-              href="/daftar" 
-              className="btn btn-gold" 
-              style={{ 
-                width: '100%', 
-                justifyContent: 'center', 
-                padding: '0.85rem 1.25rem', 
-                fontWeight: 700, 
-                fontSize: '0.95rem', 
-                borderRadius: '12px', 
-                boxShadow: '0 4px 14px rgba(196,158,89,0.25)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              <span>Daftar Duta Kampus 2026</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </Link>
+          <div className="hub-header" style={{ marginBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Menu Informasi</h2>
           </div>
 
           <div className="hub-grid">
-            <Link href="/daftar" className="hub-card" style={{ border: '1.5px solid var(--gold)', background: 'linear-gradient(180deg, #ffffff 0%, #fffdf5 100%)' }}>
-              <div className="hub-icon" style={{ background: 'linear-gradient(135deg, var(--gold) 0%, #b38e46 100%)', color: '#0b1329' }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            <Link href="/daftar" className="hub-card">
+              <div className="hub-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <line x1="19" y1="8" x2="19" y2="14" />
+                  <line x1="22" y1="11" x2="16" y2="11" />
+                </svg>
               </div>
-              <span style={{ fontWeight: 700, color: 'var(--navy)' }}>Daftar</span>
+              <span>Daftar</span>
             </Link>
             <Link href="/about" className="hub-card">
               <div className="hub-icon">

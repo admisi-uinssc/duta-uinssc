@@ -4,46 +4,131 @@ const DEFAULT_CMS = {
   slider: [
     {
       id: 1,
-      img: OFFICIAL_SHOWCASE_IMG,
-      tag: 'Pendaftaran 2026', 
-      title1: 'Wujudkan', 
-      title2: 'Langkah Besarmu', 
-      desc: 'Bergabunglah menjadi wajah kampus dan representasi mahasiswa UIN Siber Syekh Nurjati Cirebon.',
-      btnText: 'Daftar Sekarang',
-      btnLink: '/daftar'
+      tag: "Pendaftaran 2026",
+      btnText: "Daftar Sekarang",
+      title1: "Wujudkan",
+      title2: "Langkah Besarmu",
+      desc: "Bergabunglah menjadi wajah kampus dan representasi mahasiswa UIN Siber Syekh Nurjati Cirebon.",
+      img: "https://drive.google.com/file/d/1K7HoKDvlUno2VlJ66lJTk1kbo0SiEMb_/view?usp=sharing",
+      btnLink: "/daftar"
     },
     {
       id: 2,
-      img: OFFICIAL_SHOWCASE_IMG,
-      tag: 'Tahap Seleksi', 
-      title1: 'Asah', 
-      title2: 'Potensimu', 
-      desc: 'Rangkaian seleksi akan menguji kemampuan komunikasi, kepemimpinan, dan nilai keislaman siber.',
-      btnText: 'Lihat Persyaratan',
-      btnLink: '/requirements'
+      tag: "Tahap Seleksi",
+      btnText: "Lihat Persyaratan",
+      title1: "Asah",
+      title2: "Potensimu",
+      desc: "Rangkaian seleksi akan menguji kemampuan komunikasi, kepemimpinan, dan nilai keislaman siber.",
+      img: "https://drive.google.com/file/d/1b6zfPvHv4A2dK2DPzvsWVYslgfRwM1Mb/view?usp=drive_link",
+      btnLink: "/requirements"
     },
     {
       id: 3,
-      img: OFFICIAL_SHOWCASE_IMG,
-      tag: 'Komunitas & Prestasi', 
-      title1: 'Bangun', 
-      title2: 'Relasi Luas', 
-      desc: 'Temukan keluarga baru dan koneksi berharga bersama ratusan alumni Duta Kampus.',
-      btnText: 'Profil Duta',
-      btnLink: '/profil-duta'
+      tag: "Komunitas & Prestasi",
+      btnText: "Profil Duta",
+      title1: "Bangun",
+      title2: "Relasi Luas",
+      desc: "Temukan keluarga baru dan koneksi berharga bersama Duta Kampus.",
+      img: "https://drive.google.com/file/d/1cdahtR_siKX6uBYW8gde7Ku2kp9AUCJu/view?usp=drive_link",
+      btnLink: "/profil-duta"
+    },
+    {
+      id: 1792176231992,
+      tag: "Pendaftaran Duta UINSSC 2026",
+      btnText: "Ajukan Akun & Mulai Pendaftaran",
+      title1: "",
+      title2: "",
+      desc: "",
+      img: "https://drive.google.com/file/d/1PLdqqvgH4t1yaePM8wu0DnFs6U5-iOiO/view?usp=sharing",
+      btnLink: "/login"
+    },
+    {
+      id: 1792176480735,
+      tag: "Pendaftaran 2026",
+      btnText: "Daftar",
+      title1: "Come Join Us",
+      title2: "",
+      desc: "",
+      img: "https://drive.google.com/file/d/1qmOcdSv93hpuX9g0U7eDor4GnNA6K8s1/view?usp=drive_link",
+      btnLink: "/login"
     }
   ],
   gallery: [
-    { id: 1, img: OFFICIAL_SHOWCASE_IMG, caption: 'Kegiatan Promosi Kampus' },
-    { id: 2, img: '/assets/logo-main.png', caption: 'Penyambutan Tamu Kehormatan' },
-    { id: 3, img: OFFICIAL_SHOWCASE_IMG, caption: 'Malam Puncak Pemilihan' },
-    { id: 4, img: '/assets/color-palette.png', caption: 'Pelatihan Public Speaking' },
-    { id: 5, img: OFFICIAL_SHOWCASE_IMG, caption: 'Event Sosial Duta Kampus' },
-    { id: 6, img: '/assets/logo-circle.png', caption: 'Sesi Pemotretan Profil' },
+    {
+      id: 1,
+      img: "https://drive.google.com/file/d/1-SIIie_r4i1XCETrAOwJTgeUhssscHtQ/view?usp=drive_link",
+      caption: "Kunjungan dari UIN Sunan Kalijaga"
+    },
+    {
+      id: 2,
+      img: "https://drive.google.com/file/d/1lwoOo6o2njeA_2CpaVCi2lp1h9AIdaWJ/view?usp=drive_link",
+      caption: "Expo MAN 1 Majalengka"
+    },
+    {
+      id: 3,
+      img: "https://drive.google.com/file/d/1snBwzdL4RXDwFvYIHLc9TVaS9xmynT8Q/view?usp=drive_link",
+      caption: "Kunjungan SMA PUI Gegesik"
+    },
+    {
+      id: 4,
+      img: "https://drive.google.com/file/d/1e7R1KXJvFPmJrSlZKynllbJnqWepjSDB/view?usp=drive_link",
+      caption: "Expo MGBK Kota Cirebon di Grage Mall"
+    },
+    {
+      id: 5,
+      img: "https://drive.google.com/file/d/1MDnav8GksvgjeM0yYXeaw-bLeubXeyQ1/view?usp=sharing",
+      caption: "Expo MAN 2 Majalengka"
+    },
+    {
+      id: 6,
+      img: "https://drive.google.com/file/d/16logxrME6dA0d-P2eRn-p5vRkuwki7eX/view?usp=drive_link",
+      caption: "Expo SMAN 1 Lemahabang"
+    },
+    {
+      id: 1792177247436,
+      img: "https://drive.google.com/file/d/1D_BPECT7tqZMTkrjmcLCNGCdFOO8DVEt/view?usp=drive_link",
+      caption: "Expo SMA PUI Gegesik"
+    },
+    {
+      id: 1792177517267,
+      img: "https://drive.google.com/file/d/1zEFGJGlMid-HPUwBF-cGxOs7fXLN72Al/view?usp=sharing",
+      caption: "Expo SMAN 1 Cilimus"
+    },
+    {
+      id: 1792177605571,
+      img: "https://drive.google.com/file/d/1zx6pTvXl-A2XCd7xj6QsxoyvOh6Q-A5X/view?usp=sharing",
+      caption: "Expo SMAN 1 Ciniru"
+    }
   ],
   promoBanners: [
-    { id: 1, title: 'Buka Kesempatan Emas', subtitle: 'Pendaftaran Duta Kampus 2026', img: OFFICIAL_SHOWCASE_IMG, link: '/daftar' },
-    { id: 2, title: 'Keluarga Besar Duta Kampus', subtitle: 'Kolaborasi & Aksi Nyata', img: OFFICIAL_SHOWCASE_IMG, link: '/about' }
+    {
+      id: 1,
+      img: "https://drive.google.com/file/d/16ihfW08iEnogLJ5rhHJbXeo768yEzJH0/view?usp=drive_link",
+      title: "",
+      subtitle: "",
+      link: "/daftar"
+    },
+    {
+      id: 2,
+      img: "https://drive.google.com/file/d/1yujBPVhBBV1bw2Uox9INMicPD19tLwD_/view?usp=drive_link",
+      title: "",
+      subtitle: "",
+      link: "/about"
+    },
+    {
+      id: 1792174896678,
+      img: "https://drive.google.com/file/d/16-dkepo7rQhUuGQDOk4pb-koM8tvkItR/view?usp=drive_link",
+      title: "",
+      subtitle: "",
+      link: "/login"
+    },
+    {
+      id: 1792174912576,
+      img: "https://drive.google.com/file/d/1tqf7NO98VMPIwOH5Ii3mupBbbTll_ABD/view?usp=drive_link",
+      title: "",
+      subtitle: "",
+      link: "/login"
+    }
   ],
   ambassadors: [
     { id: 1, name: 'M. Rizki Fadhlilah', faculty: 'FITK', major: 'Tadris Bahasa Inggris', img: '', year: '2025' },
@@ -68,9 +153,9 @@ const DEFAULT_CMS = {
     { id: 20, name: 'Zahra Roudhotun Najah', faculty: 'FEBI', major: 'Ekonomi Syariah', img: '', year: '2025' }
   ],
   about: {
-    img: OFFICIAL_SHOWCASE_IMG,
+    img: "https://drive.google.com/file/d/1PLdqqvgH4t1yaePM8wu0DnFs6U5-iOiO/view?usp=sharing",
     badgeYear: '2026',
-    badgeText: 'Pemilihan Resmi',
+    badgeText: 'Duta UINSSC',
     title: 'Program Duta Kampus',
     desc: 'Melakukan Expo & Sosialisasi ke sekolah-sekolah se-Ciayumajakuning bahkan lebih tentang UIN Siber Syekh Nurjati Cirebon, melakukan promosi dalam bentuk video atau flyer melalui laman Instagram UPT Admisi dan Promosi, pelayanan Admisi untuk mensosialisasi calon mahasiswa baru UIN Siber Syekh Nurjati Cirebon selama periode SPAN-PTKIN sampai SPMB MANDIRI, serta mengayomi Paguyuban Duta dalam lingkungan UIN Siber Syekh Nurjati Cirebon.',
     point1Title: 'Sosialisasi & Edukasi Calon Mahasiswa',
@@ -94,7 +179,7 @@ function sanitizeCms(obj) {
   const clean = { ...obj };
   for (const k of Object.keys(clean)) {
     if (typeof clean[k] === 'string' && clean[k].includes('unsplash.com')) {
-      clean[k] = k === 'img' ? (clean.caption ? OFFICIAL_SHOWCASE_IMG : '') : clean[k];
+      clean[k] = '';
     } else if (typeof clean[k] === 'object' && clean[k] !== null) {
       clean[k] = sanitizeCms(clean[k]);
     }
@@ -132,15 +217,20 @@ export const CMS = {
       try { 
         let data = JSON.parse(stored);
         let hasUnsplash = stored.includes('unsplash.com');
+        let hasWrongSlider = stored.includes('01KRX8ZRGXBTT2929HWZQ7CWMM.png');
 
         // Migration safeguard
-        if (!data.slider || data.slider.length === 0) data.slider = DEFAULT_CMS.slider;
+        if (!data.slider || data.slider.length === 0 || hasWrongSlider) {
+          data.slider = DEFAULT_CMS.slider;
+        }
         if (!data.gallery || data.gallery.length === 0) data.gallery = DEFAULT_CMS.gallery;
         if (!data.promoBanners || data.promoBanners.length === 0) data.promoBanners = DEFAULT_CMS.promoBanners;
         if (!data.ambassadors || data.ambassadors.length === 0) data.ambassadors = DEFAULT_CMS.ambassadors;
-        if (!data.about) data.about = DEFAULT_CMS.about;
+        if (!data.about || (data.about.img && data.about.img.includes('01KRX8ZRGXBTT2929HWZQ7CWMM.png'))) {
+          data.about = DEFAULT_CMS.about;
+        }
 
-        if (hasUnsplash) {
+        if (hasUnsplash || hasWrongSlider) {
           data = sanitizeCms(data);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         }

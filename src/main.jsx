@@ -21,6 +21,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
+// Capture native PWA install prompt globally so it is always ready on demand
+if (typeof window !== 'undefined') {
+  window.deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    window.deferredPrompt = e;
+    window.dispatchEvent(new Event('pwa-prompt-ready'));
+  });
+  window.addEventListener('appinstalled', () => {
+    window.deferredPrompt = null;
+    window.dispatchEvent(new Event('pwa-app-installed'));
+  });
+}
+
 // Register Service Worker for PWA mobile install with active update listener
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
