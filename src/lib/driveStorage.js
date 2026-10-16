@@ -1,6 +1,7 @@
 import { extractDriveId } from '../components/Image';
 import { DB } from './db';
 import { Auth } from './auth';
+import { deleteDocumentFieldFromCloud } from './firebase';
 
 const STORAGE_SETTINGS_KEY = 'dutauinssc_drive_config';
 
@@ -306,7 +307,7 @@ export const DriveStorage = {
   /**
    * Delete a document for an applicant (CRUD: Delete)
    */
-  deleteDocument: (emailOrId, docKey, fileIdToDelete = null) => {
+  deleteDocument: async (emailOrId, docKey, fileIdToDelete = null) => {
     if (!emailOrId || !docKey) return false;
     const cleanKey = String(emailOrId).trim().toLowerCase();
 
@@ -315,33 +316,63 @@ export const DriveStorage = {
       DriveStorage.deleteDriveFile(fileIdToDelete).catch(() => {});
     }
 
-    // 1. Remove from Auth Users
+    // 1. Remove permanently from Firestore Cloud FIRST so listeners get fresh deleted state
+    try {
+      await deleteDocumentFieldFromCloud(cleanKey, docKey);
+    } catch (e) {}
+
+    // 2. Remove from Auth Users (matching email, id, or username)
     const users = Auth.getUsers();
-    const uIdx = users.findIndex(u => (u.email && u.email.toLowerCase() === cleanKey) || String(u.id) === cleanKey);
-    if (uIdx !== -1) {
-      const updatedUser = { ...users[uIdx] };
-      delete updatedUser[docKey];
-      if (updatedUser.berkas) {
-        delete updatedUser.berkas[docKey];
+    let modifiedUser = null;
+    const updatedUsers = users.map(u => {
+      const match = (u.email && u.email.toLowerCase() === cleanKey) || 
+                    String(u.id).toLowerCase() === cleanKey || 
+                    (u.username && u.username.toLowerCase() === cleanKey);
+      if (match) {
+        const nextU = { ...u };
+        delete nextU[docKey];
+        nextU[docKey] = '';
+        if (nextU.berkas) {
+          nextU.berkas = { ...nextU.berkas };
+          delete nextU.berkas[docKey];
+        }
+        nextU.updatedAt = new Date().toISOString();
+        modifiedUser = nextU;
+        return nextU;
       }
-      users[uIdx] = { ...updatedUser, updatedAt: new Date().toISOString() };
-      Auth.saveUsers(users);
+      return u;
+    });
+    if (modifiedUser) {
+      Auth.saveUsers(updatedUsers, modifiedUser);
     }
 
-    // 2. Remove from DB
+    // 3. Remove from DB (matching email, id, or nim)
     const applicants = DB.getAll();
-    const aIdx = applicants.findIndex(a => (a.email && a.email.toLowerCase() === cleanKey) || String(a.id) === cleanKey);
-    if (aIdx !== -1) {
-      const updatedApp = { ...applicants[aIdx] };
-      delete updatedApp[docKey];
-      if (updatedApp.berkas) {
-        delete updatedApp.berkas[docKey];
+    let modifiedApp = null;
+    const updatedApps = applicants.map(a => {
+      const match = (a.email && a.email.toLowerCase() === cleanKey) || 
+                    String(a.id).toLowerCase() === cleanKey || 
+                    (a.nim && String(a.nim).toLowerCase() === cleanKey);
+      if (match) {
+        const nextA = { ...a };
+        delete nextA[docKey];
+        nextA[docKey] = '';
+        if (nextA.berkas) {
+          nextA.berkas = { ...nextA.berkas };
+          delete nextA.berkas[docKey];
+        }
+        nextA.updatedAt = new Date().toISOString();
+        modifiedApp = nextA;
+        return nextA;
       }
-      applicants[aIdx] = { ...updatedApp, updatedAt: new Date().toISOString() };
-      DB.save(applicants);
+      return a;
+    });
+    if (modifiedApp) {
+      DB.save(updatedApps, modifiedApp);
     }
 
     window.dispatchEvent(new Event('storage'));
+    window.dispatchEvent(new CustomEvent('document-deleted', { detail: { emailOrId: cleanKey, docKey } }));
     return true;
   }
 };

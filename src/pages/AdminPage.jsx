@@ -139,6 +139,9 @@ export default function AdminPage() {
     }
   };
 
+  const [deletingDocKey, setDeletingDocKey] = useState(null);
+  const [actionLoadingId, setActionLoadingId] = useState(null);
+
   const askConfirmation = ({ title, message, confirmText = 'Lanjutkan', cancelText = 'Batalkan', isDestructive = false, onConfirm }) => {
     setConfirmModal({
       isOpen: true,
@@ -147,9 +150,9 @@ export default function AdminPage() {
       confirmText,
       cancelText,
       isDestructive,
-      onConfirm: () => {
+      onConfirm: async () => {
         setConfirmModal(prev => ({ ...prev, isOpen: false }));
-        if (onConfirm) onConfirm();
+        if (onConfirm) await onConfirm();
       }
     });
   };
@@ -2553,28 +2556,56 @@ export default function AdminPage() {
                               >
                                 Edit / Ganti
                               </button>
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-danger"
-                                style={{ padding: '4px 8px', fontSize: '0.72rem' }}
-                                onClick={() => {
-                                  askConfirmation({
-                                    title: 'Hapus Berkas Dokumen',
-                                    message: `Apakah Anda yakin ingin menghapus berkas "${doc.label}" untuk ${mergedSelectedItem.namaLengkap}? Tindakan ini bersifat permanen.`,
-                                    confirmText: 'Ya, Hapus Berkas',
-                                    cancelText: 'Batalkan',
-                                    isDestructive: true,
-                                    onConfirm: () => {
-                                      DriveStorage.deleteDocument(mergedSelectedItem.email || mergedSelectedItem.id, doc.key);
-                                      setApplicants(DB.getAll());
-                                      setRegisteredUsers(Auth.getUsers());
-                                      showToast('Berkas berhasil dihapus.');
-                                    }
-                                  });
-                                }}
-                              >
-                                Hapus
-                              </button>
+                              {deletingDocKey === doc.key ? (
+                                <div style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '5px',
+                                  padding: '4px 8px',
+                                  borderRadius: '6px',
+                                  background: '#fee2e2',
+                                  border: '1px solid #fca5a5',
+                                  color: '#991b1b',
+                                  fontSize: '0.72rem',
+                                  fontWeight: 700,
+                                  animation: 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                                }}>
+                                  <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                                  Menghapus...
+                                </div>
+                              ) : (
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-danger"
+                                  style={{ padding: '4px 8px', fontSize: '0.72rem' }}
+                                  disabled={deletingDocKey !== null}
+                                  onClick={() => {
+                                    askConfirmation({
+                                      title: 'Hapus Berkas Dokumen',
+                                      message: `Apakah Anda yakin ingin menghapus berkas "${doc.label}" untuk ${mergedSelectedItem.namaLengkap}? Tindakan ini bersifat permanen di sistem dan Cloud Firestore.`,
+                                      confirmText: 'Ya, Hapus Berkas',
+                                      cancelText: 'Batalkan',
+                                      isDestructive: true,
+                                      onConfirm: async () => {
+                                        setDeletingDocKey(doc.key);
+                                        try {
+                                          const targetId = mergedSelectedItem.email || mergedSelectedItem.id;
+                                          await DriveStorage.deleteDocument(targetId, doc.key);
+                                          setApplicants(DB.getAll());
+                                          setRegisteredUsers(Auth.getUsers());
+                                          showToast('Berkas berhasil dihapus secara permanen.');
+                                        } catch (err) {
+                                          showToast('Gagal menghapus berkas: ' + (err.message || 'Error'), 'danger');
+                                        } finally {
+                                          setDeletingDocKey(null);
+                                        }
+                                      }
+                                    });
+                                  }}
+                                >
+                                  Hapus
+                                </button>
+                              )}
                             </>
                           ) : (
                             <button

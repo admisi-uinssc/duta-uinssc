@@ -52,6 +52,9 @@ export default function UserDashboard({ user, onLogout }) {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(user.berkasSubmitted || false);
+  const [loadingDocKey, setLoadingDocKey] = useState(null); // 'deleting-docKey' or 'uploading-docKey'
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Sync state from storage and live cloud for instant Lolos/Tidak Lolos announcement updates
   useEffect(() => {
@@ -65,16 +68,16 @@ export default function UserDashboard({ user, onLogout }) {
         }
         setFormData(prev => ({
           ...prev,
-          docSuratPernyataan: prev.docSuratPernyataan || fresh.docSuratPernyataan || fresh.berkas?.docSuratPernyataan || '',
-          docCv: prev.docCv || fresh.docCv || fresh.berkas?.docCv || '',
-          docSuratRekomendasi: prev.docSuratRekomendasi || fresh.docSuratRekomendasi || fresh.berkas?.docSuratRekomendasi || '',
-          docSertifikatPrestasi: prev.docSertifikatPrestasi || fresh.docSertifikatPrestasi || fresh.berkas?.docSertifikatPrestasi || '',
-          docFotoLengkap: prev.docFotoLengkap || fresh.docFotoLengkap || fresh.berkas?.docFotoLengkap || '',
-          docMotivationLetter: prev.docMotivationLetter || fresh.docMotivationLetter || fresh.berkas?.docMotivationLetter || '',
-          docBuktiFollow: prev.docBuktiFollow || fresh.docBuktiFollow || fresh.berkas?.docBuktiFollow || '',
-          docKtm: prev.docKtm || fresh.docKtm || fresh.berkas?.docKtm || '',
-          docTranskripNilai: prev.docTranskripNilai || fresh.docTranskripNilai || fresh.berkas?.docTranskripNilai || '',
-          docBuktiDiterima: prev.docBuktiDiterima || fresh.docBuktiDiterima || fresh.berkas?.docBuktiDiterima || '',
+          docSuratPernyataan: fresh.docSuratPernyataan !== undefined ? fresh.docSuratPernyataan : (fresh.berkas?.docSuratPernyataan || ''),
+          docCv: fresh.docCv !== undefined ? fresh.docCv : (fresh.berkas?.docCv || ''),
+          docSuratRekomendasi: fresh.docSuratRekomendasi !== undefined ? fresh.docSuratRekomendasi : (fresh.berkas?.docSuratRekomendasi || ''),
+          docSertifikatPrestasi: fresh.docSertifikatPrestasi !== undefined ? fresh.docSertifikatPrestasi : (fresh.berkas?.docSertifikatPrestasi || ''),
+          docFotoLengkap: fresh.docFotoLengkap !== undefined ? fresh.docFotoLengkap : (fresh.berkas?.docFotoLengkap || ''),
+          docMotivationLetter: fresh.docMotivationLetter !== undefined ? fresh.docMotivationLetter : (fresh.berkas?.docMotivationLetter || ''),
+          docBuktiFollow: fresh.docBuktiFollow !== undefined ? fresh.docBuktiFollow : (fresh.berkas?.docBuktiFollow || ''),
+          docKtm: fresh.docKtm !== undefined ? fresh.docKtm : (fresh.berkas?.docKtm || ''),
+          docTranskripNilai: fresh.docTranskripNilai !== undefined ? fresh.docTranskripNilai : (fresh.berkas?.docTranskripNilai || ''),
+          docBuktiDiterima: fresh.docBuktiDiterima !== undefined ? fresh.docBuktiDiterima : (fresh.berkas?.docBuktiDiterima || ''),
         }));
       }
       const existingInDb = DB.getAll().find(
@@ -88,22 +91,30 @@ export default function UserDashboard({ user, onLogout }) {
         setFormData(prev => ({
           ...prev,
           ...cleanDraft,
-          docSuratPernyataan: cleanDraft.docSuratPernyataan || cleanDraft.berkas?.docSuratPernyataan || prev.docSuratPernyataan,
-          docCv: cleanDraft.docCv || cleanDraft.berkas?.docCv || prev.docCv,
-          docSuratRekomendasi: cleanDraft.docSuratRekomendasi || cleanDraft.berkas?.docSuratRekomendasi || prev.docSuratRekomendasi,
-          docSertifikatPrestasi: cleanDraft.docSertifikatPrestasi || cleanDraft.berkas?.docSertifikatPrestasi || prev.docSertifikatPrestasi,
-          docFotoLengkap: cleanDraft.docFotoLengkap || cleanDraft.berkas?.docFotoLengkap || prev.docFotoLengkap,
-          docMotivationLetter: cleanDraft.docMotivationLetter || cleanDraft.berkas?.docMotivationLetter || prev.docMotivationLetter,
-          docBuktiFollow: cleanDraft.docBuktiFollow || cleanDraft.berkas?.docBuktiFollow || prev.docBuktiFollow,
-          docKtm: cleanDraft.docKtm || cleanDraft.berkas?.docKtm || prev.docKtm,
-          docTranskripNilai: cleanDraft.docTranskripNilai || cleanDraft.berkas?.docTranskripNilai || prev.docTranskripNilai,
-          docBuktiDiterima: cleanDraft.docBuktiDiterima || cleanDraft.berkas?.docBuktiDiterima || prev.docBuktiDiterima,
+          docSuratPernyataan: cleanDraft.docSuratPernyataan !== undefined ? cleanDraft.docSuratPernyataan : (cleanDraft.berkas?.docSuratPernyataan || ''),
+          docCv: cleanDraft.docCv !== undefined ? cleanDraft.docCv : (cleanDraft.berkas?.docCv || ''),
+          docSuratRekomendasi: cleanDraft.docSuratRekomendasi !== undefined ? cleanDraft.docSuratRekomendasi : (cleanDraft.berkas?.docSuratRekomendasi || ''),
+          docSertifikatPrestasi: cleanDraft.docSertifikatPrestasi !== undefined ? cleanDraft.docSertifikatPrestasi : (cleanDraft.berkas?.docSertifikatPrestasi || ''),
+          docFotoLengkap: cleanDraft.docFotoLengkap !== undefined ? cleanDraft.docFotoLengkap : (cleanDraft.berkas?.docFotoLengkap || ''),
+          docMotivationLetter: cleanDraft.docMotivationLetter !== undefined ? cleanDraft.docMotivationLetter : (cleanDraft.berkas?.docMotivationLetter || ''),
+          docBuktiFollow: cleanDraft.docBuktiFollow !== undefined ? cleanDraft.docBuktiFollow : (cleanDraft.berkas?.docBuktiFollow || ''),
+          docKtm: cleanDraft.docKtm !== undefined ? cleanDraft.docKtm : (cleanDraft.berkas?.docKtm || ''),
+          docTranskripNilai: cleanDraft.docTranskripNilai !== undefined ? cleanDraft.docTranskripNilai : (cleanDraft.berkas?.docTranskripNilai || ''),
+          docBuktiDiterima: cleanDraft.docBuktiDiterima !== undefined ? cleanDraft.docBuktiDiterima : (cleanDraft.berkas?.docBuktiDiterima || ''),
         }));
       }
     };
 
     refreshUserData();
     window.addEventListener('storage', refreshUserData);
+
+    const handleDocDeleted = (e) => {
+      const { emailOrId, docKey } = e.detail || {};
+      if ((emailOrId || '').toLowerCase() === (user.email || '').toLowerCase()) {
+        setFormData(prev => ({ ...prev, [docKey]: '' }));
+      }
+    };
+    window.addEventListener('document-deleted', handleDocDeleted);
 
     // Live single-user Firestore listener: instant result updates with 0 wasteful reads
     const unsubscribeCloud = listenToUserFromCloud(user.email, (cloudUser) => {
@@ -130,16 +141,16 @@ export default function UserDashboard({ user, onLogout }) {
         setFormData(prev => ({
           ...prev,
           ...cloudApp,
-          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || prev.docSuratPernyataan,
-          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || prev.docCv,
-          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || prev.docSuratRekomendasi,
-          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || prev.docSertifikatPrestasi,
-          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || prev.docFotoLengkap,
-          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || prev.docMotivationLetter,
-          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || prev.docBuktiFollow,
-          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || prev.docKtm,
-          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || prev.docTranskripNilai,
-          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || prev.docBuktiDiterima,
+          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || '',
+          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || '',
+          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || '',
+          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || '',
+          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || '',
+          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || '',
+          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || '',
+          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || '',
+          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || '',
+          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || '',
         }));
         // Cache in local DB so DB.getAll() has it on HP
         const currentList = DB.getAll();
@@ -158,22 +169,23 @@ export default function UserDashboard({ user, onLogout }) {
         setFormData(prev => ({
           ...prev,
           ...cloudApp,
-          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || prev.docSuratPernyataan,
-          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || prev.docCv,
-          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || prev.docSuratRekomendasi,
-          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || prev.docSertifikatPrestasi,
-          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || prev.docFotoLengkap,
-          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || prev.docMotivationLetter,
-          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || prev.docBuktiFollow,
-          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || prev.docKtm,
-          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || prev.docTranskripNilai,
-          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || prev.docBuktiDiterima,
+          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || '',
+          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || '',
+          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || '',
+          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || '',
+          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || '',
+          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || '',
+          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || '',
+          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || '',
+          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || '',
+          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || '',
         }));
       }
     });
 
     return () => {
       window.removeEventListener('storage', refreshUserData);
+      window.removeEventListener('document-deleted', handleDocDeleted);
       if (typeof unsubscribeCloud === 'function') unsubscribeCloud();
       if (typeof unsubscribeAppCloud === 'function') unsubscribeAppCloud();
     };
@@ -186,6 +198,7 @@ export default function UserDashboard({ user, onLogout }) {
 
   const handleFileUpload = async (docKey, file, docLabel) => {
     if (!file) return;
+    setLoadingDocKey(`uploading-${docKey}`);
     setSaveNotice(`Mengunggah berkas ${file.name}...`);
     try {
       const docData = await DriveStorage.uploadFile(file, {
@@ -196,71 +209,92 @@ export default function UserDashboard({ user, onLogout }) {
         docLabel
       });
 
-      setFormData(prev => ({ ...prev, [docKey]: docData }));
-      DriveStorage.saveDocument(user.email, docKey, docData);
+      setFormData(prev => ({
+        ...prev,
+        [docKey]: docData,
+        berkas: { ...(prev.berkas || {}), [docKey]: docData }
+      }));
+      await DriveStorage.saveDocument(user.email, docKey, docData);
       setSaveNotice(`Berkas ${file.name} berhasil disimpan.`);
+      triggerAlert(`Berkas ${docLabel} berhasil disimpan.`, 'success');
     } catch (err) {
       const errMsg = 'Kendala unggah berkas: ' + (err.message || 'Gagal menyimpan dokumen.');
       setSaveNotice({ type: 'error', message: errMsg });
       triggerAlert(errMsg, 'danger');
     } finally {
+      setLoadingDocKey(null);
       setTimeout(() => setSaveNotice(''), 4500);
     }
   };
 
-  const handleRemoveFile = (docKey) => {
+  const handleRemoveFile = async (docKey) => {
     const docData = normalizeDocument(formData[docKey]);
-    setFormData(prev => {
-      const next = { ...prev };
-      delete next[docKey];
-      return next;
-    });
-    DriveStorage.deleteDocument(user.email, docKey, docData?.driveId);
-    setSaveNotice('Berkas berhasil dihapus.');
-    setTimeout(() => setSaveNotice(''), 3000);
+    setLoadingDocKey(`deleting-${docKey}`);
+    setSaveNotice('Menghapus berkas...');
+    try {
+      setFormData(prev => {
+        const next = { ...prev };
+        next[docKey] = '';
+        if (next.berkas) {
+          next.berkas = { ...next.berkas };
+          delete next.berkas[docKey];
+        }
+        return next;
+      });
+      await DriveStorage.deleteDocument(user.email, docKey, docData?.driveId);
+      setSaveNotice('Berkas berhasil dihapus.');
+      triggerAlert('Berkas berhasil dihapus.', 'success');
+    } catch (err) {
+      triggerAlert('Gagal menghapus berkas: ' + (err.message || 'Terjadi kendala'), 'danger');
+    } finally {
+      setLoadingDocKey(null);
+      setTimeout(() => setSaveNotice(''), 3000);
+    }
   };
 
-  const handleSaveDraft = (e) => {
-    e.preventDefault();
-    const users = Auth.getUsers();
-    const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
-    const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
-
-    const cleanForm = { ...formData };
-    delete cleanForm.selectionStage;
-    delete cleanForm.selectionMessage;
-    delete cleanForm.accountStatus;
-    delete cleanForm.status;
-
-    // Preserve existing uploaded documents if not replaced in current form state
-    DOSSIER_DOCUMENTS.forEach(d => {
-      if (!cleanForm[d.key]) {
-        cleanForm[d.key] = users[idx]?.[d.key] || users[idx]?.berkas?.[d.key] || existing?.[d.key] || existing?.berkas?.[d.key] || '';
-      }
-    });
-
-    cleanForm.berkas = {
-      ...(users[idx]?.berkas || {}),
-      ...(existing?.berkas || {})
-    };
-    DOSSIER_DOCUMENTS.forEach(d => {
-      if (cleanForm[d.key]) {
-        cleanForm.berkas[d.key] = cleanForm[d.key];
-      }
-    });
-
-    if (idx !== -1) {
-      users[idx] = { 
-        ...users[idx], 
-        ...cleanForm,
-        updatedAt: new Date().toISOString()
-      };
-      Auth.saveUsers(users, users[idx]);
-      setCurrentUser(users[idx]);
-    }
-
-    // Sync immediately to DB so Admin sees semester and all draft updates right away
+  const handleSaveDraft = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setIsSavingDraft(true);
+    setSaveNotice('Menyimpan draf formulir dan berkas...');
     try {
+      const users = Auth.getUsers();
+      const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
+      const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
+
+      const cleanForm = { ...formData };
+      delete cleanForm.selectionStage;
+      delete cleanForm.selectionMessage;
+      delete cleanForm.accountStatus;
+      delete cleanForm.status;
+
+      // Keep only active uploaded documents, never revive deleted documents
+      cleanForm.berkas = {};
+      DOSSIER_DOCUMENTS.forEach(d => {
+        const val = cleanForm[d.key];
+        if (val && val !== '' && val !== '-' && val !== 'null') {
+          cleanForm.berkas[d.key] = val;
+        } else {
+          cleanForm[d.key] = '';
+        }
+      });
+
+      if (idx !== -1) {
+        users[idx] = { 
+          ...users[idx], 
+          ...cleanForm,
+          updatedAt: new Date().toISOString()
+        };
+        DOSSIER_DOCUMENTS.forEach(d => {
+          if (!cleanForm[d.key]) {
+            users[idx][d.key] = '';
+            if (users[idx].berkas) delete users[idx].berkas[d.key];
+          }
+        });
+        Auth.saveUsers(users, users[idx]);
+        setCurrentUser(users[idx]);
+      }
+
+      // Sync immediately to DB so Admin sees semester and all draft updates right away
       if (existing) {
         let updatedItem = null;
         const allDb = DB.getAll().map(i => {
@@ -272,6 +306,12 @@ export default function UserDashboard({ user, onLogout }) {
               prodi: formData.jurusan || formData.fakultas,
               updatedAt: new Date().toISOString()
             };
+            DOSSIER_DOCUMENTS.forEach(d => {
+              if (!cleanForm[d.key]) {
+                updatedItem[d.key] = '';
+                if (updatedItem.berkas) delete updatedItem.berkas[d.key];
+              }
+            });
             return updatedItem;
           }
           return i;
@@ -288,16 +328,19 @@ export default function UserDashboard({ user, onLogout }) {
         };
         DB.add(newItem);
       }
-    } catch (err) {
-      console.error('Error syncing draft to DB:', err);
-    }
 
-    setSaveNotice('Draf formulir dan dokumen pendaftaran berhasil disimpan.');
-    setTimeout(() => setSaveNotice(''), 3500);
+      setSaveNotice('Draf formulir dan dokumen pendaftaran berhasil disimpan.');
+      triggerAlert('Draf formulir dan dokumen berhasil disimpan.', 'success');
+    } catch (err) {
+      triggerAlert('Gagal menyimpan draf: ' + (err.message || 'Terjadi kesalahan'), 'danger');
+    } finally {
+      setIsSavingDraft(false);
+      setTimeout(() => setSaveNotice(''), 3500);
+    }
   };
 
-  const handleSubmitApplication = (e) => {
-    e.preventDefault();
+  const handleSubmitApplication = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
     if (!formData.ipk) {
       triggerAlert('Mohon lengkapi data nilai IPK sebelum mengirim pendaftaran.', 'danger');
       return;
@@ -319,88 +362,90 @@ export default function UserDashboard({ user, onLogout }) {
       return;
     }
 
-    const users = Auth.getUsers();
-    const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
-    const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
+    setIsSubmitting(true);
+    setSaveNotice('Mengirim pendaftaran dan berkas persyaratan...');
+    try {
+      const users = Auth.getUsers();
+      const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
+      const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
 
-    const cleanForm = { ...formData };
-    delete cleanForm.selectionStage;
-    delete cleanForm.selectionMessage;
-    delete cleanForm.accountStatus;
-    delete cleanForm.status;
+      const cleanForm = { ...formData };
+      delete cleanForm.selectionStage;
+      delete cleanForm.selectionMessage;
+      delete cleanForm.accountStatus;
+      delete cleanForm.status;
 
-    // Preserve and populate berkas map
-    DOSSIER_DOCUMENTS.forEach(d => {
-      if (!cleanForm[d.key]) {
-        cleanForm[d.key] = users[idx]?.[d.key] || users[idx]?.berkas?.[d.key] || existing?.[d.key] || existing?.berkas?.[d.key] || '';
-      }
-    });
-
-    cleanForm.berkas = {
-      ...(users[idx]?.berkas || {}),
-      ...(existing?.berkas || {})
-    };
-    DOSSIER_DOCUMENTS.forEach(d => {
-      if (cleanForm[d.key]) {
-        cleanForm.berkas[d.key] = cleanForm[d.key];
-      }
-    });
-
-    // Save or update in DB
-    let savedAppItem = null;
-    if (existing) {
-      const allDb = DB.getAll().map(i => {
-        if ((i.email || '').toLowerCase() === user.email.toLowerCase()) {
-          savedAppItem = {
-            ...i,
-            ...cleanForm,
-            semester: formData.semester,
-            prodi: formData.jurusan || formData.fakultas,
-            status: 'pending',
-            selectionStage: 'review',
-            selectionMessage: '',
-            berkasSubmitted: true,
-            updatedAt: new Date().toISOString()
-          };
-          return savedAppItem;
+      cleanForm.berkas = {};
+      DOSSIER_DOCUMENTS.forEach(d => {
+        if (cleanForm[d.key]) {
+          cleanForm.berkas[d.key] = cleanForm[d.key];
+        } else {
+          cleanForm[d.key] = '';
         }
-        return i;
       });
-      DB.save(allDb, savedAppItem);
-    } else {
-      savedAppItem = {
-        ...cleanForm,
-        email: user.email,
-        semester: formData.semester,
-        prodi: formData.jurusan || formData.fakultas,
-        status: 'pending',
-        selectionStage: 'review',
-        selectionMessage: '',
-        berkasSubmitted: true,
-      };
-      DB.add(savedAppItem);
-    }
 
-    // Update user status in Auth
-    if (idx !== -1) {
-      users[idx] = { 
-        ...users[idx], 
-        ...cleanForm, 
-        semester: formData.semester,
-        berkasSubmitted: true, 
-        selectionStage: 'review',
-        selectionMessage: '',
-        status: 'Menunggu Review',
-        updatedAt: new Date().toISOString()
-      };
-      Auth.saveUsers(users, users[idx]);
-      setCurrentUser(users[idx]);
-    }
+      // Save or update in DB
+      let savedAppItem = null;
+      if (existing) {
+        const allDb = DB.getAll().map(i => {
+          if ((i.email || '').toLowerCase() === user.email.toLowerCase()) {
+            savedAppItem = {
+              ...i,
+              ...cleanForm,
+              semester: formData.semester,
+              prodi: formData.jurusan || formData.fakultas,
+              status: 'pending',
+              selectionStage: 'review',
+              selectionMessage: '',
+              berkasSubmitted: true,
+              updatedAt: new Date().toISOString()
+            };
+            return savedAppItem;
+          }
+          return i;
+        });
+        DB.save(allDb, savedAppItem);
+      } else {
+        savedAppItem = {
+          ...cleanForm,
+          email: user.email,
+          semester: formData.semester,
+          prodi: formData.jurusan || formData.fakultas,
+          status: 'pending',
+          selectionStage: 'review',
+          selectionMessage: '',
+          berkasSubmitted: true,
+        };
+        DB.add(savedAppItem);
+      }
 
-    setIsSubmitted(true);
-    setSaveNotice('Pendaftaran Duta Kampus dan 10 berkas dokumen persyaratan berhasil dikirimkan.');
-    setActiveTab('riwayat');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Update user status in Auth
+      if (idx !== -1) {
+        users[idx] = { 
+          ...users[idx], 
+          ...cleanForm, 
+          semester: formData.semester,
+          berkasSubmitted: true, 
+          selectionStage: 'review',
+          selectionMessage: '',
+          status: 'Menunggu Review',
+          updatedAt: new Date().toISOString()
+        };
+        Auth.saveUsers(users, users[idx]);
+        setCurrentUser(users[idx]);
+      }
+
+      setIsSubmitted(true);
+      setSaveNotice('Pendaftaran Duta Kampus dan 10 berkas dokumen persyaratan berhasil dikirimkan.');
+      triggerAlert('Pendaftaran dan seluruh berkas berhasil dikirim untuk verifikasi Panitia Seleksi.', 'success');
+      setActiveTab('riwayat');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      triggerAlert('Gagal mengirim pendaftaran: ' + (err.message || 'Terjadi kendala'), 'danger');
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setSaveNotice(''), 4000);
+    }
   };
 
   const dossierStatus = evaluateDossierCompleteness(formData);
@@ -1296,8 +1341,42 @@ export default function UserDashboard({ user, onLogout }) {
                           </div>
 
                           <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            {isUploaded ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', maxWidth: '100%', flexWrap: 'wrap' }}>
+                            {loadingDocKey === `deleting-${doc.key}` ? (
+                              <div style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                background: '#fee2e2',
+                                border: '1px solid #fca5a5',
+                                color: '#991b1b',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                animation: 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                              }}>
+                                <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                                Sedang Menghapus...
+                              </div>
+                            ) : loadingDocKey === `uploading-${doc.key}` ? (
+                              <div style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                background: '#fef3c7',
+                                border: '1px solid #fde68a',
+                                color: '#92400e',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                animation: 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                              }}>
+                                <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                                Mengunggah & Menyimpan...
+                              </div>
+                            ) : isUploaded ? (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <button
                                   type="button"
                                   onClick={() => setPreviewModal({
@@ -1328,17 +1407,24 @@ export default function UserDashboard({ user, onLogout }) {
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveFile(doc.key)}
+                                  disabled={loadingDocKey !== null}
                                   style={{
-                                    background: 'none',
-                                    border: 'none',
+                                    background: 'rgba(220, 38, 38, 0.08)',
+                                    border: '1px solid rgba(220, 38, 38, 0.25)',
                                     color: '#dc2626',
-                                    cursor: 'pointer',
-                                    fontSize: '0.72rem',
+                                    cursor: loadingDocKey !== null ? 'not-allowed' : 'pointer',
+                                    fontSize: '0.75rem',
                                     fontWeight: 700,
-                                    padding: '2px 6px',
-                                    borderRadius: '4px'
+                                    padding: '4px 10px',
+                                    borderRadius: '6px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    transition: 'all 0.2s'
                                   }}
+                                  title="Hapus berkas ini secara permanen"
                                 >
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
                                   Hapus
                                 </button>
                               </div>
@@ -1361,7 +1447,8 @@ export default function UserDashboard({ user, onLogout }) {
                                   fontSize: '0.75rem',
                                   fontWeight: 600,
                                   color: 'var(--navy)',
-                                  cursor: 'pointer',
+                                  cursor: loadingDocKey !== null ? 'not-allowed' : 'pointer',
+                                  opacity: loadingDocKey !== null ? 0.6 : 1,
                                   transition: 'all 0.2s'
                                 }}
                               >
@@ -1369,6 +1456,7 @@ export default function UserDashboard({ user, onLogout }) {
                                   type="file"
                                   accept={doc.fileTypes}
                                   style={{ display: 'none' }}
+                                  disabled={loadingDocKey !== null}
                                   onChange={(e) => handleFileUpload(doc.key, e.target.files[0], doc.label)}
                                 />
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -1377,6 +1465,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                               <button
                                 type="button"
+                                disabled={loadingDocKey !== null}
                                 onClick={() => setPreviewModal({
                                   isOpen: true,
                                   docKey: doc.key,
@@ -1392,7 +1481,8 @@ export default function UserDashboard({ user, onLogout }) {
                                   background: '#ffffff',
                                   fontSize: '0.72rem',
                                   color: 'var(--navy)',
-                                  cursor: 'pointer',
+                                  cursor: loadingDocKey !== null ? 'not-allowed' : 'pointer',
+                                  opacity: loadingDocKey !== null ? 0.6 : 1,
                                   fontWeight: 600
                                 }}
                                 title="Tautkan Link Google Drive"
@@ -1412,33 +1502,51 @@ export default function UserDashboard({ user, onLogout }) {
                   <button
                     type="button"
                     onClick={handleSaveDraft}
+                    disabled={isSavingDraft || isSubmitting}
                     style={{
                       padding: '0.875rem 1.5rem',
                       borderRadius: '8px',
                       border: '1.5px solid #cbd5e1',
-                      background: '#ffffff',
+                      background: isSavingDraft ? '#f8fafc' : '#ffffff',
                       fontSize: '0.925rem',
                       fontWeight: 600,
-                      color: '#475569',
-                      cursor: 'pointer',
-                      flex: '1 1 auto'
+                      color: isSavingDraft ? '#94a3b8' : '#475569',
+                      cursor: isSavingDraft || isSubmitting ? 'not-allowed' : 'pointer',
+                      flex: '1 1 auto',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px'
                     }}
                   >
-                    Simpan Draf Berkas
+                    {isSavingDraft && (
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                    )}
+                    {isSavingDraft ? 'Menyimpan Draf Berkas...' : 'Simpan Draf Berkas'}
                   </button>
 
                   <button
                     type="submit"
+                    disabled={isSubmitting || isSavingDraft}
                     className="btn btn-gold"
                     style={{
                       padding: '0.875rem 2rem',
                       borderRadius: '8px',
                       fontSize: '0.925rem',
                       fontWeight: 700,
-                      flex: '2 1 auto'
+                      flex: '2 1 auto',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      opacity: isSubmitting ? 0.75 : 1,
+                      cursor: isSubmitting || isSavingDraft ? 'not-allowed' : 'pointer'
                     }}
                   >
-                    {isSubmitted ? 'Perbarui & Kirim Ulang Berkas' : 'Kirim Pendaftaran Duta Kampus →'}
+                    {isSubmitting && (
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                    )}
+                    {isSubmitting ? 'Mengirim Pendaftaran...' : (isSubmitted ? 'Perbarui & Kirim Ulang Berkas' : 'Kirim Pendaftaran Duta Kampus →')}
                   </button>
                 </div>
               </form>

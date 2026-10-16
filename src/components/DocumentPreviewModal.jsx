@@ -15,6 +15,8 @@ export default function DocumentPreviewModal({
   const [editing, setEditing] = useState(false);
   const [driveUrlInput, setDriveUrlInput] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubmittingLink, setIsSubmittingLink] = useState(false);
   const [notice, setNotice] = useState('');
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
@@ -36,7 +38,7 @@ export default function DocumentPreviewModal({
         docLabel
       });
 
-      DriveStorage.saveDocument(applicantEmailOrId, docKey, docData);
+      await DriveStorage.saveDocument(applicantEmailOrId, docKey, docData);
       setNotice('Berkas berhasil diperbarui.');
       setEditing(false);
       if (onUpdated) onUpdated(docData);
@@ -48,24 +50,40 @@ export default function DocumentPreviewModal({
     }
   };
 
-  const handleLinkSubmit = (e) => {
+  const handleLinkSubmit = async (e) => {
     e.preventDefault();
     if (!driveUrlInput.trim()) return;
 
-    const normalized = normalizeDocument(driveUrlInput.trim(), docLabel);
-    DriveStorage.saveDocument(applicantEmailOrId, docKey, normalized);
-    setNotice('Tautan Google Drive berhasil disimpan.');
-    setEditing(false);
-    setDriveUrlInput('');
-    if (onUpdated) onUpdated(normalized);
-    setTimeout(() => setNotice(''), 3000);
+    setIsSubmittingLink(true);
+    setNotice('Menyimpan tautan Google Drive...');
+    try {
+      const normalized = normalizeDocument(driveUrlInput.trim(), docLabel);
+      await DriveStorage.saveDocument(applicantEmailOrId, docKey, normalized);
+      setNotice('Tautan Google Drive berhasil disimpan.');
+      setEditing(false);
+      setDriveUrlInput('');
+      if (onUpdated) onUpdated(normalized);
+    } catch (err) {
+      setNotice('Gagal menyimpan tautan: ' + (err.message || 'Error'));
+    } finally {
+      setIsSubmittingLink(false);
+      setTimeout(() => setNotice(''), 3000);
+    }
   };
 
-  const executeDelete = () => {
-    DriveStorage.deleteDocument(applicantEmailOrId, docKey, doc?.driveId);
-    if (onUpdated) onUpdated(null);
-    setShowConfirmDelete(false);
-    onClose();
+  const executeDelete = async () => {
+    setIsDeleting(true);
+    setNotice('Menghapus berkas...');
+    try {
+      await DriveStorage.deleteDocument(applicantEmailOrId, docKey, doc?.driveId);
+      if (onUpdated) onUpdated(null);
+      setShowConfirmDelete(false);
+      onClose();
+    } catch (err) {
+      setNotice('Gagal menghapus berkas: ' + (err.message || 'Error'));
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -199,6 +217,7 @@ export default function DocumentPreviewModal({
               <button
                 type="button"
                 className="btn btn-sm"
+                disabled={isDeleting}
                 style={{
                   background: '#e11d48',
                   color: '#ffffff',
@@ -207,11 +226,18 @@ export default function DocumentPreviewModal({
                   borderRadius: '6px',
                   fontSize: '0.78rem',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  cursor: isDeleting ? 'not-allowed' : 'pointer',
+                  opacity: isDeleting ? 0.75 : 1,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
                 }}
                 onClick={executeDelete}
               >
-                Hapus Dokumen
+                {isDeleting && (
+                  <svg className="animate-spin" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                )}
+                {isDeleting ? 'Menghapus Dokumen...' : 'Hapus Dokumen'}
               </button>
               <button
                 type="button"

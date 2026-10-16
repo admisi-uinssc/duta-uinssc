@@ -8,6 +8,8 @@ import {
   collection, 
   doc, 
   setDoc, 
+  updateDoc,
+  deleteField,
   getDocs, 
   getDoc, 
   deleteDoc, 
@@ -153,6 +155,19 @@ export async function smartSyncAll(force = false) {
   }
 }
 
+const DOSSIER_DOC_KEYS = [
+  'docSuratPernyataan',
+  'docCv',
+  'docSuratRekomendasi',
+  'docSertifikatPrestasi',
+  'docFotoLengkap',
+  'docMotivationLetter',
+  'docBuktiFollow',
+  'docKtm',
+  'docTranskripNilai',
+  'docBuktiDiterima'
+];
+
 /**
  * Save / sync a single user to Firestore (Writes only = 1 Write, 0 Reads)
  */
@@ -161,19 +176,38 @@ export async function syncUserToCloud(user) {
   try {
     const docId = String(user.email || user.username || user.id).toLowerCase();
     const userRef = doc(db, 'duta_users', docId);
+    const emptyDocKeys = DOSSIER_DOC_KEYS.filter(k => user[k] === '' || (user.berkas && user.berkas[k] === ''));
+
     await setDoc(userRef, {
       ...user,
       updatedAt: new Date().toISOString()
     }, { merge: true });
 
+    if (emptyDocKeys.length > 0) {
+      const delPayload = {};
+      emptyDocKeys.forEach(k => {
+        delPayload[k] = deleteField();
+        delPayload[`berkas.${k}`] = deleteField();
+      });
+      await updateDoc(userRef, delPayload).catch(() => {});
+    }
+
     // Also sync to numeric ID doc if different to avoid split state
-    if (user.id && String(user.id) !== docId) {
+    if (user.id && String(user.id).toLowerCase() !== docId) {
       try {
-        const altRef = doc(db, 'duta_users', String(user.id));
+        const altRef = doc(db, 'duta_users', String(user.id).toLowerCase());
         await setDoc(altRef, {
           ...user,
           updatedAt: new Date().toISOString()
         }, { merge: true });
+        if (emptyDocKeys.length > 0) {
+          const delPayload = {};
+          emptyDocKeys.forEach(k => {
+            delPayload[k] = deleteField();
+            delPayload[`berkas.${k}`] = deleteField();
+          });
+          await updateDoc(altRef, delPayload).catch(() => {});
+        }
       } catch (e) {}
     }
   } catch (err) {
@@ -296,6 +330,55 @@ export function listenToApplicantFromCloud(identifier, callback) {
   }
 }
 
+/**
+ * Delete a specific document field from Firestore cloud
+ */
+export async function deleteDocumentFieldFromCloud(emailOrId, docKey) {
+  if (!db || !emailOrId || !docKey) return;
+  const clean = String(emailOrId).trim().toLowerCase();
+
+  const idSet = new Set([clean]);
+
+  if (typeof window !== 'undefined') {
+    try {
+      const rawUsers = localStorage.getItem('dutauinssc_users');
+      if (rawUsers) {
+        const list = JSON.parse(rawUsers);
+        list.forEach(u => {
+          if ((u.email && u.email.toLowerCase() === clean) || String(u.id).toLowerCase() === clean || (u.username && u.username.toLowerCase() === clean)) {
+            if (u.email) idSet.add(u.email.toLowerCase());
+            if (u.id) idSet.add(String(u.id).toLowerCase());
+            if (u.username) idSet.add(u.username.toLowerCase());
+          }
+        });
+      }
+      const rawApps = localStorage.getItem('dutauinssc_pendaftar');
+      if (rawApps) {
+        const list = JSON.parse(rawApps);
+        list.forEach(a => {
+          if ((a.email && a.email.toLowerCase() === clean) || String(a.id).toLowerCase() === clean || (a.nim && String(a.nim).toLowerCase() === clean)) {
+            if (a.email) idSet.add(a.email.toLowerCase());
+            if (a.id) idSet.add(String(a.id).toLowerCase());
+          }
+        });
+      }
+    } catch (e) {}
+  }
+
+  const deletePromises = [];
+  idSet.forEach(id => {
+    const delPayload = {
+      [docKey]: deleteField(),
+      [`berkas.${docKey}`]: deleteField(),
+      updatedAt: new Date().toISOString()
+    };
+    deletePromises.push(updateDoc(doc(db, 'duta_applicants', id), delPayload).catch(() => {}));
+    deletePromises.push(updateDoc(doc(db, 'duta_users', id), delPayload).catch(() => {}));
+  });
+
+  await Promise.all(deletePromises);
+}
+
 
 /**
  * Fetch all users from Firestore
@@ -321,10 +404,21 @@ export async function syncApplicantToCloud(applicant) {
   try {
     const docId = String(applicant.id || applicant.email).toLowerCase();
     const appRef = doc(db, 'duta_applicants', docId);
+    const emptyDocKeys = DOSSIER_DOC_KEYS.filter(k => applicant[k] === '' || (applicant.berkas && applicant.berkas[k] === ''));
+
     await setDoc(appRef, {
       ...applicant,
       updatedAt: new Date().toISOString()
     }, { merge: true });
+
+    if (emptyDocKeys.length > 0) {
+      const delPayload = {};
+      emptyDocKeys.forEach(k => {
+        delPayload[k] = deleteField();
+        delPayload[`berkas.${k}`] = deleteField();
+      });
+      await updateDoc(appRef, delPayload).catch(() => {});
+    }
 
     // Also sync to email doc ID if applicant has email and it differs
     if (applicant.email && String(applicant.email).toLowerCase() !== docId) {
@@ -334,6 +428,14 @@ export async function syncApplicantToCloud(applicant) {
           ...applicant,
           updatedAt: new Date().toISOString()
         }, { merge: true });
+        if (emptyDocKeys.length > 0) {
+          const delPayload = {};
+          emptyDocKeys.forEach(k => {
+            delPayload[k] = deleteField();
+            delPayload[`berkas.${k}`] = deleteField();
+          });
+          await updateDoc(emailRef, delPayload).catch(() => {});
+        }
       } catch (e) {}
     }
   } catch (err) {

@@ -208,59 +208,63 @@ export default function UserDashboard({ user, onLogout }) {
     }
   };
 
-  const handleRemoveFile = (docKey) => {
+  const handleRemoveFile = async (docKey) => {
     const docData = normalizeDocument(formData[docKey]);
     setFormData(prev => {
       const next = { ...prev };
-      delete next[docKey];
+      next[docKey] = '';
+      if (next.berkas) {
+        next.berkas = { ...next.berkas };
+        delete next.berkas[docKey];
+      }
       return next;
     });
-    DriveStorage.deleteDocument(user.email, docKey, docData?.driveId);
+    await DriveStorage.deleteDocument(user.email, docKey, docData?.driveId);
     setSaveNotice('Berkas berhasil dihapus.');
+    triggerAlert('Berkas berhasil dihapus.', 'success');
     setTimeout(() => setSaveNotice(''), 3000);
   };
 
-  const handleSaveDraft = (e) => {
-    e.preventDefault();
-    const users = Auth.getUsers();
-    const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
-    const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
-
-    const cleanForm = { ...formData };
-    delete cleanForm.selectionStage;
-    delete cleanForm.selectionMessage;
-    delete cleanForm.accountStatus;
-    delete cleanForm.status;
-
-    // Preserve existing uploaded documents if not replaced in current form state
-    DOSSIER_DOCUMENTS.forEach(d => {
-      if (!cleanForm[d.key]) {
-        cleanForm[d.key] = users[idx]?.[d.key] || users[idx]?.berkas?.[d.key] || existing?.[d.key] || existing?.berkas?.[d.key] || '';
-      }
-    });
-
-    cleanForm.berkas = {
-      ...(users[idx]?.berkas || {}),
-      ...(existing?.berkas || {})
-    };
-    DOSSIER_DOCUMENTS.forEach(d => {
-      if (cleanForm[d.key]) {
-        cleanForm.berkas[d.key] = cleanForm[d.key];
-      }
-    });
-
-    if (idx !== -1) {
-      users[idx] = { 
-        ...users[idx], 
-        ...cleanForm,
-        updatedAt: new Date().toISOString()
-      };
-      Auth.saveUsers(users, users[idx]);
-      setCurrentUser(users[idx]);
-    }
-
-    // Sync immediately to DB so Admin sees semester and all draft updates right away
+  const handleSaveDraft = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setSaveNotice('Menyimpan draf formulir dan berkas...');
     try {
+      const users = Auth.getUsers();
+      const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
+      const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
+
+      const cleanForm = { ...formData };
+      delete cleanForm.selectionStage;
+      delete cleanForm.selectionMessage;
+      delete cleanForm.accountStatus;
+      delete cleanForm.status;
+
+      cleanForm.berkas = {};
+      DOSSIER_DOCUMENTS.forEach(d => {
+        const val = cleanForm[d.key];
+        if (val && val !== '' && val !== '-' && val !== 'null') {
+          cleanForm.berkas[d.key] = val;
+        } else {
+          cleanForm[d.key] = '';
+        }
+      });
+
+      if (idx !== -1) {
+        users[idx] = { 
+          ...users[idx], 
+          ...cleanForm,
+          updatedAt: new Date().toISOString()
+        };
+        DOSSIER_DOCUMENTS.forEach(d => {
+          if (!cleanForm[d.key]) {
+            users[idx][d.key] = '';
+            if (users[idx].berkas) delete users[idx].berkas[d.key];
+          }
+        });
+        Auth.saveUsers(users, users[idx]);
+        setCurrentUser(users[idx]);
+      }
+
       if (existing) {
         let updatedItem = null;
         const allDb = DB.getAll().map(i => {
@@ -272,6 +276,12 @@ export default function UserDashboard({ user, onLogout }) {
               prodi: formData.jurusan || formData.fakultas,
               updatedAt: new Date().toISOString()
             };
+            DOSSIER_DOCUMENTS.forEach(d => {
+              if (!cleanForm[d.key]) {
+                updatedItem[d.key] = '';
+                if (updatedItem.berkas) delete updatedItem.berkas[d.key];
+              }
+            });
             return updatedItem;
           }
           return i;
@@ -288,22 +298,23 @@ export default function UserDashboard({ user, onLogout }) {
         };
         DB.add(newItem);
       }
-    } catch (err) {
-      console.error('Error syncing draft to DB:', err);
-    }
 
-    setSaveNotice('Draf formulir dan dokumen pendaftaran berhasil disimpan.');
-    setTimeout(() => setSaveNotice(''), 3500);
+      setSaveNotice('Draf formulir dan dokumen pendaftaran berhasil disimpan.');
+      triggerAlert('Draf formulir dan dokumen berhasil disimpan.', 'success');
+    } catch (err) {
+      triggerAlert('Gagal menyimpan draf: ' + (err.message || 'Terjadi kesalahan'), 'danger');
+    } finally {
+      setTimeout(() => setSaveNotice(''), 3500);
+    }
   };
 
-  const handleSubmitApplication = (e) => {
-    e.preventDefault();
+  const handleSubmitApplication = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
     if (!formData.ipk) {
       triggerAlert('Mohon lengkapi data nilai IPK sebelum mengirim pendaftaran.', 'danger');
       return;
     }
 
-    // Validasi 10 Dokumen
     const isSem1 = String(formData.semester || '').trim() === '1';
     const missingDocs = DOSSIER_DOCUMENTS.filter(doc => {
       if (doc.required && !formData[doc.key]) return true;
@@ -319,88 +330,86 @@ export default function UserDashboard({ user, onLogout }) {
       return;
     }
 
-    const users = Auth.getUsers();
-    const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
-    const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
+    setSaveNotice('Mengirim pendaftaran dan berkas persyaratan...');
+    try {
+      const users = Auth.getUsers();
+      const idx = users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
+      const existing = DB.getAll().find(i => (i.email || '').toLowerCase() === user.email.toLowerCase());
 
-    const cleanForm = { ...formData };
-    delete cleanForm.selectionStage;
-    delete cleanForm.selectionMessage;
-    delete cleanForm.accountStatus;
-    delete cleanForm.status;
+      const cleanForm = { ...formData };
+      delete cleanForm.selectionStage;
+      delete cleanForm.selectionMessage;
+      delete cleanForm.accountStatus;
+      delete cleanForm.status;
 
-    // Preserve and populate berkas map
-    DOSSIER_DOCUMENTS.forEach(d => {
-      if (!cleanForm[d.key]) {
-        cleanForm[d.key] = users[idx]?.[d.key] || users[idx]?.berkas?.[d.key] || existing?.[d.key] || existing?.berkas?.[d.key] || '';
-      }
-    });
-
-    cleanForm.berkas = {
-      ...(users[idx]?.berkas || {}),
-      ...(existing?.berkas || {})
-    };
-    DOSSIER_DOCUMENTS.forEach(d => {
-      if (cleanForm[d.key]) {
-        cleanForm.berkas[d.key] = cleanForm[d.key];
-      }
-    });
-
-    // Save or update in DB
-    let savedAppItem = null;
-    if (existing) {
-      const allDb = DB.getAll().map(i => {
-        if ((i.email || '').toLowerCase() === user.email.toLowerCase()) {
-          savedAppItem = {
-            ...i,
-            ...cleanForm,
-            semester: formData.semester,
-            prodi: formData.jurusan || formData.fakultas,
-            status: 'pending',
-            selectionStage: 'review',
-            selectionMessage: '',
-            berkasSubmitted: true,
-            updatedAt: new Date().toISOString()
-          };
-          return savedAppItem;
+      cleanForm.berkas = {};
+      DOSSIER_DOCUMENTS.forEach(d => {
+        if (cleanForm[d.key]) {
+          cleanForm.berkas[d.key] = cleanForm[d.key];
+        } else {
+          cleanForm[d.key] = '';
         }
-        return i;
       });
-      DB.save(allDb, savedAppItem);
-    } else {
-      savedAppItem = {
-        ...cleanForm,
-        email: user.email,
-        semester: formData.semester,
-        prodi: formData.jurusan || formData.fakultas,
-        status: 'pending',
-        selectionStage: 'review',
-        selectionMessage: '',
-        berkasSubmitted: true,
-      };
-      DB.add(savedAppItem);
-    }
 
-    // Update user status in Auth
-    if (idx !== -1) {
-      users[idx] = { 
-        ...users[idx], 
-        ...cleanForm, 
-        semester: formData.semester,
-        berkasSubmitted: true, 
-        selectionStage: 'review',
-        selectionMessage: '',
-        status: 'Menunggu Review',
-        updatedAt: new Date().toISOString()
-      };
-      Auth.saveUsers(users, users[idx]);
-      setCurrentUser(users[idx]);
-    }
+      let savedAppItem = null;
+      if (existing) {
+        const allDb = DB.getAll().map(i => {
+          if ((i.email || '').toLowerCase() === user.email.toLowerCase()) {
+            savedAppItem = {
+              ...i,
+              ...cleanForm,
+              semester: formData.semester,
+              prodi: formData.jurusan || formData.fakultas,
+              status: 'pending',
+              selectionStage: 'review',
+              selectionMessage: '',
+              berkasSubmitted: true,
+              updatedAt: new Date().toISOString()
+            };
+            return savedAppItem;
+          }
+          return i;
+        });
+        DB.save(allDb, savedAppItem);
+      } else {
+        savedAppItem = {
+          ...cleanForm,
+          email: user.email,
+          semester: formData.semester,
+          prodi: formData.jurusan || formData.fakultas,
+          status: 'pending',
+          selectionStage: 'review',
+          selectionMessage: '',
+          berkasSubmitted: true,
+        };
+        DB.add(savedAppItem);
+      }
 
-    setIsSubmitted(true);
-    setSaveNotice('Pendaftaran Duta Kampus dan 10 berkas dokumen persyaratan berhasil dikirimkan.');
-    setActiveTab('riwayat');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (idx !== -1) {
+        users[idx] = { 
+          ...users[idx], 
+          ...cleanForm, 
+          semester: formData.semester,
+          berkasSubmitted: true, 
+          selectionStage: 'review',
+          selectionMessage: '',
+          status: 'Menunggu Review',
+          updatedAt: new Date().toISOString()
+        };
+        Auth.saveUsers(users, users[idx]);
+        setCurrentUser(users[idx]);
+      }
+
+      setIsSubmitted(true);
+      setSaveNotice('Pendaftaran Duta Kampus dan 10 berkas dokumen persyaratan berhasil dikirimkan.');
+      triggerAlert('Pendaftaran dan seluruh berkas berhasil dikirim untuk verifikasi Panitia Seleksi.', 'success');
+      setActiveTab('riwayat');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      triggerAlert('Gagal mengirim pendaftaran: ' + (err.message || 'Terjadi kendala'), 'danger');
+    } finally {
+      setTimeout(() => setSaveNotice(''), 4000);
+    }
   };
 
   const dossierStatus = evaluateDossierCompleteness(formData);
