@@ -19,7 +19,7 @@ const DEFAULT_CMS = {
       title1: "Asah",
       title2: "Potensimu",
       desc: "Rangkaian seleksi akan menguji kemampuan komunikasi, kepemimpinan, dan nilai keislaman siber.",
-      img: "https://drive.google.com/file/d/1b6zfPvHv4A2dK2DPzvsWVYslgfRwM1Mb/view?usp=drive_link",
+      img: "https://drive.google.com/file/d/1BIMTgMLmhtaVHWCrXykyIWleKcTlhlrk/view?usp=sharing",
       btnLink: "/requirements"
     },
     {
@@ -29,7 +29,7 @@ const DEFAULT_CMS = {
       title1: "Bangun",
       title2: "Relasi Luas",
       desc: "Temukan keluarga baru dan koneksi berharga bersama Duta Kampus.",
-      img: "https://drive.google.com/file/d/1cdahtR_siKX6uBYW8gde7Ku2kp9AUCJu/view?usp=drive_link",
+      img: "https://drive.google.com/file/d/12Q_UWPuFKkX0XDX4ylSgM6-kZ0lOW3uk/view?usp=drive_link",
       btnLink: "/profil-duta"
     },
     {
@@ -39,7 +39,7 @@ const DEFAULT_CMS = {
       title1: "",
       title2: "",
       desc: "",
-      img: "https://drive.google.com/file/d/1PLdqqvgH4t1yaePM8wu0DnFs6U5-iOiO/view?usp=sharing",
+      img: "https://drive.google.com/file/d/1JWhQOHveU5GNgf2boZsmTryK3rhO3cer/view?usp=drive_link",
       btnLink: "/login"
     },
     {
@@ -49,7 +49,7 @@ const DEFAULT_CMS = {
       title1: "Come Join Us",
       title2: "",
       desc: "",
-      img: "https://drive.google.com/file/d/1qmOcdSv93hpuX9g0U7eDor4GnNA6K8s1/view?usp=drive_link",
+      img: "https://drive.google.com/file/d/1UpgebYUgQEoLkU03rFlfdNMsrOl0ealb/view?usp=drive_link",
       btnLink: "/login"
     }
   ],
@@ -153,7 +153,7 @@ const DEFAULT_CMS = {
     { id: 20, name: 'Zahra Roudhotun Najah', faculty: 'FEBI', major: 'Ekonomi Syariah', img: '', year: '2025' }
   ],
   about: {
-    img: "https://drive.google.com/file/d/1PLdqqvgH4t1yaePM8wu0DnFs6U5-iOiO/view?usp=sharing",
+    img: "https://drive.google.com/file/d/1JWhQOHveU5GNgf2boZsmTryK3rhO3cer/view?usp=drive_link",
     badgeYear: '2026',
     badgeText: 'Duta UINSSC',
     title: 'Program Duta Kampus',
@@ -167,111 +167,157 @@ const DEFAULT_CMS = {
   }
 };
 
-import { syncCmsToCloud, listenToCmsFromCloud } from './firebase';
+import { syncCmsToCloud, listenToCmsFromCloud, fetchCmsFromCloud } from './firebase';
 
 const STORAGE_KEY = 'dutauinssc_cms_v2';
 
-function sanitizeCms(obj) {
-  if (!obj || typeof obj !== 'object') return obj;
-  if (Array.isArray(obj)) {
-    return obj.map(item => sanitizeCms(item));
-  }
-  const clean = { ...obj };
-  for (const k of Object.keys(clean)) {
-    if (typeof clean[k] === 'string' && clean[k].includes('unsplash.com')) {
-      clean[k] = '';
-    } else if (typeof clean[k] === 'object' && clean[k] !== null) {
-      clean[k] = sanitizeCms(clean[k]);
-    }
-  }
-  return clean;
-}
-
+let inMemoryCms = null;
 let isRealtimeSyncSetup = false;
-function initRealtimeCmsSync() {
+
+/**
+ * Initialize instant real-time synchronization directly with Cloud Firestore.
+ * Eagerly fetches from cloud on start so that even if browser cache was just wiped,
+ * live cloud data is immediately restored without needing cache tricks.
+ */
+export function initRealtimeCmsSync() {
   if (typeof window === 'undefined' || isRealtimeSyncSetup) return;
   isRealtimeSyncSetup = true;
+
+  // 1. Immediate cloud fetch to hydrate memory and storage instantly
+  fetchCmsFromCloud().then((cloudData) => {
+    if (cloudData && typeof cloudData === 'object') {
+      inMemoryCms = cloudData;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
+      } catch (e) {}
+      window.dispatchEvent(new CustomEvent('cms-updated', { detail: cloudData }));
+    }
+  }).catch((err) => {
+    console.warn('Initial CMS cloud fetch notice:', err);
+  });
+
+  // 2. Real-time Firestore snapshot listener for zero-delay instant updates across all browsers & tabs
   try {
     listenToCmsFromCloud((cloudData) => {
       if (!cloudData || typeof cloudData !== 'object') return;
-      const clean = sanitizeCms(cloudData);
+      inMemoryCms = cloudData;
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
-        window.dispatchEvent(new CustomEvent('cms-updated', { detail: clean }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
       } catch (e) {}
+      window.dispatchEvent(new CustomEvent('cms-updated', { detail: cloudData }));
     });
   } catch (err) {
-    console.warn('CMS Real-time listener init skipped:', err);
+    console.warn('CMS Real-time listener init notice:', err);
   }
 }
 
 if (typeof window !== 'undefined') {
-  setTimeout(initRealtimeCmsSync, 100);
+  initRealtimeCmsSync();
 }
 
 export const CMS = {
+  /**
+   * Synchronous get for immediate React rendering.
+   * Prioritizes in-memory cloud data, then local storage, then DEFAULT_CMS fallback.
+   * If cache was cleared, it triggers background cloud sync and DOES NOT overwrite cloud.
+   */
   get: () => {
+    if (inMemoryCms) return inMemoryCms;
     if (typeof window === 'undefined') return DEFAULT_CMS;
+
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      try { 
-        let data = JSON.parse(stored);
-        let hasUnsplash = stored.includes('unsplash.com');
-        let hasWrongSlider = stored.includes('01KRX8ZRGXBTT2929HWZQ7CWMM.png');
-
-        // Migration safeguard
-        if (!data.slider || data.slider.length === 0 || hasWrongSlider) {
-          data.slider = DEFAULT_CMS.slider;
+      try {
+        const data = JSON.parse(stored);
+        if (data && typeof data === 'object') {
+          inMemoryCms = data;
+          return data;
         }
-        if (!data.gallery || data.gallery.length === 0) data.gallery = DEFAULT_CMS.gallery;
-        if (!data.promoBanners || data.promoBanners.length === 0) data.promoBanners = DEFAULT_CMS.promoBanners;
-        if (!data.ambassadors || data.ambassadors.length === 0) data.ambassadors = DEFAULT_CMS.ambassadors;
-        if (!data.about || (data.about.img && data.about.img.includes('01KRX8ZRGXBTT2929HWZQ7CWMM.png'))) {
-          data.about = DEFAULT_CMS.about;
-        }
-
-        if (hasUnsplash || hasWrongSlider) {
-          data = sanitizeCms(data);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        }
-        return data;
-      } catch(e) {}
+      } catch (e) {}
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_CMS));
+
+    // Cache was wiped: initiate immediate live fetch in background
+    initRealtimeCmsSync();
     return DEFAULT_CMS;
   },
 
-  save: (data) => {
-    if (typeof window === 'undefined') return;
-    const cleanData = sanitizeCms(data);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cleanData));
+  /**
+   * Async get that guarantees the absolute latest data directly from Cloud Firestore.
+   */
+  getAsync: async () => {
+    if (inMemoryCms) return inMemoryCms;
     try {
-      window.dispatchEvent(new CustomEvent('cms-updated', { detail: cleanData }));
-      window.dispatchEvent(new Event('storage'));
-    } catch(e) {}
-    try {
-      syncCmsToCloud(cleanData).catch(() => {});
-    } catch(e) {}
+      const cloud = await fetchCmsFromCloud();
+      if (cloud && typeof cloud === 'object') {
+        inMemoryCms = cloud;
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cloud));
+          } catch (e) {}
+        }
+        return cloud;
+      }
+    } catch (e) {}
+    return CMS.get();
   },
 
+  /**
+   * Save CMS data directly to Cloud Firestore and update memory/localStorage.
+   * Awaits Firestore persistence so caller knows it is safely saved on the cloud server.
+   */
+  save: async (data) => {
+    if (!data || typeof data !== 'object') return false;
+    inMemoryCms = data;
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        window.dispatchEvent(new CustomEvent('cms-updated', { detail: data }));
+        window.dispatchEvent(new Event('storage'));
+      } catch (e) {}
+    }
+    try {
+      const ok = await syncCmsToCloud(data);
+      return ok;
+    } catch (e) {
+      console.warn('CMS cloud save error:', e);
+      return false;
+    }
+  },
+
+  /**
+   * Subscribe to real-time CMS content changes.
+   * Receives instant callbacks whenever Cloud Firestore updates or local changes occur.
+   */
   subscribe: (callback) => {
-    if (typeof window === 'undefined') return () => {};
+    if (typeof window === 'undefined' || typeof callback !== 'function') return () => {};
     initRealtimeCmsSync();
-    const handleUpdate = () => {
+
+    // Fire immediately with current value
+    try {
       callback(CMS.get());
+    } catch (e) {}
+
+    const handleUpdate = (e) => {
+      try {
+        if (e?.detail) {
+          callback(e.detail);
+        } else {
+          callback(CMS.get());
+        }
+      } catch (err) {}
     };
+
     window.addEventListener('cms-updated', handleUpdate);
     window.addEventListener('storage', handleUpdate);
-    window.addEventListener('focus', handleUpdate);
-    const handleVis = () => {
-      if (!document.hidden) handleUpdate();
-    };
-    document.addEventListener('visibilitychange', handleVis);
+    window.addEventListener('focus', () => {
+      try {
+        callback(CMS.get());
+      } catch (e) {}
+    });
+
     return () => {
       window.removeEventListener('cms-updated', handleUpdate);
       window.removeEventListener('storage', handleUpdate);
-      window.removeEventListener('focus', handleUpdate);
-      document.removeEventListener('visibilitychange', handleVis);
     };
   }
 };

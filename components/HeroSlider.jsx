@@ -9,8 +9,15 @@ export default function HeroSlider() {
   const timerRef = useRef(null);
 
   useEffect(() => {
-    // Initial fetch
+    // Initial fetch from memory / cache
     setSlides(CMS.get().slider || []);
+
+    // Eager live fetch directly from Cloud Firestore
+    CMS.getAsync().then((data) => {
+      if (data?.slider) {
+        setSlides([...data.slider]);
+      }
+    }).catch(() => {});
 
     // Subscribe to live CMS updates
     const unsubscribe = CMS.subscribe((data) => {
@@ -19,17 +26,8 @@ export default function HeroSlider() {
       }
     });
 
-    // 2-second heartbeat to guarantee cross-window instant reflection
-    const heartbeat = setInterval(() => {
-      const currentCms = CMS.get();
-      if (currentCms && currentCms.slider) {
-        setSlides([...currentCms.slider]);
-      }
-    }, 2000);
-
     return () => {
       unsubscribe();
-      clearInterval(heartbeat);
     };
   }, []);
 

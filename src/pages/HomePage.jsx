@@ -20,22 +20,20 @@ export default function HomePage() {
   useEffect(() => {
     setAmbassadors((CMS.get().ambassadors || []).slice(0, 4));
 
+    CMS.getAsync().then((data) => {
+      if (data?.ambassadors) {
+        setAmbassadors(data.ambassadors.slice(0, 4));
+      }
+    }).catch(() => {});
+
     const unsubscribe = CMS.subscribe((data) => {
       if (data && data.ambassadors) {
         setAmbassadors(data.ambassadors.slice(0, 4));
       }
     });
 
-    const heartbeat = setInterval(() => {
-      const currentCms = CMS.get();
-      if (currentCms && currentCms.ambassadors) {
-        setAmbassadors(currentCms.ambassadors.slice(0, 4));
-      }
-    }, 2000);
-
     return () => {
       unsubscribe();
-      clearInterval(heartbeat);
     };
   }, []);
 

@@ -7,6 +7,11 @@ export default function GallerySection() {
 
   useEffect(() => {
     setGallery(CMS.get().gallery || []);
+    CMS.getAsync().then((data) => {
+      if (data?.gallery) {
+        setGallery(data.gallery);
+      }
+    }).catch(() => {});
     const unsubscribe = CMS.subscribe((data) => {
       if (data && data.gallery) {
         setGallery(data.gallery);

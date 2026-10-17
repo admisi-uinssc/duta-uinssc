@@ -1,6 +1,5 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Image from './Image';
 import { CMS } from '../lib/cms';
 
 export default function GallerySection() {
@@ -8,6 +7,11 @@ export default function GallerySection() {
 
   useEffect(() => {
     setGallery(CMS.get().gallery || []);
+    CMS.getAsync().then((data) => {
+      if (data?.gallery) {
+        setGallery(data.gallery);
+      }
+    }).catch(() => {});
     const unsubscribe = CMS.subscribe((data) => {
       if (data && data.gallery) {
         setGallery(data.gallery);
@@ -29,8 +33,13 @@ export default function GallerySection() {
         <div className="gallery-grid">
           {gallery.map((item, idx) => (
             <div key={item.id || idx} className="gallery-item">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={item.img} alt={item.caption || `Gallery ${idx + 1}`} loading="lazy" />
+              <Image 
+                src={item.img} 
+                alt={item.caption || `Gallery ${idx + 1}`} 
+                loading="lazy" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
+              />
               {item.caption && (
                 <div className="gallery-caption">
                   <span>{item.caption}</span>

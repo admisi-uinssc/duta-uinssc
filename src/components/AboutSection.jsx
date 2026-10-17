@@ -8,20 +8,21 @@ export default function AboutSection() {
 
   useEffect(() => {
     setAboutData(CMS.get().about || {});
+    
+    CMS.getAsync().then((data) => {
+      if (data?.about) {
+        setAboutData(data.about);
+      }
+    }).catch(() => {});
+
     const unsubscribe = CMS.subscribe((data) => {
       if (data && data.about) {
         setAboutData(data.about);
       }
     });
-    const heartbeat = setInterval(() => {
-      const currentCms = CMS.get();
-      if (currentCms && currentCms.about) {
-        setAboutData(currentCms.about);
-      }
-    }, 2000);
+
     return () => {
       unsubscribe();
-      clearInterval(heartbeat);
     };
   }, []);
 

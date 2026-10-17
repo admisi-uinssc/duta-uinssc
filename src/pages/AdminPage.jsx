@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image, { formatImageUrl } from '../components/Image';
 import Link from '../components/Link';
 import { DB, seedDemoData, formatDate, formatDateTime } from '../lib/db';
@@ -9,7 +9,7 @@ import { CMS } from '../lib/cms';
 import { Auth } from '../lib/auth';
 import { FAKULTAS_DATA } from '../lib/fakultasData';
 import { evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
-import { isFirebaseConfigured, firebaseConfig, smartSyncAll, getLastSyncTime, listenToApplicantsFromCloud, listenToUsersFromCloud } from '../lib/firebase';
+import { isFirebaseConfigured, firebaseConfig, smartSyncAll, getLastSyncTime, listenToApplicantsFromCloud, listenToUsersFromCloud, listenToCmsFromCloud } from '../lib/firebase';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
 import DocumentPreviewModal from '../components/DocumentPreviewModal';
 
@@ -37,6 +37,8 @@ export default function AdminPage() {
   const [passwords, setPasswords] = useState({ cur: '', newP: '', conf: '' });
   const [cmsData, setCmsData] = useState(null);
   const [cmsTab, setCmsTab] = useState('slider'); // 'slider' | 'promo' | 'ambassadors' | 'gallery'
+  const [isSavingCms, setIsSavingCms] = useState(false);
+  const cmsSaveTimeoutRef = useRef(null);
   const [toast, setToast] = useState('');
 
   // Document Preview & CRUD Modal
@@ -176,7 +178,17 @@ export default function AdminPage() {
     };
 
     syncAll();
-    if (!cmsData) setCmsData(CMS.get());
+    
+    // Live Cloud Firestore CMS listener (Instant update of Slider, Ambassador Photos, Banners)
+    const unsubCloudCms = listenToCmsFromCloud((cloudCms) => {
+      if (cloudCms && typeof cloudCms === 'object') {
+        setCmsData(cloudCms);
+      }
+    });
+
+    CMS.getAsync().then((cloudData) => {
+      if (cloudData) setCmsData(cloudData);
+    }).catch(() => {});
 
     // Immediate background cloud sync on page visit so admin never has stale cache
     smartSyncAll(true).then((res) => {
@@ -222,6 +234,7 @@ export default function AdminPage() {
       unsubDb();
       if (typeof unsubCloudApps === 'function') unsubCloudApps();
       if (typeof unsubCloudUsers === 'function') unsubCloudUsers();
+      if (typeof unsubCloudCms === 'function') unsubCloudCms();
     };
   }, []);
 
@@ -323,9 +336,23 @@ export default function AdminPage() {
     );
   };
 
-  const handleCmsSave = () => {
-    CMS.save(cmsData);
-    showToast('Konten CMS berhasil disimpan dan langsung dipublikasikan ke web.');
+  const queueCmsAutoSave = (dataToSave) => {
+    if (cmsSaveTimeoutRef.current) clearTimeout(cmsSaveTimeoutRef.current);
+    cmsSaveTimeoutRef.current = setTimeout(() => {
+      CMS.save(dataToSave).catch(() => {});
+    }, 600);
+  };
+
+  const handleCmsSave = async () => {
+    if (!cmsData) return;
+    setIsSavingCms(true);
+    const ok = await CMS.save(cmsData);
+    setIsSavingCms(false);
+    if (ok) {
+      showToast('Konten CMS & Foto berhasil disimpan dan langsung sinkron ke Cloud Firestore!');
+    } else {
+      showToast('Gagal menyimpan ke cloud. Periksa koneksi internet.', 'danger');
+    }
   };
 
   // CMS Slider Helpers
@@ -335,7 +362,7 @@ export default function AdminPage() {
     );
     const newData = { ...cmsData, slider: updatedSlider };
     setCmsData(newData);
-    CMS.save(newData);
+    queueCmsAutoSave(newData);
   };
   const addSlide = () => {
     const newData = {
@@ -344,7 +371,7 @@ export default function AdminPage() {
         ...(cmsData.slider || []),
         {
           id: Date.now(),
-          img: 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png',
+          img: 'https://drive.google.com/file/d/1K7HoKDvlUno2VlJ66lJTk1kbo0SiEMb_/view?usp=sharing',
           tag: 'Pendaftaran 2026',
           title1: 'Judul Baru',
           title2: 'Sorotan Emas',
@@ -381,7 +408,7 @@ export default function AdminPage() {
     );
     const newData = { ...cmsData, promoBanners: updatedPromo };
     setCmsData(newData);
-    CMS.save(newData);
+    queueCmsAutoSave(newData);
   };
   const addPromoBanner = () => {
     const newData = {
@@ -392,7 +419,7 @@ export default function AdminPage() {
           id: Date.now(),
           title: 'Judul Banner Baru',
           subtitle: 'Informasi atau ajakan singkat',
-          img: 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png',
+          img: 'https://drive.google.com/file/d/16ihfW08iEnogLJ5rhHJbXeo768yEzJH0/view?usp=drive_link',
           link: '/login'
         }
       ]
@@ -424,7 +451,7 @@ export default function AdminPage() {
     );
     const newData = { ...cmsData, ambassadors: updatedAmbassadors };
     setCmsData(newData);
-    CMS.save(newData);
+    queueCmsAutoSave(newData);
   };
   const addAmbassador = () => {
     const newData = {
@@ -468,13 +495,14 @@ export default function AdminPage() {
     );
     const newData = { ...cmsData, gallery: updatedGallery };
     setCmsData(newData);
-    CMS.save(newData);
+    queueCmsAutoSave(newData);
   };
   const addGallery = () => {
     const newData = { ...cmsData };
+    if (!newData.gallery) newData.gallery = [];
     newData.gallery.push({ 
       id: Date.now(), 
-      img: 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png', 
+      img: 'https://drive.google.com/file/d/1-SIIie_r4i1XCETrAOwJTgeUhssscHtQ/view?usp=drive_link', 
       caption: 'Kegiatan Duta Kampus' 
     });
     setCmsData(newData);
@@ -489,7 +517,9 @@ export default function AdminPage() {
       isDestructive: true,
       onConfirm: () => {
         const newData = { ...cmsData };
-        newData.gallery.splice(idx, 1);
+        if (newData.gallery) {
+          newData.gallery.splice(idx, 1);
+        }
         setCmsData(newData);
         CMS.save(newData);
         showToast('Foto galeri dihapus dan website diperbarui.');
@@ -500,9 +530,9 @@ export default function AdminPage() {
   // CMS About Section Helper
   const updateAbout = (field, val) => {
     const defaultAbout = {
-      img: 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png',
+      img: 'https://drive.google.com/file/d/1JWhQOHveU5GNgf2boZsmTryK3rhO3cer/view?usp=drive_link',
       badgeYear: '2026',
-      badgeText: 'Pemilihan Resmi',
+      badgeText: 'Duta UINSSC',
       title: 'Program Duta Kampus',
       desc: 'Melakukan Expo & Sosialisasi ke sekolah-sekolah se-Ciayumajakuning bahkan lebih tentang UIN Siber Syekh Nurjati Cirebon, melakukan promosi dalam bentuk video atau flyer melalui laman Instagram UPT Admisi dan Promosi, pelayanan Admisi untuk mensosialisasi calon mahasiswa baru UIN Siber Syekh Nurjati Cirebon selama periode SPAN-PTKIN sampai SPMB MANDIRI, serta mengayomi Paguyuban Duta dalam lingkungan UIN Siber Syekh Nurjati Cirebon.',
       point1Title: 'Sosialisasi & Edukasi Calon Mahasiswa',
@@ -518,7 +548,7 @@ export default function AdminPage() {
     };
     const newData = { ...cmsData, about: updatedAbout };
     setCmsData(newData);
-    CMS.save(newData);
+    queueCmsAutoSave(newData);
   };
 
   // Add User Form Submission
@@ -1635,10 +1665,11 @@ export default function AdminPage() {
                 type="button" 
                 className="btn btn-gold btn-sm" 
                 onClick={handleCmsSave} 
+                disabled={isSavingCms}
                 style={{ fontWeight: 700, padding: '0.55rem 1.5rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>Simpan & Publikasikan</span>
+                <span>{isSavingCms ? 'Menyimpan ke Cloud...' : 'Simpan & Publikasikan'}</span>
               </button>
             </div>
 
@@ -2000,8 +2031,13 @@ export default function AdminPage() {
 
             {/* SAVE BUTTON FOR CMS */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4rem' }}>
-              <button className="btn btn-gold btn-lg" onClick={handleCmsSave} style={{ padding: '0.875rem 2.5rem', fontWeight: 700 }}>
-                Simpan Perubahan CMS
+              <button 
+                className="btn btn-gold btn-lg" 
+                onClick={handleCmsSave} 
+                disabled={isSavingCms}
+                style={{ padding: '0.875rem 2.5rem', fontWeight: 700 }}
+              >
+                {isSavingCms ? 'Menyimpan ke Cloud Firestore...' : 'Simpan Perubahan CMS ke Cloud'}
               </button>
             </div>
           </div>

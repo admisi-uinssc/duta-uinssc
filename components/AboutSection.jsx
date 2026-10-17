@@ -1,9 +1,31 @@
-'use client';
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from './Link';
+import Image from './Image';
+import { CMS } from '../lib/cms';
 
 export default function AboutSection() {
+  const [aboutData, setAboutData] = useState(() => CMS.get().about || {});
+
+  useEffect(() => {
+    setAboutData(CMS.get().about || {});
+    
+    CMS.getAsync().then((data) => {
+      if (data?.about) {
+        setAboutData(data.about);
+      }
+    }).catch(() => {});
+
+    const unsubscribe = CMS.subscribe((data) => {
+      if (data && data.about) {
+        setAboutData(data.about);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   const orgStructure = {
     executive: [
       { role: 'Ketua Umum', name: 'Muhammad Rizki Fadlillah' },
@@ -44,33 +66,29 @@ export default function AboutSection() {
         {/* PENGENALAN PROGRAM */}
         <div className="about-grid" style={{ alignItems: 'center', marginBottom: '4.5rem' }}>
           <div className="about-visual">
-            <div className="about-img-wrap" style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.06)' }}>
-              <img
-                src="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
-                alt="Duta Kampus UIN SSC"
+            <div className="about-img-wrap" style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', position: 'relative' }}>
+              <Image
+                src={aboutData.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'}
+                alt="Program Duta Kampus UIN SSC"
                 loading="lazy"
+                fill
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
               />
-              <div className="about-img-accent" style={{ background: 'var(--navy)', color: '#fff', padding: '12px 18px', borderRadius: '10px' }}>
-                <strong style={{ color: 'var(--gold)' }}>2026</strong>
-                <span style={{ fontSize: '0.75rem', opacity: 0.9 }}>Pemilihan Resmi</span>
+              <div className="about-img-accent" style={{ background: 'var(--navy)', color: '#fff', padding: '12px 18px', borderRadius: '10px', zIndex: 2 }}>
+                <strong style={{ color: 'var(--gold)' }}>{aboutData.badgeYear || '2026'}</strong>
+                <span style={{ fontSize: '0.75rem', opacity: 0.9 }}>{aboutData.badgeText || 'Pemilihan Resmi'}</span>
               </div>
             </div>
           </div>
 
           <div className="about-content">
             <div className="section-header">
-              <span className="eyebrow" style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Tentang Program
-              </span>
               <h2 className="heading-lg" style={{ color: 'var(--navy)', marginTop: '0.25rem', marginBottom: '1.25rem' }}>
                 Program <span>Duta Kampus</span>
               </h2>
               <p className="lead" style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-dark)' }}>
-                Melakukan Expo & Sosialisasi ke sekolah-sekolah se-Ciayumajakuning bahkan lebih tentang UIN Siber Syekh Nurjati Cirebon, 
-                melakukan promosi dalam bentuk video atau flyer melalui laman Instagram UPT Admisi dan Promosi, pelayanan Admisi 
-                untuk mensosialisasi calon mahasiswa baru UIN Siber Syekh Nurjati Cirebon selama periode SPAN-PTKIN sampai SPMB MANDIRI, 
-                serta mengayomi Paguyuban Duta dalam lingkungan UIN Siber Syekh Nurjati Cirebon.
+                {aboutData.desc || 'Melakukan Expo & Sosialisasi ke sekolah-sekolah se-Ciayumajakuning bahkan lebih tentang UIN Siber Syekh Nurjati Cirebon, melakukan promosi dalam bentuk video atau flyer melalui laman Instagram UPT Admisi dan Promosi, pelayanan Admisi untuk mensosialisasi calon mahasiswa baru UIN Siber Syekh Nurjati Cirebon selama periode SPAN-PTKIN sampai SPMB MANDIRI, serta mengayomi Paguyuban Duta dalam lingkungan UIN Siber Syekh Nurjati Cirebon.'}
               </p>
             </div>
 
@@ -78,9 +96,9 @@ export default function AboutSection() {
               <div className="about-point" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <div style={{ width: '4px', height: '42px', background: 'var(--gold)', borderRadius: '2px', flexShrink: 0 }} />
                 <div className="about-point-text">
-                  <strong style={{ color: 'var(--navy)', fontSize: '0.95rem' }}>Sosialisasi & Edukasi Calon Mahasiswa</strong>
+                  <strong style={{ color: 'var(--navy)', fontSize: '0.95rem' }}>{aboutData.point1Title || 'Sosialisasi & Edukasi Calon Mahasiswa'}</strong>
                   <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
-                    Mendampingi calon mahasiswa baru dari seleksi SPAN-PTKIN, UM-PTKIN, hingga SPMB Mandiri.
+                    {aboutData.point1Desc || 'Mendampingi calon mahasiswa baru dari seleksi SPAN-PTKIN, UM-PTKIN, hingga SPMB Mandiri.'}
                   </p>
                 </div>
               </div>
@@ -88,17 +106,17 @@ export default function AboutSection() {
               <div className="about-point" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <div style={{ width: '4px', height: '42px', background: 'var(--navy)', borderRadius: '2px', flexShrink: 0 }} />
                 <div className="about-point-text">
-                  <strong style={{ color: 'var(--navy)', fontSize: '0.95rem' }}>Duta Promosi Multimedia & Humas</strong>
+                  <strong style={{ color: 'var(--navy)', fontSize: '0.95rem' }}>{aboutData.point2Title || 'Duta Promosi Multimedia & Humas'}</strong>
                   <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
-                    Menghadirkan konten kreatif flyer, video promosi, dan aktivasi media sosial institusi.
+                    {aboutData.point2Desc || 'Menghadirkan konten kreatif flyer, video promosi, dan aktivasi media sosial institusi.'}
                   </p>
                 </div>
               </div>
             </div>
 
             <div style={{ marginTop: '2rem' }}>
-              <Link href="/login" className="btn btn-gold" style={{ padding: '0.85rem 2rem', fontWeight: 600 }}>
-                Ajukan Akun & Mulai Pendaftaran
+              <Link href={aboutData.btnLink || '/login'} className="btn btn-gold" style={{ padding: '0.85rem 2rem', fontWeight: 600 }}>
+                {aboutData.btnText || 'Ajukan Akun & Mulai Pendaftaran'}
               </Link>
             </div>
           </div>

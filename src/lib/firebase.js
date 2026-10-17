@@ -45,18 +45,10 @@ if (isFirebaseConfigured) {
     app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
     auth = getAuth(app);
     
-    // Enable multi-tab IndexedDB cache persistence
-    // This allows Firestore to serve data from browser cache instead of counting server reads!
-    try {
-      db = initializeFirestore(app, {
-        localCache: persistentLocalCache({
-          tabManager: persistentMultipleTabManager()
-        })
-      });
-    } catch {
-      db = getFirestore(app);
-    }
-    console.log('Firebase initialized with persistent local cache for:', firebaseConfig.projectId);
+    // Initialize direct live Cloud Firestore connection
+    // Avoid stale IndexedDB cache locks so CMS updates, slider, and ambassador changes appear instantly
+    db = getFirestore(app);
+    console.log('Firebase initialized live directly with Cloud Firestore for:', firebaseConfig.projectId);
   } catch (err) {
     console.error('Failed to initialize Firebase:', err);
   }
@@ -511,15 +503,17 @@ export async function deleteApplicantFromCloud(id) {
  * Save / sync CMS content to Firestore
  */
 export async function syncCmsToCloud(cmsData) {
-  if (!db || !cmsData) return;
+  if (!db || !cmsData) return false;
   try {
     const cmsRef = doc(db, 'duta_settings', 'cms');
     await setDoc(cmsRef, {
       ...cmsData,
       updatedAt: new Date().toISOString()
     }, { merge: true });
+    return true;
   } catch (err) {
     console.warn('Could not sync CMS to Firestore:', err);
+    return false;
   }
 }
 

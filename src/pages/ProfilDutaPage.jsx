@@ -9,6 +9,14 @@ export default function ProfilDutaPage() {
 
   useEffect(() => {
     setAmbassadors(CMS.get().ambassadors || []);
+    
+    // Eagerly fetch latest ambassador data directly from Cloud Firestore
+    CMS.getAsync().then((data) => {
+      if (data?.ambassadors) {
+        setAmbassadors(data.ambassadors);
+      }
+    }).catch(() => {});
+
     const unsubscribe = CMS.subscribe((data) => {
       if (data && data.ambassadors) {
         setAmbassadors(data.ambassadors);

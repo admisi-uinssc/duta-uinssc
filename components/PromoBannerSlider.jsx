@@ -10,22 +10,21 @@ export default function PromoBannerSlider() {
 
   useEffect(() => {
     setBanners(CMS.get().promoBanners || []);
+    
+    CMS.getAsync().then((data) => {
+      if (data?.promoBanners) {
+        setBanners([...data.promoBanners]);
+      }
+    }).catch(() => {});
+
     const unsubscribe = CMS.subscribe((data) => {
       if (data && data.promoBanners) {
         setBanners([...data.promoBanners]);
       }
     });
 
-    const heartbeat = setInterval(() => {
-      const currentCms = CMS.get();
-      if (currentCms && currentCms.promoBanners) {
-        setBanners([...currentCms.promoBanners]);
-      }
-    }, 2000);
-
     return () => {
       unsubscribe();
-      clearInterval(heartbeat);
     };
   }, []);
 
