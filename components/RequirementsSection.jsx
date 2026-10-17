@@ -17,7 +17,7 @@ export default function RequirementsSection() {
     { title: 'Curriculum Vitae (CV)', req: true, note: 'Format ATS atau kreatif' },
     { title: 'Surat Rekomendasi Resmi', req: true, note: 'Dikeluarkan oleh HMPS / Jurusan / Fakultas' },
     { title: 'Sertifikat Prestasi Akademik / Non-Akademik', req: false, note: 'Tingkat regional/nasional/internasional 3 tahun terakhir' },
-    { title: 'Paket Foto Formal Mahasiswa', req: true, note: 'Full badan, setengah badan, & close up 3x4 (jas almamater)' },
+    { title: 'Paket Foto Formal Mahasiswa', req: true, note: 'Full badan, setengah badan, & close up 3x4 (pakaian hitam putih)' },
     { title: 'Motivation Letter', req: true, note: 'Gagasan kontribusi, komitmen, & visi misi' },
     { title: 'Bukti Follow Media Sosial Resmi', req: true, note: 'Follow Instagram @dutakampusuinssc, @uptadmisipromosi, & @uinssc' },
     { title: 'Kartu Tanda Mahasiswa (KTM)', req: true, note: 'Scan KTM aktif atau surat keterangan aktif' },

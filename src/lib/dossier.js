@@ -46,7 +46,7 @@ export const DOSSIER_DOCUMENTS = [
     id: 'fotoLengkap',
     key: 'docFotoLengkap',
     label: 'Paket Pas Foto Formal Mahasiswa',
-    sublabel: 'Foto full badan, setengah badan, dan pas foto 3x4 (jas almamater).',
+    sublabel: 'Foto full badan, setengah badan, dan pas foto 3x4 (pakaian hitam putih).',
     required: true,
     fileTypes: '.jpg,.jpeg,.png,.zip',
     formatLabel: 'JPG / PNG / ZIP',

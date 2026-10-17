@@ -45,7 +45,7 @@ export const DB = {
       const deduped = Array.from(map.values());
       localStorage.setItem(DB_KEY, JSON.stringify(deduped));
       window.dispatchEvent(new Event('storage'));
-      
+
       // Async sync to Firebase Firestore: target only modified dossier to prevent quota exhaustion
       if (specificItemToSync) {
         syncApplicantToCloud(specificItemToSync);
@@ -86,7 +86,7 @@ export const DB = {
     }
   },
   subscribe: (callback) => {
-    if (typeof window === 'undefined') return () => {};
+    if (typeof window === 'undefined') return () => { };
     const handleUpdate = () => {
       callback(DB.getAll());
     };
