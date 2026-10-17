@@ -38,7 +38,11 @@ export default function AdminPage() {
   const [cmsData, setCmsData] = useState(null);
   const [cmsTab, setCmsTab] = useState('slider'); // 'slider' | 'promo' | 'ambassadors' | 'gallery'
   const [isSavingCms, setIsSavingCms] = useState(false);
-  const cmsSaveTimeoutRef = useRef(null);
+  const [hasUnsavedCms, setHasUnsavedCms] = useState(false);
+  const hasUnsavedCmsRef = useRef(false);
+  useEffect(() => {
+    hasUnsavedCmsRef.current = hasUnsavedCms;
+  }, [hasUnsavedCms]);
   const [toast, setToast] = useState('');
 
   // Document Preview & CRUD Modal
@@ -130,12 +134,12 @@ export default function AdminPage() {
         setLastSyncDisplay(new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
         refresh();
         refreshUsers();
-        showToast(`Sinkronisasi Cloud berhasil! ${res.countApps || 0} pendaftar & ${res.countUsers || 0} akun dimuat.`);
+        showToast(`Penyelarasan data berhasil! ${res.countApps || 0} pendaftar & ${res.countUsers || 0} akun dimuat.`);
       } else {
-        showToast(res.error || 'Gagal menyinkronkan data cloud.', 'danger');
+        showToast(res.error || 'Gagal menyelaraskan data server.', 'danger');
       }
     } catch {
-      showToast('Terjadi kesalahan saat sinkronisasi cloud.', 'danger');
+      showToast('Terjadi kesalahan saat penyelarasan data.', 'danger');
     } finally {
       setIsSyncingCloud(false);
     }
@@ -179,15 +183,17 @@ export default function AdminPage() {
 
     syncAll();
     
-    // Live Cloud Firestore CMS listener (Instant update of Slider, Ambassador Photos, Banners)
+    // Live Server CMS listener (Instant update of Slider, Ambassador Photos, Banners)
     const unsubCloudCms = listenToCmsFromCloud((cloudCms) => {
       if (cloudCms && typeof cloudCms === 'object') {
-        setCmsData(cloudCms);
+        if (!hasUnsavedCmsRef.current) {
+          setCmsData(cloudCms);
+        }
       }
     });
 
     CMS.getAsync().then((cloudData) => {
-      if (cloudData) setCmsData(cloudData);
+      if (cloudData && !hasUnsavedCmsRef.current) setCmsData(cloudData);
     }).catch(() => {});
 
     // Immediate background cloud sync on page visit so admin never has stale cache
@@ -336,22 +342,16 @@ export default function AdminPage() {
     );
   };
 
-  const queueCmsAutoSave = (dataToSave) => {
-    if (cmsSaveTimeoutRef.current) clearTimeout(cmsSaveTimeoutRef.current);
-    cmsSaveTimeoutRef.current = setTimeout(() => {
-      CMS.save(dataToSave).catch(() => {});
-    }, 600);
-  };
-
   const handleCmsSave = async () => {
     if (!cmsData) return;
     setIsSavingCms(true);
     const ok = await CMS.save(cmsData);
     setIsSavingCms(false);
     if (ok) {
-      showToast('Konten CMS & Foto berhasil disimpan dan langsung sinkron ke Cloud Firestore!');
+      setHasUnsavedCms(false);
+      showToast('Pembaruan konten berhasil disimpan dan telah tayang di website!');
     } else {
-      showToast('Gagal menyimpan ke cloud. Periksa koneksi internet.', 'danger');
+      showToast('Gagal menyimpan perubahan. Silakan periksa koneksi internet Anda.', 'danger');
     }
   };
 
@@ -362,7 +362,7 @@ export default function AdminPage() {
     );
     const newData = { ...cmsData, slider: updatedSlider };
     setCmsData(newData);
-    queueCmsAutoSave(newData);
+    setHasUnsavedCms(true);
   };
   const addSlide = () => {
     const newData = {
@@ -382,8 +382,8 @@ export default function AdminPage() {
       ]
     };
     setCmsData(newData);
-    CMS.save(newData);
-    showToast('Slide baru ditambahkan dan langsung aktif di beranda.');
+    setHasUnsavedCms(true);
+    showToast('Slide baru ditambahkan ke draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
   };
   const removeSlide = (idx) => {
     askConfirmation({
@@ -395,8 +395,8 @@ export default function AdminPage() {
         const updatedSlider = (cmsData.slider || []).filter((_, i) => i !== idx);
         const newData = { ...cmsData, slider: updatedSlider };
         setCmsData(newData);
-        CMS.save(newData);
-        showToast('Slide hero dihapus dan beranda diperbarui.');
+        setHasUnsavedCms(true);
+        showToast('Slide hero dihapus dari draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
       }
     });
   };
@@ -408,7 +408,7 @@ export default function AdminPage() {
     );
     const newData = { ...cmsData, promoBanners: updatedPromo };
     setCmsData(newData);
-    queueCmsAutoSave(newData);
+    setHasUnsavedCms(true);
   };
   const addPromoBanner = () => {
     const newData = {
@@ -425,8 +425,8 @@ export default function AdminPage() {
       ]
     };
     setCmsData(newData);
-    CMS.save(newData);
-    showToast('Banner promo baru ditambahkan dan langsung aktif.');
+    setHasUnsavedCms(true);
+    showToast('Banner promo baru ditambahkan ke draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
   };
   const removePromoBanner = (idx) => {
     askConfirmation({
@@ -438,8 +438,8 @@ export default function AdminPage() {
         const updatedPromo = (cmsData.promoBanners || []).filter((_, i) => i !== idx);
         const newData = { ...cmsData, promoBanners: updatedPromo };
         setCmsData(newData);
-        CMS.save(newData);
-        showToast('Banner promo dihapus dan website diperbarui.');
+        setHasUnsavedCms(true);
+        showToast('Banner promo dihapus dari draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
       }
     });
   };
@@ -451,7 +451,7 @@ export default function AdminPage() {
     );
     const newData = { ...cmsData, ambassadors: updatedAmbassadors };
     setCmsData(newData);
-    queueCmsAutoSave(newData);
+    setHasUnsavedCms(true);
   };
   const addAmbassador = () => {
     const newData = {
@@ -469,8 +469,8 @@ export default function AdminPage() {
       ]
     };
     setCmsData(newData);
-    CMS.save(newData);
-    showToast('Profil duta baru ditambahkan dan langsung aktif.');
+    setHasUnsavedCms(true);
+    showToast('Profil duta baru ditambahkan ke draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
   };
   const removeAmbassador = (idx) => {
     askConfirmation({
@@ -482,8 +482,8 @@ export default function AdminPage() {
         const updatedAmbassadors = (cmsData.ambassadors || []).filter((_, i) => i !== idx);
         const newData = { ...cmsData, ambassadors: updatedAmbassadors };
         setCmsData(newData);
-        CMS.save(newData);
-        showToast('Profil duta dihapus dan website diperbarui.');
+        setHasUnsavedCms(true);
+        showToast('Profil duta dihapus dari draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
       }
     });
   };
@@ -495,7 +495,7 @@ export default function AdminPage() {
     );
     const newData = { ...cmsData, gallery: updatedGallery };
     setCmsData(newData);
-    queueCmsAutoSave(newData);
+    setHasUnsavedCms(true);
   };
   const addGallery = () => {
     const newData = { ...cmsData };
@@ -506,8 +506,8 @@ export default function AdminPage() {
       caption: 'Kegiatan Duta Kampus' 
     });
     setCmsData(newData);
-    CMS.save(newData);
-    showToast('Foto galeri baru ditambahkan dan langsung aktif.');
+    setHasUnsavedCms(true);
+    showToast('Foto galeri baru ditambahkan ke draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
   };
   const removeGallery = (idx) => {
     askConfirmation({
@@ -521,8 +521,8 @@ export default function AdminPage() {
           newData.gallery.splice(idx, 1);
         }
         setCmsData(newData);
-        CMS.save(newData);
-        showToast('Foto galeri dihapus dan website diperbarui.');
+        setHasUnsavedCms(true);
+        showToast('Foto galeri dihapus dari draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
       }
     });
   };
@@ -548,7 +548,7 @@ export default function AdminPage() {
     };
     const newData = { ...cmsData, about: updatedAbout };
     setCmsData(newData);
-    queueCmsAutoSave(newData);
+    setHasUnsavedCms(true);
   };
 
   // Add User Form Submission
@@ -976,7 +976,7 @@ export default function AdminPage() {
               onClick={() => {
                 refresh();
                 refreshUsers();
-                if (page === 'cms') setCmsData(CMS.get());
+                if (page === 'cms' && !hasUnsavedCmsRef.current) setCmsData(CMS.get());
                 showToast('Data pendaftar & akun berhasil disegarkan.');
               }}
               title="Segarkan data pendaftar & akun terkini"
@@ -1650,15 +1650,25 @@ export default function AdminPage() {
         {/* ========================================================
             PAGE 4: MANAJEMEN KONTEN (CMS)
             ======================================================== */}
+        {page === 'cms' && !cmsData && (
+          <div className="page active" style={{ width: '100%', boxSizing: 'border-box', textAlign: 'center', padding: '5rem 2rem' }}>
+            <div style={{ width: '38px', height: '38px', border: '3px solid #e2e8f0', borderTopColor: 'var(--gold)', borderRadius: '50%', margin: '0 auto 1.25rem', animation: 'spin 0.8s linear infinite' }} />
+            <h3 style={{ color: 'var(--navy)', fontWeight: 800, margin: '0 0 0.5rem' }}>Memuat Konten Website...</h3>
+            <p style={{ color: 'var(--text-light)', fontSize: '0.875rem', margin: 0 }}>Mengambil data konten dan tautan foto terkini dari server.</p>
+          </div>
+        )}
+
         {page === 'cms' && cmsData && (
           <div className="page active" style={{ width: '100%', boxSizing: 'border-box' }}>
             {/* CMS Top Header & Instant Sync Action */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', background: '#f8fafc', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border)' }}>
               <div>
                 <div style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1rem' }}>Manajemen Konten Publik (CMS)</div>
-                <div style={{ fontSize: '0.8rem', color: '#16a34a', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
-                  Sinkronisasi Otomatis Aktif — Setiap perubahan otomatis tersimpan & tayang ke website publik.
+                <div style={{ fontSize: '0.8rem', color: hasUnsavedCms ? '#b45309' : '#16a34a', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: hasUnsavedCms ? '#f59e0b' : '#22c55e', display: 'inline-block' }} />
+                  {hasUnsavedCms 
+                    ? 'Ada perubahan yang belum dipublikasikan — Klik tombol untuk menayangkan ke website.' 
+                    : 'Semua konten telah tersimpan dan tayang aktif di website.'}
                 </div>
               </div>
               <button 
@@ -1666,10 +1676,14 @@ export default function AdminPage() {
                 className="btn btn-gold btn-sm" 
                 onClick={handleCmsSave} 
                 disabled={isSavingCms}
-                style={{ fontWeight: 700, padding: '0.55rem 1.5rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                style={{ fontWeight: 700, padding: '0.55rem 1.5rem', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: hasUnsavedCms ? '0 0 0 3px rgba(196,158,89,0.3)' : 'none' }}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>{isSavingCms ? 'Menyimpan ke Cloud...' : 'Simpan & Publikasikan'}</span>
+                {isSavingCms ? (
+                  <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                )}
+                <span>{isSavingCms ? 'Menyimpan & Mempublikasikan...' : 'Simpan & Publikasikan'}</span>
               </button>
             </div>
 
@@ -2030,14 +2044,25 @@ export default function AdminPage() {
             )}
 
             {/* SAVE BUTTON FOR CMS */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: '#f8fafc', padding: '1.25rem 1.5rem', borderRadius: '14px', border: '1px solid var(--border)', marginBottom: '4rem' }}>
+              <div>
+                <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '1rem' }}>Publikasikan Konten Website</div>
+                <div style={{ fontSize: '0.825rem', color: hasUnsavedCms ? '#b45309' : 'var(--text-light)', marginTop: '2px' }}>
+                  {hasUnsavedCms 
+                    ? 'Pastikan seluruh teks dan tautan foto sudah sesuai sebelum mempublikasikan.' 
+                    : 'Tidak ada perubahan baru yang belum dipublikasikan.'}
+                </div>
+              </div>
               <button 
                 className="btn btn-gold btn-lg" 
                 onClick={handleCmsSave} 
                 disabled={isSavingCms}
-                style={{ padding: '0.875rem 2.5rem', fontWeight: 700 }}
+                style={{ padding: '0.875rem 2.5rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '8px' }}
               >
-                {isSavingCms ? 'Menyimpan ke Cloud Firestore...' : 'Simpan Perubahan CMS ke Cloud'}
+                {isSavingCms && (
+                  <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                )}
+                <span>{isSavingCms ? 'Menyimpan & Mempublikasikan...' : 'Simpan & Publikasikan'}</span>
               </button>
             </div>
           </div>
@@ -2105,7 +2130,7 @@ export default function AdminPage() {
                   </div>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                      <h3 style={{ margin: 0 }}>Integrasi Cloud Database (Firebase Firestore)</h3>
+                      <h3 style={{ margin: 0 }}>Integrasi Server Database Pusat</h3>
                       <span style={{ 
                         fontSize: '0.75rem', 
                         fontWeight: 700, 
@@ -2114,13 +2139,13 @@ export default function AdminPage() {
                         background: isFirebaseConfigured ? '#dcfce7' : '#fef9c3', 
                         color: isFirebaseConfigured ? '#15803d' : '#854d0e' 
                       }}>
-                        {isFirebaseConfigured ? 'Terhubung ke Cloud' : 'Mode Offline / LocalStorage'}
+                        {isFirebaseConfigured ? 'Terhubung ke Server' : 'Mode Penyimpanan Lokal'}
                       </span>
                     </div>
                     <p style={{ margin: 0 }}>
                       {isFirebaseConfigured 
-                        ? `Aplikasi terhubung ke Firebase Project ID: ${firebaseConfig.projectId}. Semua akun dan berkas pendaftar tersinkronisasi secara otomatis ke Cloud Firestore.`
-                        : 'Aplikasi saat ini berjalan menggunakan LocalStorage browser. Untuk mengaktifkan sinkronisasi cloud real-time antar perangkat, masukkan kredensial Firebase Anda ke file .env.'}
+                        ? 'Aplikasi terhubung ke server database utama. Seluruh akun dan berkas pendaftar tersinkronisasi secara otomatis dan aman antar perangkat.'
+                        : 'Aplikasi saat ini berjalan menggunakan penyimpanan lokal browser. Untuk mengaktifkan sinkronisasi real-time antar perangkat, konfigurasikan koneksi server database.'}
                     </p>
                   </div>
                 </div>
@@ -2130,10 +2155,10 @@ export default function AdminPage() {
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#15803d', fontWeight: 700 }}>
                         <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#16a34a' }}></span>
-                        <span>Sistem Hemat Kuota Aktif: 0 Read Firestore Saat Refresh Browser</span>
+                        <span>Penyelarasan Otomatis: Aktif & Terpantau Real-time</span>
                       </div>
                       <span style={{ fontSize: '0.78rem', color: 'var(--text-light)', display: 'block', marginTop: '2px' }}>
-                        Data dibaca instan dari cache lokal. Terakhir sinkronisasi cloud: <strong>{lastSyncDisplay}</strong>
+                        Penyelarasan data otomatis. Terakhir diperbarui: <strong>{lastSyncDisplay}</strong>
                       </span>
                     </div>
 
@@ -2150,7 +2175,7 @@ export default function AdminPage() {
                         <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
                         <path d="M16 21h5v-5"/>
                       </svg>
-                      <span>{isSyncingCloud ? 'Menyinkronkan...' : 'Sinkronkan Data Cloud Sekarang'}</span>
+                      <span>{isSyncingCloud ? 'Menyinkronkan...' : 'Sinkronkan Data Server Sekarang'}</span>
                     </button>
                   </div>
                 )}
@@ -2618,7 +2643,7 @@ export default function AdminPage() {
                                   onClick={() => {
                                     askConfirmation({
                                       title: 'Hapus Berkas Dokumen',
-                                      message: `Apakah Anda yakin ingin menghapus berkas "${doc.label}" untuk ${mergedSelectedItem.namaLengkap}? Tindakan ini bersifat permanen di sistem dan Cloud Firestore.`,
+                                      message: `Apakah Anda yakin ingin menghapus berkas "${doc.label}" untuk ${mergedSelectedItem.namaLengkap}? Tindakan ini bersifat permanen dari sistem database.`,
                                       confirmText: 'Ya, Hapus Berkas',
                                       cancelText: 'Batalkan',
                                       isDestructive: true,
