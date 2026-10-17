@@ -20,6 +20,8 @@ export default function Footer() {
               <li><Link href="/about">Tentang</Link></li>
               <li><Link href="/benefits">Manfaat</Link></li>
               <li><Link href="/timeline">Jadwal</Link></li>
+              <li><Link href="/requirements">Persyaratan</Link></li>
+              <li><a href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH" target="_blank" rel="noopener noreferrer">Booklet Pendaftaran ↗</a></li>
               <li><Link href="/faq">FAQ</Link></li>
             </ul>
           </div>

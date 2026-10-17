@@ -79,7 +79,7 @@ export default function HomePage() {
               </div>
               <span>Manfaat</span>
             </Link>
-            <Link href="/about" className="hub-card">
+            <Link href="/gallery" className="hub-card">
               <div className="hub-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>
               </div>
@@ -97,11 +97,25 @@ export default function HomePage() {
               </div>
               <span>Persyaratan</span>
             </Link>
-            <Link href="/faq" className="hub-card">
+            <a 
+              href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hub-card"
+            >
               <div className="hub-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
               </div>
-              <span>FAQ</span>
+              <span>Booklet</span>
+            </a>
+            <Link href="/faq" className="hub-card" style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', padding: '1rem 1.25rem' }}>
+              <div className="hub-icon" style={{ marginBottom: 0, width: '32px', height: '32px', flexShrink: 0 }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <span style={{ fontSize: '0.95rem' }}>Pusat Bantuan & Pertanyaan (FAQ)</span>
             </Link>
           </div>
           

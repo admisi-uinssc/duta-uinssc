@@ -62,6 +62,17 @@ export default function Navbar() {
           <li><Link href="/gallery" className="nav-link" onClick={closeMenu}>Galeri</Link></li>
           <li><Link href="/timeline" className="nav-link" onClick={closeMenu}>Jadwal</Link></li>
           <li><Link href="/requirements" className="nav-link" onClick={closeMenu}>Persyaratan</Link></li>
+          <li>
+            <a 
+              href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="nav-link" 
+              onClick={closeMenu}
+            >
+              Booklet
+            </a>
+          </li>
           <li><Link href="/faq" className="nav-link" onClick={closeMenu}>FAQ</Link></li>
           <li>
             <Link href={user ? "/profil" : "/login"} className="nav-cta" onClick={closeMenu}>
@@ -71,7 +82,7 @@ export default function Navbar() {
         </ul>
 
         <div className="nav-right-group" style={{ display: 'flex', alignItems: 'center' }}>
-          <div className="desktop-only" style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="desktop-only" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
             <a href="https://uinssc.ac.id/" target="_blank" rel="noopener noreferrer" className="btn btn-outline-gold" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>UINSSC</a>
             <a href="https://ppid.uinssc.ac.id" target="_blank" rel="noopener noreferrer" className="btn btn-outline-gold" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>PPID</a>
           </div>
