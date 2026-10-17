@@ -77,15 +77,10 @@ export async function smartSyncAll(force = false) {
   
   // Selalu ambil data langsung dari cloud secara online tanpa harus hapus cache
   try {
-    // 1. Ambil pendaftar dari cloud (Deduplikasi cerdas berdasarkan Email / NIM / ID)
+    // 1. Ambil pendaftar dari cloud (Authoritative server data)
     const cloudApps = await fetchApplicantsFromCloud();
-    if (cloudApps && cloudApps.length > 0) {
-      const localApps = localAppsRaw ? JSON.parse(localAppsRaw) : [];
+    if (Array.isArray(cloudApps)) {
       const appMap = new Map();
-      localApps.forEach(a => {
-        const key = (a.email || a.nim || String(a.id)).trim().toLowerCase();
-        appMap.set(key, a);
-      });
       cloudApps.forEach(a => {
         const key = (a.email || a.nim || String(a.id)).trim().toLowerCase();
         if (appMap.has(key)) {
@@ -99,15 +94,10 @@ export async function smartSyncAll(force = false) {
       window.dispatchEvent(new Event('storage'));
     }
 
-    // 2. Ambil user dari cloud (Deduplikasi cerdas berdasarkan Email)
+    // 2. Ambil user dari cloud (Authoritative server data)
     const cloudUsers = await fetchUsersFromCloud();
-    if (cloudUsers && cloudUsers.length > 0) {
-      const localUsers = localUsersRaw ? JSON.parse(localUsersRaw) : [];
+    if (Array.isArray(cloudUsers)) {
       const userMap = new Map();
-      localUsers.forEach(u => {
-        const key = (u.email || u.username || String(u.id)).trim().toLowerCase();
-        userMap.set(key, u);
-      });
       cloudUsers.forEach(u => {
         const key = (u.email || u.username || String(u.id)).trim().toLowerCase();
         if (userMap.has(key)) {
@@ -116,9 +106,25 @@ export async function smartSyncAll(force = false) {
           userMap.set(key, u);
         }
       });
-      localStorage.setItem('dutauinssc_users', JSON.stringify(Array.from(userMap.values())));
+      const validUsers = Array.from(userMap.values());
+      localStorage.setItem('dutauinssc_users', JSON.stringify(validUsers));
       window.dispatchEvent(new Event('storage'));
-      window.dispatchEvent(new CustomEvent('users-updated', { detail: Array.from(userMap.values()) }));
+      window.dispatchEvent(new CustomEvent('users-updated', { detail: validUsers }));
+
+      // Immediately invalidate local auth token if active account was deleted from server
+      const currentToken = localStorage.getItem('dutauinssc_auth_token');
+      if (currentToken) {
+        const cleanTok = currentToken.trim().toLowerCase();
+        const stillValid = validUsers.some(u => 
+          (u.email || '').toLowerCase() === cleanTok || 
+          (u.username || '').toLowerCase() === cleanTok
+        );
+        if (!stillValid && cleanTok !== 'rizki') {
+          localStorage.removeItem('dutauinssc_auth_token');
+          window.dispatchEvent(new Event('storage'));
+          window.dispatchEvent(new CustomEvent('auth-logout'));
+        }
+      }
     }
 
     // 3. Ambil data CMS dari cloud (Slider, Banner, Foto Galeri, Profil Duta)
@@ -257,6 +263,9 @@ export function listenToUserFromCloud(identifier, callback) {
     return onSnapshot(userRef, (snapshot) => {
       if (snapshot.exists()) {
         callback(snapshot.data());
+      } else {
+        // Document does not exist or was deleted in Firestore
+        callback(null);
       }
     }, (err) => {
       console.warn('User status sync notice:', err);
@@ -490,12 +499,54 @@ export function listenToUsersFromCloud(callback) {
 /**
  * Delete an applicant from Firestore
  */
-export async function deleteApplicantFromCloud(id) {
-  if (!db || !id) return;
+export async function deleteApplicantFromCloud(idOrEmail) {
+  if (!db || !idOrEmail) return false;
   try {
-    await deleteDoc(doc(db, 'duta_applicants', String(id)));
+    const clean = String(idOrEmail).trim().toLowerCase();
+    const promises = [
+      deleteDoc(doc(db, 'duta_applicants', clean)).catch(() => {})
+    ];
+    try {
+      const q = query(collection(db, 'duta_applicants'), where('email', '==', clean));
+      const snap = await getDocs(q);
+      snap.forEach(d => promises.push(deleteDoc(d.ref).catch(() => {})));
+    } catch (e) {}
+    await Promise.all(promises);
+    return true;
   } catch (err) {
     console.warn('Could not delete applicant from Firestore:', err);
+    return false;
+  }
+}
+
+/**
+ * Delete a user and their dossier permanently from Firestore
+ */
+export async function deleteUserFromCloud(idOrEmail) {
+  if (!db || !idOrEmail) return false;
+  try {
+    const clean = String(idOrEmail).trim().toLowerCase();
+    const promises = [
+      deleteDoc(doc(db, 'duta_users', clean)).catch(() => {}),
+      deleteDoc(doc(db, 'duta_applicants', clean)).catch(() => {})
+    ];
+    try {
+      const qUsers = query(collection(db, 'duta_users'), where('email', '==', clean));
+      const snapUsers = await getDocs(qUsers);
+      snapUsers.forEach(d => promises.push(deleteDoc(d.ref).catch(() => {})));
+    } catch (e) {}
+
+    try {
+      const qApps = query(collection(db, 'duta_applicants'), where('email', '==', clean));
+      const snapApps = await getDocs(qApps);
+      snapApps.forEach(d => promises.push(deleteDoc(d.ref).catch(() => {})));
+    } catch (e) {}
+
+    await Promise.all(promises);
+    return true;
+  } catch (err) {
+    console.warn('Could not delete user from Firestore:', err);
+    return false;
   }
 }
 

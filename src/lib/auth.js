@@ -35,7 +35,7 @@ export function validateEmailFormat(email) {
   return { isValid: true, message: 'Format email valid.' };
 }
 
-import { syncUserToCloud, fetchUserFromCloudByIdentifier, fetchApplicantFromCloudByIdentifier } from './firebase';
+import { isFirebaseConfigured, syncUserToCloud, fetchUserFromCloudByIdentifier, fetchApplicantFromCloudByIdentifier, deleteUserFromCloud } from './firebase';
 import { DB } from './db';
 
 export const Auth = {
@@ -90,6 +90,30 @@ export const Auth = {
     }
   },
 
+  deleteAccount: async (email) => {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!cleanEmail) return false;
+    if (isFirebaseConfigured) {
+      await deleteUserFromCloud(cleanEmail);
+    }
+    const remaining = Auth.getUsers().filter(u => u.email.toLowerCase() !== cleanEmail);
+    localStorage.setItem('dutauinssc_users', JSON.stringify(remaining));
+
+    const remainingDb = DB.getAll().filter(i => (i.email || '').toLowerCase() !== cleanEmail);
+    localStorage.setItem('dutauinssc_pendaftar', JSON.stringify(remainingDb));
+
+    const token = localStorage.getItem('dutauinssc_auth_token');
+    if (token && token.toLowerCase() === cleanEmail) {
+      localStorage.removeItem('dutauinssc_auth_token');
+    }
+
+    try {
+      window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new CustomEvent('users-updated', { detail: remaining }));
+    } catch (e) {}
+    return true;
+  },
+
   subscribe: (callback) => {
     if (typeof window === 'undefined') return () => {};
     const handleUpdate = () => {
@@ -138,68 +162,115 @@ export const Auth = {
   },
 
   login: async (identifier, password) => {
-    let users = Auth.getUsers();
     const cleanInput = (identifier || '').trim().toLowerCase();
-    
-    // Support login by email, username, or 'rizki'
+    if (!cleanInput) {
+      return { 
+        success: false, 
+        notFound: true, 
+        error: 'Alamat email atau username wajib diisi.' 
+      };
+    }
+
+    // 1. If Server Database is connected, ALWAYS verify with Server Database FIRST
+    if (isFirebaseConfigured && cleanInput !== 'rizki') {
+      try {
+        const cloudUser = await fetchUserFromCloudByIdentifier(cleanInput);
+        if (!cloudUser) {
+          // Account was deleted from database or never registered!
+          // Purge any stale local copy of this deleted account from localStorage
+          const localList = Auth.getUsers().filter(u => 
+            (u.email || '').toLowerCase() !== cleanInput && 
+            (u.username || '').toLowerCase() !== cleanInput
+          );
+          localStorage.setItem('dutauinssc_users', JSON.stringify(localList));
+
+          const curToken = localStorage.getItem('dutauinssc_auth_token');
+          if (curToken && (curToken.trim().toLowerCase() === cleanInput)) {
+            localStorage.removeItem('dutauinssc_auth_token');
+          }
+          try {
+            window.dispatchEvent(new Event('storage'));
+            window.dispatchEvent(new CustomEvent('users-updated', { detail: localList }));
+          } catch (e) {}
+
+          return { 
+            success: false, 
+            notFound: true, 
+            error: 'Akun belum terdaftar. Silakan buat akun terlebih dahulu.' 
+          };
+        }
+
+        // Account exists on server: check password
+        if (cloudUser.password !== password) {
+          return { 
+            success: false, 
+            notFound: false, 
+            error: 'Kata sandi tidak sesuai.' 
+          };
+        }
+
+        // Save authenticated user to local cache and set session token
+        const updatedUsers = Auth.getUsers().filter(u => (u.email || '').toLowerCase() !== (cloudUser.email || '').toLowerCase());
+        updatedUsers.push(cloudUser);
+        localStorage.setItem('dutauinssc_users', JSON.stringify(updatedUsers));
+        localStorage.setItem('dutauinssc_auth_token', cloudUser.email);
+
+        try {
+          window.dispatchEvent(new Event('storage'));
+          window.dispatchEvent(new CustomEvent('users-updated', { detail: updatedUsers }));
+        } catch (e) {}
+
+        // Sync applicant dossier if exists
+        try {
+          const cloudApp = await fetchApplicantFromCloudByIdentifier(cloudUser.email);
+          if (cloudApp) {
+            const pendaftarRaw = localStorage.getItem('dutauinssc_pendaftar');
+            const pendaftarList = pendaftarRaw ? JSON.parse(pendaftarRaw) : [];
+            const existingIdx = pendaftarList.findIndex(p => (p.email || '').toLowerCase() === cloudUser.email.toLowerCase());
+            if (existingIdx !== -1) {
+              pendaftarList[existingIdx] = { ...pendaftarList[existingIdx], ...cloudApp };
+            } else {
+              pendaftarList.unshift(cloudApp);
+            }
+            localStorage.setItem('dutauinssc_pendaftar', JSON.stringify(pendaftarList));
+            window.dispatchEvent(new Event('storage'));
+          }
+        } catch (e) {}
+
+        return { success: true, user: cloudUser };
+      } catch (err) {
+        console.warn('Server auth lookup error:', err);
+        return {
+          success: false,
+          notFound: false,
+          error: 'Gagal menghubungi server database. Periksa koneksi internet Anda.'
+        };
+      }
+    }
+
+    // 2. Offline fallback (only used if server is not configured or demo mode)
+    let users = Auth.getUsers();
     let userExists = users.find(u => 
       u.email.toLowerCase() === cleanInput ||
       (u.username && u.username.toLowerCase() === cleanInput) ||
       (cleanInput === 'rizki' && (u.email.toLowerCase() === 'rizki@uinssc.ac.id' || u.username === 'rizki'))
     );
 
-    // If not found in local cache (e.g. cache reset, incognito, new device), check Firebase Cloud Backend!
-    if (!userExists) {
-      try {
-        const cloudUser = await fetchUserFromCloudByIdentifier(cleanInput);
-        if (cloudUser) {
-          userExists = cloudUser;
-          // Restore to local users list
-          const existing = users.filter(u => (u.email || '').toLowerCase() !== (cloudUser.email || '').toLowerCase());
-          existing.push(cloudUser);
-          localStorage.setItem('dutauinssc_users', JSON.stringify(existing));
-          try {
-            window.dispatchEvent(new Event('storage'));
-            window.dispatchEvent(new CustomEvent('users-updated', { detail: existing }));
-          } catch (e) {}
-        }
-      } catch (err) {
-        console.warn('Backend login fallback error:', err);
-      }
-    }
-
     if (!userExists) {
       return { 
         success: false, 
-        notFound: true,
+        notFound: true, 
         error: 'Akun belum terdaftar. Silakan buat akun terlebih dahulu.' 
       };
     }
     if (userExists.password !== password) {
       return { 
         success: false, 
-        notFound: false,
+        notFound: false, 
         error: 'Kata sandi tidak sesuai.' 
       };
     }
     localStorage.setItem('dutauinssc_auth_token', userExists.email);
-
-    // Sync applicant dossier too so HP immediately has all submitted berkas and fields
-    try {
-      const cloudApp = await fetchApplicantFromCloudByIdentifier(userExists.email);
-      if (cloudApp) {
-        const pendaftarRaw = localStorage.getItem('dutauinssc_pendaftar');
-        const pendaftarList = pendaftarRaw ? JSON.parse(pendaftarRaw) : [];
-        const existingIdx = pendaftarList.findIndex(p => (p.email || '').toLowerCase() === userExists.email.toLowerCase());
-        if (existingIdx !== -1) {
-          pendaftarList[existingIdx] = { ...pendaftarList[existingIdx], ...cloudApp };
-        } else {
-          pendaftarList.unshift(cloudApp);
-        }
-        localStorage.setItem('dutauinssc_pendaftar', JSON.stringify(pendaftarList));
-        window.dispatchEvent(new Event('storage'));
-      }
-    } catch (e) {}
 
     return { success: true, user: userExists };
   },
@@ -225,12 +296,14 @@ export const Auth = {
     let users = Auth.getUsers();
     const cleanEmail = (accountData.email || '').trim().toLowerCase();
 
-    // Check duplicate in local users or in Firestore
-    let existingUser = users.find(u => u.email.toLowerCase() === cleanEmail);
-    if (!existingUser) {
+    // Check duplicate: prioritize server database if connected
+    let existingUser = null;
+    if (isFirebaseConfigured) {
       try {
         existingUser = await fetchUserFromCloudByIdentifier(cleanEmail);
       } catch (e) {}
+    } else {
+      existingUser = users.find(u => u.email.toLowerCase() === cleanEmail);
     }
 
     const userId = existingUser ? existingUser.id : (accountData.id || Date.now());
@@ -261,31 +334,31 @@ export const Auth = {
     // Replace or add without duplicate
     const filteredUsers = users.filter(u => u.email.toLowerCase() !== cleanEmail);
     filteredUsers.push(userRecord);
-    Auth.saveUsers(filteredUsers);
+    Auth.saveUsers(filteredUsers, userRecord);
     localStorage.setItem('dutauinssc_auth_token', cleanEmail);
 
-    // Sync to dutauinssc_pendaftar so it immediately appears in all admin dashboard views and admin.html
+    // Sync to dutauinssc_pendaftar so it immediately appears in all views
     try {
       const pendaftarRaw = localStorage.getItem('dutauinssc_pendaftar');
       const pendaftarList = pendaftarRaw ? JSON.parse(pendaftarRaw) : [];
       const existingIdx = pendaftarList.findIndex(p => p.email?.toLowerCase() === cleanEmail);
 
       const pendaftarEntry = {
-        id: newUser.id,
-        namaLengkap: newUser.namaLengkap,
-        nim: newUser.nim,
-        fakultas: newUser.fakultas,
-        jurusan: newUser.jurusan,
-        prodi: newUser.jurusan || newUser.fakultas,
-        semester: accountData.semester || newUser.semester || '4',
-        jenisKelamin: newUser.jenisKelamin,
-        ttl: `${newUser.tempatLahir}, ${newUser.tanggalLahir}`,
-        email: newUser.email,
-        kewarganegaraan: newUser.kewarganegaraan,
+        id: userRecord.id,
+        namaLengkap: userRecord.namaLengkap,
+        nim: userRecord.nim,
+        fakultas: userRecord.fakultas,
+        jurusan: userRecord.jurusan,
+        prodi: userRecord.jurusan || userRecord.fakultas,
+        semester: accountData.semester || userRecord.semester || '4',
+        jenisKelamin: userRecord.jenisKelamin,
+        ttl: `${userRecord.tempatLahir}, ${userRecord.tanggalLahir}`,
+        email: userRecord.email,
+        kewarganegaraan: userRecord.kewarganegaraan,
         status: 'review',
         accountStatus: 'approved',
         isAccountApplication: false,
-        createdAt: newUser.createdAt,
+        createdAt: userRecord.createdAt,
       };
 
       if (existingIdx !== -1) {
@@ -293,7 +366,7 @@ export const Auth = {
       } else {
         pendaftarList.unshift(pendaftarEntry);
       }
-      DB.save(pendaftarList);
+      DB.save(pendaftarList, pendaftarEntry);
     } catch (e) {
       console.error('Error syncing to pendaftar:', e);
     }

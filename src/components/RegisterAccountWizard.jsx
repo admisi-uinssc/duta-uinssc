@@ -2,6 +2,7 @@ import React, { useState, useId } from 'react';
 import { useRouter } from '../lib/router';
 import { Auth, validateEmailFormat } from '../lib/auth';
 import { FAKULTAS_DATA, KEWARGANEGARAAN_OPTIONS } from '../lib/fakultasData';
+import { isFirebaseConfigured, fetchUserFromCloudByIdentifier } from '../lib/firebase';
 
 export default function RegisterAccountWizard({ onSwitchToLogin }) {
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
   };
 
   // Validate Step 1
-  const handleNextToStep2 = (e) => {
+  const handleNextToStep2 = async (e) => {
     e.preventDefault();
     setEmailTouched(true);
     const newErrors = {};
@@ -71,7 +72,24 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
     } else if (!emailVal.isValid) {
       newErrors.email = emailVal.message;
     } else if (isEmailDuplicate) {
-      newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
+      // Re-verify against authoritative server database
+      let actuallyDuplicate = true;
+      if (isFirebaseConfigured) {
+        try {
+          const cloudUser = await fetchUserFromCloudByIdentifier(email.trim());
+          if (!cloudUser) {
+            // Deleted in database! Purge from local storage so it never blocks re-registration
+            actuallyDuplicate = false;
+            const cleaned = Auth.getUsers().filter(u => u.email.toLowerCase() !== email.trim().toLowerCase());
+            localStorage.setItem('dutauinssc_users', JSON.stringify(cleaned));
+            window.dispatchEvent(new Event('storage'));
+            window.dispatchEvent(new CustomEvent('users-updated', { detail: cleaned }));
+          }
+        } catch (err) {}
+      }
+      if (actuallyDuplicate) {
+        newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
+      }
     }
 
     if (!password) {

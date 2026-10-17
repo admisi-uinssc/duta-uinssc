@@ -118,6 +118,15 @@ export default function UserDashboard({ user, onLogout }) {
 
     // Live single-user Firestore listener: instant result updates with 0 wasteful reads
     const unsubscribeCloud = listenToUserFromCloud(user.email, (cloudUser) => {
+      if (cloudUser === null) {
+        // Account has been deleted from server database!
+        Auth.logout();
+        const allUsers = Auth.getUsers().filter(u => (u.email || '').toLowerCase() !== (user.email || '').toLowerCase());
+        localStorage.setItem('dutauinssc_users', JSON.stringify(allUsers));
+        if (typeof onLogout === 'function') onLogout();
+        else window.location.href = '/login';
+        return;
+      }
       if (cloudUser) {
         setCurrentUser(prev => ({ ...prev, ...cloudUser }));
         if (cloudUser.berkasSubmitted) {
@@ -183,9 +192,16 @@ export default function UserDashboard({ user, onLogout }) {
       }
     });
 
+    const handleAuthLogout = () => {
+      if (typeof onLogout === 'function') onLogout();
+      else window.location.href = '/login';
+    };
+    window.addEventListener('auth-logout', handleAuthLogout);
+
     return () => {
       window.removeEventListener('storage', refreshUserData);
       window.removeEventListener('document-deleted', handleDocDeleted);
+      window.removeEventListener('auth-logout', handleAuthLogout);
       if (typeof unsubscribeCloud === 'function') unsubscribeCloud();
       if (typeof unsubscribeAppCloud === 'function') unsubscribeAppCloud();
     };

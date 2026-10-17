@@ -9,7 +9,7 @@ import { CMS } from '../lib/cms';
 import { Auth } from '../lib/auth';
 import { FAKULTAS_DATA } from '../lib/fakultasData';
 import { evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
-import { isFirebaseConfigured, firebaseConfig, smartSyncAll, getLastSyncTime, listenToApplicantsFromCloud, listenToUsersFromCloud, listenToCmsFromCloud } from '../lib/firebase';
+import { isFirebaseConfigured, firebaseConfig, smartSyncAll, getLastSyncTime, listenToApplicantsFromCloud, listenToUsersFromCloud, listenToCmsFromCloud, deleteUserFromCloud } from '../lib/firebase';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
 import DocumentPreviewModal from '../components/DocumentPreviewModal';
 
@@ -204,34 +204,29 @@ export default function AdminPage() {
     const unsubUsers = Auth.subscribe(syncAll);
     const unsubDb = DB.subscribe(syncAll);
 
-    // Live cloud Firestore listeners: instant dossier & user updates with ZERO refresh and ZERO cache clearing
+    // Live server database listeners: instant dossier & user updates with authoritative cloud state
     const unsubCloudApps = listenToApplicantsFromCloud((cloudList) => {
-      if (cloudList && cloudList.length > 0) {
-        const local = DB.getAll();
-        const map = new Map();
-        local.forEach(a => map.set((a.email || a.nim || String(a.id)).toLowerCase(), a));
-        cloudList.forEach(c => {
-          const k = (c.email || c.nim || String(c.id)).toLowerCase();
-          map.set(k, { ...(map.get(k) || {}), ...c });
-        });
-        const merged = Array.from(map.values()).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-        localStorage.setItem('dutauinssc_pendaftar', JSON.stringify(merged));
-        setApplicants(merged);
+      if (Array.isArray(cloudList)) {
+        const sorted = [...cloudList].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        localStorage.setItem('dutauinssc_pendaftar', JSON.stringify(sorted));
+        setApplicants(sorted);
       }
     });
 
     const unsubCloudUsers = listenToUsersFromCloud((cloudUsers) => {
-      if (cloudUsers && cloudUsers.length > 0) {
-        const local = Auth.getUsers();
-        const map = new Map();
-        local.forEach(u => map.set((u.email || u.username || String(u.id)).toLowerCase(), u));
-        cloudUsers.forEach(c => {
-          const k = (c.email || c.username || String(c.id)).toLowerCase();
-          map.set(k, { ...(map.get(k) || {}), ...c });
+      if (Array.isArray(cloudUsers)) {
+        const userMap = new Map();
+        cloudUsers.forEach(u => {
+          const key = (u.email || u.username || String(u.id)).trim().toLowerCase();
+          if (userMap.has(key)) {
+            userMap.set(key, { ...userMap.get(key), ...u });
+          } else {
+            userMap.set(key, u);
+          }
         });
-        const merged = Array.from(map.values());
-        localStorage.setItem('dutauinssc_users', JSON.stringify(merged));
-        setRegisteredUsers(merged);
+        const deduped = Array.from(userMap.values());
+        localStorage.setItem('dutauinssc_users', JSON.stringify(deduped));
+        setRegisteredUsers(deduped);
       }
     });
 
@@ -290,10 +285,11 @@ export default function AdminPage() {
   const handleDeleteUser = (email) => {
     askConfirmation({
       title: 'Hapus Akun Calon Duta',
-      message: `Apakah Anda yakin ingin menghapus akun ${email} secara permanen? Seluruh berkas pendaftaran yang tertaut juga akan dihapus.`,
+      message: `Apakah Anda yakin ingin menghapus akun ${email} secara permanen? Seluruh berkas pendaftaran yang tertaut juga akan dihapus dari server database.`,
       confirmText: 'Ya, Hapus Permanen',
       isDestructive: true,
-      onConfirm: () => {
+      onConfirm: async () => {
+        await deleteUserFromCloud(email);
         const remaining = Auth.getUsers().filter(u => u.email.toLowerCase() !== email.toLowerCase());
         Auth.saveUsers(remaining);
         const remainingDb = DB.getAll().filter(i => (i.email || '').toLowerCase() !== email.toLowerCase());
