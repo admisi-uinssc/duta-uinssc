@@ -7,8 +7,8 @@ export default function CTABanner() {
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
 
   useEffect(() => {
-    // Target countdown: Batas akhir Batch 2 (26 Oktober 2026 pukul 23:59:59)
-    const target = new Date(2026, 9, 26, 23, 59, 59).getTime();
+    // Target countdown: Batas akhir pendaftaran (25 Oktober 2026 pukul 23:59:59)
+    const target = new Date(2026, 9, 25, 23, 59, 59).getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();

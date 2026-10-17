@@ -1553,7 +1553,7 @@ export default function UserDashboard({ user, onLogout }) {
                     {
                       no: '2',
                       title: 'Batch 2: Masa Perpanjangan Berkas',
-                      date: '17 s.d. 26 Oktober 2026',
+                      date: '17 s.d. 25 Oktober 2026',
                       desc: 'Perpanjangan pendaftaran dan verifikasi kelengkapan dokumen oleh tim juri admisi.',
                       isDone: selectionStage === 'lolos',
                       isCurrent: selectionStage === 'review',
