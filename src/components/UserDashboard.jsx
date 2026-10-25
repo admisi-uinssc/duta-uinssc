@@ -119,6 +119,12 @@ export default function UserDashboard({ user, onLogout }) {
     // Live single-user Firestore listener: instant result updates with 0 wasteful reads
     const unsubscribeCloud = listenToUserFromCloud(user.email, (cloudUser) => {
       if (cloudUser === null) {
+        // If user was created within the last 2 minutes, don't kick them out during initial sync propagation
+        const localUser = Auth.getCurrentUser();
+        const isRecent = localUser && localUser.createdAt && (Date.now() - new Date(localUser.createdAt).getTime() < 120000);
+        if (isRecent) {
+          return;
+        }
         // Account has been deleted from server database!
         Auth.logout();
         const allUsers = Auth.getUsers().filter(u => (u.email || '').toLowerCase() !== (user.email || '').toLowerCase());

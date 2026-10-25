@@ -23,7 +23,15 @@ export default function ProfilPage() {
     if (isFirebaseConfigured && cleanToken !== 'rizki') {
       fetchUserFromCloudByIdentifier(cleanToken).then((cloudUser) => {
         if (!cloudUser) {
-          // Account was deleted from server database!
+          // Double check: if user was just created locally within the last 2 minutes, keep them in session
+          const localUser = Auth.getCurrentUser();
+          const isRecent = localUser && localUser.createdAt && (Date.now() - new Date(localUser.createdAt).getTime() < 120000);
+          if (isRecent) {
+            setUser(localUser);
+            setLoading(false);
+            return;
+          }
+          // Account was genuinely deleted from server database!
           Auth.logout();
           const allUsers = Auth.getUsers().filter(u => (u.email || '').toLowerCase() !== cleanToken);
           localStorage.setItem('dutauinssc_users', JSON.stringify(allUsers));
@@ -32,9 +40,16 @@ export default function ProfilPage() {
         }
         setUser(cloudUser);
         setLoading(false);
-      }).catch(() => {
-        Auth.logout();
-        navigate('/login');
+      }).catch((err) => {
+        console.warn('Network issue fetching cloud user, fallback to local cache:', err);
+        const local = Auth.getCurrentUser();
+        if (local && (local.email || '').toLowerCase() === cleanToken) {
+          setUser(local);
+          setLoading(false);
+        } else {
+          Auth.logout();
+          navigate('/login');
+        }
       });
     } else {
       const local = Auth.getCurrentUser();

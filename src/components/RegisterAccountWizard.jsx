@@ -71,23 +71,28 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
       newErrors.email = 'Alamat email wajib diisi.';
     } else if (!emailVal.isValid) {
       newErrors.email = emailVal.message;
-    } else if (isEmailDuplicate) {
+    } else {
       // Re-verify against authoritative server database
-      let actuallyDuplicate = true;
       if (isFirebaseConfigured) {
         try {
           const cloudUser = await fetchUserFromCloudByIdentifier(email.trim());
-          if (!cloudUser) {
-            // Deleted in database! Purge from local storage so it never blocks re-registration
-            actuallyDuplicate = false;
+          if (cloudUser && cloudUser.password) {
+            newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
+          } else {
+            // Not in database or was deleted! Purge stale local copy so re-registration is never blocked
             const cleaned = Auth.getUsers().filter(u => u.email.toLowerCase() !== email.trim().toLowerCase());
             localStorage.setItem('dutauinssc_users', JSON.stringify(cleaned));
-            window.dispatchEvent(new Event('storage'));
-            window.dispatchEvent(new CustomEvent('users-updated', { detail: cleaned }));
+            try {
+              window.dispatchEvent(new Event('storage'));
+              window.dispatchEvent(new CustomEvent('users-updated', { detail: cleaned }));
+            } catch (e) {}
           }
-        } catch (err) {}
-      }
-      if (actuallyDuplicate) {
+        } catch (err) {
+          if (isEmailDuplicate) {
+            newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
+          }
+        }
+      } else if (isEmailDuplicate) {
         newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
       }
     }
@@ -145,15 +150,16 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           jenisKelamin,
         });
 
-        if (res.success) {
-          router.push('/profil');
+        if (res && res.success) {
+          window.location.href = '/profil';
         } else {
           setSubmitting(false);
-          setErrors({ general: res.error || 'Terjadi kesalahan saat mengajukan akun.' });
+          setErrors({ general: res?.error || 'Terjadi kesalahan saat mengajukan akun.' });
         }
       } catch (err) {
+        console.error('Registration submit error:', err);
         setSubmitting(false);
-        setErrors({ general: 'Gagal menghubungkan ke database server.' });
+        setErrors({ general: err.message || 'Terjadi kendala saat menghubungkan ke database server.' });
       }
     }
   };

@@ -9,7 +9,7 @@ import { CMS } from '../lib/cms';
 import { Auth } from '../lib/auth';
 import { FAKULTAS_DATA } from '../lib/fakultasData';
 import { evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
-import { isFirebaseConfigured, firebaseConfig, smartSyncAll, getLastSyncTime, listenToApplicantsFromCloud, listenToUsersFromCloud, listenToCmsFromCloud, deleteUserFromCloud } from '../lib/firebase';
+import { isFirebaseConfigured, firebaseConfig, smartSyncAll, getLastSyncTime, listenToApplicantsFromCloud, listenToUsersFromCloud, listenToCmsFromCloud, deleteUserFromCloud, syncUserToCloud, syncApplicantToCloud } from '../lib/firebase';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
 import DocumentPreviewModal from '../components/DocumentPreviewModal';
 
@@ -109,6 +109,79 @@ export default function AdminPage() {
     motivasi: 'Bertekad menjadi wajah representasi mahasiswa UIN Siber Syekh Nurjati Cirebon.',
     selectionStage: 'review'
   });
+
+  // Password view & reset state for admin
+  const [editingPasswordUser, setEditingPasswordUser] = useState(null);
+  const [newPasswordVal, setNewPasswordVal] = useState('');
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [revealedPasswords, setRevealedPasswords] = useState({});
+
+  const toggleRevealPassword = (email) => {
+    if (!email) return;
+    setRevealedPasswords(prev => ({
+      ...prev,
+      [email]: !prev[email]
+    }));
+  };
+
+  const handleOpenChangePassword = (user) => {
+    if (!user) return;
+    setEditingPasswordUser(user);
+    setNewPasswordVal(user.password || '');
+    setShowPasswordModal(true);
+  };
+
+  const handleSaveUserPassword = async (e) => {
+    if (e) e.preventDefault();
+    if (!editingPasswordUser || !newPasswordVal.trim()) {
+      showToast('Kata sandi baru tidak boleh kosong!');
+      return;
+    }
+
+    const targetEmail = (editingPasswordUser.email || '').trim();
+    const targetPassword = newPasswordVal.trim();
+
+    // Update in Auth users
+    const allUsers = Auth.getUsers();
+    const uIdx = allUsers.findIndex(u => (u.email || '').toLowerCase() === targetEmail.toLowerCase());
+    let targetUserObj = null;
+    if (uIdx !== -1) {
+      allUsers[uIdx].password = targetPassword;
+      allUsers[uIdx].updatedAt = new Date().toISOString();
+      targetUserObj = allUsers[uIdx];
+      Auth.saveUsers(allUsers, targetUserObj);
+    }
+
+    // Update in DB pendaftar
+    const allDb = DB.getAll();
+    const dbIdx = allDb.findIndex(d => (d.email || '').toLowerCase() === targetEmail.toLowerCase());
+    let targetDbObj = null;
+    if (dbIdx !== -1) {
+      allDb[dbIdx].password = targetPassword;
+      allDb[dbIdx].updatedAt = new Date().toISOString();
+      targetDbObj = allDb[dbIdx];
+      DB.save(allDb, targetDbObj);
+    }
+
+    // Cloud sync
+    if (isFirebaseConfigured) {
+      try {
+        await Promise.all([
+          targetUserObj ? syncUserToCloud(targetUserObj) : Promise.resolve(),
+          targetDbObj ? syncApplicantToCloud(targetDbObj) : Promise.resolve()
+        ]);
+      } catch (err) {
+        console.warn('Sync password to cloud warning:', err);
+      }
+    }
+
+    refreshUsers();
+    refresh();
+    setShowPasswordModal(false);
+    setEditingPasswordUser(null);
+    setNewPasswordVal('');
+    showToast(`Kata sandi untuk ${targetEmail} berhasil diperbarui.`);
+  };
 
   const [confirmModal, setConfirmModal] = useState({
     isOpen: false,
@@ -1330,6 +1403,7 @@ export default function AdminPage() {
                   <tr>
                     <th>#</th>
                     <th>Nama dan Email</th>
+                    <th>Kata Sandi</th>
                     <th>NIM</th>
                     <th>Fakultas / Prodi</th>
                     <th>Kelengkapan Dokumen</th>
@@ -1356,6 +1430,34 @@ export default function AdminPage() {
                           <td>
                             <div className="td-name">{u.namaLengkap || u.name}</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>{u.email}</div>
+                          </td>
+                          <td>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                              <code style={{ fontSize: '0.8rem', background: '#f1f5f9', padding: '3px 7px', borderRadius: '4px', color: '#0f172a', fontWeight: 600 }}>
+                                {revealedPasswords[u.email] ? (u.password || '—') : '••••••••'}
+                              </code>
+                              <button
+                                type="button"
+                                onClick={() => toggleRevealPassword(u.email)}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px', color: 'var(--text-mid)', display: 'inline-flex', alignItems: 'center' }}
+                                title={revealedPasswords[u.email] ? "Sembunyikan Kata Sandi" : "Lihat Kata Sandi"}
+                              >
+                                {revealedPasswords[u.email] ? (
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                ) : (
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                )}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenChangePassword(u)}
+                                className="btn btn-sm"
+                                style={{ padding: '2px 7px', fontSize: '0.72rem', border: '1px solid #cbd5e1', background: '#fff', color: 'var(--navy)', fontWeight: 600 }}
+                                title="Ubah Kata Sandi Calon Duta"
+                              >
+                                Ubah
+                              </button>
+                            </div>
                           </td>
                           <td className="td-nim">{u.nim || '—'}</td>
                           <td style={{ fontSize: '0.825rem' }}>
@@ -1549,6 +1651,33 @@ export default function AdminPage() {
                         <td>
                           <div className="td-name">{item.namaLengkap}</div>
                           <div style={{ fontSize: '0.72rem', color: 'var(--text-light)' }}>{item.email}</div>
+                          {(() => {
+                            const uMatch = registeredUsers.find(u => (u.email || '').toLowerCase() === (item.email || '').toLowerCase());
+                            const pwd = item.password || uMatch?.password;
+                            if (!pwd) return null;
+                            return (
+                              <div style={{ marginTop: '3px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <span style={{ fontSize: '0.68rem', color: 'var(--text-light)' }}>Sandi:</span>
+                                <code style={{ fontSize: '0.72rem', background: '#f1f5f9', padding: '1px 5px', borderRadius: '3px', color: '#0f172a', fontWeight: 600 }}>
+                                  {revealedPasswords[item.email] ? pwd : '••••••'}
+                                </code>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleRevealPassword(item.email)}
+                                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0', fontSize: '0.68rem', color: 'var(--gold)', fontWeight: 600 }}
+                                >
+                                  {revealedPasswords[item.email] ? 'Tutup' : 'Lihat'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenChangePassword(uMatch || item)}
+                                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px', fontSize: '0.68rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'underline' }}
+                                >
+                                  Ubah
+                                </button>
+                              </div>
+                            );
+                          })()}
                         </td>
                         <td className="td-nim">{item.nim}</td>
                         <td style={{ fontSize: '0.8rem', maxWidth: 190 }}>
@@ -2492,6 +2621,30 @@ export default function AdminPage() {
                       <div style={{ fontWeight: 600, color: 'var(--navy)', wordBreak: 'break-all' }}>{mergedSelectedItem.email}</div>
                     </div>
                     <div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Kata Sandi Akun Peserta</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
+                        <code style={{ fontSize: '0.85rem', background: '#f1f5f9', padding: '3px 8px', borderRadius: '4px', color: '#0f172a', fontWeight: 600 }}>
+                          {revealedPasswords[mergedSelectedItem.email] ? (matchingRegUser?.password || mergedSelectedItem.password || '—') : '••••••••'}
+                        </code>
+                        <button
+                          type="button"
+                          onClick={() => toggleRevealPassword(mergedSelectedItem.email)}
+                          className="btn btn-sm"
+                          style={{ padding: '3px 8px', fontSize: '0.72rem', border: '1px solid #cbd5e1', background: '#fff' }}
+                        >
+                          {revealedPasswords[mergedSelectedItem.email] ? 'Sembunyikan' : 'Lihat'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenChangePassword(matchingRegUser || mergedSelectedItem)}
+                          className="btn btn-sm btn-outline-gold"
+                          style={{ padding: '3px 10px', fontSize: '0.72rem', fontWeight: 600 }}
+                        >
+                          Ubah Sandi
+                        </button>
+                      </div>
+                    </div>
+                    <div>
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Nomor WhatsApp</div>
                       <div style={{ fontWeight: 600, color: 'var(--navy)' }}>
                         {mergedSelectedItem.noHp ? (
@@ -3012,6 +3165,56 @@ export default function AdminPage() {
                 </button>
                 <button type="submit" className="btn btn-gold">
                   Simpan Berkas
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          MODAL: UBAH KATA SANDI PESERTA
+          ======================================================== */}
+      {showPasswordModal && editingPasswordUser && (
+        <div className="modal-backdrop open" onClick={e => { if (e.target === e.currentTarget) setShowPasswordModal(false); }}>
+          <div className="modal-box" style={{ maxWidth: '440px', width: '92%' }}>
+            <div className="modal-header">
+              <h3>Ubah Kata Sandi Peserta</h3>
+              <button className="modal-close" onClick={() => setShowPasswordModal(false)}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveUserPassword} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.75rem 1rem' }}>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--navy)' }}>{editingPasswordUser.namaLengkap || editingPasswordUser.name}</div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-mid)', marginTop: '2px' }}>{editingPasswordUser.email}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '2px' }}>NIM: {editingPasswordUser.nim || '—'}</div>
+              </div>
+
+              <div className="form-group">
+                <label style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '4px', display: 'block' }}>
+                  Kata Sandi Baru
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Masukkan kata sandi baru..."
+                  value={newPasswordVal}
+                  onChange={e => setNewPasswordVal(e.target.value)}
+                  style={{ width: '100%', padding: '0.6rem 0.85rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.9rem', boxSizing: 'border-box' }}
+                />
+                <small style={{ color: 'var(--text-light)', fontSize: '0.72rem', marginTop: '4px', display: 'block' }}>
+                  Kata sandi ini langsung tersimpan dan dapat dipakai peserta masuk ke dashboard profil.
+                </small>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+                <button type="button" className="btn btn-outline-gold" onClick={() => setShowPasswordModal(false)}>
+                  Batal
+                </button>
+                <button type="submit" className="btn btn-gold">
+                  Simpan Kata Sandi
                 </button>
               </div>
             </form>
