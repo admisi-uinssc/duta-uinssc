@@ -991,7 +991,7 @@ export default function UserDashboard({ user, onLogout }) {
                         <line x1="12" y1="9" x2="12" y2="13"/>
                         <line x1="12" y1="17" x2="12.01" y2="17"/>
                       </svg>
-                      PERINGATAN RESMI
+                      PERINGATAN
                     </span>
                     <span style={{ fontSize: '0.825rem', fontWeight: 700, color: '#92400e' }}>
                       Batas Akhir Kelengkapan Berkas Seleksi
