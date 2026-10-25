@@ -151,6 +151,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
         });
 
         if (res && res.success) {
+          localStorage.setItem('dutauinssc_session_created', Date.now().toString());
           window.location.href = '/profil';
         } else {
           setSubmitting(false);

@@ -11,6 +11,7 @@ import TimelineSection from '../components/TimelineSection';
 import RequirementsSection from '../components/RequirementsSection';
 import FAQSection from '../components/FAQSection';
 import CTABanner from '../components/CTABanner';
+import RegistrationCountdownBanner from '../components/RegistrationCountdownBanner';
 import Footer from '../components/Footer';
 import { CMS } from '../lib/cms';
 
@@ -42,6 +43,9 @@ export default function HomePage() {
       <Navbar />
       <HeroSlider />
       
+      {/* Hitung Mundur Penutupan Pendaftaran (Tampil di bawah slider, di atas menu pada tampilan HP & desktop) */}
+      <RegistrationCountdownBanner />
+
       {/* App Hub Menu (Hanya muncul di Mobile lewat CSS) */}
       <section className="hub-section mobile-only">
         <div className="container">

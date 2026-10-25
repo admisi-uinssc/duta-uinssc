@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRouter } from '../lib/router';
 import { Auth } from '../lib/auth';
-import { isFirebaseConfigured, fetchUserFromCloudByIdentifier } from '../lib/firebase';
+import { isFirebaseConfigured, fetchUserFromCloudByIdentifier, syncUserToCloud } from '../lib/firebase';
 import UserDashboard from '../components/UserDashboard';
 
 export default function ProfilPage() {
@@ -18,20 +18,32 @@ export default function ProfilPage() {
       return;
     }
     const cleanToken = token.trim().toLowerCase();
+    const localUser = Auth.getCurrentUser();
+
+    // Immediately render local user session to avoid blank screen or false redirects
+    if (localUser && (localUser.email || '').toLowerCase() === cleanToken) {
+      setUser(localUser);
+      setLoading(false);
+    }
 
     // Verify account directly with server database
     if (isFirebaseConfigured && cleanToken !== 'rizki') {
+      const sessionCreated = Number(localStorage.getItem('dutauinssc_session_created') || 0);
+      const isFreshSession = sessionCreated && (Date.now() - sessionCreated < 600000);
+      const isRecentLocal = localUser && localUser.createdAt && (Date.now() - new Date(localUser.createdAt).getTime() < 600000);
+
       fetchUserFromCloudByIdentifier(cleanToken).then((cloudUser) => {
         if (!cloudUser) {
-          // Double check: if user was just created locally within the last 2 minutes, keep them in session
-          const localUser = Auth.getCurrentUser();
-          const isRecent = localUser && localUser.createdAt && (Date.now() - new Date(localUser.createdAt).getTime() < 120000);
-          if (isRecent) {
-            setUser(localUser);
-            setLoading(false);
+          // If the user just registered or logged in recently, never kick them out! Re-sync to cloud
+          if (isFreshSession || isRecentLocal) {
+            if (localUser) {
+              syncUserToCloud(localUser);
+              setUser(localUser);
+              setLoading(false);
+            }
             return;
           }
-          // Account was genuinely deleted from server database!
+          // Account was genuinely deleted from server database long ago!
           Auth.logout();
           const allUsers = Auth.getUsers().filter(u => (u.email || '').toLowerCase() !== cleanToken);
           localStorage.setItem('dutauinssc_users', JSON.stringify(allUsers));
@@ -42,9 +54,8 @@ export default function ProfilPage() {
         setLoading(false);
       }).catch((err) => {
         console.warn('Network issue fetching cloud user, fallback to local cache:', err);
-        const local = Auth.getCurrentUser();
-        if (local && (local.email || '').toLowerCase() === cleanToken) {
-          setUser(local);
+        if (localUser && (localUser.email || '').toLowerCase() === cleanToken) {
+          setUser(localUser);
           setLoading(false);
         } else {
           Auth.logout();
@@ -52,9 +63,8 @@ export default function ProfilPage() {
         }
       });
     } else {
-      const local = Auth.getCurrentUser();
-      if (local) {
-        setUser(local);
+      if (localUser) {
+        setUser(localUser);
         setLoading(false);
       } else {
         navigate('/login');
