@@ -12,6 +12,7 @@ import RequirementsSection from '../components/RequirementsSection';
 import FAQSection from '../components/FAQSection';
 import CTABanner from '../components/CTABanner';
 import RegistrationCountdownBanner from '../components/RegistrationCountdownBanner';
+import RegistrationClosedModal from '../components/RegistrationClosedModal';
 import Footer from '../components/Footer';
 import { CMS } from '../lib/cms';
 
@@ -45,6 +46,9 @@ export default function HomePage() {
       
       {/* Hitung Mundur Penutupan Pendaftaran (Tampil di bawah slider, di atas menu pada tampilan HP & desktop) */}
       <RegistrationCountdownBanner />
+
+      {/* Pop-up Pengumuman Penutupan Pendaftaran di Tampilan Publik (Hanya muncul sekali per sesi) */}
+      <RegistrationClosedModal />
 
       {/* App Hub Menu (Hanya muncul di Mobile lewat CSS) */}
       <section className="hub-section mobile-only">

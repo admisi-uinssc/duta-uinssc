@@ -986,23 +986,8 @@ export default function UserDashboard({ user, onLogout }) {
                   boxShadow: 'var(--shadow-sm)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.85rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{
-                        background: 'rgba(239, 68, 68, 0.12)',
-                        color: '#dc2626',
-                        border: '1px solid rgba(239, 68, 68, 0.25)',
-                        padding: '3px 10px',
-                        borderRadius: '6px',
-                        fontSize: '0.74rem',
-                        fontWeight: 700,
-                        letterSpacing: '0.3px',
-                        textTransform: 'uppercase'
-                      }}>
-                        Pendaftaran Resmi Ditutup
-                      </span>
-                      <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>
-                        Tahap Seleksi Administrasi 2026
-                      </span>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#dc2626' }}>
+                      Pendaftaran Ditutup
                     </div>
                     <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
                       25 Oktober 2026 · 23:59 WIB
@@ -1010,11 +995,11 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
 
                   <div style={{ marginBottom: '1.25rem' }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#16324A', margin: '0 0 0.5rem', lineHeight: 1.35 }}>
-                      Terima Kasih Atas Partisipasi Anda dalam Pemilihan Duta Kampus 2026
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#16324A', margin: '0 0 0.4rem', lineHeight: 1.35 }}>
+                      Terima Kasih, Calon Duta
                     </h3>
-                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.65, maxWidth: '880px' }}>
-                      Panitia Seleksi menyampaikan apresiasi dan terima kasih yang sebesar-besarnya kepada Anda dan seluruh <strong style={{ color: '#16324A' }}>{applicantCount} pendaftar</strong> mahasiswa UIN Siber Syekh Nurjati Cirebon yang telah mendaftarkan diri serta melengkapi berkas persyaratan. Masa pendaftaran dan pengunggahan berkas telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Saat ini tim panitia sedang melaksanakan proses verifikasi dan seleksi administrasi secara menyeluruh.
+                    <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, maxWidth: '880px' }}>
+                      Pendaftaran telah ditutup. Terima kasih kepada Anda dan {applicantCount} calon duta yang telah mendaftar. Seluruh berkas Anda sudah tersimpan dan saat ini panitia sedang memeriksa kelengkapan berkas untuk tahap berikutnya.
                     </p>
                   </div>
 
@@ -1387,18 +1372,11 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  {isRegistrationClosed && (
-                    <span style={{ background: '#b91c1c', color: '#fff', padding: '6px 12px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
-                      Pendaftaran Ditutup
-                    </span>
-                  )}
-                  {isSubmitted && (
-                    <span style={{ background: '#166534', color: '#fff', padding: '6px 12px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
-                      Berkas Telah Diterima Panitia
-                    </span>
-                  )}
-                </div>
+                {isSubmitted && (
+                  <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#166534' }}>
+                    Berkas Telah Diterima Panitia
+                  </div>
+                )}
               </div>
 
               {/* UCAPAN TERIMA KASIH DARI PANITIA SELEKSI (TAMPIL OTOMATIS SAAT PENDAFTARAN DITUTUP) */}
@@ -1412,19 +1390,14 @@ export default function UserDashboard({ user, onLogout }) {
                   marginBottom: '1.5rem',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.35rem' }}>
-                    <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#92400e', background: '#fef3c7', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '4px' }}>
-                      Pemberitahuan Resmi Panitia
-                    </span>
-                    <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
-                      Pemilihan Duta Kampus 2026
-                    </span>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#92400e', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                    Pendaftaran Ditutup
                   </div>
-                  <h4 style={{ margin: '0 0 0.35rem', color: '#16324A', fontSize: '1.05rem', fontWeight: 800 }}>
-                    Terima Kasih Atas Partisipasi Anda
+                  <h4 style={{ margin: '0 0 0.35rem', color: '#16324A', fontSize: '1.05rem', fontWeight: 700 }}>
+                    Terima Kasih, Calon Duta
                   </h4>
                   <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                    Panitia Seleksi mengucapkan terima kasih dan apresiasi yang setinggi-tingginya kepada Anda dan seluruh <strong style={{ color: '#16324A' }}>{applicantCount} pendaftar</strong> mahasiswa UIN Siber Syekh Nurjati Cirebon yang telah berpartisipasi dalam pemilihan ini. Pendaftaran telah resmi ditutup sehingga seluruh data formulir dan berkas telah terkunci untuk proses penilaian. Anda tetap dapat meninjau pratinjau seluruh berkas yang telah Anda unggah di bawah ini.
+                    Terima kasih kepada Anda dan {applicantCount} calon duta yang telah melengkapi berkas pendaftaran. Karena pendaftaran sudah ditutup, seluruh berkas telah dikunci untuk proses seleksi. Anda tetap dapat melihat kembali berkas yang telah Anda unggah di bawah ini.
                   </p>
                 </div>
               )}

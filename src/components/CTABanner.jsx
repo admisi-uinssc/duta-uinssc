@@ -47,13 +47,13 @@ export default function CTABanner() {
       <div className="cta-banner-content">
         {isClosed ? (
           <div>
-            <h2>Pendaftaran Resmi Ditutup · <span>Duta Kampus UIN SSC 2026</span></h2>
+            <h2>Pendaftaran Ditutup · <span>Duta Kampus UIN SSC 2026</span></h2>
             <p style={{ maxWidth: '750px', margin: '0.75rem auto 1.5rem', color: '#cbd5e1', fontSize: '0.98rem', lineHeight: 1.6 }}>
-              Terima kasih atas partisipasi dan dedikasi luar biasa dari <strong>{applicantCount} pendaftar</strong>. Tahap seleksi administrasi sedang berlangsung. Silakan masuk ke portal peserta untuk memantau status berkas Anda.
+              Terima kasih banyak kepada <strong>{applicantCount} calon duta</strong> yang telah mendaftar. Pemeriksaan berkas sedang berjalan. Silakan masuk ke akun peserta untuk melihat status berkas Anda.
             </p>
             <div className="cta-buttons">
-              <Link href="/login" className="btn btn-gold btn-lg">Masuk Portal Peserta</Link>
-              <Link href="/timeline" className="btn btn-outline-gold btn-lg">Linimasa Seleksi</Link>
+              <Link href="/login" className="btn btn-gold btn-lg">Masuk Akun Peserta</Link>
+              <Link href="/timeline" className="btn btn-outline-gold btn-lg">Lihat Linimasa</Link>
             </div>
           </div>
         ) : (

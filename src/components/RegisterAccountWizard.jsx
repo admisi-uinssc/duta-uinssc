@@ -21,30 +21,24 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
         boxShadow: '0 4px 20px rgba(10, 25, 47, 0.06)'
       }}>
         <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '6px 14px',
-          borderRadius: '999px',
-          background: 'rgba(196, 158, 89, 0.12)',
-          color: 'var(--navy)',
+          color: 'var(--gold)',
           fontSize: '0.78rem',
           fontWeight: 700,
           letterSpacing: '0.5px',
           textTransform: 'uppercase',
-          marginBottom: '1.25rem'
+          marginBottom: '0.5rem'
         }}>
-          Pendaftaran Resmi Ditutup
+          Pendaftaran Ditutup
         </div>
 
         <h3 style={{
           fontSize: '1.25rem',
-          fontWeight: 800,
+          fontWeight: 700,
           color: 'var(--navy)',
-          marginBottom: '0.75rem',
+          marginBottom: '0.65rem',
           lineHeight: 1.3
         }}>
-          Terima Kasih Atas Partisipasi Anda
+          Terima Kasih Kepada Calon Duta
         </h3>
 
         <p style={{
@@ -54,7 +48,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           maxWidth: '460px',
           margin: '0 auto 1.25rem'
         }}>
-          Masa pendaftaran Pemilihan Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026 telah resmi berakhir. Panitia Pelaksana mengucapkan apresiasi dan terima kasih yang sebesar-besarnya kepada <strong>{applicantCount} pendaftar</strong> yang telah berpartisipasi dan mengirimkan berkas pendaftaran.
+          Pendaftaran Duta Kampus UIN SSC 2026 sudah ditutup. Terima kasih banyak kepada <strong>{applicantCount} calon duta</strong> yang telah mendaftar dan mengirimkan berkas.
         </p>
 
         <div style={{
@@ -69,9 +63,9 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           textAlign: 'left'
         }}>
           <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '4px' }}>
-            Informasi Bagi Pendaftar:
+            Bagi Calon Duta yang Sudah Mendaftar:
           </div>
-          Bagi seluruh rekan-rekan pendaftar yang telah memiliki akun, silakan masuk ke portal peserta untuk meninjau kelengkapan berkas Anda serta menantikan pengumuman hasil seleksi administrasi sesuai jadwal resmi.
+          Silakan masuk ke akun Anda untuk mengecek kelengkapan berkas dan melihat informasi pengumuman tahap berikutnya.
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

@@ -399,7 +399,7 @@ export default function LoginPage() {
             <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: 'var(--text-mid)' }}>
               {Settings.isRegistrationClosed() ? (
                 <span>
-                  Pendaftaran akun baru telah resmi ditutup.{' '}
+                  Pendaftaran akun baru sudah ditutup.{' '}
                   <button
                     type="button"
                     onClick={() => {
@@ -417,7 +417,7 @@ export default function LoginPage() {
                       textDecoration: 'underline'
                     }}
                   >
-                    Lihat Maklumat Panitia
+                    Info selengkapnya
                   </button>
                 </span>
               ) : (

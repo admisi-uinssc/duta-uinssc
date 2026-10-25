@@ -45,9 +45,9 @@ export default function RegistrationCountdownBanner() {
   return (
     <section className="top-countdown-banner" style={{
       background: '#16324A',
-      borderBottom: '2px solid #C49E59',
+      borderBottom: '3px solid #C49E59',
       width: '100%',
-      padding: isClosed ? '1rem 0' : '0.875rem 0',
+      padding: isClosed ? '1.35rem 0' : '0.875rem 0',
       boxSizing: 'border-box'
     }}>
       <div className="container" style={{
@@ -58,74 +58,79 @@ export default function RegistrationCountdownBanner() {
         {isClosed ? (
           /* ========================================================
              TAMPILAN OTOMATIS SAAT PENDAFTARAN DITUTUP
-             (Pesan Profesional & Ucapan Terima Kasih untuk Pendaftar)
+             (Diperbesar & Dipertegas - Tanpa Pill Badge)
              ======================================================== */
           <div className="top-countdown-closed-wrapper" style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
-            gap: '1rem'
+            gap: '1.25rem',
+            padding: '0.35rem 0'
           }}>
-            <div style={{ flex: 1, minWidth: '280px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
-                <span style={{
-                  background: 'rgba(239, 68, 68, 0.18)',
-                  color: '#fca5a5',
-                  border: '1px solid rgba(239, 68, 68, 0.35)',
-                  padding: '2px 9px',
-                  borderRadius: '5px',
-                  fontSize: '0.72rem',
-                  fontWeight: 700,
-                  letterSpacing: '0.4px',
-                  textTransform: 'uppercase'
-                }}>
-                  Pendaftaran Resmi Ditutup
-                </span>
-                <span style={{ fontSize: '0.78rem', color: '#C49E59', fontWeight: 600 }}>
-                  Tahap Seleksi Administrasi 2026
-                </span>
+            <div style={{ flex: '1 1 540px', minWidth: '280px' }}>
+              <div style={{
+                color: '#C49E59',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                letterSpacing: '0.5px',
+                textTransform: 'uppercase',
+                marginBottom: '0.25rem'
+              }}>
+                Duta Kampus UIN SSC 2026
               </div>
 
-              <div style={{ fontSize: '0.96rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.25rem', lineHeight: 1.35 }}>
-                Terima Kasih Atas Partisipasi Luar Biasa Seluruh Mahasiswa UIN SSC
+              <div style={{
+                fontSize: '1.25rem',
+                fontWeight: 700,
+                color: '#ffffff',
+                marginBottom: '0.35rem',
+                lineHeight: 1.25
+              }}>
+                Pendaftaran Telah Ditutup
               </div>
 
-              <p style={{ margin: 0, fontSize: '0.84rem', color: '#cbd5e1', lineHeight: 1.5, maxWidth: '820px' }}>
-                Panitia Seleksi menyampaikan apresiasi setinggi-tingginya kepada <strong style={{ color: '#F8E7C9' }}>{applicantCount} pendaftar</strong> yang telah berpartisipasi dan melengkapi berkas persyaratan. Tahap verifikasi administrasi saat ini sedang berlangsung.
+              <p style={{
+                margin: 0,
+                fontSize: '0.92rem',
+                color: '#e2e8f0',
+                lineHeight: 1.55,
+                maxWidth: '820px'
+              }}>
+                Terima kasih banyak kepada <strong style={{ color: '#F8E7C9', fontWeight: 700 }}>{applicantCount} calon duta</strong> yang telah mendaftar. Saat ini panitia sedang memeriksa seluruh kelengkapan berkas.
               </p>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
               <Link
                 href="/login"
-                className="btn btn-gold btn-sm"
+                className="btn btn-gold"
                 style={{
-                  fontWeight: 600,
-                  fontSize: '0.825rem',
-                  padding: '0.55rem 1.15rem',
-                  borderRadius: '6px',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  padding: '0.75rem 1.4rem',
+                  borderRadius: '8px',
                   whiteSpace: 'nowrap'
                 }}
               >
-                Masuk Portal Peserta
+                Masuk Akun Peserta
               </Link>
 
               <a
                 href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-outline-gold btn-sm"
+                className="btn btn-outline-gold"
                 style={{
-                  fontSize: '0.825rem',
+                  fontSize: '0.9rem',
                   fontWeight: 600,
-                  padding: '0.55rem 1rem',
-                  borderRadius: '6px',
+                  padding: '0.75rem 1.25rem',
+                  borderRadius: '8px',
                   color: '#F8E7C9',
                   whiteSpace: 'nowrap'
                 }}
               >
-                Booklet Panduan
+                Unduh Booklet
               </a>
             </div>
           </div>
