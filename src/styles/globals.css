@@ -941,12 +941,17 @@ p {
     box-sizing: border-box !important;
   }
 
-  /* 6. Dashboard General Cards (Card 1 & Card 2): native mobile padding */
-  .user-dashboard-card {
+  /* 6. Dashboard General Cards (Card 1, Card 2, Linimasa): native mobile padding */
+  .user-dashboard-card,
+  .history-timeline-card {
     padding: 1.15rem 1rem !important;
-    border-radius: 12px !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    border: 1px solid #edf2f7 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
   }
-  .user-dashboard-card h3 {
+  .user-dashboard-card h3,
+  .history-timeline-card h4 {
     font-size: 1.15rem !important;
     line-height: 1.35 !important;
   }
@@ -961,14 +966,233 @@ p {
     padding: 0.75rem 1rem !important;
     font-size: 0.88rem !important;
   }
-  .user-dashboard-card > div {
-    flex-direction: column !important;
-    gap: 1rem !important;
+
+  /* 7. Registration Form Mobile Optimization (Spacious & Lightweight Native Feel) */
+  .registration-status-bar {
+    padding: 0.85rem 1rem !important;
+    border-radius: 12px !important;
+    margin-bottom: 1rem !important;
+    border-width: 1px !important;
   }
-  .user-dashboard-card > div > div {
-    min-width: unset !important;
-    text-align: left !important;
+
+  .user-registration-form {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    gap: 1.15rem !important;
+  }
+
+  .user-form-section {
+    background: #ffffff !important;
+    border: 1px solid #edf2f7 !important;
+    border-radius: 14px !important;
+    padding: 1.15rem 1rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    gap: 0.9rem !important;
+  }
+
+  .user-form-section label {
+    font-size: 0.84rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .user-form-section input,
+  .user-form-section select {
+    padding: 0.75rem 0.85rem !important;
+    font-size: 0.95rem !important;
+    border-radius: 9px !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .user-form-section .form-responsive-grid {
+    gap: 0.95rem !important;
+  }
+
+  /* 8. Document Upload: CONVERTS HEAVY BOXES INTO A LIGHTWEIGHT NATIVE APPLIKE CHECKLIST */
+  .user-form-section-dossier {
+    padding: 1.15rem 1rem !important;
+  }
+
+  .dossier-section-header {
+    padding-bottom: 0.65rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .dossier-count-badge {
+    font-size: 0.75rem !important;
+    padding: 3px 10px !important;
+  }
+
+  /* Seamless list container without outer double-border */
+  .dossier-items-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  /* Flat, airy native item row */
+  .dossier-item-card {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    border-radius: 0 !important;
+    padding: 0.85rem 0.25rem !important;
+    gap: 0.45rem !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    transition: background 0.15s ease !important;
+  }
+
+  .dossier-item-card:last-child {
+    border-bottom: none !important;
+  }
+
+  /* When uploaded: soft green accent row */
+  .dossier-item-card.dossier-item-uploaded {
+    background: #f0fdf4 !important;
+    border-radius: 10px !important;
+    padding: 0.85rem 0.75rem !important;
+    margin: 4px 0 !important;
+    border: 1px solid #bbf7d0 !important;
+    border-bottom: 1px solid #bbf7d0 !important;
+  }
+
+  .dossier-card-top {
+    margin-bottom: 0 !important;
+  }
+
+  .dossier-badge-row {
+    margin-bottom: 2px !important;
+  }
+
+  /* Strip the pink badge box on mobile: make it a clean text label */
+  .dossier-req-badge {
+    background: transparent !important;
+    padding: 0 !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    border-radius: 0 !important;
+  }
+
+  .dossier-format-label {
+    font-size: 0.7rem !important;
+    color: #94a3b8 !important;
+  }
+
+  .dossier-card-title {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #16324A !important;
+    line-height: 1.35 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .dossier-card-sublabel {
+    font-size: 0.75rem !important;
+    color: #64748b !important;
+    line-height: 1.38 !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Strip inner card divider line: align status and actions horizontally */
+  .dossier-card-bottom {
+    border-top: none !important;
+    padding-top: 0 !important;
+    margin-top: 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 0.5rem !important;
+  }
+
+  .dossier-status-empty {
+    font-size: 0.74rem !important;
+    font-weight: 600 !important;
+    color: #dc2626 !important;
+    white-space: nowrap !important;
+  }
+
+  .dossier-uploaded-actions,
+  .dossier-input-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+  }
+
+  /* Native tap-friendly pill buttons */
+  .dossier-btn-upload {
+    padding: 6px 11px !important;
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #16324A !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+  }
+
+  .dossier-btn-drive {
+    padding: 6px 8px !important;
+    font-size: 0.73rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #64748b !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+  }
+
+  .dossier-btn-preview {
+    padding: 5px 10px !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    background: #dcfce7 !important;
+    border: 1px solid #86efac !important;
+    color: #166534 !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+  }
+
+  .dossier-btn-remove {
+    padding: 5px 8px !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    background: rgba(220, 38, 38, 0.08) !important;
+    border: 1px solid rgba(220, 38, 38, 0.25) !important;
+    color: #dc2626 !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+  }
+
+  /* 9. Form Actions on Mobile */
+  .user-form-actions {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
     width: 100% !important;
   }
+
+  .save-draft-btn,
+  .submit-application-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.85rem 1rem !important;
+    font-size: 0.92rem !important;
+    border-radius: 10px !important;
+  }
 }
+
 

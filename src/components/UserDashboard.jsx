@@ -1233,6 +1233,7 @@ export default function UserDashboard({ user, onLogout }) {
 
               {/* Status Bar */}
               <div
+                className="registration-status-bar"
                 style={{
                   background: dossierStatus.bg,
                   border: `1.5px solid ${dossierStatus.border}`,
@@ -1304,6 +1305,7 @@ export default function UserDashboard({ user, onLogout }) {
               {/* FORM WRAPPER - FULL WIDTH ON DESKTOP, GENEROUS SPACING ON HP */}
               <form
                 onSubmit={handleSubmitApplication}
+                className="user-registration-form"
                 style={{
                   background: '#ffffff',
                   border: '1px solid #e2e8f0',
@@ -1318,7 +1320,7 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 {/* SECTION 1: DATA PRIBADI & MAHASISWA */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div className="user-form-section" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem' }}>
                     <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
                       1. Identitas Pribadi & Kemahasiswaan
@@ -1392,7 +1394,7 @@ export default function UserDashboard({ user, onLogout }) {
                 </div>
 
                 {/* SECTION 2: DATA AKADEMIK & KONTAK */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div className="user-form-section" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem' }}>
                     <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
                       2. Data Akademik & Kontak Aktif
@@ -1470,8 +1472,8 @@ export default function UserDashboard({ user, onLogout }) {
                 </div>
 
                 {/* DOKUMEN PERSYARATAN */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                  <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div className="user-form-section user-form-section-dossier" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div className="dossier-section-header" style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                     <div>
                       <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
                         3. Berkas Dokumen Persyaratan
@@ -1480,12 +1482,12 @@ export default function UserDashboard({ user, onLogout }) {
                         Lampirkan dokumen resmi persyaratan seleksi Pemilihan Duta Kampus 2026.
                       </p>
                     </div>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: dossierStatus.isComplete ? '#dcfce7' : '#fef9c3', color: dossierStatus.isComplete ? '#166534' : '#854d0e' }}>
+                    <span className="dossier-count-badge" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: dossierStatus.isComplete ? '#dcfce7' : '#fef9c3', color: dossierStatus.isComplete ? '#166534' : '#854d0e' }}>
                       Terunggah: {dossierStatus.filledCount} / {DOSSIER_DOCUMENTS.length} Berkas
                     </span>
                   </div>
 
-                  <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                  <div className="form-responsive-grid dossier-items-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
                     {DOSSIER_DOCUMENTS.map((doc, idx) => {
                       const isSem1 = String(formData.semester || '').trim() === '1';
                       const isMandatory = doc.required || (doc.id === 'buktiDiterima' && isSem1);
@@ -1496,6 +1498,7 @@ export default function UserDashboard({ user, onLogout }) {
                       return (
                         <div
                           key={doc.key}
+                          className={`dossier-item-card ${isUploaded ? 'dossier-item-uploaded' : 'dossier-item-empty'}`}
                           style={{
                             background: isUploaded ? '#f0fdf4' : '#f8fafc',
                             border: `1.5px solid ${isUploaded ? '#86efac' : isMandatory ? '#cbd5e1' : '#e2e8f0'}`,
@@ -1507,9 +1510,10 @@ export default function UserDashboard({ user, onLogout }) {
                             gap: '0.75rem'
                           }}
                         >
-                          <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '0.4rem' }}>
+                          <div className="dossier-card-top">
+                            <div className="dossier-badge-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '0.4rem' }}>
                               <span
+                                className="dossier-req-badge"
                                 style={{
                                   fontSize: '0.72rem',
                                   fontWeight: 700,
@@ -1521,22 +1525,22 @@ export default function UserDashboard({ user, onLogout }) {
                               >
                                 {isMandatory ? 'Wajib' : doc.conditionalNote || 'Tidak Wajib'}
                               </span>
-                              <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                              <span className="dossier-format-label" style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
                                 {doc.formatLabel}
                               </span>
                             </div>
 
-                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#16324A', marginBottom: '0.25rem' }}>
+                            <div className="dossier-card-title" style={{ fontSize: '0.9rem', fontWeight: 700, color: '#16324A', marginBottom: '0.25rem' }}>
                               {idx + 1}. {doc.label}
                             </div>
-                            <div style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.4 }}>
+                            <div className="dossier-card-sublabel" style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.4 }}>
                               {doc.sublabel}
                             </div>
                           </div>
 
-                          <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+                          <div className="dossier-card-bottom" style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
                             {loadingDocKey === `deleting-${doc.key}` ? (
-                              <div style={{
+                              <div className="dossier-status-badge dossier-status-deleting" style={{
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '6px',
@@ -1553,7 +1557,7 @@ export default function UserDashboard({ user, onLogout }) {
                                 Sedang Menghapus...
                               </div>
                             ) : loadingDocKey === `uploading-${doc.key}` ? (
-                              <div style={{
+                              <div className="dossier-status-badge dossier-status-uploading" style={{
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '6px',
@@ -1570,9 +1574,10 @@ export default function UserDashboard({ user, onLogout }) {
                                 Mengunggah & Menyimpan...
                               </div>
                             ) : isUploaded ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div className="dossier-uploaded-actions" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <button
                                   type="button"
+                                  className="dossier-btn-preview"
                                   onClick={() => setPreviewModal({
                                     isOpen: true,
                                     docKey: doc.key,
@@ -1600,6 +1605,7 @@ export default function UserDashboard({ user, onLogout }) {
                                 </button>
                                 <button
                                   type="button"
+                                  className="dossier-btn-remove"
                                   onClick={() => handleRemoveFile(doc.key)}
                                   disabled={loadingDocKey !== null}
                                   style={{
@@ -1623,13 +1629,14 @@ export default function UserDashboard({ user, onLogout }) {
                                 </button>
                               </div>
                             ) : (
-                              <span style={{ fontSize: '0.75rem', color: isMandatory ? '#b91c1c' : '#64748b', fontWeight: 500 }}>
+                              <span className="dossier-status-empty" style={{ fontSize: '0.75rem', color: isMandatory ? '#b91c1c' : '#64748b', fontWeight: 500 }}>
                                 {isMandatory ? 'Belum Diunggah' : 'Belum Dilampirkan'}
                               </span>
                             )}
 
-                            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                            <div className="dossier-input-actions" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                               <label
+                                className="dossier-btn-upload"
                                 style={{
                                   display: 'inline-flex',
                                   alignItems: 'center',
@@ -1659,6 +1666,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                               <button
                                 type="button"
+                                className="dossier-btn-drive"
                                 disabled={loadingDocKey !== null}
                                 onClick={() => setPreviewModal({
                                   isOpen: true,
@@ -1692,11 +1700,12 @@ export default function UserDashboard({ user, onLogout }) {
                 </div>
 
                 {/* FORM ACTIONS */}
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
+                <div className="user-form-actions" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
                   <button
                     type="button"
                     onClick={handleSaveDraft}
                     disabled={isSavingDraft || isSubmitting}
+                    className="save-draft-btn"
                     style={{
                       padding: '0.875rem 1.5rem',
                       borderRadius: '8px',
@@ -1722,7 +1731,7 @@ export default function UserDashboard({ user, onLogout }) {
                   <button
                     type="submit"
                     disabled={isSubmitting || isSavingDraft}
-                    className="btn btn-gold"
+                    className="btn btn-gold submit-application-btn"
                     style={{
                       padding: '0.875rem 2rem',
                       borderRadius: '8px',
@@ -1820,6 +1829,7 @@ export default function UserDashboard({ user, onLogout }) {
 
               {/* Linimasa Tahapan Seleksi */}
               <div
+                className="history-timeline-card"
                 style={{
                   background: '#ffffff',
                   border: '1px solid #e2e8f0',
