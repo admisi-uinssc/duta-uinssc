@@ -519,3 +519,456 @@ p {
     border-radius: 10px !important;
   }
 }
+
+/* ==========================================================================
+   USER DASHBOARD WARNING CARD (DESKTOP STYLES - 100% PRESERVED)
+   ========================================================================== */
+.user-warning-card {
+  background: #fffdf5;
+  border: 1.5px solid #fcd34d;
+  border-left: 6px solid #d97706;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(217, 119, 6, 0.06);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-warning-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 0.85rem;
+  margin-bottom: 1.1rem;
+  border-bottom: 1px solid #fde68a;
+}
+
+.user-warning-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #b45309;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.user-warning-subtitle {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.user-warning-deadline {
+  font-size: 0.78rem;
+  color: #78350f;
+  font-weight: 600;
+}
+
+.user-warning-body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 1.15rem;
+}
+
+.user-warning-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  flex: 1;
+  min-width: 280px;
+}
+
+.user-warning-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #b45309;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.user-warning-title {
+  margin: 0;
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #92400e;
+  letter-spacing: -0.2px;
+}
+
+.user-warning-desc {
+  font-size: 0.875rem;
+  color: #78350f;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.user-warning-timer-box {
+  background: #ffffff;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 0.65rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(217, 119, 6, 0.08);
+}
+
+.user-warning-timer-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #92400e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.user-warning-timer-tiles {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-warning-timer-tile {
+  background: #fffdf5;
+  border: 1px solid #fcd34d;
+  border-radius: 6px;
+  min-width: 46px;
+  padding: 4px 6px;
+  text-align: center;
+}
+
+.user-warning-tile-digit {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #92400e;
+  font-family: monospace;
+  line-height: 1.1;
+}
+
+.user-warning-tile-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #b45309;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.user-warning-tile-colon {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #d97706;
+}
+
+.user-warning-progress-box {
+  background: #ffffff;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 0.95rem 1.25rem;
+  margin-bottom: 1.15rem;
+}
+
+.user-warning-progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.user-warning-progress-title {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #78350f;
+}
+
+.user-warning-track {
+  width: 100%;
+  height: 8px;
+  background: #fef3c7;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.user-warning-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.user-warning-complete-note {
+  font-size: 0.8rem;
+  color: #16a34a;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-warning-missing-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-warning-missing-title {
+  font-size: 0.78rem;
+  color: #78350f;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.user-warning-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.user-warning-tag-item {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.user-warning-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.user-warning-btn-primary {
+  font-weight: 600;
+  padding: 0.55rem 1.25rem;
+  border-radius: 6px;
+}
+
+.user-warning-btn-secondary {
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.user-dashboard-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   MOBILE HP NATIVE APP OPTIMIZATION (CLEAN, NO CRAMPED SHAPES / BREADTH)
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* 1. Eliminate double padding so content spans comfortably on HP screen */
+  .user-dashboard-main > main {
+    padding: 0.875rem 0.85rem 95px !important;
+  }
+
+  /* 2. Warning Card: sleek, flat, native callout surface */
+  .user-warning-card {
+    padding: 1rem 0.95rem !important;
+    border-radius: 12px !important;
+    border-left-width: 4px !important;
+    box-shadow: 0 1px 4px rgba(217, 119, 6, 0.05) !important;
+  }
+
+  .user-warning-top-bar {
+    padding-bottom: 0.6rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .user-warning-body {
+    flex-direction: column !important;
+    gap: 0.85rem !important;
+    margin-bottom: 0.85rem !important;
+  }
+
+  .user-warning-header-left {
+    min-width: unset !important;
+    gap: 0.65rem !important;
+  }
+
+  /* Minimalist inline native icon */
+  .user-warning-icon {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    margin-top: 0 !important;
+  }
+  .user-warning-icon svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .user-warning-title {
+    font-size: 1rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .user-warning-desc {
+    font-size: 0.8rem !important;
+    line-height: 1.45 !important;
+    margin-top: 3px !important;
+  }
+
+  /* 3. Timer: STRIP AWAY ALL INNER BOX SHAPES! Make it a clean native bar */
+  .user-warning-timer-box {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background: rgba(254, 243, 199, 0.35) !important;
+    border: 1px solid rgba(252, 211, 77, 0.5) !important;
+    box-shadow: none !important;
+    padding: 0.55rem 0.75rem !important;
+    border-radius: 8px !important;
+    margin: 0 !important;
+  }
+
+  .user-warning-timer-label {
+    font-size: 0.62rem !important;
+    margin-bottom: 3px !important;
+  }
+
+  .user-warning-timer-tiles {
+    width: 100% !important;
+    justify-content: space-between !important;
+    gap: 2px !important;
+  }
+
+  /* Seamless native digits without heavy box frames */
+  .user-warning-timer-tile {
+    background: transparent !important;
+    border: none !important;
+    min-width: unset !important;
+    padding: 0 !important;
+    flex: 1 !important;
+    text-align: center !important;
+  }
+
+  .user-warning-tile-digit {
+    font-size: 1.15rem !important;
+    color: #92400e !important;
+    line-height: 1.1 !important;
+  }
+
+  .user-warning-tile-label {
+    font-size: 0.58rem !important;
+    color: #b45309 !important;
+    margin-top: 1px !important;
+  }
+
+  .user-warning-tile-colon {
+    font-size: 0.95rem !important;
+    color: #d97706 !important;
+    padding: 0 1px !important;
+  }
+
+  /* 4. Progress Box: STRIP THE NESTED BOX SHAPE! Let it sit directly on card */
+  .user-warning-progress-box {
+    background: transparent !important;
+    border: none !important;
+    border-top: 1px solid rgba(253, 230, 138, 0.7) !important;
+    border-radius: 0 !important;
+    padding: 0.75rem 0 0 !important;
+    margin-bottom: 0.85rem !important;
+  }
+
+  .user-warning-track {
+    height: 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .user-warning-missing-title {
+    font-size: 0.75rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Clean readable text tags without heavy individual borders */
+  .user-warning-tags {
+    display: block !important;
+    line-height: 1.5 !important;
+  }
+
+  .user-warning-tag-item {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    color: #92400e !important;
+    display: inline !important;
+    margin-right: 6px !important;
+  }
+
+  /* 5. Actions: full width native app buttons for comfortable thumb tapping */
+  .user-warning-actions {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+  }
+
+  .user-warning-btn-primary,
+  .user-warning-btn-secondary {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+    padding: 0.65rem 1rem !important;
+    font-size: 0.88rem !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 6. Dashboard General Cards (Card 1 & Card 2): native mobile padding */
+  .user-dashboard-card {
+    padding: 1.15rem 1rem !important;
+    border-radius: 12px !important;
+  }
+  .user-dashboard-card h3 {
+    font-size: 1.15rem !important;
+    line-height: 1.35 !important;
+  }
+  .user-dashboard-card p {
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 1rem !important;
+  }
+  .user-dashboard-card button {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.88rem !important;
+  }
+  .user-dashboard-card > div {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  .user-dashboard-card > div > div {
+    min-width: unset !important;
+    text-align: left !important;
+    width: 100% !important;
+  }
+}
+
