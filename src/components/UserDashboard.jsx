@@ -61,6 +61,9 @@ export default function UserDashboard({ user, onLogout }) {
   const [countdown, setCountdown] = useState({ d: 0, h: 0, m: 0, s: 0, isExpired: false });
   const [applicantCount, setApplicantCount] = useState('60+');
 
+  const participantName = formData.namaLengkap || user.namaLengkap || user.name || '';
+  const greetingName = participantName.trim() || 'Calon Duta';
+
   useEffect(() => {
     const updateCd = () => {
       const closed = Settings.isRegistrationClosed();
@@ -996,10 +999,10 @@ export default function UserDashboard({ user, onLogout }) {
 
                   <div style={{ marginBottom: '1.25rem' }}>
                     <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#16324A', margin: '0 0 0.4rem', lineHeight: 1.35 }}>
-                      Terima Kasih, Calon Duta
+                      Terima Kasih, {greetingName}
                     </h3>
                     <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, maxWidth: '880px' }}>
-                      Pendaftaran telah ditutup. Terima kasih kepada Anda dan {applicantCount} calon duta yang telah mendaftar. Seluruh berkas Anda sudah tersimpan dan saat ini panitia sedang memeriksa kelengkapan berkas untuk tahap berikutnya.
+                      Pendaftaran telah ditutup. Terima kasih {participantName ? `${participantName} ` : ''}dan seluruh {applicantCount} calon duta yang telah mendaftar. Seluruh berkas Anda sudah tersimpan dan saat ini panitia sedang memeriksa kelengkapan berkas untuk tahap berikutnya.
                     </p>
                   </div>
 
@@ -1394,10 +1397,10 @@ export default function UserDashboard({ user, onLogout }) {
                     Pendaftaran Ditutup
                   </div>
                   <h4 style={{ margin: '0 0 0.35rem', color: '#16324A', fontSize: '1.05rem', fontWeight: 700 }}>
-                    Terima Kasih, Calon Duta
+                    Terima Kasih, {greetingName}
                   </h4>
                   <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
-                    Terima kasih kepada Anda dan {applicantCount} calon duta yang telah melengkapi berkas pendaftaran. Karena pendaftaran sudah ditutup, seluruh berkas telah dikunci untuk proses seleksi. Anda tetap dapat melihat kembali berkas yang telah Anda unggah di bawah ini.
+                    Terima kasih {participantName ? `${participantName} ` : ''}telah melengkapi berkas pendaftaran bersama {applicantCount} calon duta lainnya. Karena pendaftaran sudah ditutup, seluruh berkas telah dikunci untuk proses seleksi. Anda tetap dapat melihat kembali berkas yang telah Anda unggah di bawah ini.
                   </p>
                 </div>
               )}
