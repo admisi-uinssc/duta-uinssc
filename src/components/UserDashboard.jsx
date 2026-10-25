@@ -6,6 +6,7 @@ import { DB, formatDateTime } from '../lib/db';
 import { DOSSIER_DOCUMENTS, evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
 import { listenToUserFromCloud, fetchApplicantFromCloudByIdentifier, listenToApplicantFromCloud, syncUserToCloud } from '../lib/firebase';
+import { Settings } from '../lib/settings';
 import DocumentPreviewModal from './DocumentPreviewModal';
 
 export default function UserDashboard({ user, onLogout }) {
@@ -56,12 +57,21 @@ export default function UserDashboard({ user, onLogout }) {
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Target deadline countdown: 25 Oktober 2026 pukul 23:59:59 WIB
+  // Target deadline countdown & status penutupan otomatis: 25 Oktober 2026 pukul 23:59:59 WIB
   const [countdown, setCountdown] = useState({ d: 0, h: 0, m: 0, s: 0, isExpired: false });
+  const [applicantCount, setApplicantCount] = useState('37+');
 
   useEffect(() => {
-    const target = new Date(2026, 9, 25, 23, 59, 59).getTime();
     const updateCd = () => {
+      const closed = Settings.isRegistrationClosed();
+      setApplicantCount(Settings.getApplicantCountDisplay());
+
+      if (closed) {
+        setCountdown({ d: 0, h: 0, m: 0, s: 0, isExpired: true });
+        return;
+      }
+
+      const target = Settings.getDeadlineTime();
       const now = Date.now();
       const diff = target - now;
       if (diff > 0) {
@@ -80,6 +90,8 @@ export default function UserDashboard({ user, onLogout }) {
     const timer = setInterval(updateCd, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const isRegistrationClosed = countdown.isExpired || Settings.isRegistrationClosed();
 
   // Sync state from storage and live cloud for instant Lolos/Tidak Lolos announcement updates
   useEffect(() => {
@@ -246,6 +258,10 @@ export default function UserDashboard({ user, onLogout }) {
   };
 
   const handleFileUpload = async (docKey, file, docLabel) => {
+    if (isRegistrationClosed) {
+      triggerAlert('Pendaftaran telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Pengunggahan berkas baru tidak lagi diizinkan.', 'danger');
+      return;
+    }
     if (!file) return;
     setLoadingDocKey(`uploading-${docKey}`);
     setSaveNotice(`Mengunggah berkas ${file.name}...`);
@@ -277,6 +293,10 @@ export default function UserDashboard({ user, onLogout }) {
   };
 
   const handleRemoveFile = async (docKey) => {
+    if (isRegistrationClosed) {
+      triggerAlert('Pendaftaran telah resmi ditutup. Berkas yang sudah dikirimkan tidak dapat dihapus.', 'danger');
+      return;
+    }
     const docData = normalizeDocument(formData[docKey]);
     setLoadingDocKey(`deleting-${docKey}`);
     setSaveNotice('Menghapus berkas...');
@@ -303,6 +323,10 @@ export default function UserDashboard({ user, onLogout }) {
 
   const handleSaveDraft = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
+    if (isRegistrationClosed) {
+      triggerAlert('Pendaftaran telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Perubahan draf tidak dapat disimpan.', 'danger');
+      return;
+    }
     setIsSavingDraft(true);
     setSaveNotice('Menyimpan draf formulir dan berkas...');
     try {
@@ -390,6 +414,10 @@ export default function UserDashboard({ user, onLogout }) {
 
   const handleSubmitApplication = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
+    if (isRegistrationClosed) {
+      triggerAlert('Pendaftaran telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Terima kasih atas partisipasi Anda, seluruh berkas yang telah dikirimkan sedang dalam proses verifikasi Panitia Seleksi.', 'danger');
+      return;
+    }
     if (!formData.ipk) {
       triggerAlert('Mohon lengkapi data nilai IPK sebelum mengirim pendaftaran.', 'danger');
       return;
@@ -947,164 +975,263 @@ export default function UserDashboard({ user, onLogout }) {
                 </div>
               )}
 
-              {/* === PENGINGAT BATAS WAKTU & KELENGKAPAN BERKAS (OFFICIAL WARNING STYLE) === */}
-              <div className="user-warning-card">
-                {/* Official Warning Header Bar */}
-                <div className="user-warning-top-bar">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="user-warning-badge">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        <line x1="12" y1="9" x2="12" y2="13"/>
-                        <line x1="12" y1="17" x2="12.01" y2="17"/>
-                      </svg>
-                      PERINGATAN
-                    </span>
-                    <span className="user-warning-subtitle">
-                      Batas Akhir Kelengkapan Berkas
-                    </span>
-                  </div>
-                  <div className="user-warning-deadline">
-                    Penutupan: 25 Oktober 2026 · 23:59 WIB
-                  </div>
-                </div>
-
-                <div className="user-warning-body">
-                  {/* Warning Header with clean alert icon */}
-                  <div className="user-warning-header-left">
-                    <div className="user-warning-icon">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        <line x1="12" y1="9" x2="12" y2="13"/>
-                        <line x1="12" y1="17" x2="12.01" y2="17"/>
-                      </svg>
+              {/* === PENGINGAT BATAS WAKTU & KELENGKAPAN BERKAS (OFFICIAL WARNING STYLE ATAU KARTU PENUTUPAN) === */}
+              {isRegistrationClosed ? (
+                <div className="user-warning-card user-closed-card" style={{
+                  background: '#ffffff',
+                  border: '1.5px solid #e2e8f0',
+                  borderLeft: '4px solid #C49E59',
+                  borderRadius: '16px',
+                  padding: '1.5rem',
+                  boxShadow: 'var(--shadow-sm)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.85rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{
+                        background: 'rgba(239, 68, 68, 0.12)',
+                        color: '#dc2626',
+                        border: '1px solid rgba(239, 68, 68, 0.25)',
+                        padding: '3px 10px',
+                        borderRadius: '6px',
+                        fontSize: '0.74rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.3px',
+                        textTransform: 'uppercase'
+                      }}>
+                        Pendaftaran Resmi Ditutup
+                      </span>
+                      <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>
+                        Tahap Seleksi Administrasi 2026
+                      </span>
                     </div>
+                    <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                      25 Oktober 2026 · 23:59 WIB
+                    </div>
+                  </div>
 
+                  <div style={{ marginBottom: '1.25rem' }}>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#16324A', margin: '0 0 0.5rem', lineHeight: 1.35 }}>
+                      Terima Kasih Atas Partisipasi Anda dalam Pemilihan Duta Kampus 2026
+                    </h3>
+                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.65, maxWidth: '880px' }}>
+                      Panitia Seleksi menyampaikan apresiasi dan terima kasih yang sebesar-besarnya kepada Anda dan seluruh <strong style={{ color: '#16324A' }}>{applicantCount} pendaftar</strong> mahasiswa UIN Siber Syekh Nurjati Cirebon yang telah mendaftarkan diri serta melengkapi berkas persyaratan. Masa pendaftaran dan pengunggahan berkas telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Saat ini tim panitia sedang melaksanakan proses verifikasi dan seleksi administrasi secara menyeluruh.
+                    </p>
+                  </div>
+
+                  {/* Ringkasan Status Berkas Peserta */}
+                  <div style={{
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '12px',
+                    padding: '1rem 1.25rem',
+                    marginBottom: '1.25rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '0.75rem'
+                  }}>
                     <div>
-                      <h3 className="user-warning-title">
-                        {dossierStatus.isComplete
-                          ? 'Berkas Persyaratan Anda Telah Lengkap'
-                          : `Peringatan: ${dossierStatus.missingFields.length} Berkas Persyaratan Belum Diunggah`}
-                      </h3>
-                      <div className="user-warning-desc">
-                        {dossierStatus.isComplete
-                          ? 'Seluruh dokumen persyaratan esensial telah berhasil tersimpan di sistem. Pastikan keabsahan seluruh dokumen sebelum verifikasi panitia ditutup.'
-                          : 'Segera unggah seluruh berkas yang diperlukan. Akun yang belum melengkapi berkas hingga batas waktu penutupan tidak dapat diproses dalam seleksi administrasi.'}
+                      <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '2px' }}>
+                        Status Berkas Anda Saat Penutupan:
+                      </div>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 700, color: dossierStatus.isComplete ? '#16a34a' : '#b45309' }}>
+                        {dossierStatus.filledCount} dari {dossierStatus.totalCount} berkas terunggah ({dossierStatus.percent}%) · {isSubmitted ? 'Telah Diterima Panitia' : 'Tersimpan di Sistem'}
                       </div>
                     </div>
-                  </div>
 
-                  {/* Clean Digital Countdown Tiles */}
-                  <div className="user-warning-timer-box">
-                    <div className="user-warning-timer-label">
-                      Sisa Waktu Penutupan
-                    </div>
-                    <div className="user-warning-timer-tiles">
-                      {[
-                        { label: 'Hari', val: countdown.d },
-                        { label: 'Jam', val: countdown.h },
-                        { label: 'Menit', val: countdown.m },
-                        { label: 'Detik', val: countdown.s }
-                      ].map((item, idx) => (
-                        <React.Fragment key={item.label}>
-                          <div className="user-warning-timer-tile">
-                            <div className="user-warning-tile-digit">
-                              {String(item.val).padStart(2, '0')}
-                            </div>
-                            <div className="user-warning-tile-label">
-                              {item.label}
-                            </div>
-                          </div>
-                          {idx < 3 && (
-                            <span className="user-warning-tile-colon">:</span>
-                          )}
-                        </React.Fragment>
-                      ))}
+                    <div style={{ fontSize: '0.825rem', color: '#64748b' }}>
+                      {dossierStatus.isComplete 
+                        ? '✓ Dokumen persyaratan Anda lengkap untuk dinilai dalam seleksi administrasi.' 
+                        : 'Catatan: Berkas yang telah terunggah akan dinilai kelayakannya oleh dewan juri.'}
                     </div>
                   </div>
-                </div>
 
-                {/* Progress bar & missing documents alert callout */}
-                <div className="user-warning-progress-box">
-                  <div className="user-warning-progress-head">
-                    <span className="user-warning-progress-title">
-                      Status Kelengkapan Dokumen
-                    </span>
-                    <span style={{ fontSize: '0.825rem', fontWeight: 700, color: dossierStatus.isComplete ? '#16a34a' : '#b45309' }}>
-                      {dossierStatus.filledCount} dari {dossierStatus.totalCount} berkas ({dossierStatus.percent}%)
-                    </span>
-                  </div>
-
-                  <div className="user-warning-track">
-                    <div
-                      className="user-warning-fill"
-                      style={{
-                        width: `${dossierStatus.percent}%`,
-                        background: dossierStatus.isComplete ? '#16a34a' : '#d97706',
-                      }}
-                    />
-                  </div>
-
-                  {dossierStatus.isComplete ? (
-                    <div className="user-warning-complete-note">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      Seluruh berkas persyaratan telah lengkap terunggah di sistem.
-                    </div>
-                  ) : (
-                    <div className="user-warning-missing-section">
-                      <div className="user-warning-missing-title">
-                        Dokumen yang belum diunggah ({dossierStatus.missingFields.length} dokumen):
-                      </div>
-                      <div className="user-warning-tags">
-                        {dossierStatus.missingFields.map((field) => {
-                          const label = typeof field === 'object' ? field.label : field;
-                          return (
-                            <span key={label} className="user-warning-tag-item">
-                              • {label}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Actions */}
-                <div className="user-warning-actions">
-                  {!isSubmitted ? (
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                     <button
                       type="button"
                       onClick={() => {
                         setActiveTab('pendaftaran');
-                        window.scrollTo({ top: 350, behavior: 'smooth' });
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="btn btn-gold btn-sm user-warning-btn-primary"
+                      className="btn btn-gold btn-sm"
+                      style={{ padding: '0.6rem 1.25rem', borderRadius: '8px', fontWeight: 600 }}
                     >
-                      Lengkapi Berkas Sekarang →
+                      Lihat Berkas Saya
                     </button>
-                  ) : (
+
                     <button
                       type="button"
                       onClick={() => {
                         setActiveTab('riwayat');
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="btn btn-gold btn-sm user-warning-btn-primary"
+                      className="btn btn-outline-gold btn-sm"
+                      style={{ padding: '0.6rem 1.25rem', borderRadius: '8px', fontWeight: 600 }}
                     >
-                      Lihat Berkas Saya
+                      Lihat Linimasa & Hasil Seleksi
                     </button>
-                  )}
-
-                  <a
-                    href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-outline-gold btn-sm user-warning-btn-secondary"
-                  >
-                    Unduh Booklet Panduan
-                  </a>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="user-warning-card">
+                  {/* Official Warning Header Bar */}
+                  <div className="user-warning-top-bar">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className="user-warning-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                          <line x1="12" y1="9" x2="12" y2="13"/>
+                          <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                        PERINGATAN
+                      </span>
+                      <span className="user-warning-subtitle">
+                        Batas Akhir Kelengkapan Berkas
+                      </span>
+                    </div>
+                    <div className="user-warning-deadline">
+                      Penutupan: 25 Oktober 2026 · 23:59 WIB
+                    </div>
+                  </div>
+
+                  <div className="user-warning-body">
+                    {/* Warning Header with clean alert icon */}
+                    <div className="user-warning-header-left">
+                      <div className="user-warning-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                          <line x1="12" y1="9" x2="12" y2="13"/>
+                          <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                      </div>
+
+                      <div>
+                        <h3 className="user-warning-title">
+                          {dossierStatus.isComplete
+                            ? 'Berkas Persyaratan Anda Telah Lengkap'
+                            : `Peringatan: ${dossierStatus.missingFields.length} Berkas Persyaratan Belum Diunggah`}
+                        </h3>
+                        <div className="user-warning-desc">
+                          {dossierStatus.isComplete
+                            ? 'Seluruh dokumen persyaratan esensial telah berhasil tersimpan di sistem. Pastikan keabsahan seluruh dokumen sebelum verifikasi panitia ditutup.'
+                            : 'Segera unggah seluruh berkas yang diperlukan. Akun yang belum melengkapi berkas hingga batas waktu penutupan tidak dapat diproses dalam seleksi administrasi.'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Clean Digital Countdown Tiles */}
+                    <div className="user-warning-timer-box">
+                      <div className="user-warning-timer-label">
+                        Sisa Waktu Penutupan
+                      </div>
+                      <div className="user-warning-timer-tiles">
+                        {[
+                          { label: 'Hari', val: countdown.d },
+                          { label: 'Jam', val: countdown.h },
+                          { label: 'Menit', val: countdown.m },
+                          { label: 'Detik', val: countdown.s }
+                        ].map((item, idx) => (
+                          <React.Fragment key={item.label}>
+                            <div className="user-warning-timer-tile">
+                              <div className="user-warning-tile-digit">
+                                {String(item.val).padStart(2, '0')}
+                              </div>
+                              <div className="user-warning-tile-label">
+                                {item.label}
+                              </div>
+                            </div>
+                            {idx < 3 && (
+                              <span className="user-warning-tile-colon">:</span>
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Progress bar & missing documents alert callout */}
+                  <div className="user-warning-progress-box">
+                    <div className="user-warning-progress-head">
+                      <span className="user-warning-progress-title">
+                        Status Kelengkapan Dokumen
+                      </span>
+                      <span style={{ fontSize: '0.825rem', fontWeight: 700, color: dossierStatus.isComplete ? '#16a34a' : '#b45309' }}>
+                        {dossierStatus.filledCount} dari {dossierStatus.totalCount} berkas ({dossierStatus.percent}%)
+                      </span>
+                    </div>
+
+                    <div className="user-warning-track">
+                      <div
+                        className="user-warning-fill"
+                        style={{
+                          width: `${dossierStatus.percent}%`,
+                          background: dossierStatus.isComplete ? '#16a34a' : '#d97706',
+                        }}
+                      />
+                    </div>
+
+                    {dossierStatus.isComplete ? (
+                      <div className="user-warning-complete-note">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        Seluruh berkas persyaratan telah lengkap terunggah di sistem.
+                      </div>
+                    ) : (
+                      <div className="user-warning-missing-section">
+                        <div className="user-warning-missing-title">
+                          Dokumen yang belum diunggah ({dossierStatus.missingFields.length} dokumen):
+                        </div>
+                        <div className="user-warning-tags">
+                          {dossierStatus.missingFields.map((field) => {
+                            const label = typeof field === 'object' ? field.label : field;
+                            return (
+                              <span key={label} className="user-warning-tag-item">
+                                • {label}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="user-warning-actions">
+                    {!isSubmitted ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab('pendaftaran');
+                          window.scrollTo({ top: 350, behavior: 'smooth' });
+                        }}
+                        className="btn btn-gold btn-sm user-warning-btn-primary"
+                      >
+                        Lengkapi Berkas Sekarang →
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab('riwayat');
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="btn btn-gold btn-sm user-warning-btn-primary"
+                      >
+                        Lihat Berkas Saya
+                      </button>
+                    )}
+
+                    <a
+                      href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline-gold btn-sm user-warning-btn-secondary"
+                    >
+                      Unduh Booklet Panduan
+                    </a>
+                  </div>
+                </div>
+              )}
 
               {/* Card 1: Lengkapi Dokumen */}
               <div className="user-dashboard-card">
@@ -1235,11 +1362,11 @@ export default function UserDashboard({ user, onLogout }) {
               <div
                 className="registration-status-bar"
                 style={{
-                  background: dossierStatus.bg,
-                  border: `1.5px solid ${dossierStatus.border}`,
+                  background: isRegistrationClosed ? '#fffbeb' : dossierStatus.bg,
+                  border: `1.5px solid ${isRegistrationClosed ? '#fde68a' : dossierStatus.border}`,
                   padding: '1.25rem 1.5rem',
                   borderRadius: '12px',
-                  marginBottom: '2rem',
+                  marginBottom: isRegistrationClosed ? '1.25rem' : '2rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -1248,17 +1375,24 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: 700, color: dossierStatus.color, fontSize: '0.95rem' }}>
-                    Status Berkas: {dossierStatus.statusLabel} ({dossierStatus.percent}%)
+                  <div style={{ fontWeight: 700, color: isRegistrationClosed ? '#92400e' : dossierStatus.color, fontSize: '0.95rem' }}>
+                    Status Formulir: {isRegistrationClosed ? 'Pendaftaran Resmi Ditutup' : `${dossierStatus.statusLabel} (${dossierStatus.percent}%)`}
                   </div>
-                  <div style={{ fontSize: '0.825rem', color: dossierStatus.color, marginTop: '2px' }}>
-                    {dossierStatus.isComplete 
+                  <div style={{ fontSize: '0.825rem', color: isRegistrationClosed ? '#78350f' : dossierStatus.color, marginTop: '2px' }}>
+                    {isRegistrationClosed 
+                      ? `Batas akhir pengisian dan pengunggahan berkas telah berakhir pada 25 Oktober 2026 pukul 23:59 WIB. Berkas Anda (${dossierStatus.filledCount} dari ${dossierStatus.totalCount} berkas) telah tersimpan dan sedang dalam proses verifikasi administrasi.`
+                      : dossierStatus.isComplete 
                       ? 'Seluruh dokumen persyaratan esensial telah lengkap diisi. Anda dapat mengirimkan pendaftaran.'
                       : `Masih ada ${dossierStatus.missingFields.length} data yang belum dilengkapi: ${dossierStatus.missingFields.join(', ')}.`}
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {isRegistrationClosed && (
+                    <span style={{ background: '#b91c1c', color: '#fff', padding: '6px 12px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
+                      Pendaftaran Ditutup
+                    </span>
+                  )}
                   {isSubmitted && (
                     <span style={{ background: '#166534', color: '#fff', padding: '6px 12px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
                       Berkas Telah Diterima Panitia
@@ -1266,6 +1400,34 @@ export default function UserDashboard({ user, onLogout }) {
                   )}
                 </div>
               </div>
+
+              {/* UCAPAN TERIMA KASIH DARI PANITIA SELEKSI (TAMPIL OTOMATIS SAAT PENDAFTARAN DITUTUP) */}
+              {isRegistrationClosed && (
+                <div style={{
+                  background: '#ffffff',
+                  border: '1.5px solid #e2e8f0',
+                  borderLeft: '4px solid #C49E59',
+                  borderRadius: '12px',
+                  padding: '1.25rem 1.5rem',
+                  marginBottom: '1.5rem',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.35rem' }}>
+                    <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#92400e', background: '#fef3c7', border: '1px solid #fde68a', padding: '2px 8px', borderRadius: '4px' }}>
+                      Pemberitahuan Resmi Panitia
+                    </span>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                      Pemilihan Duta Kampus 2026
+                    </span>
+                  </div>
+                  <h4 style={{ margin: '0 0 0.35rem', color: '#16324A', fontSize: '1.05rem', fontWeight: 800 }}>
+                    Terima Kasih Atas Partisipasi Anda
+                  </h4>
+                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
+                    Panitia Seleksi mengucapkan terima kasih dan apresiasi yang setinggi-tingginya kepada Anda dan seluruh <strong style={{ color: '#16324A' }}>{applicantCount} pendaftar</strong> mahasiswa UIN Siber Syekh Nurjati Cirebon yang telah berpartisipasi dalam pemilihan ini. Pendaftaran telah resmi ditutup sehingga seluruh data formulir dan berkas telah terkunci untuk proses penilaian. Anda tetap dapat meninjau pratinjau seluruh berkas yang telah Anda unggah di bawah ini.
+                  </p>
+                </div>
+              )}
 
               {/* ALERT BANNER */}
               {formAlert.show && (
@@ -1603,34 +1765,36 @@ export default function UserDashboard({ user, onLogout }) {
                                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                   Lihat / Pratinjau
                                 </button>
-                                <button
-                                  type="button"
-                                  className="dossier-btn-remove"
-                                  onClick={() => handleRemoveFile(doc.key)}
-                                  disabled={loadingDocKey !== null}
-                                  style={{
-                                    background: 'rgba(220, 38, 38, 0.08)',
-                                    border: '1px solid rgba(220, 38, 38, 0.25)',
-                                    color: '#dc2626',
-                                    cursor: loadingDocKey !== null ? 'not-allowed' : 'pointer',
-                                    fontSize: '0.75rem',
-                                    fontWeight: 700,
-                                    padding: '4px 10px',
-                                    borderRadius: '6px',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    transition: 'all 0.2s'
-                                  }}
-                                  title="Hapus berkas ini secara permanen"
-                                >
-                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                                  Hapus
-                                </button>
+                                {!isRegistrationClosed && (
+                                  <button
+                                    type="button"
+                                    className="dossier-btn-remove"
+                                    onClick={() => handleRemoveFile(doc.key)}
+                                    disabled={loadingDocKey !== null}
+                                    style={{
+                                      background: 'rgba(220, 38, 38, 0.08)',
+                                      border: '1px solid rgba(220, 38, 38, 0.25)',
+                                      color: '#dc2626',
+                                      cursor: loadingDocKey !== null ? 'not-allowed' : 'pointer',
+                                      fontSize: '0.75rem',
+                                      fontWeight: 700,
+                                      padding: '4px 10px',
+                                      borderRadius: '6px',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '4px',
+                                      transition: 'all 0.2s'
+                                    }}
+                                    title="Hapus berkas ini secara permanen"
+                                  >
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                                    Hapus
+                                  </button>
+                                )}
                               </div>
                             ) : (
                               <span className="dossier-status-empty" style={{ fontSize: '0.75rem', color: isMandatory ? '#b91c1c' : '#64748b', fontWeight: 500 }}>
-                                {isMandatory ? 'Belum Diunggah' : 'Belum Dilampirkan'}
+                                {isRegistrationClosed ? 'Tidak Diunggah' : isMandatory ? 'Belum Diunggah' : 'Belum Dilampirkan'}
                               </span>
                             )}
 
@@ -1644,12 +1808,13 @@ export default function UserDashboard({ user, onLogout }) {
                                   padding: '5px 10px',
                                   borderRadius: '6px',
                                   border: '1px solid #cbd5e1',
-                                  background: '#ffffff',
+                                  background: isRegistrationClosed ? '#f8fafc' : '#ffffff',
                                   fontSize: '0.75rem',
                                   fontWeight: 600,
-                                  color: 'var(--navy)',
-                                  cursor: loadingDocKey !== null ? 'not-allowed' : 'pointer',
-                                  opacity: loadingDocKey !== null ? 0.6 : 1,
+                                  color: isRegistrationClosed ? '#94a3b8' : 'var(--navy)',
+                                  cursor: (loadingDocKey !== null || isRegistrationClosed) ? 'not-allowed' : 'pointer',
+                                  opacity: (loadingDocKey !== null || isRegistrationClosed) ? 0.6 : 1,
+                                  pointerEvents: isRegistrationClosed ? 'none' : 'auto',
                                   transition: 'all 0.2s'
                                 }}
                               >
@@ -1657,17 +1822,17 @@ export default function UserDashboard({ user, onLogout }) {
                                   type="file"
                                   accept={doc.fileTypes}
                                   style={{ display: 'none' }}
-                                  disabled={loadingDocKey !== null}
+                                  disabled={loadingDocKey !== null || isRegistrationClosed}
                                   onChange={(e) => handleFileUpload(doc.key, e.target.files[0], doc.label)}
                                 />
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                <span>{isUploaded ? 'Ganti File' : 'Pilih Berkas'}</span>
+                                <span>{isRegistrationClosed ? 'Ditutup' : isUploaded ? 'Ganti File' : 'Pilih Berkas'}</span>
                               </label>
 
                               <button
                                 type="button"
                                 className="dossier-btn-drive"
-                                disabled={loadingDocKey !== null}
+                                disabled={loadingDocKey !== null || isRegistrationClosed}
                                 onClick={() => setPreviewModal({
                                   isOpen: true,
                                   docKey: doc.key,
@@ -1680,14 +1845,14 @@ export default function UserDashboard({ user, onLogout }) {
                                   padding: '5px 8px',
                                   borderRadius: '6px',
                                   border: '1px solid #cbd5e1',
-                                  background: '#ffffff',
+                                  background: isRegistrationClosed ? '#f8fafc' : '#ffffff',
                                   fontSize: '0.72rem',
-                                  color: 'var(--navy)',
-                                  cursor: loadingDocKey !== null ? 'not-allowed' : 'pointer',
-                                  opacity: loadingDocKey !== null ? 0.6 : 1,
+                                  color: isRegistrationClosed ? '#94a3b8' : 'var(--navy)',
+                                  cursor: (loadingDocKey !== null || isRegistrationClosed) ? 'not-allowed' : 'pointer',
+                                  opacity: (loadingDocKey !== null || isRegistrationClosed) ? 0.6 : 1,
                                   fontWeight: 600
                                 }}
-                                title="Tautkan Link Google Drive"
+                                title={isRegistrationClosed ? 'Pendaftaran ditutup' : 'Tautkan Link Google Drive'}
                               >
                                 Tautan Drive
                               </button>
@@ -1704,17 +1869,17 @@ export default function UserDashboard({ user, onLogout }) {
                   <button
                     type="button"
                     onClick={handleSaveDraft}
-                    disabled={isSavingDraft || isSubmitting}
+                    disabled={isSavingDraft || isSubmitting || isRegistrationClosed}
                     className="save-draft-btn"
                     style={{
                       padding: '0.875rem 1.5rem',
                       borderRadius: '8px',
                       border: '1.5px solid #cbd5e1',
-                      background: isSavingDraft ? '#f8fafc' : '#ffffff',
+                      background: (isSavingDraft || isRegistrationClosed) ? '#f8fafc' : '#ffffff',
                       fontSize: '0.925rem',
                       fontWeight: 600,
-                      color: isSavingDraft ? '#94a3b8' : '#475569',
-                      cursor: isSavingDraft || isSubmitting ? 'not-allowed' : 'pointer',
+                      color: (isSavingDraft || isRegistrationClosed) ? '#94a3b8' : '#475569',
+                      cursor: (isSavingDraft || isSubmitting || isRegistrationClosed) ? 'not-allowed' : 'pointer',
                       flex: '1 1 auto',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -1725,12 +1890,12 @@ export default function UserDashboard({ user, onLogout }) {
                     {isSavingDraft && (
                       <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
                     )}
-                    {isSavingDraft ? 'Menyimpan Draf Berkas...' : 'Simpan Draf Berkas'}
+                    {isRegistrationClosed ? 'Pendaftaran Telah Ditutup' : isSavingDraft ? 'Menyimpan Draf Berkas...' : 'Simpan Draf Berkas'}
                   </button>
 
                   <button
                     type="submit"
-                    disabled={isSubmitting || isSavingDraft}
+                    disabled={isSubmitting || isSavingDraft || isRegistrationClosed}
                     className="btn btn-gold submit-application-btn"
                     style={{
                       padding: '0.875rem 2rem',
@@ -1742,14 +1907,14 @@ export default function UserDashboard({ user, onLogout }) {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      opacity: isSubmitting ? 0.75 : 1,
-                      cursor: isSubmitting || isSavingDraft ? 'not-allowed' : 'pointer'
+                      opacity: (isSubmitting || isRegistrationClosed) ? 0.75 : 1,
+                      cursor: (isSubmitting || isSavingDraft || isRegistrationClosed) ? 'not-allowed' : 'pointer'
                     }}
                   >
                     {isSubmitting && (
                       <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
                     )}
-                    {isSubmitting ? 'Mengirim Pendaftaran...' : (isSubmitted ? 'Perbarui & Kirim Ulang Berkas' : 'Kirim Pendaftaran Duta Kampus →')}
+                    {isRegistrationClosed ? 'Pendaftaran Resmi Ditutup' : isSubmitting ? 'Mengirim Pendaftaran...' : (isSubmitted ? 'Perbarui & Kirim Ulang Berkas' : 'Kirim Pendaftaran Duta Kampus →')}
                   </button>
                 </div>
               </form>

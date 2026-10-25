@@ -4,6 +4,7 @@ import { useRouter } from '../lib/router';
 import Link from '../components/Link';
 import Image from '../components/Image';
 import { Auth } from '../lib/auth';
+import { Settings } from '../lib/settings';
 import RegisterAccountWizard from '../components/RegisterAccountWizard';
 
 export default function LoginPage() {
@@ -396,26 +397,53 @@ export default function LoginPage() {
             </button>
 
             <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: 'var(--text-mid)' }}>
-              Belum memiliki akun?{' '}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLogin(false);
-                  setError('');
-                }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--gold)',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  padding: 0,
-                  fontSize: '0.85rem',
-                  textDecoration: 'underline'
-                }}
-              >
-                Daftar akun di sini
-              </button>
+              {Settings.isRegistrationClosed() ? (
+                <span>
+                  Pendaftaran akun baru telah resmi ditutup.{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsLogin(false);
+                      setError('');
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--gold)',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      padding: 0,
+                      fontSize: '0.85rem',
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    Lihat Maklumat Panitia
+                  </button>
+                </span>
+              ) : (
+                <span>
+                  Belum memiliki akun?{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsLogin(false);
+                      setError('');
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--gold)',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      padding: 0,
+                      fontSize: '0.85rem',
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    Daftar akun di sini
+                  </button>
+                </span>
+              )}
             </div>
 
             {/* PWA Mobile Portal Card - Strictly Aligned with Key Visual without Icons/Emoticons */}

@@ -3,9 +3,112 @@ import { useRouter } from '../lib/router';
 import { Auth, validateEmailFormat } from '../lib/auth';
 import { FAKULTAS_DATA, KEWARGANEGARAAN_OPTIONS } from '../lib/fakultasData';
 import { isFirebaseConfigured, fetchUserFromCloudByIdentifier } from '../lib/firebase';
+import { Settings } from '../lib/settings';
 
 export default function RegisterAccountWizard({ onSwitchToLogin }) {
   const router = useRouter();
+  const isClosed = Settings.isRegistrationClosed();
+  const applicantCount = Settings.getApplicantCountDisplay();
+
+  if (isClosed) {
+    return (
+      <div style={{
+        padding: '2rem 1.5rem',
+        textAlign: 'center',
+        background: '#ffffff',
+        borderRadius: '16px',
+        border: '1px solid rgba(196, 158, 89, 0.3)',
+        boxShadow: '0 4px 20px rgba(10, 25, 47, 0.06)'
+      }}>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '6px 14px',
+          borderRadius: '999px',
+          background: 'rgba(196, 158, 89, 0.12)',
+          color: 'var(--navy)',
+          fontSize: '0.78rem',
+          fontWeight: 700,
+          letterSpacing: '0.5px',
+          textTransform: 'uppercase',
+          marginBottom: '1.25rem'
+        }}>
+          Pendaftaran Resmi Ditutup
+        </div>
+
+        <h3 style={{
+          fontSize: '1.25rem',
+          fontWeight: 800,
+          color: 'var(--navy)',
+          marginBottom: '0.75rem',
+          lineHeight: 1.3
+        }}>
+          Terima Kasih Atas Partisipasi Anda
+        </h3>
+
+        <p style={{
+          fontSize: '0.88rem',
+          color: '#475569',
+          lineHeight: 1.6,
+          maxWidth: '460px',
+          margin: '0 auto 1.25rem'
+        }}>
+          Masa pendaftaran Pemilihan Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026 telah resmi berakhir. Panitia Pelaksana mengucapkan apresiasi dan terima kasih yang sebesar-besarnya kepada <strong>{applicantCount} pendaftar</strong> yang telah berpartisipasi dan mengirimkan berkas pendaftaran.
+        </p>
+
+        <div style={{
+          padding: '1rem',
+          background: '#f8fafc',
+          borderRadius: '12px',
+          border: '1px solid #e2e8f0',
+          fontSize: '0.82rem',
+          color: '#334155',
+          lineHeight: 1.55,
+          marginBottom: '1.5rem',
+          textAlign: 'left'
+        }}>
+          <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '4px' }}>
+            Informasi Bagi Pendaftar:
+          </div>
+          Bagi seluruh rekan-rekan pendaftar yang telah memiliki akun, silakan masuk ke portal peserta untuk meninjau kelengkapan berkas Anda serta menantikan pengumuman hasil seleksi administrasi sesuai jadwal resmi.
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <button
+            type="button"
+            onClick={onSwitchToLogin}
+            className="btn btn-gold"
+            style={{
+              width: '100%',
+              padding: '0.85rem',
+              borderRadius: '10px',
+              fontWeight: 700,
+              fontSize: '0.9rem',
+              justifyContent: 'center'
+            }}
+          >
+            Masuk ke Akun Peserta
+          </button>
+          <a
+            href="/"
+            style={{
+              padding: '0.75rem',
+              borderRadius: '10px',
+              fontSize: '0.85rem',
+              color: 'var(--text-mid)',
+              textDecoration: 'none',
+              fontWeight: 600,
+              display: 'block'
+            }}
+          >
+            Kembali ke Halaman Utama
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   const [step, setStep] = useState(1); // 1: Informasi Akun, 2: Informasi Pribadi
 
   // Step 1: Data Akun
