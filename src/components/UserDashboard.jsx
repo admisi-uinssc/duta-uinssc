@@ -593,9 +593,15 @@ export default function UserDashboard({ user, onLogout }) {
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Pendaftaran Duta
-            {dossierStatus.isComplete && (
-              <span style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: '50%', background: '#22c55e' }} />
+            <span>Pendaftaran Duta</span>
+            {dossierStatus.isComplete ? (
+              <span style={{ marginLeft: 'auto', background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', fontSize: '0.62rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                Lengkap
+              </span>
+            ) : (
+              <span style={{ marginLeft: 'auto', background: 'rgba(217, 119, 6, 0.25)', color: '#fbbf24', fontSize: '0.62rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                Belum Lengkap
+              </span>
             )}
           </button>
 
@@ -941,106 +947,211 @@ export default function UserDashboard({ user, onLogout }) {
                 </div>
               )}
 
-              {/* === PENGINGAT BATAS WAKTU & KELENGKAPAN BERKAS === */}
+              {/* === PENGINGAT BATAS WAKTU & KELENGKAPAN BERKAS (OFFICIAL WARNING STYLE) === */}
               <div
                 style={{
-                  background: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderLeft: '4px solid #C49E59',
+                  background: '#fffdf5',
+                  border: '1.5px solid #fcd34d',
+                  borderLeft: '6px solid #d97706',
                   borderRadius: '12px',
-                  padding: '1.5rem',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  padding: '1.25rem 1.5rem',
+                  boxShadow: '0 2px 10px rgba(217, 119, 6, 0.06)',
                   width: '100%',
                   boxSizing: 'border-box'
                 }}
               >
+                {/* Official Institutional Warning Header Bar */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '0.5rem',
+                  paddingBottom: '0.85rem',
+                  marginBottom: '1.1rem',
+                  borderBottom: '1px solid #fde68a'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      background: '#b45309',
+                      color: '#ffffff',
+                      fontSize: '0.7rem',
+                      fontWeight: 800,
+                      padding: '3px 8px',
+                      borderRadius: '4px',
+                      letterSpacing: '0.6px',
+                      textTransform: 'uppercase',
+                      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+                    }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                      </svg>
+                      PERINGATAN RESMI
+                    </span>
+                    <span style={{ fontSize: '0.825rem', fontWeight: 700, color: '#92400e' }}>
+                      Batas Akhir Kelengkapan Berkas Seleksi
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: '#78350f', fontWeight: 600 }}>
+                    Penutupan: 25 Oktober 2026 · 23:59 WIB
+                  </div>
+                </div>
+
                 <div style={{
                   display: 'flex',
                   alignItems: 'flex-start',
                   justifyContent: 'space-between',
                   flexWrap: 'wrap',
-                  gap: '1rem',
-                  marginBottom: '1.25rem'
+                  gap: '1.25rem',
+                  marginBottom: '1.15rem'
                 }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#16324A' }}>
-                      Pengingat Batas Waktu Berkas Persyaratan
-                    </h3>
-                    <div style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '3px' }}>
-                      Pendaftaran dan pengunggahan berkas ditutup pada <strong>25 Oktober 2026 pukul 23:59 WIB</strong>.
+                  {/* Warning Header with clean alert icon */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.9rem', flex: 1, minWidth: '280px' }}>
+                    <div style={{
+                      width: '42px',
+                      height: '42px',
+                      borderRadius: '10px',
+                      background: '#fef3c7',
+                      border: '1px solid #fde68a',
+                      color: '#b45309',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px'
+                    }}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                      </svg>
+                    </div>
+
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: '1.18rem', fontWeight: 700, color: '#92400e', letterSpacing: '-0.2px' }}>
+                        {dossierStatus.isComplete
+                          ? 'Berkas Persyaratan Anda Telah Lengkap'
+                          : `Peringatan: ${dossierStatus.missingFields.length} Berkas Persyaratan Belum Diunggah`}
+                      </h3>
+                      <div style={{ fontSize: '0.875rem', color: '#78350f', marginTop: '4px', lineHeight: 1.5 }}>
+                        {dossierStatus.isComplete
+                          ? 'Seluruh dokumen persyaratan esensial telah berhasil tersimpan di sistem. Pastikan keabsahan seluruh dokumen sebelum verifikasi panitia ditutup.'
+                          : 'Segera unggah seluruh berkas yang diperlukan. Akun yang belum melengkapi berkas hingga batas waktu penutupan tidak dapat diproses dalam seleksi administrasi.'}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Clean Digital Countdown Tiles */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    {[
-                      { label: 'Hari', val: countdown.d },
-                      { label: 'Jam', val: countdown.h },
-                      { label: 'Menit', val: countdown.m },
-                      { label: 'Detik', val: countdown.s }
-                    ].map((item, idx) => (
-                      <React.Fragment key={item.label}>
-                        <div style={{
-                          background: '#f8fafc',
-                          border: '1px solid #cbd5e1',
-                          borderRadius: '8px',
-                          minWidth: '50px',
-                          padding: '5px 8px',
-                          textAlign: 'center'
-                        }}>
-                          <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#16324A', fontFamily: 'monospace', lineHeight: 1.1 }}>
-                            {String(item.val).padStart(2, '0')}
+                  {/* Clean Digital Countdown Tiles with Warning Palette */}
+                  <div style={{
+                    background: '#ffffff',
+                    border: '1px solid #fde68a',
+                    borderRadius: '10px',
+                    padding: '0.65rem 0.95rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    boxShadow: '0 1px 3px rgba(217, 119, 6, 0.08)'
+                  }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#92400e', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>
+                      Sisa Waktu Penutupan
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {[
+                        { label: 'Hari', val: countdown.d },
+                        { label: 'Jam', val: countdown.h },
+                        { label: 'Menit', val: countdown.m },
+                        { label: 'Detik', val: countdown.s }
+                      ].map((item, idx) => (
+                        <React.Fragment key={item.label}>
+                          <div style={{
+                            background: '#fffdf5',
+                            border: '1px solid #fcd34d',
+                            borderRadius: '6px',
+                            minWidth: '46px',
+                            padding: '4px 6px',
+                            textAlign: 'center'
+                          }}>
+                            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#92400e', fontFamily: 'monospace', lineHeight: 1.1 }}>
+                              {String(item.val).padStart(2, '0')}
+                            </div>
+                            <div style={{ fontSize: '0.6rem', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', marginTop: '2px' }}>
+                              {item.label}
+                            </div>
                           </div>
-                          <div style={{ fontSize: '0.62rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', marginTop: '2px' }}>
-                            {item.label}
-                          </div>
-                        </div>
-                        {idx < 3 && (
-                          <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#94a3b8' }}>:</span>
-                        )}
-                      </React.Fragment>
-                    ))}
+                          {idx < 3 && (
+                            <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#d97706' }}>:</span>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Progress bar */}
+                {/* Progress bar & missing documents alert callout */}
                 <div style={{
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
+                  background: '#ffffff',
+                  border: '1px solid #fde68a',
                   borderRadius: '10px',
-                  padding: '0.875rem 1.25rem',
-                  marginBottom: '1.25rem'
+                  padding: '0.95rem 1.25rem',
+                  marginBottom: '1.15rem'
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.825rem', fontWeight: 600, color: '#334155' }}>
-                      Kelengkapan Berkas
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <span style={{ fontSize: '0.825rem', fontWeight: 700, color: '#78350f' }}>
+                      Status Kelengkapan Dokumen
                     </span>
                     <span style={{ fontSize: '0.825rem', fontWeight: 700, color: dossierStatus.isComplete ? '#16a34a' : '#b45309' }}>
                       {dossierStatus.filledCount} dari {dossierStatus.totalCount} berkas ({dossierStatus.percent}%)
                     </span>
                   </div>
 
-                  <div style={{ width: '100%', height: '7px', background: '#e2e8f0', borderRadius: '9999px', overflow: 'hidden', marginBottom: '6px' }}>
+                  <div style={{ width: '100%', height: '8px', background: '#fef3c7', borderRadius: '9999px', overflow: 'hidden', marginBottom: '8px' }}>
                     <div style={{
                       width: `${dossierStatus.percent}%`,
                       height: '100%',
-                      background: dossierStatus.isComplete ? '#16a34a' : '#C49E59',
+                      background: dossierStatus.isComplete ? '#16a34a' : '#d97706',
                       borderRadius: '9999px',
                       transition: 'width 0.3s ease'
                     }} />
                   </div>
 
-                  <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
-                    {dossierStatus.isComplete ? (
-                      <span style={{ color: '#16a34a', fontWeight: 600 }}>
-                        Seluruh berkas persyaratan telah lengkap terunggah.
-                      </span>
-                    ) : (
-                      <span>
-                        Belum diunggah: <strong style={{ color: '#b45309' }}>{dossierStatus.missingFields.map(f => f.label).join(', ')}</strong>.
-                      </span>
-                    )}
-                  </div>
+                  {dossierStatus.isComplete ? (
+                    <div style={{ fontSize: '0.8rem', color: '#16a34a', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      Seluruh berkas persyaratan telah lengkap terunggah di sistem.
+                    </div>
+                  ) : (
+                    <div>
+                      <div style={{ fontSize: '0.78rem', color: '#78350f', fontWeight: 600, marginBottom: '6px' }}>
+                        Dokumen yang belum diunggah ({dossierStatus.missingFields.length} dokumen):
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {dossierStatus.missingFields.map((field) => {
+                          const label = typeof field === 'object' ? field.label : field;
+                          return (
+                            <span
+                              key={label}
+                              style={{
+                                background: '#fef3c7',
+                                border: '1px solid #fde68a',
+                                color: '#92400e',
+                                padding: '2px 8px',
+                                borderRadius: '4px',
+                                fontSize: '0.74rem',
+                                fontWeight: 600
+                              }}
+                            >
+                              • {label}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Actions */}
@@ -1055,7 +1166,7 @@ export default function UserDashboard({ user, onLogout }) {
                       className="btn btn-gold btn-sm"
                       style={{ fontWeight: 600, padding: '0.55rem 1.25rem', borderRadius: '6px' }}
                     >
-                      Lengkapi Berkas Sekarang
+                      Lengkapi Berkas Sekarang →
                     </button>
                   ) : (
                     <button
@@ -1076,7 +1187,7 @@ export default function UserDashboard({ user, onLogout }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-outline-gold btn-sm"
-                    style={{ fontWeight: 600, padding: '0.55rem 1rem', borderRadius: '6px' }}
+                    style={{ fontWeight: 600, padding: '0.55rem 1rem', borderRadius: '6px', background: '#ffffff' }}
                   >
                     Unduh Booklet Panduan
                   </a>
