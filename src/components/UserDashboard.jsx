@@ -59,7 +59,7 @@ export default function UserDashboard({ user, onLogout }) {
 
   // Target deadline countdown & status penutupan otomatis: 25 Oktober 2026 pukul 23:59:59 WIB
   const [countdown, setCountdown] = useState({ d: 0, h: 0, m: 0, s: 0, isExpired: false });
-  const [applicantCount, setApplicantCount] = useState('37+');
+  const [applicantCount, setApplicantCount] = useState('60+');
 
   useEffect(() => {
     const updateCd = () => {

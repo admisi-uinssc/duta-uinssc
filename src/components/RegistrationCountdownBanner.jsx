@@ -7,7 +7,7 @@ import { Settings } from '../lib/settings';
 export default function RegistrationCountdownBanner() {
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
   const [isClosed, setIsClosed] = useState(false);
-  const [applicantCount, setApplicantCount] = useState('37+');
+  const [applicantCount, setApplicantCount] = useState('60+');
 
   useEffect(() => {
     const updateTimer = () => {
