@@ -95,10 +95,10 @@ export default function PromoBannerSlider() {
                       />
                     ) : parsed.source === 'drive' ? (
                       <iframe
-                        src={`https://drive.google.com/file/d/${parsed.videoId}/preview`}
+                        src={`https://drive.google.com/file/d/${parsed.videoId}/preview?autoplay=1`}
                         title="Video Banner"
                         style={{ width: '135%', height: '135%', border: 'none', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
-                        allow="autoplay"
+                        allow="autoplay; fullscreen; encrypted-media"
                       />
                     ) : (
                       <video

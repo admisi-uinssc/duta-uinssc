@@ -72,8 +72,8 @@ export function parseMediaUrl(url, explicitType = null) {
   const driveId = extractDriveId(trimmed);
   const isDirectVideo = isDirectVideoUrl(trimmed);
 
-  const isExplicitVideo = explicitType === 'video' || (typeof explicitType === 'string' && explicitType.toLowerCase() === 'video');
-  const isExplicitImage = explicitType === 'image' || (typeof explicitType === 'string' && explicitType.toLowerCase() === 'image');
+  const isExplicitVideo = explicitType === 'video' || (typeof explicitType === 'string' && ['video', 'vid'].includes(explicitType.toLowerCase()));
+  const isExplicitImage = explicitType === 'photo' || explicitType === 'image' || (typeof explicitType === 'string' && ['photo', 'image', 'foto'].includes(explicitType.toLowerCase()));
 
   // 1. YouTube Video
   if (ytId && !isExplicitImage) {
@@ -109,7 +109,7 @@ export function parseMediaUrl(url, explicitType = null) {
 
   // 3. Google Drive (can be photo or video)
   if (driveId) {
-    const isDriveVideo = isExplicitVideo || trimmed.toLowerCase().includes('video') || trimmed.toLowerCase().includes('mp4');
+    const isDriveVideo = !isExplicitImage && (isExplicitVideo || trimmed.toLowerCase().includes('video') || trimmed.toLowerCase().includes('mp4') || trimmed.toLowerCase().includes('mov') || trimmed.toLowerCase().includes('webm'));
     return {
       rawUrl: trimmed,
       isVideo: isDriveVideo,

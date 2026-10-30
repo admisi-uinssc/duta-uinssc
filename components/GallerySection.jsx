@@ -128,6 +128,7 @@ export default function GallerySection() {
           </div>
         )}
 
+        {/* Universal Media Modal (Foto & Video) */}
         <MediaModal 
           isOpen={Boolean(selectedMedia)} 
           onClose={() => setSelectedMedia(null)} 

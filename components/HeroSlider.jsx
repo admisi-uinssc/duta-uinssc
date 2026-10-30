@@ -6,23 +6,41 @@ import { parseMediaUrl } from '../lib/media';
 
 function SlideMediaItem({ slide, parsed, isActive }) {
   const videoRef = useRef(null);
-  const [streamFailed, setStreamFailed] = useState(false);
+  const iframeRef = useRef(null);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (video) {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
 
-    video.muted = true;
-    video.defaultMuted = true;
+      if (isActive) {
+        const startPlay = () => {
+          const p = video.play();
+          if (p !== undefined) p.catch(() => {});
+        };
 
-    if (isActive) {
-      video.currentTime = 0;
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {});
+        if (video.readyState >= 2) {
+          startPlay();
+        } else {
+          video.addEventListener('loadeddata', startPlay, { once: true });
+          video.addEventListener('canplay', startPlay, { once: true });
+          startPlay();
+        }
+      } else {
+        video.pause();
       }
-    } else {
-      video.pause();
+    }
+
+    const iframe = iframeRef.current;
+    if (iframe && iframe.contentWindow) {
+      try {
+        const cmd = isActive
+          ? '{"event":"command","func":"playVideo","args":""}'
+          : '{"event":"command","func":"pauseVideo","args":""}';
+        iframe.contentWindow.postMessage(cmd, '*');
+      } catch {}
     }
   }, [isActive]);
 
@@ -33,6 +51,15 @@ function SlideMediaItem({ slide, parsed, isActive }) {
         src={slide.img}
         alt=""
         loading={isActive ? 'eager' : 'lazy'}
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          objectPosition: 'center',
+          aspectRatio: '1920 / 1080',
+          position: 'absolute',
+          inset: 0
+        }}
       />
     );
   }
@@ -42,63 +69,54 @@ function SlideMediaItem({ slide, parsed, isActive }) {
       style={{ 
         position: 'absolute', 
         inset: 0, 
+        width: '100%',
+        height: '100%',
+        aspectRatio: '1920 / 1080',
         overflow: 'hidden', 
         pointerEvents: 'none',
         userSelect: 'none'
       }}
     >
       {parsed.source === 'youtube' ? (
-        isActive && (
-          <iframe
-            src={`https://www.youtube.com/embed/${parsed.videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${parsed.videoId}&playsinline=1&rel=0&enablejsapi=1`}
-            title="Visual Background"
-            style={{
-              width: '135%',
-              height: '135%',
-              border: 'none',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              pointerEvents: 'none'
-            }}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        )
-      ) : (parsed.source === 'drive' && streamFailed) ? (
-        isActive && (
-          <iframe
-            src={`https://drive.google.com/file/d/${parsed.videoId}/preview`}
-            title="Visual Background"
-            style={{
-              width: '135%',
-              height: '135%',
-              border: 'none',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              pointerEvents: 'none'
-            }}
-            allow="autoplay; encrypted-media"
-          />
-        )
+        <iframe
+          ref={iframeRef}
+          src={`https://www.youtube-nocookie.com/embed/${parsed.videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${parsed.videoId}&playsinline=1&rel=0&enablejsapi=1&origin=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : '')}`}
+          title="Visual Background"
+          style={{
+            width: '135%',
+            height: '135%',
+            aspectRatio: '1920 / 1080',
+            border: 'none',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            pointerEvents: 'none'
+          }}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      ) : parsed.source === 'drive' ? (
+        <iframe
+          ref={iframeRef}
+          src={`https://drive.google.com/file/d/${parsed.videoId}/preview?autoplay=1`}
+          title="Visual Background"
+          style={{
+            width: '135%',
+            height: '135%',
+            aspectRatio: '1920 / 1080',
+            border: 'none',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            pointerEvents: 'none'
+          }}
+          allow="autoplay; fullscreen; encrypted-media"
+        />
       ) : (
         <video
-          ref={(el) => {
-            videoRef.current = el;
-            if (el) {
-              el.muted = true;
-              el.defaultMuted = true;
-              if (isActive) {
-                const p = el.play();
-                if (p && typeof p.catch === 'function') {
-                  p.catch(() => {});
-                }
-              }
-            }
-          }}
+          ref={videoRef}
           className="slide-img"
           src={parsed.directVideoUrl || slide.img}
           autoPlay
@@ -106,21 +124,28 @@ function SlideMediaItem({ slide, parsed, isActive }) {
           loop
           playsInline
           preload="auto"
-          onError={() => {
-            if (parsed.source === 'drive') {
-              setStreamFailed(true);
+          onLoadedMetadata={(e) => {
+            e.currentTarget.muted = true;
+            e.currentTarget.defaultMuted = true;
+            if (isActive) {
+              const p = e.currentTarget.play();
+              if (p !== undefined) p.catch(() => {});
             }
           }}
           onCanPlay={(e) => {
-            e.target.muted = true;
+            e.currentTarget.muted = true;
+            e.currentTarget.defaultMuted = true;
             if (isActive) {
-              e.target.play().catch(() => {});
+              const p = e.currentTarget.play();
+              if (p !== undefined) p.catch(() => {});
             }
           }}
           style={{ 
             width: '100%', 
             height: '100%', 
             objectFit: 'cover', 
+            objectPosition: 'center', 
+            aspectRatio: '1920 / 1080',
             position: 'absolute', 
             inset: 0, 
             pointerEvents: 'none' 
@@ -178,22 +203,23 @@ export default function HeroSlider() {
   // Global browser autoplay unlocker on first user interaction
   useEffect(() => {
     const unlock = () => {
-      const videos = document.querySelectorAll('.hero-slider video');
-      videos.forEach(v => {
-        v.muted = true;
-        v.defaultMuted = true;
-        if (v.paused) {
-          v.play().catch(() => {});
-        }
-      });
+      const activeVideo = document.querySelector('.hero-slider .slide.active video');
+      if (activeVideo) {
+        activeVideo.muted = true;
+        activeVideo.defaultMuted = true;
+        activeVideo.play().catch(() => {});
+      }
+      const activeIframe = document.querySelector('.hero-slider .slide.active iframe');
+      if (activeIframe && activeIframe.contentWindow) {
+        try {
+          activeIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        } catch {}
+      }
     };
-    window.addEventListener('click', unlock, { once: true });
-    window.addEventListener('touchstart', unlock, { once: true });
-    window.addEventListener('scroll', unlock, { once: true });
+    const events = ['click', 'touchstart', 'scroll', 'pointerdown', 'keydown'];
+    events.forEach(ev => window.addEventListener(ev, unlock, { passive: true }));
     return () => {
-      window.removeEventListener('click', unlock);
-      window.removeEventListener('touchstart', unlock);
-      window.removeEventListener('scroll', unlock);
+      events.forEach(ev => window.removeEventListener(ev, unlock));
     };
   }, []);
 
@@ -205,7 +231,17 @@ export default function HeroSlider() {
   if (slides.length === 0) return null;
 
   return (
-    <section className="hero-slider" id="heroSlider">
+    <section 
+      className="hero-slider" 
+      id="heroSlider" 
+      style={{ 
+        width: '100%', 
+        aspectRatio: '1920 / 1080', 
+        height: 'auto',
+        overflow: 'hidden',
+        position: 'relative'
+      }}
+    >
       {slides.map((slide, idx) => {
         const parsed = parseMediaUrl(slide.img, slide.mediaType);
         const isActive = idx === current;
@@ -216,7 +252,17 @@ export default function HeroSlider() {
         const hasAnyText = hasTitle || hasDesc || hasBtn || hasTag;
 
         return (
-          <div key={slide.id || idx} className={`slide ${isActive ? 'active' : ''}`}>
+          <div 
+            key={slide.id || idx} 
+            className={`slide ${isActive ? 'active' : ''}`} 
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              aspectRatio: '1920 / 1080',
+              position: 'absolute',
+              inset: 0
+            }}
+          >
             {/* Visual Media: Pemanis visual foto atau video */}
             <SlideMediaItem slide={slide} parsed={parsed} isActive={isActive} />
 
