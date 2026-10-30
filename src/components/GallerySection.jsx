@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Image from './Image';
 import { CMS } from '../lib/cms';
+import { parseMediaUrl } from '../lib/media';
+import MediaModal, { VideoPlayBadge } from './MediaModal';
 
 export default function GallerySection() {
   const [gallery, setGallery] = useState([]);
   const [visibleCount, setVisibleCount] = useState(6);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedMedia, setSelectedMedia] = useState(null);
 
   useEffect(() => {
     setGallery(CMS.get().gallery || []);
@@ -38,31 +40,63 @@ export default function GallerySection() {
       <div className="container" style={{ maxWidth: '1480px', margin: '0 auto', padding: '0 1.5rem' }}>
         <div className="section-header text-center" style={{ marginBottom: '2.5rem' }}>
           <h2 className="heading-lg">Galeri <span>Duta Kampus</span></h2>
-          <p className="lead">Momen-momen inspiratif kegiatan Duta Kampus UINSSC</p>
+          <p className="lead">Dokumentasi foto dan video momen inspiratif kegiatan Duta Kampus UINSSC</p>
         </div>
         
         <div className="gallery-grid">
-          {displayedGallery.map((item, idx) => (
-            <div 
-              key={item.id || idx} 
-              className="gallery-item"
-              onClick={() => setSelectedImage(item)}
-              title="Ketuk untuk melihat foto"
-            >
-              <Image 
-                src={item.img} 
-                alt={item.caption || `Gallery ${idx + 1}`} 
-                loading="lazy" 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
-              />
-              {item.caption && (
-                <div className="gallery-caption">
-                  <span>{item.caption}</span>
-                </div>
-              )}
-            </div>
-          ))}
+          {displayedGallery.map((item, idx) => {
+            const parsed = parseMediaUrl(item.img, item.mediaType);
+            return (
+              <div 
+                key={item.id || idx} 
+                className="gallery-item"
+                onClick={() => setSelectedMedia(item)}
+                title={parsed.isVideo ? 'Ketuk untuk memutar video' : 'Ketuk untuk melihat foto'}
+                style={{ position: 'relative', cursor: 'pointer' }}
+              >
+                <Image 
+                  src={item.img} 
+                  alt={item.caption || `Gallery ${idx + 1}`} 
+                  loading="lazy" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
+                />
+
+                {/* Video Play Indicator Overlay */}
+                {parsed.isVideo && (
+                  <>
+                    <VideoPlayBadge />
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '10px',
+                        left: '10px',
+                        background: 'rgba(22, 50, 74, 0.85)',
+                        border: '1px solid rgba(196, 158, 89, 0.6)',
+                        color: '#F8E7C9',
+                        fontSize: '0.68rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.5px',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        zIndex: 3,
+                        textTransform: 'uppercase',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                      }}
+                    >
+                      ▶ Video
+                    </div>
+                  </>
+                )}
+
+                {item.caption && (
+                  <div className="gallery-caption">
+                    <span>{item.caption}</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {gallery.length > 6 && (
@@ -74,7 +108,7 @@ export default function GallerySection() {
                 className="btn btn-outline-gold"
                 style={{ padding: '0.65rem 1.75rem', fontSize: '0.85rem', fontWeight: 600, borderRadius: '50px', cursor: 'pointer' }}
               >
-                Lihat Semua Foto ({gallery.length})
+                Lihat Semua Dokumentasi ({gallery.length})
               </button>
             ) : (
               <button 
@@ -89,74 +123,13 @@ export default function GallerySection() {
           </div>
         )}
 
-        {/* Modal Lightbox Popup */}
-        {selectedImage && (
-          <div 
-            onClick={() => setSelectedImage(null)}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              backgroundColor: 'rgba(11, 19, 41, 0.94)',
-              zIndex: 99999,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '1rem',
-              backdropFilter: 'blur(6px)'
-            }}
-          >
-            <div 
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                maxWidth: '680px',
-                width: '100%',
-                background: '#16324a',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-                border: '1px solid rgba(196,158,89,0.3)',
-                position: 'relative'
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedImage(null)}
-                style={{
-                  position: 'absolute',
-                  top: '12px',
-                  right: '12px',
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '50%',
-                  background: 'rgba(0,0,0,0.65)',
-                  color: '#ffffff',
-                  border: 'none',
-                  fontSize: '1.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  zIndex: 10
-                }}
-              >
-                ✕
-              </button>
-              <div style={{ width: '100%', maxHeight: '68vh', overflow: 'hidden', background: '#000' }}>
-                <Image 
-                  src={selectedImage.img} 
-                  alt={selectedImage.caption || 'Foto Galeri'} 
-                  style={{ width: '100%', height: '100%', maxHeight: '68vh', objectFit: 'contain', display: 'block' }}
-                  fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
-                />
-              </div>
-              {selectedImage.caption && (
-                <div style={{ padding: '1rem 1.25rem', color: '#ffffff', fontSize: '0.9rem', fontWeight: 600, textAlign: 'center', background: '#16324a' }}>
-                  {selectedImage.caption}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+        {/* Universal Media Modal (Foto & Video) */}
+        <MediaModal 
+          isOpen={Boolean(selectedMedia)} 
+          onClose={() => setSelectedMedia(null)} 
+          item={selectedMedia} 
+          fallbackTitle="Dokumentasi Duta Kampus"
+        />
       </div>
     </section>
   );

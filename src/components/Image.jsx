@@ -1,38 +1,8 @@
 import React from 'react';
 
-// Extract Google Drive File ID from any share link or embed code format
-export function extractDriveId(url) {
-  if (!url || typeof url !== 'string') return null;
-  let trimmed = url.trim();
+import { extractDriveId, extractYouTubeId } from '../lib/media';
 
-  // If user pasted an iframe embed code like <iframe src=".../preview"...>
-  const iframeMatch = trimmed.match(/src=["']([^"']+)["']/);
-  if (iframeMatch && iframeMatch[1]) {
-    trimmed = iframeMatch[1].trim();
-  }
-
-  // Remove surrounding quotes or angles if any
-  trimmed = trimmed.replace(/^["'<]+|["'>]+$/g, '');
-
-  // Match /d/ID or /file/d/ID
-  const dMatch = trimmed.match(/\/(?:file\/)?d\/([a-zA-Z0-9_-]+)/);
-  if (dMatch && dMatch[1] && dMatch[1] !== 'd') return dMatch[1];
-
-  // Match id=ID or docid=ID
-  const idMatch = trimmed.match(/[?&](?:id|docid)=([a-zA-Z0-9_-]+)/);
-  if (idMatch && idMatch[1]) return idMatch[1];
-
-  // Match lh3.googleusercontent.com/d/ID or /u/0/d/ID
-  const lh3Match = trimmed.match(/lh3\.googleusercontent\.com\/(?:[a-zA-Z0-9_-]+\/)*(?:d\/)?([a-zA-Z0-9_-]+)/);
-  if (lh3Match && lh3Match[1] && lh3Match[1] !== 'd') return lh3Match[1];
-
-  // Raw Drive ID directly
-  if (/^[a-zA-Z0-9_-]{25,55}$/.test(trimmed)) {
-    return trimmed;
-  }
-
-  return null;
-}
+export { extractDriveId, extractYouTubeId };
 
 // Generate an ordered list of reliable Google Drive CDN endpoints for maximum resilience
 export function getDriveCandidates(fileId) {
@@ -61,6 +31,12 @@ export function formatImageUrl(url) {
   // Local asset or data URI
   if (trimmed.startsWith('/') || trimmed.startsWith('data:') || trimmed.startsWith('blob:')) {
     return trimmed;
+  }
+
+  // YouTube video URL: automatically return video thumbnail
+  const ytId = extractYouTubeId(trimmed);
+  if (ytId) {
+    return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
   }
 
   // Google Drive URL

@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Link from './Link';
 import Image from './Image';
 import { CMS } from '../lib/cms';
+import { parseMediaUrl } from '../lib/media';
+import MediaModal, { VideoPlayBadge } from './MediaModal';
 
 export default function AboutSection() {
   const [aboutData, setAboutData] = useState(() => CMS.get().about || {});
+  const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
     setAboutData(CMS.get().about || {});
@@ -60,21 +63,63 @@ export default function AboutSection() {
     ]
   };
 
+  const parsedVisual = parseMediaUrl(aboutData.img, aboutData.mediaType);
+
   return (
     <section className="section-pad" id="about">
       <div className="container">
         {/* PENGENALAN PROGRAM */}
         <div className="about-grid" style={{ alignItems: 'center', marginBottom: '4.5rem' }}>
           <div className="about-visual">
-            <div className="about-img-wrap" style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', position: 'relative' }}>
+            <div 
+              className="about-img-wrap" 
+              onClick={() => {
+                if (parsedVisual.isVideo) setShowVideo(true);
+              }}
+              style={{ 
+                borderRadius: '16px', 
+                overflow: 'hidden', 
+                boxShadow: '0 8px 30px rgba(0,0,0,0.06)', 
+                position: 'relative',
+                cursor: parsedVisual.isVideo ? 'pointer' : 'default'
+              }}
+              title={parsedVisual.isVideo ? 'Ketuk untuk memutar video profil program' : undefined}
+            >
               <Image
-                src={aboutData.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'}
+                src={parsedVisual.thumbnailUrl || aboutData.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'}
                 alt="Program Duta Kampus UIN SSC"
                 loading="lazy"
                 fill
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
               />
+
+              {parsedVisual.isVideo && (
+                <>
+                  <VideoPlayBadge size="large" />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '14px',
+                      left: '14px',
+                      background: 'rgba(22, 50, 74, 0.85)',
+                      border: '1px solid rgba(196, 158, 89, 0.6)',
+                      color: '#F8E7C9',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.5px',
+                      padding: '3px 10px',
+                      borderRadius: '6px',
+                      zIndex: 3,
+                      textTransform: 'uppercase',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                    }}
+                  >
+                    ▶ Tonton Video
+                  </div>
+                </>
+              )}
+
               <div className="about-img-accent" style={{ background: 'var(--navy)', color: '#fff', padding: '12px 18px', borderRadius: '10px', zIndex: 2 }}>
                 <strong style={{ color: 'var(--gold)' }}>{aboutData.badgeYear || '2026'}</strong>
                 <span style={{ fontSize: '0.75rem', opacity: 0.9 }}>{aboutData.badgeText || 'Pemilihan Resmi'}</span>
@@ -181,6 +226,14 @@ export default function AboutSection() {
           </div>
         </div>
       </div>
+
+      {/* Video Modal if About visual is a video */}
+      <MediaModal
+        isOpen={showVideo}
+        onClose={() => setShowVideo(false)}
+        item={aboutData.img}
+        fallbackTitle="Video Program Duta Kampus UIN SSC"
+      />
     </section>
   );
 }

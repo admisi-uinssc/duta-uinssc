@@ -15,9 +15,12 @@ import RegistrationCountdownBanner from '../components/RegistrationCountdownBann
 import RegistrationClosedModal from '../components/RegistrationClosedModal';
 import Footer from '../components/Footer';
 import { CMS } from '../lib/cms';
+import { parseMediaUrl } from '../lib/media';
+import MediaModal, { VideoPlayBadge } from '../components/MediaModal';
 
 export default function HomePage() {
   const [ambassadors, setAmbassadors] = useState([]);
+  const [selectedAmbassadorMedia, setSelectedAmbassadorMedia] = useState(null);
 
   useEffect(() => {
     setAmbassadors((CMS.get().ambassadors || []).slice(0, 4));
@@ -162,69 +165,89 @@ export default function HomePage() {
             </div>
 
             <div className="ambassador-grid" style={{ marginBottom: '2.5rem' }}>
-              {ambassadors.map((duta) => (
-                <div key={duta.id} className="ambassador-card">
-                  <div className="ambassador-img-wrapper" style={{ position: 'relative' }}>
-                    {duta.img && !duta.img.includes('unsplash.com') ? (
-                      <Image 
-                        src={duta.img} 
-                        alt={duta.name} 
-                        fill 
-                        style={{ objectFit: 'cover' }} 
-                        fallbackSrc="/assets/logo-circle.png"
-                      />
-                    ) : (
-                      <div style={{
-                        width: '100%',
-                        height: '100%',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        background: 'linear-gradient(135deg, #16324A 0%, #0d1e2d 100%)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}>
+              {ambassadors.map((duta) => {
+                const media = duta.img ? parseMediaUrl(duta.img, duta.mediaType) : null;
+                return (
+                  <div 
+                    key={duta.id} 
+                    className="ambassador-card"
+                    style={{ cursor: duta.img ? 'pointer' : 'default' }}
+                    onClick={() => {
+                      if (duta.img) {
+                        setSelectedAmbassadorMedia({
+                          url: duta.img,
+                          title: duta.name || 'Profil Duta Kampus',
+                          caption: `${duta.name || 'Duta'} · ${duta.major || duta.faculty || 'Duta Kampus'}${duta.year ? ` (Angkatan ${duta.year})` : ''}`,
+                          mediaType: duta.mediaType
+                        });
+                      }
+                    }}
+                  >
+                    <div className="ambassador-img-wrapper" style={{ position: 'relative' }}>
+                      {duta.img && !duta.img.includes('unsplash.com') ? (
+                        <>
+                          <Image 
+                            src={media?.thumbnailUrl || duta.img} 
+                            alt={duta.name} 
+                            fill 
+                            style={{ objectFit: 'cover' }} 
+                            fallbackSrc="/assets/logo-circle.png"
+                          />
+                          {media?.isVideo && <VideoPlayBadge size="small" />}
+                        </>
+                      ) : (
                         <div style={{
-                          width: '64px',
-                          height: '64px',
-                          borderRadius: '50%',
-                          background: 'rgba(196, 158, 89, 0.15)',
-                          border: '2px solid var(--gold)',
+                          width: '100%',
+                          height: '100%',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          background: 'linear-gradient(135deg, #16324A 0%, #0d1e2d 100%)',
                           display: 'flex',
+                          flexDirection: 'column',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: 'var(--gold)',
-                          fontWeight: 800,
-                          fontSize: '1.25rem',
-                          letterSpacing: '1px'
+                          gap: '8px'
                         }}>
-                          {duta.name ? duta.name.split(' ').slice(0, 2).map(n => n[0]).join('') : 'DK'}
+                          <div style={{
+                            width: '64px',
+                            height: '64px',
+                            borderRadius: '50%',
+                            background: 'rgba(196, 158, 89, 0.15)',
+                            border: '2px solid var(--gold)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--gold)',
+                            fontWeight: 800,
+                            fontSize: '1.25rem',
+                            letterSpacing: '1px'
+                          }}>
+                            {duta.name ? duta.name.split(' ').slice(0, 2).map(n => n[0]).join('') : 'DK'}
+                          </div>
+                          <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                            Duta Kampus UINSSC
+                          </span>
                         </div>
-                        <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-                          Duta Kampus UINSSC
+                      )}
+                      {duta.faculty && (
+                        <div className="ambassador-badge">
+                          {duta.faculty}
+                        </div>
+                      )}
+                    </div>
+                    <div className="ambassador-info">
+                      <h3>{duta.name}</h3>
+                      <p>{duta.major || duta.faculty || 'Duta Kampus'}</p>
+                      {duta.year && (
+                        <span style={{ display: 'inline-block', marginTop: '4px', fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 600 }}>
+                          Angkatan {duta.year}
                         </span>
-                      </div>
-                    )}
-                    {duta.faculty && (
-                      <div className="ambassador-badge">
-                        {duta.faculty}
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-                  <div className="ambassador-info">
-                    <h3>{duta.name}</h3>
-                    <p>{duta.major || duta.faculty || 'Duta Kampus'}</p>
-                    {duta.year && (
-                      <span style={{ display: 'inline-block', marginTop: '4px', fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 600 }}>
-                        Angkatan {duta.year}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div style={{ textAlign: 'center' }}>
@@ -249,6 +272,12 @@ export default function HomePage() {
       </div>
 
       <CTABanner />
+      <MediaModal
+        isOpen={Boolean(selectedAmbassadorMedia)}
+        onClose={() => setSelectedAmbassadorMedia(null)}
+        item={selectedAmbassadorMedia}
+        fallbackTitle="Profil Duta Kampus"
+      />
       <Footer />
     </>
   );

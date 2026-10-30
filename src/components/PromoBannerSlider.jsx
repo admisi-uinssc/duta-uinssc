@@ -2,10 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from './Image';
 import Link from './Link';
 import { CMS } from '../lib/cms';
+import { parseMediaUrl } from '../lib/media';
+import MediaModal, { VideoPlayBadge } from './MediaModal';
 
 export default function PromoBannerSlider() {
   const [banners, setBanners] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedVideo, setSelectedVideo] = useState(null);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -77,22 +80,9 @@ export default function PromoBannerSlider() {
             paddingBottom: '0.5rem'
           }}
         >
-          {banners.map((banner, idx) => (
-            <Link 
-              key={banner.id || idx} 
-              href={banner.link || '/daftar'} 
-              className="promo-slide"
-              style={{
-                flex: '0 0 100%',
-                scrollSnapAlign: 'center',
-                position: 'relative',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 4px 16px rgba(22, 50, 74, 0.08)',
-                display: 'block',
-                textDecoration: 'none'
-              }}
-            >
+          {banners.map((banner, idx) => {
+            const parsed = parseMediaUrl(banner.img, banner.mediaType);
+            const content = (
               <div className="promo-image-wrapper" style={{ position: 'relative' }}>
                 <Image 
                   src={banner.img || ''} 
@@ -101,6 +91,11 @@ export default function PromoBannerSlider() {
                   style={{ objectFit: 'contain' }}
                   fallbackSrc="/assets/logo-main.png"
                 />
+
+                {parsed.isVideo && (
+                  <VideoPlayBadge />
+                )}
+
                 {(banner.title || banner.subtitle) && (
                   <div 
                     style={{
@@ -127,8 +122,51 @@ export default function PromoBannerSlider() {
                   </div>
                 )}
               </div>
-            </Link>
-          ))}
+            );
+
+            if (parsed.isVideo && !banner.link) {
+              return (
+                <div
+                  key={banner.id || idx}
+                  onClick={() => setSelectedVideo(banner)}
+                  className="promo-slide"
+                  style={{
+                    flex: '0 0 100%',
+                    scrollSnapAlign: 'center',
+                    position: 'relative',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: '0 4px 16px rgba(22, 50, 74, 0.08)',
+                    display: 'block',
+                    cursor: 'pointer'
+                  }}
+                  title="Ketuk untuk memutar video promo"
+                >
+                  {content}
+                </div>
+              );
+            }
+
+            return (
+              <Link 
+                key={banner.id || idx} 
+                href={banner.link || '/daftar'} 
+                className="promo-slide"
+                style={{
+                  flex: '0 0 100%',
+                  scrollSnapAlign: 'center',
+                  position: 'relative',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 16px rgba(22, 50, 74, 0.08)',
+                  display: 'block',
+                  textDecoration: 'none'
+                }}
+              >
+                {content}
+              </Link>
+            );
+          })}
         </div>
         
         {/* Indicators */}
@@ -161,6 +199,14 @@ export default function PromoBannerSlider() {
           </div>
         )}
       </div>
+
+      {/* Video Modal if Promo Banner is a video */}
+      <MediaModal
+        isOpen={Boolean(selectedVideo)}
+        onClose={() => setSelectedVideo(null)}
+        item={selectedVideo}
+        fallbackTitle="Video Promo Duta Kampus"
+      />
     </section>
   );
 }

@@ -12,6 +12,8 @@ import { evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
 import { isFirebaseConfigured, firebaseConfig, smartSyncAll, getLastSyncTime, listenToApplicantsFromCloud, listenToUsersFromCloud, listenToCmsFromCloud, deleteUserFromCloud, syncUserToCloud, syncApplicantToCloud } from '../lib/firebase';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
 import DocumentPreviewModal from '../components/DocumentPreviewModal';
+import { parseMediaUrl } from '../lib/media';
+import MediaModal, { VideoPlayBadge } from '../components/MediaModal';
 
 export default function AdminPage() {
   const [loggedIn, setLoggedIn] = useState(() => typeof window !== 'undefined' && localStorage.getItem('dutauinssc_admin_logged') === 'true');
@@ -44,6 +46,7 @@ export default function AdminPage() {
     hasUnsavedCmsRef.current = hasUnsavedCms;
   }, [hasUnsavedCms]);
   const [toast, setToast] = useState('');
+  const [adminMediaPreview, setAdminMediaPreview] = useState(null);
 
   // Document Preview & CRUD Modal
   const [docPreviewModal, setDocPreviewModal] = useState({
@@ -572,17 +575,18 @@ export default function AdminPage() {
     newData.gallery.push({ 
       id: Date.now(), 
       img: 'https://drive.google.com/file/d/1-SIIie_r4i1XCETrAOwJTgeUhssscHtQ/view?usp=drive_link', 
-      caption: 'Kegiatan Duta Kampus' 
+      caption: 'Kegiatan Duta Kampus',
+      mediaType: 'auto'
     });
     setCmsData(newData);
     setHasUnsavedCms(true);
-    showToast('Foto galeri baru ditambahkan ke draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
+    showToast('Media baru (foto/video) ditambahkan ke draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
   };
   const removeGallery = (idx) => {
     askConfirmation({
-      title: 'Hapus Foto Galeri',
-      message: 'Apakah Anda yakin ingin menghapus foto ini dari galeri publik?',
-      confirmText: 'Hapus Foto',
+      title: 'Hapus Media Galeri',
+      message: 'Apakah Anda yakin ingin menghapus media ini dari galeri publik?',
+      confirmText: 'Hapus Media',
       isDestructive: true,
       onConfirm: () => {
         const newData = { ...cmsData };
@@ -591,7 +595,7 @@ export default function AdminPage() {
         }
         setCmsData(newData);
         setHasUnsavedCms(true);
-        showToast('Foto galeri dihapus dari draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
+        showToast('Media galeri dihapus dari draf. Klik "Simpan & Publikasikan" untuk menayangkan.');
       }
     });
   };
@@ -1836,7 +1840,7 @@ export default function AdminPage() {
                 className={`btn btn-sm ${cmsTab === 'gallery' ? 'btn-gold' : 'btn-outline-gold'}`} 
                 onClick={() => setCmsTab('gallery')}
               >
-                Galeri Foto ({cmsData.gallery?.length || 0})
+                Galeri Foto & Video ({cmsData.gallery?.length || 0})
               </button>
               <button 
                 className={`btn btn-sm ${cmsTab === 'about' ? 'btn-gold' : 'btn-outline-gold'}`} 
@@ -1852,7 +1856,7 @@ export default function AdminPage() {
                 <div className="settings-card-header">
                   <div>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Slider Hero Beranda</h3>
-                    <p>Atur gambar latar belakang, judul, deskripsi, dan tombol yang langsung tampil di halaman depan website publik.</p>
+                    <p>Atur media latar (foto maupun video YouTube / Google Drive / MP4), judul, deskripsi, dan tombol yang langsung tampil di halaman depan website publik.</p>
                   </div>
                   <button className="btn btn-sm btn-outline-gold" onClick={addSlide}>+ Tambah Slide Baru</button>
                 </div>
@@ -1867,13 +1871,63 @@ export default function AdminPage() {
 
                       <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
                         <div className="form-group">
-                          <label>URL Gambar Latar (1920x1080)</label>
-                          <input type="text" value={slide.img} onChange={e => updateSlide(idx, 'img', e.target.value)} placeholder="https://..." />
-                          {slide.img && (
-                            <div style={{ marginTop: '0.5rem', borderRadius: '8px', overflow: 'hidden', height: '100px', width: '100%', position: 'relative' }}>
-                              <Image src={slide.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            </div>
-                          )}
+                          <label>URL Foto atau Video Latar</label>
+                          <input 
+                            type="text" 
+                            value={slide.img || ''} 
+                            onChange={e => updateSlide(idx, 'img', e.target.value)} 
+                            placeholder="https://... (Foto, YouTube, Google Drive, MP4)" 
+                          />
+                          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem', alignItems: 'center' }}>
+                            <select 
+                              value={slide.mediaType || 'auto'} 
+                              onChange={e => updateSlide(idx, 'mediaType', e.target.value)}
+                              style={{ padding: '0.3rem 0.5rem', fontSize: '0.78rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                            >
+                              <option value="auto">Deteksi Otomatis (Foto / Video)</option>
+                              <option value="photo">Paksa Foto</option>
+                              <option value="video">Paksa Video</option>
+                            </select>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-light)' }}>
+                              YouTube / Drive / MP4
+                            </span>
+                          </div>
+                          {slide.img && (() => {
+                            const media = parseMediaUrl(slide.img, slide.mediaType);
+                            return (
+                              <div style={{ marginTop: '0.6rem' }}>
+                                <div 
+                                  style={{ borderRadius: '8px', overflow: 'hidden', height: '110px', width: '100%', position: 'relative', cursor: 'pointer', border: '1px solid var(--border)' }}
+                                  onClick={() => setAdminMediaPreview({ url: slide.img, title: slide.title1 || slide.tag || `Slide #${idx + 1}`, mediaType: slide.mediaType })}
+                                  title="Klik untuk putar / pratinjau"
+                                >
+                                  <Image src={media.thumbnailUrl || slide.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                  {media.isVideo && <VideoPlayBadge size="small" />}
+                                  <span style={{
+                                    position: 'absolute',
+                                    bottom: '6px',
+                                    left: '6px',
+                                    background: media.isVideo ? 'rgba(220, 38, 38, 0.9)' : 'rgba(15, 23, 42, 0.85)',
+                                    color: '#fff',
+                                    fontSize: '0.68rem',
+                                    fontWeight: 700,
+                                    padding: '2px 6px',
+                                    borderRadius: '4px'
+                                  }}>
+                                    {media.isVideo ? (media.provider === 'youtube' ? '▶ Video YouTube' : media.provider === 'drive' ? '▶ Video Drive' : '▶ Video File') : '📷 Foto'}
+                                  </span>
+                                </div>
+                                <button
+                                  type="button"
+                                  className="btn btn-xs btn-outline-gold"
+                                  style={{ marginTop: '0.35rem', width: '100%' }}
+                                  onClick={() => setAdminMediaPreview({ url: slide.img, title: slide.title1 || slide.tag || `Slide #${idx + 1}`, mediaType: slide.mediaType })}
+                                >
+                                  {media.isVideo ? '▶ Putar Pratinjau Video' : '🔍 Lihat Pratinjau Foto'}
+                                </button>
+                              </div>
+                            );
+                          })()}
                         </div>
 
                         <div className="form-group">
@@ -1919,7 +1973,7 @@ export default function AdminPage() {
                 <div className="settings-card-header">
                   <div>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Banner Promo Slider</h3>
-                    <p>Atur banner bergaya slide di bawah Menu Informasi publik (Home page).</p>
+                    <p>Atur banner bergaya slide di beranda publik. Mendukung banner foto maupun video (YouTube, Google Drive, MP4).</p>
                   </div>
                   <button className="btn btn-sm btn-outline-gold" onClick={addPromoBanner}>+ Tambah Banner Promo</button>
                 </div>
@@ -1943,20 +1997,65 @@ export default function AdminPage() {
                       </div>
 
                       <div className="form-group" style={{ marginBottom: '1rem' }}>
-                        <label>URL Gambar Banner (Rasio 4:1)</label>
-                        <input type="text" value={item.img} onChange={e => updatePromoBanner(idx, 'img', e.target.value)} placeholder="https://..." />
+                        <label>URL Foto atau Video Banner</label>
+                        <input type="text" value={item.img || ''} onChange={e => updatePromoBanner(idx, 'img', e.target.value)} placeholder="https://... (Foto, YouTube, Google Drive, MP4)" />
+                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem', alignItems: 'center' }}>
+                          <select 
+                            value={item.mediaType || 'auto'} 
+                            onChange={e => updatePromoBanner(idx, 'mediaType', e.target.value)}
+                            style={{ padding: '0.3rem 0.5rem', fontSize: '0.78rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                          >
+                            <option value="auto">Deteksi Otomatis (Foto / Video)</option>
+                            <option value="photo">Paksa Foto</option>
+                            <option value="video">Paksa Video</option>
+                          </select>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-light)' }}>
+                            Rasio 4:1 disarankan
+                          </span>
+                        </div>
                       </div>
 
                       <div className="form-group">
-                        <label>Tautan Link Tujuan</label>
+                        <label>Tautan Link Tujuan (Opsional)</label>
                         <input type="text" value={item.link || ''} onChange={e => updatePromoBanner(idx, 'link', e.target.value)} placeholder="/daftar atau https://..." />
                       </div>
 
-                      {item.img && (
-                        <div style={{ marginTop: '1rem', borderRadius: '8px', overflow: 'hidden', height: '110px', position: 'relative' }}>
-                          <Image src={item.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        </div>
-                      )}
+                      {item.img && (() => {
+                        const media = parseMediaUrl(item.img, item.mediaType);
+                        return (
+                          <div style={{ marginTop: '1rem' }}>
+                            <div 
+                              style={{ borderRadius: '8px', overflow: 'hidden', height: '110px', position: 'relative', cursor: 'pointer', border: '1px solid var(--border)' }}
+                              onClick={() => setAdminMediaPreview({ url: item.img, title: item.title || `Banner Promo #${idx + 1}`, mediaType: item.mediaType })}
+                              title="Klik untuk putar / pratinjau"
+                            >
+                              <Image src={media.thumbnailUrl || item.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              {media.isVideo && <VideoPlayBadge size="small" />}
+                              <span style={{
+                                position: 'absolute',
+                                bottom: '6px',
+                                left: '6px',
+                                background: media.isVideo ? 'rgba(220, 38, 38, 0.9)' : 'rgba(15, 23, 42, 0.85)',
+                                color: '#fff',
+                                fontSize: '0.68rem',
+                                fontWeight: 700,
+                                padding: '2px 6px',
+                                borderRadius: '4px'
+                              }}>
+                                {media.isVideo ? (media.provider === 'youtube' ? '▶ Video YouTube' : media.provider === 'drive' ? '▶ Video Drive' : '▶ Video File') : '📷 Foto Banner'}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              className="btn btn-xs btn-outline-gold"
+                              style={{ marginTop: '0.35rem', width: '100%' }}
+                              onClick={() => setAdminMediaPreview({ url: item.img, title: item.title || `Banner Promo #${idx + 1}`, mediaType: item.mediaType })}
+                            >
+                              {media.isVideo ? '▶ Putar Pratinjau Video' : '🔍 Lihat Pratinjau Foto'}
+                            </button>
+                          </div>
+                        );
+                      })()}
                     </div>
                   ))}
                   {(!cmsData.promoBanners || cmsData.promoBanners.length === 0) && <div style={{ textAlign: 'center', color: 'var(--text-light)', gridColumn: '1 / -1' }}>Belum ada banner promo.</div>}
@@ -2004,19 +2103,39 @@ export default function AdminPage() {
                       </div>
 
                       <div className="form-group">
-                        <label>URL Foto Duta (Potret)</label>
+                        <label>URL Foto / Video Duta (Potret / YouTube / Drive)</label>
                         <input type="text" value={item.img} onChange={e => updateAmbassador(idx, 'img', e.target.value)} placeholder="https://..." />
                       </div>
 
-                      {item.img && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem' }}>
-                          <Image src={item.img} alt="" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '50%', border: '2px solid var(--gold)' }} />
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-mid)' }}>
-                            <strong>{item.name || 'Nama'}</strong>
-                            <div>{item.faculty} · {item.major}</div>
+                      {item.img && (() => {
+                        const media = parseMediaUrl(item.img, item.mediaType);
+                        return (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem' }}>
+                            <div 
+                              style={{ position: 'relative', width: '60px', height: '60px', cursor: 'pointer' }}
+                              onClick={() => setAdminMediaPreview({ url: item.img, title: item.name || 'Profil Duta' })}
+                              title="Klik untuk pratinjau"
+                            >
+                              <Image src={media.thumbnailUrl || item.img} alt="" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '50%', border: '2px solid var(--gold)' }} />
+                              {media.isVideo && <VideoPlayBadge size="small" />}
+                            </div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-mid)', flex: 1 }}>
+                              <strong>{item.name || 'Nama'}</strong>
+                              <div>{item.faculty} · {item.major}</div>
+                              {media.isVideo && (
+                                <button
+                                  type="button"
+                                  className="btn btn-xs btn-outline-gold"
+                                  style={{ marginTop: '0.25rem', padding: '2px 8px' }}
+                                  onClick={() => setAdminMediaPreview({ url: item.img, title: item.name || 'Profil Duta' })}
+                                >
+                                  ▶ Putar Video
+                                </button>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        );
+                      })()}
                     </div>
                   ))}
                   {(!cmsData.ambassadors || cmsData.ambassadors.length === 0) && <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)' }}>Belum ada profil duta.</div>}
@@ -2029,27 +2148,87 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Galeri Dokumentasi Kegiatan</h3>
-                    <p>Atur dokumentasi momen dan kegiatan Duta Kampus yang tampil di web publik.</p>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Galeri Foto & Video Dokumentasi</h3>
+                    <p>Atur dokumentasi momen dan kegiatan Duta Kampus. Mendukung tautan foto maupun video (YouTube, Google Drive, MP4) layaknya foto biasa.</p>
                   </div>
-                  <button className="btn btn-sm btn-outline-gold" onClick={addGallery}>+ Tambah Foto</button>
+                  <button className="btn btn-sm btn-outline-gold" onClick={addGallery}>+ Tambah Media (Foto / Video)</button>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
-                  {cmsData.gallery.map((item, idx) => (
-                    <div key={item.id || idx} style={{ background: 'var(--bg-alt)', padding: '1.25rem', borderRadius: '16px', border: '1.5px solid var(--border)' }}>
-                      <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                        <label>URL Foto</label>
-                        <input type="text" value={item.img} onChange={e => updateGallery(idx, 'img', e.target.value)} placeholder="https://..." />
+                  {cmsData.gallery.map((item, idx) => {
+                    const media = parseMediaUrl(item.img, item.mediaType);
+                    return (
+                      <div key={item.id || idx} style={{ background: 'var(--bg-alt)', padding: '1.25rem', borderRadius: '16px', border: '1.5px solid var(--border)' }}>
+                        <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                          <label>URL Foto atau Video</label>
+                          <input 
+                            type="text" 
+                            value={item.img || ''} 
+                            onChange={e => updateGallery(idx, 'img', e.target.value)} 
+                            placeholder="https://... (Foto, YouTube, Drive, MP4)" 
+                          />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', alignItems: 'center' }}>
+                          <label style={{ fontSize: '0.78rem', color: 'var(--text-mid)', margin: 0 }}>Tipe:</label>
+                          <select 
+                            value={item.mediaType || 'auto'} 
+                            onChange={e => updateGallery(idx, 'mediaType', e.target.value)}
+                            style={{ padding: '0.25rem 0.5rem', fontSize: '0.78rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                          >
+                            <option value="auto">Deteksi Otomatis</option>
+                            <option value="photo">Paksa Foto</option>
+                            <option value="video">Paksa Video</option>
+                          </select>
+                        </div>
+
+                        <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                          <label>Keterangan Media</label>
+                          <input 
+                            type="text" 
+                            value={item.caption || ''} 
+                            onChange={e => updateGallery(idx, 'caption', e.target.value)} 
+                            placeholder="Momen kegiatan..." 
+                          />
+                        </div>
+
+                        {item.img && (
+                          <div style={{ marginTop: '0.5rem' }}>
+                            <div 
+                              style={{ position: 'relative', width: '100%', height: '140px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)' }}
+                              onClick={() => setAdminMediaPreview({ url: item.img, title: item.caption || 'Galeri Dokumentasi', caption: item.caption, mediaType: item.mediaType })}
+                              title="Klik untuk putar / lihat media"
+                            >
+                              <Image src={media.thumbnailUrl || item.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              {media.isVideo && <VideoPlayBadge size="small" />}
+                              <span style={{
+                                position: 'absolute',
+                                bottom: '6px',
+                                left: '6px',
+                                background: media.isVideo ? 'rgba(220, 38, 38, 0.9)' : 'rgba(15, 23, 42, 0.85)',
+                                color: '#fff',
+                                fontSize: '0.68rem',
+                                fontWeight: 700,
+                                padding: '2px 6px',
+                                borderRadius: '4px'
+                              }}>
+                                {media.isVideo ? (media.provider === 'youtube' ? '▶ YouTube' : media.provider === 'drive' ? '▶ Drive Video' : '▶ Video') : '📷 Foto'}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              className="btn btn-xs btn-outline-gold"
+                              style={{ marginTop: '0.35rem', width: '100%' }}
+                              onClick={() => setAdminMediaPreview({ url: item.img, title: item.caption || 'Galeri Dokumentasi', caption: item.caption, mediaType: item.mediaType })}
+                            >
+                              {media.isVideo ? '▶ Putar Video' : '🔍 Lihat Foto'}
+                            </button>
+                          </div>
+                        )}
+                        <button className="btn btn-sm btn-danger" style={{ width: '100%', marginTop: '0.75rem' }} onClick={() => removeGallery(idx)}>Hapus Media</button>
                       </div>
-                      <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                        <label>Keterangan Foto</label>
-                        <input type="text" value={item.caption} onChange={e => updateGallery(idx, 'caption', e.target.value)} placeholder="Momen kegiatan..." />
-                      </div>
-                      {item.img && <Image src={item.img} alt="" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '8px' }} />}
-                      <button className="btn btn-sm btn-danger" style={{ width: '100%', marginTop: '0.75rem' }} onClick={() => removeGallery(idx)}>Hapus Foto</button>
-                    </div>
-                  ))}
+                    );
+                  })}
                   {cmsData.gallery.length === 0 && <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)' }}>Galeri kosong.</div>}
                 </div>
               </div>
@@ -2060,8 +2239,8 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Foto & Konten Program Duta Kampus (Tentang)</h3>
-                    <p>Atur foto utama, lencana tahun, deskripsi, dan poin penting yang tampil di seksi Program Duta Kampus (Home & Halaman Tentang).</p>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Media Showcase & Konten Program (Tentang)</h3>
+                    <p>Atur media visual utama (foto atau video YouTube / Google Drive / MP4), lencana tahun, deskripsi, dan poin penting yang tampil di seksi Program Duta Kampus.</p>
                   </div>
                 </div>
 
@@ -2069,13 +2248,27 @@ export default function AdminPage() {
                   {/* Left Column: Form Fields */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div className="form-group">
-                      <label style={{ fontWeight: 700 }}>URL Foto Program (Mendukung Google Drive & Web Link)</label>
+                      <label style={{ fontWeight: 700 }}>URL Foto atau Video Program</label>
                       <input 
                         type="text" 
                         value={cmsData.about?.img || ''} 
                         onChange={e => updateAbout('img', e.target.value)} 
-                        placeholder="https://drive.google.com/... atau https://..." 
+                        placeholder="https://... (Foto, YouTube, Google Drive, MP4)" 
                       />
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem', alignItems: 'center' }}>
+                        <select 
+                          value={cmsData.about?.mediaType || 'auto'} 
+                          onChange={e => updateAbout('mediaType', e.target.value)}
+                          style={{ padding: '0.3rem 0.5rem', fontSize: '0.78rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                        >
+                          <option value="auto">Deteksi Otomatis (Foto / Video)</option>
+                          <option value="photo">Paksa Foto</option>
+                          <option value="video">Paksa Video</option>
+                        </select>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-light)' }}>
+                          YouTube / Drive / MP4
+                        </span>
+                      </div>
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
@@ -2147,21 +2340,42 @@ export default function AdminPage() {
 
                   {/* Right Column: Live Preview Card */}
                   <div>
-                    <label style={{ fontWeight: 700, display: 'block', marginBottom: '0.75rem' }}>Pratinjau Foto & Lencana Langsung</label>
-                    <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.08)', aspectRatio: '4/5', maxWidth: '360px', background: 'var(--bg-alt)' }}>
-                      <Image 
-                        src={cmsData.about?.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'} 
-                        alt="Pratinjau Program"
-                        fill
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                      <div style={{ position: 'absolute', bottom: '1.25rem', right: '1.25rem', background: 'var(--navy)', color: '#fff', padding: '12px 18px', borderRadius: '10px', zIndex: 2, textAlign: 'center' }}>
-                        <strong style={{ color: 'var(--gold)', fontSize: '1.25rem', display: 'block', lineHeight: 1 }}>{cmsData.about?.badgeYear || '2026'}</strong>
-                        <span style={{ fontSize: '0.75rem', opacity: 0.9 }}>{cmsData.about?.badgeText || 'Pemilihan Resmi'}</span>
-                      </div>
-                    </div>
+                    <label style={{ fontWeight: 700, display: 'block', marginBottom: '0.75rem' }}>Pratinjau Media & Lencana Langsung</label>
+                    {(() => {
+                      const aboutImg = cmsData.about?.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png';
+                      const media = parseMediaUrl(aboutImg, cmsData.about?.mediaType);
+                      return (
+                        <div>
+                          <div 
+                            style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.08)', aspectRatio: '4/5', maxWidth: '360px', background: 'var(--bg-alt)', cursor: 'pointer' }}
+                            onClick={() => setAdminMediaPreview({ url: aboutImg, title: cmsData.about?.title || 'Program Duta Kampus', mediaType: cmsData.about?.mediaType })}
+                            title="Klik untuk putar / lihat media"
+                          >
+                            <Image 
+                              src={media.thumbnailUrl || aboutImg} 
+                              alt="Pratinjau Program"
+                              fill
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                            {media.isVideo && <VideoPlayBadge size="large" />}
+                            <div style={{ position: 'absolute', bottom: '1.25rem', right: '1.25rem', background: 'var(--navy)', color: '#fff', padding: '12px 18px', borderRadius: '10px', zIndex: 2, textAlign: 'center' }}>
+                              <strong style={{ color: 'var(--gold)', fontSize: '1.25rem', display: 'block', lineHeight: 1 }}>{cmsData.about?.badgeYear || '2026'}</strong>
+                              <span style={{ fontSize: '0.75rem', opacity: 0.9 }}>{cmsData.about?.badgeText || 'Pemilihan Resmi'}</span>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-gold"
+                            style={{ marginTop: '0.75rem', maxWidth: '360px', width: '100%' }}
+                            onClick={() => setAdminMediaPreview({ url: aboutImg, title: cmsData.about?.title || 'Program Duta Kampus', mediaType: cmsData.about?.mediaType })}
+                          >
+                            {media.isVideo ? '▶ Putar Pratinjau Video Program' : '🔍 Lihat Pratinjau Foto Program'}
+                          </button>
+                        </div>
+                      );
+                    })()}
                     <p style={{ fontSize: '0.825rem', color: 'var(--text-light)', marginTop: '0.75rem', lineHeight: 1.5 }}>
-                      Foto ini tampil di halaman Beranda publik (seksi "Program Duta Kampus") dan di halaman Tentang (`/about`).
+                      Media ini tampil di halaman Beranda publik (seksi "Program Duta Kampus") dan di halaman Tentang (`/about`).
                     </p>
                   </div>
                 </div>
@@ -3510,6 +3724,14 @@ function doPost(e) {
           </div>
         </div>
       )}
+
+      {/* MODAL PRATINJAU MEDIA CMS (FOTO & VIDEO) */}
+      <MediaModal
+        isOpen={Boolean(adminMediaPreview)}
+        onClose={() => setAdminMediaPreview(null)}
+        item={adminMediaPreview}
+        fallbackTitle="Pratinjau Media CMS"
+      />
 
       {/* TOAST NOTIFICATION */}
       {toast && (
