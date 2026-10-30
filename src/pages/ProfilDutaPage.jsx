@@ -63,11 +63,26 @@ export default function ProfilDutaPage() {
                     {duta.img && !duta.img.includes('unsplash.com') ? (
                       media?.isVideo && media.directVideoUrl ? (
                         <video
+                          ref={(el) => {
+                            if (el) {
+                              el.muted = true;
+                              el.defaultMuted = true;
+                              const p = el.play();
+                              if (p && typeof p.catch === 'function') {
+                                p.catch(() => {});
+                              }
+                            }
+                          }}
                           src={media.directVideoUrl}
                           autoPlay
                           muted
                           loop
                           playsInline
+                          preload="auto"
+                          onCanPlay={(e) => {
+                            e.target.muted = true;
+                            e.target.play().catch(() => {});
+                          }}
                           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                         />
                       ) : media?.isVideo && media.autoplayEmbedUrl ? (

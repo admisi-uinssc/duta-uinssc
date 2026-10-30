@@ -55,11 +55,26 @@ export default function GallerySection() {
               >
                 {parsed.isVideo && parsed.directVideoUrl ? (
                   <video 
+                    ref={(el) => {
+                      if (el) {
+                        el.muted = true;
+                        el.defaultMuted = true;
+                        const p = el.play();
+                        if (p && typeof p.catch === 'function') {
+                          p.catch(() => {});
+                        }
+                      }
+                    }}
                     src={parsed.directVideoUrl} 
                     autoPlay 
                     muted 
                     loop 
                     playsInline 
+                    preload="auto"
+                    onCanPlay={(e) => {
+                      e.target.muted = true;
+                      e.target.play().catch(() => {});
+                    }}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} 
                   />
                 ) : parsed.isVideo && parsed.autoplayEmbedUrl ? (
