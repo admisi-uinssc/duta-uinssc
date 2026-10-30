@@ -10,17 +10,14 @@ export default function HeroSlider() {
   const timerRef = useRef(null);
 
   useEffect(() => {
-    // Initial fetch from memory / cache
     setSlides(CMS.get().slider || []);
 
-    // Eager live fetch directly from Cloud Firestore
     CMS.getAsync().then((data) => {
       if (data?.slider) {
         setSlides([...data.slider]);
       }
     }).catch(() => {});
 
-    // Subscribe to live CMS updates
     const unsubscribe = CMS.subscribe((data) => {
       if (data && data.slider) {
         setSlides([...data.slider]);
@@ -70,41 +67,46 @@ export default function HeroSlider() {
 
         return (
           <div key={slide.id || idx} className={`slide ${idx === current ? 'active' : ''}`}>
-            {/* Visual Media: Autoplaying Video or Image */}
+            {/* Visual Media: Murni pemanis visual (foto atau video yang berputar otomatis tanpa tombol/tautan ke sumber) */}
             {parsed.isVideo ? (
-              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+              <div 
+                style={{ 
+                  position: 'absolute', 
+                  inset: 0, 
+                  overflow: 'hidden', 
+                  pointerEvents: 'none',
+                  userSelect: 'none'
+                }}
+              >
                 {parsed.source === 'youtube' ? (
                   <iframe
-                    src={parsed.autoplayEmbedUrl || `https://www.youtube-nocookie.com/embed/${parsed.videoId}?autoplay=1&mute=1&loop=1&playlist=${parsed.videoId}&controls=0&showinfo=0&rel=0&playsinline=1`}
-                    title="Video Hero"
+                    src={`https://www.youtube-nocookie.com/embed/${parsed.videoId}?autoplay=1&mute=1&loop=1&playlist=${parsed.videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&playsinline=1`}
+                    title="Visual Background"
                     style={{
-                      width: '100%',
-                      height: '100%',
+                      width: '130%',
+                      height: '130%',
                       border: 'none',
                       position: 'absolute',
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      minWidth: '100%',
-                      minHeight: '100%',
                       pointerEvents: 'none'
                     }}
-                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allow="autoplay; encrypted-media"
                   />
                 ) : parsed.source === 'drive' ? (
                   <iframe
-                    src={parsed.autoplayEmbedUrl || `https://drive.google.com/file/d/${parsed.videoId}/preview`}
-                    title="Video Hero"
+                    src={`https://drive.google.com/file/d/${parsed.videoId}/preview`}
+                    title="Visual Background"
                     style={{
-                      width: '100%',
-                      height: '100%',
+                      width: '135%',
+                      height: '135%',
                       border: 'none',
                       position: 'absolute',
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      minWidth: '100%',
-                      minHeight: '100%'
+                      pointerEvents: 'none'
                     }}
                     allow="autoplay"
                   />
@@ -116,7 +118,14 @@ export default function HeroSlider() {
                     muted
                     loop
                     playsInline
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover', 
+                      position: 'absolute', 
+                      inset: 0, 
+                      pointerEvents: 'none' 
+                    }}
                   />
                 )}
               </div>
@@ -129,7 +138,7 @@ export default function HeroSlider() {
               />
             )}
 
-            {/* Slide Text Content: Only rendered if text actually exists */}
+            {/* Konten teks hanya tampil jika ada teks yang diisi di CMS. Jika kosong, tidak ada overlay maupun wadah teks */}
             {hasAnyText && (
               <>
                 <div className="slide-overlay" />

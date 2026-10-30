@@ -79,30 +79,32 @@ export default function AboutSection() {
               }}
             >
               {parsedVisual.isVideo ? (
-                parsedVisual.source === 'youtube' ? (
-                  <iframe
-                    src={parsedVisual.autoplayEmbedUrl || `https://www.youtube-nocookie.com/embed/${parsedVisual.videoId}?autoplay=1&mute=1&loop=1&playlist=${parsedVisual.videoId}&controls=0&showinfo=0&rel=0&playsinline=1`}
-                    title="Video Program"
-                    style={{ width: '100%', height: '100%', border: 'none', position: 'absolute', inset: 0 }}
-                    allow="autoplay; encrypted-media"
-                  />
-                ) : parsedVisual.source === 'drive' ? (
-                  <iframe
-                    src={parsedVisual.autoplayEmbedUrl || `https://drive.google.com/file/d/${parsedVisual.videoId}/preview`}
-                    title="Video Program"
-                    style={{ width: '100%', height: '100%', border: 'none', position: 'absolute', inset: 0 }}
-                    allow="autoplay"
-                  />
-                ) : (
-                  <video
-                    src={parsedVisual.directVideoUrl || aboutData.img}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
-                  />
-                )
+                <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+                  {parsedVisual.source === 'youtube' ? (
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${parsedVisual.videoId}?autoplay=1&mute=1&loop=1&playlist=${parsedVisual.videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&playsinline=1`}
+                      title="Video Program"
+                      style={{ width: '130%', height: '130%', border: 'none', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
+                      allow="autoplay; encrypted-media"
+                    />
+                  ) : parsedVisual.source === 'drive' ? (
+                    <iframe
+                      src={`https://drive.google.com/file/d/${parsedVisual.videoId}/preview`}
+                      title="Video Program"
+                      style={{ width: '135%', height: '135%', border: 'none', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
+                      allow="autoplay"
+                    />
+                  ) : (
+                    <video
+                      src={parsedVisual.directVideoUrl || aboutData.img}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0, pointerEvents: 'none' }}
+                    />
+                  )}
+                </div>
               ) : (
                 <Image
                   src={aboutData.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'}

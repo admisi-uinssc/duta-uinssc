@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from './Link';
 import Image from './Image';
 import { CMS } from '../lib/cms';
+import { parseMediaUrl } from '../lib/media';
 
 export default function AboutSection() {
   const [aboutData, setAboutData] = useState(() => CMS.get().about || {});
@@ -60,21 +61,61 @@ export default function AboutSection() {
     ]
   };
 
+  const parsedVisual = parseMediaUrl(aboutData.img, aboutData.mediaType);
+
   return (
     <section className="section-pad" id="about">
       <div className="container">
         {/* PENGENALAN PROGRAM */}
         <div className="about-grid" style={{ alignItems: 'center', marginBottom: '4.5rem' }}>
           <div className="about-visual">
-            <div className="about-img-wrap" style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', position: 'relative' }}>
-              <Image
-                src={aboutData.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'}
-                alt="Program Duta Kampus UIN SSC"
-                loading="lazy"
-                fill
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
-              />
+            <div 
+              className="about-img-wrap" 
+              style={{ 
+                borderRadius: '16px', 
+                overflow: 'hidden', 
+                boxShadow: '0 8px 30px rgba(0,0,0,0.06)', 
+                position: 'relative'
+              }}
+            >
+              {parsedVisual.isVideo ? (
+                <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+                  {parsedVisual.source === 'youtube' ? (
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${parsedVisual.videoId}?autoplay=1&mute=1&loop=1&playlist=${parsedVisual.videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&playsinline=1`}
+                      title="Video Program"
+                      style={{ width: '130%', height: '130%', border: 'none', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
+                      allow="autoplay; encrypted-media"
+                    />
+                  ) : parsedVisual.source === 'drive' ? (
+                    <iframe
+                      src={`https://drive.google.com/file/d/${parsedVisual.videoId}/preview`}
+                      title="Video Program"
+                      style={{ width: '135%', height: '135%', border: 'none', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
+                      allow="autoplay"
+                    />
+                  ) : (
+                    <video
+                      src={parsedVisual.directVideoUrl || aboutData.img}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0, pointerEvents: 'none' }}
+                    />
+                  )}
+                </div>
+              ) : (
+                <Image
+                  src={aboutData.img || 'https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png'}
+                  alt="Program Duta Kampus UIN SSC"
+                  loading="lazy"
+                  fill
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
+                />
+              )}
+
               <div className="about-img-accent" style={{ background: 'var(--navy)', color: '#fff', padding: '12px 18px', borderRadius: '10px', zIndex: 2 }}>
                 <strong style={{ color: 'var(--gold)' }}>{aboutData.badgeYear || '2026'}</strong>
                 <span style={{ fontSize: '0.75rem', opacity: 0.9 }}>{aboutData.badgeText || 'Pemilihan Resmi'}</span>

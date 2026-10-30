@@ -83,32 +83,34 @@ export default function PromoBannerSlider() {
             const hasText = Boolean(banner.title?.trim() || banner.subtitle?.trim());
 
             const innerMedia = (
-              <div className="promo-image-wrapper" style={{ position: 'relative', width: '100%', height: '100%' }}>
+              <div className="promo-image-wrapper" style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
                 {parsed.isVideo ? (
-                  parsed.source === 'youtube' ? (
-                    <iframe
-                      src={parsed.autoplayEmbedUrl || `https://www.youtube-nocookie.com/embed/${parsed.videoId}?autoplay=1&mute=1&loop=1&playlist=${parsed.videoId}&controls=0&showinfo=0&rel=0&playsinline=1`}
-                      title="Video Banner"
-                      style={{ width: '100%', height: '100%', border: 'none', position: 'absolute', inset: 0, pointerEvents: 'none' }}
-                      allow="autoplay; encrypted-media"
-                    />
-                  ) : parsed.source === 'drive' ? (
-                    <iframe
-                      src={parsed.autoplayEmbedUrl || `https://drive.google.com/file/d/${parsed.videoId}/preview`}
-                      title="Video Banner"
-                      style={{ width: '100%', height: '100%', border: 'none', position: 'absolute', inset: 0 }}
-                      allow="autoplay"
-                    />
-                  ) : (
-                    <video
-                      src={parsed.directVideoUrl || banner.img}
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
-                    />
-                  )
+                  <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+                    {parsed.source === 'youtube' ? (
+                      <iframe
+                        src={`https://www.youtube-nocookie.com/embed/${parsed.videoId}?autoplay=1&mute=1&loop=1&playlist=${parsed.videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&playsinline=1`}
+                        title="Video Banner"
+                        style={{ width: '130%', height: '130%', border: 'none', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
+                        allow="autoplay; encrypted-media"
+                      />
+                    ) : parsed.source === 'drive' ? (
+                      <iframe
+                        src={`https://drive.google.com/file/d/${parsed.videoId}/preview`}
+                        title="Video Banner"
+                        style={{ width: '135%', height: '135%', border: 'none', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
+                        allow="autoplay"
+                      />
+                    ) : (
+                      <video
+                        src={parsed.directVideoUrl || banner.img}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0, pointerEvents: 'none' }}
+                      />
+                    )}
+                  </div>
                 ) : (
                   <Image 
                     src={banner.img || ''} 
