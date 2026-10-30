@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Image from './Image';
 import { CMS } from '../lib/cms';
 import { parseMediaUrl } from '../lib/media';
-import MediaModal, { VideoPlayBadge } from './MediaModal';
+import MediaModal from './MediaModal';
 
 export default function GallerySection() {
   const [gallery, setGallery] = useState([]);
@@ -51,42 +51,32 @@ export default function GallerySection() {
                 key={item.id || idx} 
                 className="gallery-item"
                 onClick={() => setSelectedMedia(item)}
-                title={parsed.isVideo ? 'Ketuk untuk memutar video' : 'Ketuk untuk melihat foto'}
-                style={{ position: 'relative', cursor: 'pointer' }}
+                style={{ position: 'relative', cursor: 'pointer', overflow: 'hidden' }}
               >
-                <Image 
-                  src={item.img} 
-                  alt={item.caption || `Gallery ${idx + 1}`} 
-                  loading="lazy" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
-                />
-
-                {/* Video Play Indicator Overlay */}
-                {parsed.isVideo && (
-                  <>
-                    <VideoPlayBadge />
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '10px',
-                        left: '10px',
-                        background: 'rgba(22, 50, 74, 0.85)',
-                        border: '1px solid rgba(196, 158, 89, 0.6)',
-                        color: '#F8E7C9',
-                        fontSize: '0.68rem',
-                        fontWeight: 700,
-                        letterSpacing: '0.5px',
-                        padding: '2px 8px',
-                        borderRadius: '4px',
-                        zIndex: 3,
-                        textTransform: 'uppercase',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-                      }}
-                    >
-                      ▶ Video
-                    </div>
-                  </>
+                {parsed.isVideo && parsed.directVideoUrl ? (
+                  <video 
+                    src={parsed.directVideoUrl} 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} 
+                  />
+                ) : parsed.isVideo && parsed.autoplayEmbedUrl ? (
+                  <iframe
+                    src={parsed.autoplayEmbedUrl}
+                    title={item.caption || 'Video Dokumentasi'}
+                    style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
+                    allow="autoplay; encrypted-media"
+                  />
+                ) : (
+                  <Image 
+                    src={parsed.thumbnailUrl || item.img} 
+                    alt={item.caption || `Gallery ${idx + 1}`} 
+                    loading="lazy" 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    fallbackSrc="https://ppid.uinssc.ac.id/storage/duta-kampus/01KRX8ZRGXBTT2929HWZQ7CWMM.png"
+                  />
                 )}
 
                 {item.caption && (

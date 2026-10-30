@@ -16,7 +16,7 @@ import RegistrationClosedModal from '../components/RegistrationClosedModal';
 import Footer from '../components/Footer';
 import { CMS } from '../lib/cms';
 import { parseMediaUrl } from '../lib/media';
-import MediaModal, { VideoPlayBadge } from '../components/MediaModal';
+import MediaModal from '../components/MediaModal';
 
 export default function HomePage() {
   const [ambassadors, setAmbassadors] = useState([]);
@@ -185,7 +185,23 @@ export default function HomePage() {
                   >
                     <div className="ambassador-img-wrapper" style={{ position: 'relative' }}>
                       {duta.img && !duta.img.includes('unsplash.com') ? (
-                        <>
+                        media?.isVideo && media.directVideoUrl ? (
+                          <video
+                            src={media.directVideoUrl}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                          />
+                        ) : media?.isVideo && media.autoplayEmbedUrl ? (
+                          <iframe
+                            src={media.autoplayEmbedUrl}
+                            title={duta.name || 'Video Duta'}
+                            style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
+                            allow="autoplay; encrypted-media"
+                          />
+                        ) : (
                           <Image 
                             src={media?.thumbnailUrl || duta.img} 
                             alt={duta.name} 
@@ -193,8 +209,7 @@ export default function HomePage() {
                             style={{ objectFit: 'cover' }} 
                             fallbackSrc="/assets/logo-circle.png"
                           />
-                          {media?.isVideo && <VideoPlayBadge size="small" />}
-                        </>
+                        )
                       ) : (
                         <div style={{
                           width: '100%',

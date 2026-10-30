@@ -86,6 +86,7 @@ export function parseMediaUrl(url, explicitType = null) {
       videoId: ytId,
       thumbnailUrl: `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`,
       embedUrl: `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`,
+      autoplayEmbedUrl: `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&rel=0&playsinline=1`,
       directVideoUrl: null
     };
   }
@@ -101,6 +102,7 @@ export function parseMediaUrl(url, explicitType = null) {
       videoId: null,
       thumbnailUrl: '',
       embedUrl: null,
+      autoplayEmbedUrl: null,
       directVideoUrl: trimmed
     };
   }
@@ -117,6 +119,7 @@ export function parseMediaUrl(url, explicitType = null) {
       videoId: driveId,
       thumbnailUrl: `https://drive.google.com/thumbnail?id=${driveId}&sz=w1600`,
       embedUrl: isDriveVideo ? `https://drive.google.com/file/d/${driveId}/preview` : null,
+      autoplayEmbedUrl: isDriveVideo ? `https://drive.google.com/file/d/${driveId}/preview` : null,
       directVideoUrl: null
     };
   }

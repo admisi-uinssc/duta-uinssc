@@ -3,12 +3,10 @@ import Image from './Image';
 import Link from './Link';
 import { CMS } from '../lib/cms';
 import { parseMediaUrl } from '../lib/media';
-import MediaModal, { VideoPlayBadge } from './MediaModal';
 
 export default function PromoBannerSlider() {
   const [banners, setBanners] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedVideo, setSelectedVideo] = useState(null);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -46,7 +44,7 @@ export default function PromoBannerSlider() {
         }
         return nextIndex;
       });
-    }, 4500);
+    }, 5000);
     return () => clearInterval(interval);
   }, [banners.length]);
 
@@ -82,21 +80,46 @@ export default function PromoBannerSlider() {
         >
           {banners.map((banner, idx) => {
             const parsed = parseMediaUrl(banner.img, banner.mediaType);
-            const content = (
-              <div className="promo-image-wrapper" style={{ position: 'relative' }}>
-                <Image 
-                  src={banner.img || ''} 
-                  alt={banner.title || 'Promo Banner Duta Kampus'} 
-                  fill 
-                  style={{ objectFit: 'contain' }}
-                  fallbackSrc="/assets/logo-main.png"
-                />
+            const hasText = Boolean(banner.title?.trim() || banner.subtitle?.trim());
 
-                {parsed.isVideo && (
-                  <VideoPlayBadge />
+            const innerMedia = (
+              <div className="promo-image-wrapper" style={{ position: 'relative', width: '100%', height: '100%' }}>
+                {parsed.isVideo ? (
+                  parsed.source === 'youtube' ? (
+                    <iframe
+                      src={parsed.autoplayEmbedUrl || `https://www.youtube-nocookie.com/embed/${parsed.videoId}?autoplay=1&mute=1&loop=1&playlist=${parsed.videoId}&controls=0&showinfo=0&rel=0&playsinline=1`}
+                      title="Video Banner"
+                      style={{ width: '100%', height: '100%', border: 'none', position: 'absolute', inset: 0, pointerEvents: 'none' }}
+                      allow="autoplay; encrypted-media"
+                    />
+                  ) : parsed.source === 'drive' ? (
+                    <iframe
+                      src={parsed.autoplayEmbedUrl || `https://drive.google.com/file/d/${parsed.videoId}/preview`}
+                      title="Video Banner"
+                      style={{ width: '100%', height: '100%', border: 'none', position: 'absolute', inset: 0 }}
+                      allow="autoplay"
+                    />
+                  ) : (
+                    <video
+                      src={parsed.directVideoUrl || banner.img}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
+                    />
+                  )
+                ) : (
+                  <Image 
+                    src={banner.img || ''} 
+                    alt={banner.title || ''} 
+                    fill 
+                    style={{ objectFit: 'contain' }}
+                    fallbackSrc="/assets/logo-main.png"
+                  />
                 )}
 
-                {(banner.title || banner.subtitle) && (
+                {hasText && (
                   <div 
                     style={{
                       position: 'absolute',
@@ -108,12 +131,12 @@ export default function PromoBannerSlider() {
                     }}
                   >
                     <div style={{ maxWidth: '520px', color: '#fff' }}>
-                      {banner.title && (
+                      {banner.title?.trim() && (
                         <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff', margin: '0 0 0.35rem' }}>
                           {banner.title}
                         </h3>
                       )}
-                      {banner.subtitle && (
+                      {banner.subtitle?.trim() && (
                         <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.85)', margin: 0, fontWeight: 400 }}>
                           {banner.subtitle}
                         </p>
@@ -124,47 +147,30 @@ export default function PromoBannerSlider() {
               </div>
             );
 
-            if (parsed.isVideo && !banner.link) {
+            const slideStyle = {
+              flex: '0 0 100%',
+              scrollSnapAlign: 'center',
+              position: 'relative',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              boxShadow: '0 4px 16px rgba(22, 50, 74, 0.08)',
+              display: 'block',
+              textDecoration: 'none',
+              cursor: banner.link ? 'pointer' : 'default'
+            };
+
+            if (banner.link?.trim()) {
               return (
-                <div
-                  key={banner.id || idx}
-                  onClick={() => setSelectedVideo(banner)}
-                  className="promo-slide"
-                  style={{
-                    flex: '0 0 100%',
-                    scrollSnapAlign: 'center',
-                    position: 'relative',
-                    borderRadius: '16px',
-                    overflow: 'hidden',
-                    boxShadow: '0 4px 16px rgba(22, 50, 74, 0.08)',
-                    display: 'block',
-                    cursor: 'pointer'
-                  }}
-                  title="Ketuk untuk memutar video promo"
-                >
-                  {content}
-                </div>
+                <Link key={banner.id || idx} href={banner.link} className="promo-slide" style={slideStyle}>
+                  {innerMedia}
+                </Link>
               );
             }
 
             return (
-              <Link 
-                key={banner.id || idx} 
-                href={banner.link || '/daftar'} 
-                className="promo-slide"
-                style={{
-                  flex: '0 0 100%',
-                  scrollSnapAlign: 'center',
-                  position: 'relative',
-                  borderRadius: '16px',
-                  overflow: 'hidden',
-                  boxShadow: '0 4px 16px rgba(22, 50, 74, 0.08)',
-                  display: 'block',
-                  textDecoration: 'none'
-                }}
-              >
-                {content}
-              </Link>
+              <div key={banner.id || idx} className="promo-slide" style={slideStyle}>
+                {innerMedia}
+              </div>
             );
           })}
         </div>
@@ -199,14 +205,6 @@ export default function PromoBannerSlider() {
           </div>
         )}
       </div>
-
-      {/* Video Modal if Promo Banner is a video */}
-      <MediaModal
-        isOpen={Boolean(selectedVideo)}
-        onClose={() => setSelectedVideo(null)}
-        item={selectedVideo}
-        fallbackTitle="Video Promo Duta Kampus"
-      />
     </section>
   );
 }

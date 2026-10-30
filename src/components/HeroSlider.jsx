@@ -3,12 +3,10 @@ import Link from './Link';
 import Image from './Image';
 import { CMS } from '../lib/cms';
 import { parseMediaUrl } from '../lib/media';
-import MediaModal from './MediaModal';
 
 export default function HeroSlider() {
   const [current, setCurrent] = useState(0);
   const [slides, setSlides] = useState([]);
-  const [selectedVideo, setSelectedVideo] = useState(null);
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -44,7 +42,7 @@ export default function HeroSlider() {
     if (slides.length > 1) {
       timerRef.current = setInterval(() => {
         setCurrent((c) => (c + 1) % slides.length);
-      }, 6500);
+      }, 7000);
     }
   };
 
@@ -64,65 +62,107 @@ export default function HeroSlider() {
     <section className="hero-slider" id="heroSlider">
       {slides.map((slide, idx) => {
         const parsed = parseMediaUrl(slide.img, slide.mediaType);
+        const hasTitle = Boolean(slide.title1?.trim() || slide.title2?.trim());
+        const hasDesc = Boolean(slide.desc?.trim());
+        const hasBtn = Boolean(slide.btnText?.trim());
+        const hasTag = Boolean(slide.tag?.trim());
+        const hasAnyText = hasTitle || hasDesc || hasBtn || hasTag;
+
         return (
           <div key={slide.id || idx} className={`slide ${idx === current ? 'active' : ''}`}>
-            <Image
-              className="slide-img"
-              src={slide.img}
-              alt={`Slide ${idx + 1}`}
-              loading={idx === 0 ? 'eager' : 'lazy'}
-            />
-            <div className="slide-overlay" />
-            <div className="slide-content">
-              <div className="slide-text">
-                <h1 className="slide-title">
-                  {slide.title1}
-                  {slide.title2 && (
-                    <>
-                      <br />
-                      <span>{slide.title2}</span>
-                    </>
-                  )}
-                </h1>
-                <p className="slide-desc">{slide.desc}</p>
-                <div className="slide-actions" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-                  <Link
-                    href={slide.btnLink || '/daftar'}
-                    className="btn btn-gold btn-lg"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    {slide.btnText || 'Daftar Sekarang'}
-                  </Link>
-
-                  {parsed.isVideo ? (
-                    <button
-                      type="button"
-                      onClick={() => setSelectedVideo(slide)}
-                      className="btn btn-outline-gold btn-lg"
-                      style={{
-                        textDecoration: 'none',
-                        background: 'rgba(22, 50, 74, 0.7)',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="#C49E59"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                      <span>Tonton Video</span>
-                    </button>
-                  ) : (
-                    <Link
-                      href="/requirements"
-                      className="btn btn-outline-gold btn-lg"
-                      style={{ textDecoration: 'none', background: 'rgba(22, 50, 74, 0.4)' }}
-                    >
-                      Persyaratan
-                    </Link>
-                  )}
-                </div>
+            {/* Visual Media: Autoplaying Video or Image */}
+            {parsed.isVideo ? (
+              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+                {parsed.source === 'youtube' ? (
+                  <iframe
+                    src={parsed.autoplayEmbedUrl || `https://www.youtube-nocookie.com/embed/${parsed.videoId}?autoplay=1&mute=1&loop=1&playlist=${parsed.videoId}&controls=0&showinfo=0&rel=0&playsinline=1`}
+                    title="Video Hero"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      border: 'none',
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      minWidth: '100%',
+                      minHeight: '100%',
+                      pointerEvents: 'none'
+                    }}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                  />
+                ) : parsed.source === 'drive' ? (
+                  <iframe
+                    src={parsed.autoplayEmbedUrl || `https://drive.google.com/file/d/${parsed.videoId}/preview`}
+                    title="Video Hero"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      border: 'none',
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      minWidth: '100%',
+                      minHeight: '100%'
+                    }}
+                    allow="autoplay"
+                  />
+                ) : (
+                  <video
+                    className="slide-img"
+                    src={parsed.directVideoUrl || slide.img}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
+                  />
+                )}
               </div>
-            </div>
+            ) : (
+              <Image
+                className="slide-img"
+                src={slide.img}
+                alt=""
+                loading={idx === 0 ? 'eager' : 'lazy'}
+              />
+            )}
+
+            {/* Slide Text Content: Only rendered if text actually exists */}
+            {hasAnyText && (
+              <>
+                <div className="slide-overlay" />
+                <div className="slide-content">
+                  <div className="slide-text">
+                    {hasTag && <span className="slide-tag">{slide.tag}</span>}
+                    {hasTitle && (
+                      <h1 className="slide-title">
+                        {slide.title1}
+                        {slide.title2 && (
+                          <>
+                            <br />
+                            <span>{slide.title2}</span>
+                          </>
+                        )}
+                      </h1>
+                    )}
+                    {hasDesc && <p className="slide-desc">{slide.desc}</p>}
+                    {hasBtn && (
+                      <div className="slide-actions">
+                        <Link
+                          href={slide.btnLink || '/daftar'}
+                          className="btn btn-gold btn-lg"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          {slide.btnText}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         );
       })}
@@ -134,7 +174,7 @@ export default function HeroSlider() {
               <button
                 key={idx}
                 type="button"
-                aria-label={`Ke slide ${idx + 1}`}
+                aria-label={`Slide ${idx + 1}`}
                 className={`slider-dot ${idx === current ? 'active' : ''}`}
                 onClick={() => handleGoTo(idx)}
               />
@@ -142,14 +182,6 @@ export default function HeroSlider() {
           </div>
         </div>
       )}
-
-      {/* Video Modal if slide is a video */}
-      <MediaModal
-        isOpen={Boolean(selectedVideo)}
-        onClose={() => setSelectedVideo(null)}
-        item={selectedVideo}
-        fallbackTitle="Video Hero Duta Kampus"
-      />
     </section>
   );
 }
