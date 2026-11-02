@@ -879,21 +879,8 @@ export default function UserDashboard({ user, onLogout }) {
               {/* === HASIL KELULUSAN SELEKSI BERKAS (JIKA ADMIN ACC / TOLAK) === */}
               {selectionStage === 'lolos' && (
                 <div className="announcement-card announcement-card-lolos">
-                  <div className="announcement-top-bar">
-                    <span className="announcement-badge-lolos">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>LOLOS SELEKSI BERKAS</span>
-                    </span>
-                    <span className="announcement-tag announcement-tag-lolos">
-                      Tahap Administrasi 2026
-                    </span>
-                  </div>
-
                   <h3 className="announcement-title announcement-title-lolos">
-                    Selamat, {formData.namaLengkap}!
-                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#15803d', marginTop: '3px' }}>
-                      Anda Dinyatakan Lolos Seleksi Berkas Administrasi
-                    </div>
+                    Selamat, {formData.namaLengkap}! Anda Dinyatakan Lolos Seleksi Berkas Administrasi
                   </h3>
 
                   <p className="announcement-desc announcement-desc-lolos">
@@ -930,29 +917,12 @@ export default function UserDashboard({ user, onLogout }) {
                           style={{
                             marginTop: '1.25rem',
                             background: '#ffffff',
-                            borderRadius: '14px',
+                            borderRadius: '10px',
                             border: '1.5px solid #86efac',
                             padding: '1.5rem',
                             boxShadow: '0 4px 20px rgba(22, 101, 52, 0.08)'
                           }}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.65rem', flexWrap: 'wrap' }}>
-                            <span style={{
-                              background: '#166534',
-                              color: '#ffffff',
-                              fontSize: '0.72rem',
-                              fontWeight: 800,
-                              padding: '3px 8px',
-                              borderRadius: '6px',
-                              letterSpacing: '0.5px'
-                            }}>
-                              {ann.badge || 'INFORMASI PENTING'}
-                            </span>
-                            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#15803d' }}>
-                              Agenda Seleksi Selanjutnya
-                            </span>
-                          </div>
-
                           <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 0.5rem 0' }}>
                             {ann.title}
                           </h4>
@@ -1052,7 +1022,6 @@ export default function UserDashboard({ user, onLogout }) {
 
                   <div className="announcement-steps-box announcement-steps-box-lolos">
                     <div className="announcement-steps-header announcement-steps-header-lolos">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                       <span>Petunjuk Tahapan Lanjutan:</span>
                     </div>
                     <div className="announcement-steps-list">
@@ -1075,30 +1044,17 @@ export default function UserDashboard({ user, onLogout }) {
                     type="button"
                     onClick={() => setActiveTab('riwayat')}
                     className="btn btn-gold announcement-btn"
+                    style={{ borderRadius: '4px' }}
                   >
                     <span>Lihat Linimasa Lengkap</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </button>
                 </div>
               )}
 
               {selectionStage === 'tidak_lolos' && (
                 <div className="announcement-card announcement-card-tidak-lolos">
-                  <div className="announcement-top-bar">
-                    <span className="announcement-badge-tidak-lolos">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                      <span>HASIL SELEKSI BERKAS</span>
-                    </span>
-                    <span className="announcement-tag announcement-tag-tidak-lolos">
-                      Tahap Administrasi 2026
-                    </span>
-                  </div>
-
                   <h3 className="announcement-title announcement-title-tidak-lolos">
-                    Terima Kasih, {formData.namaLengkap}
-                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#b91c1c', marginTop: '3px' }}>
-                      Hasil Penilaian Seleksi Berkas Administrasi
-                    </div>
+                    Pemberitahuan Hasil Penilaian Seleksi Berkas Administrasi
                   </h3>
 
                   <p className="announcement-desc announcement-desc-tidak-lolos">
@@ -1107,7 +1063,6 @@ export default function UserDashboard({ user, onLogout }) {
 
                   <div className="announcement-steps-box announcement-steps-box-tidak-lolos">
                     <div className="announcement-steps-header announcement-steps-header-tidak-lolos">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                       <span>Apresiasi & Informasi Kampus:</span>
                     </div>
                     <div className="announcement-steps-list">
@@ -1130,9 +1085,9 @@ export default function UserDashboard({ user, onLogout }) {
                     type="button"
                     onClick={() => setActiveTab('riwayat')}
                     className="btn btn-outline-gold announcement-btn"
+                    style={{ borderRadius: '4px' }}
                   >
                     <span>Cek Riwayat Dokumen</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </button>
                 </div>
               )}
@@ -1189,7 +1144,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                     <div style={{ fontSize: '0.825rem', color: '#64748b' }}>
                       {dossierStatus.isComplete 
-                        ? '✓ Dokumen persyaratan Anda lengkap untuk dinilai dalam seleksi administrasi.' 
+                        ? 'Dokumen persyaratan Anda telah lengkap untuk dinilai dalam seleksi administrasi.' 
                         : 'Catatan: Berkas yang telah terunggah akan dinilai kelayakannya oleh dewan juri.'}
                     </div>
                   </div>

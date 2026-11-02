@@ -12,7 +12,6 @@ import GalleryPage from './pages/GalleryPage';
 import TimelinePage from './pages/TimelinePage';
 import RequirementsPage from './pages/RequirementsPage';
 import FAQPage from './pages/FAQPage';
-import PengumumanPage from './pages/PengumumanPage';
 import DaftarPage from './pages/DaftarPage';
 import LoginPage from './pages/LoginPage';
 import ProfilPage from './pages/ProfilPage';
@@ -55,7 +54,6 @@ export default function App() {
         <Route path="/timeline" element={<TimelinePage />} />
         <Route path="/requirements" element={<RequirementsPage />} />
         <Route path="/faq" element={<FAQPage />} />
-        <Route path="/pengumuman" element={<PengumumanPage />} />
         <Route path="/daftar" element={<DaftarPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profil" element={<ProfilPage />} />

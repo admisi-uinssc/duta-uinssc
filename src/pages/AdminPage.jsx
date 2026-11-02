@@ -2477,7 +2477,7 @@ export default function AdminPage() {
                           <h4 style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1.1rem', margin: 0 }}>Pengumuman #{idx + 1}</h4>
                           <span style={{
                             padding: '3px 10px',
-                            borderRadius: '999px',
+                            borderRadius: '4px',
                             fontSize: '0.75rem',
                             fontWeight: 700,
                             background: ann.target === 'lolos' ? '#dcfce7' : ann.target === 'peserta' ? '#fef3c7' : '#e0f2fe',

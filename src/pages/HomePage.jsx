@@ -11,8 +11,6 @@ import TimelineSection from '../components/TimelineSection';
 import RequirementsSection from '../components/RequirementsSection';
 import FAQSection from '../components/FAQSection';
 import CTABanner from '../components/CTABanner';
-import RegistrationCountdownBanner from '../components/RegistrationCountdownBanner';
-import RegistrationClosedModal from '../components/RegistrationClosedModal';
 import Footer from '../components/Footer';
 import { CMS } from '../lib/cms';
 import { parseMediaUrl } from '../lib/media';
@@ -47,46 +45,10 @@ export default function HomePage() {
     };
   }, []);
 
-  const pinnedAnnouncements = (cmsData?.announcements || []).filter(a => a.active !== false && a.pinned);
-
   return (
     <>
       <Navbar />
       <HeroSlider />
-      
-      {/* Hitung Mundur Penutupan Pendaftaran (Tampil di bawah slider, di atas menu pada tampilan HP & desktop) */}
-      <RegistrationCountdownBanner />
-
-      {/* Pinned Public Announcements Banner (Desktop & Mobile) */}
-      {pinnedAnnouncements.length > 0 && (
-        <section style={{ background: 'var(--navy)', borderTop: '2px solid var(--gold)', borderBottom: '2px solid var(--gold)', padding: '1rem 0' }}>
-          <div className="container" style={{ maxWidth: '1440px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
-              <span style={{ background: 'var(--gold)', color: '#ffffff', fontSize: '0.75rem', fontWeight: 800, padding: '4px 10px', borderRadius: '4px', letterSpacing: '0.5px' }}>
-                {pinnedAnnouncements[0].badge || 'INFORMASI PENTING'}
-              </span>
-              <div style={{ color: '#ffffff', fontSize: '0.95rem', fontWeight: 700 }}>
-                {pinnedAnnouncements[0].title}
-                {pinnedAnnouncements[0].date && (
-                  <span style={{ opacity: 0.85, fontWeight: 500, fontSize: '0.85rem', marginLeft: '8px' }}>
-                    — {pinnedAnnouncements[0].date}{pinnedAnnouncements[0].location ? ` (${pinnedAnnouncements[0].location})` : ''}
-                  </span>
-                )}
-              </div>
-            </div>
-            <Link 
-              href="/pengumuman" 
-              className="btn btn-sm btn-outline-gold"
-              style={{ textDecoration: 'none', padding: '0.4rem 1rem', fontSize: '0.82rem', whiteSpace: 'nowrap' }}
-            >
-              Lihat Detail Pengumuman ↗
-            </Link>
-          </div>
-        </section>
-      )}
-
-      {/* Pop-up Pengumuman Penutupan Pendaftaran di Tampilan Publik (Hanya muncul sekali per sesi) */}
-      <RegistrationClosedModal />
 
       {/* App Hub Menu (Hanya muncul di Mobile lewat CSS) */}
       <section className="hub-section mobile-only">
@@ -143,15 +105,6 @@ export default function HomePage() {
               </div>
               <span>Persyaratan</span>
             </Link>
-            <Link href="/pengumuman" className="hub-card" style={{ border: '1.5px solid rgba(196, 158, 89, 0.4)', background: 'linear-gradient(135deg, #ffffff 0%, rgba(196, 158, 89, 0.08) 100%)' }}>
-              <div className="hub-icon" style={{ background: 'var(--gold)', color: '#ffffff' }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-              </div>
-              <span style={{ fontWeight: 800, color: 'var(--navy)' }}>Pengumuman</span>
-            </Link>
             <a 
               href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH" 
               target="_blank" 
@@ -176,14 +129,14 @@ export default function HomePage() {
           
           <div className="hub-news" style={{ marginTop: '2.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <h3 style={{ margin: 0 }}>Informasi & Pengumuman</h3>
-              <Link href="/pengumuman" style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 700, textDecoration: 'none' }}>
-                Lihat Semua ↗
+              <h3 style={{ margin: 0 }}>Pengumuman</h3>
+              <Link href="/timeline" style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 700, textDecoration: 'none' }}>
+                Lihat Jadwal ↗
               </Link>
             </div>
             <div className="news-list">
               {(cmsData?.announcements || []).filter(a => a.active !== false).slice(0, 3).map((ann, aIdx) => (
-                <Link key={ann.id || aIdx} href="/pengumuman" style={{ textDecoration: 'none', display: 'block' }}>
+                <Link key={ann.id || aIdx} href="/timeline" style={{ textDecoration: 'none', display: 'block' }}>
                   <div className="news-item">
                     <div className="news-dot"></div>
                     <div>
