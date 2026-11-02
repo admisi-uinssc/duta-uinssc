@@ -634,7 +634,7 @@ export default function AdminPage() {
     setHasUnsavedCms(true);
   };
 
-  const addAnnouncement = async () => {
+  const addAnnouncement = () => {
     const newAnn = {
       id: Date.now(),
       title: 'Pengumuman Baru',
@@ -654,26 +654,20 @@ export default function AdminPage() {
       announcements: [newAnn, ...(cmsData.announcements || [])]
     };
     setCmsData(newData);
-    // Sinkronkan langsung ke cloud Firestore & localStorage
-    await CMS.save(newData);
-    setHasUnsavedCms(false);
-    showToast('Pengumuman baru berhasil ditambahkan dan disinkronkan ke database.');
+    setHasUnsavedCms(true);
   };
 
   const removeAnnouncement = (idx) => {
     askConfirmation({
       title: 'Hapus Pengumuman',
-      message: 'Apakah Anda yakin ingin menghapus pengumuman ini secara permanen dari website dan database?',
-      confirmText: 'Hapus Pengumuman',
+      message: 'Apakah Anda yakin ingin menghapus pengumuman ini?',
+      confirmText: 'Hapus',
       isDestructive: true,
-      onConfirm: async () => {
+      onConfirm: () => {
         const updated = (cmsData.announcements || []).filter((_, i) => i !== idx);
         const newData = { ...cmsData, announcements: updated };
         setCmsData(newData);
-        // Sinkronkan langsung ke cloud Firestore & localStorage
-        await CMS.save(newData);
-        setHasUnsavedCms(false);
-        showToast('Pengumuman berhasil dihapus dan disinkronkan ke database.');
+        setHasUnsavedCms(true);
       }
     });
   };
@@ -2468,9 +2462,6 @@ export default function AdminPage() {
                   </div>
                   <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                     <button className="btn btn-sm btn-outline-gold" onClick={addAnnouncement}>+ Tambah Pengumuman Baru</button>
-                    <button className="btn btn-sm btn-gold" onClick={handleCmsSave} disabled={isSavingCms}>
-                      {isSavingCms ? 'Menyimpan...' : 'Simpan ke Database'}
-                    </button>
                   </div>
                 </div>
 
@@ -2515,16 +2506,34 @@ export default function AdminPage() {
                         </div>
 
                         <div className="form-group">
-                          <label style={{ fontWeight: 700 }}>Target / Sasaran Pengumuman</label>
-                          <select 
-                            value={ann.target === 'lolos' ? 'peserta' : (ann.target || 'publik')} 
-                            onChange={e => updateAnnouncement(idx, 'target', e.target.value)}
-                            style={{ padding: '0.65rem 0.75rem', fontSize: '0.88rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', width: '100%' }}
-                          >
-                            <option value="publik">Publik (Tampil di Halaman Jadwal Website untuk Semua Pengunjung)</option>
-                            <option value="peserta">Khusus Peserta (Hanya Tampil di Dashboard Peserta Berkas Disetujui)</option>
-                            <option value="all">Semua (Tampil di Publik & Dashboard Peserta)</option>
-                          </select>
+                          <label style={{ fontWeight: 700 }}>Tampilkan Kepada</label>
+                          <div style={{ display: 'flex', border: '1px solid var(--border)', borderRadius: '6px', overflow: 'hidden' }}>
+                            {[
+                              { val: 'publik', label: 'Web Publik' },
+                              { val: 'peserta', label: 'Peserta' },
+                              { val: 'all', label: 'Keduanya' }
+                            ].map((opt, oi) => (
+                              <button
+                                key={opt.val}
+                                type="button"
+                                onClick={() => updateAnnouncement(idx, 'target', opt.val)}
+                                style={{
+                                  flex: 1,
+                                  padding: '0.5rem 0.5rem',
+                                  fontWeight: 700,
+                                  fontSize: '0.8rem',
+                                  border: 'none',
+                                  borderRight: oi < 2 ? '1px solid var(--border)' : 'none',
+                                  cursor: 'pointer',
+                                  background: (ann.target === opt.val || (opt.val === 'peserta' && ann.target === 'lolos')) ? 'var(--navy)' : 'var(--surface)',
+                                  color: (ann.target === opt.val || (opt.val === 'peserta' && ann.target === 'lolos')) ? '#fff' : 'var(--text-mid)',
+                                  transition: 'background 0.15s'
+                                }}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
                         </div>
 
                         <div className="form-group" style={{ gridColumn: 'span 2' }}>
@@ -2625,11 +2634,8 @@ export default function AdminPage() {
                   )}
 
                   {(cmsData.announcements && cmsData.announcements.length > 0) && (
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
                       <button className="btn btn-outline-gold" onClick={addAnnouncement}>+ Tambah Pengumuman Baru</button>
-                      <button className="btn btn-gold" onClick={handleCmsSave} disabled={isSavingCms}>
-                        {isSavingCms ? 'Menyimpan...' : 'Simpan Semua Pengumuman ke Database'}
-                      </button>
                     </div>
                   )}
                 </div>
