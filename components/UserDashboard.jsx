@@ -890,7 +890,7 @@ export default function UserDashboard({ user, onLogout }) {
                   {/* NOTIFIKASI KHUSUS AGENDA ACARA SELEKSI LANJUTAN (CMS SYNCED) */}
                   {(() => {
                     const lolosAnnouncements = (cmsData?.announcements || []).filter(
-                      a => a.active !== false && (a.target === 'lolos' || a.target === 'all')
+                      a => a.active !== false && (a.target === 'peserta' || a.target === 'lolos' || a.target === 'all')
                     );
                     const contacts = cmsData?.contacts || {
                       whatsapp: '0851-2292-7628',
@@ -974,44 +974,19 @@ export default function UserDashboard({ user, onLogout }) {
                             </div>
                           )}
 
-                          <div style={{ background: '#f8fafc', borderRadius: '10px', padding: '1rem', border: '1px solid var(--border)' }}>
-                            <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
-                              Yuk, Terhubung dengan Kami! Hubungi narahubung resmi di sini:
+                          <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '1rem', border: '1px solid var(--border)' }}>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
+                              Narahubung:
                             </div>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+                            <div>
                               <a 
                                 href={waUrl} 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
                                 className="btn btn-sm btn-gold"
-                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
+                                style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.825rem', fontWeight: 700, borderRadius: '4px', display: 'inline-block' }}
                               >
                                 WhatsApp: {ann.contactWa || contacts.whatsapp}
-                              </a>
-                              <a 
-                                href={igUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="btn btn-sm btn-outline-gold"
-                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
-                              >
-                                Instagram: {ann.contactIg || contacts.instagram}
-                              </a>
-                              <a 
-                                href={ttUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="btn btn-sm btn-outline-gold"
-                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
-                              >
-                                TikTok: {ann.contactTiktok || contacts.tiktok}
-                              </a>
-                              <a 
-                                href={`mailto:${emailAddress}`} 
-                                className="btn btn-sm btn-outline-gold"
-                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
-                              >
-                                Email: {emailAddress}
                               </a>
                             </div>
                           </div>

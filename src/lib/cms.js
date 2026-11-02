@@ -308,9 +308,8 @@ const DEFAULT_CMS = {
   announcements: [
     {
       id: 1,
-      badge: "INFORMASI PENTING",
       title: "Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026",
-      target: "lolos",
+      target: "all",
       greeting: "Halo, Calon Duta Kampus UINSSC 2026!",
       content: "Saatnya mempersiapkan diri untuk melangkah ke tahap selanjutnya, yaitu Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026.\n\nSeluruh calon Duta Kampus 2026 WAJIB hadir sebagai bagian dari rangkaian tahapan seleksi resmi.\n\nPastikan hadir tepat waktu dan persiapkan diri sebaik mungkin. Tunjukkan potensi terbaikmu dan jadilah bagian dari perubahan!",
       date: "Selasa, 03 November 2026",
@@ -318,11 +317,7 @@ const DEFAULT_CMS = {
       location: "Auditorium Rektorat Lt. 3",
       dressCode: "Hitam Putih",
       contactWa: "0851-2292-7628",
-      contactIg: "@duta_uinssc",
-      contactTiktok: "@duta.uin.ssc",
-      contactEmail: "dutakampus@uinssc.ac.id",
       active: true,
-      pinned: true,
       createdAt: "2026-11-02T00:00:00.000Z"
     }
   ],
@@ -361,7 +356,7 @@ function mergeWithDefaults(cms) {
   } else {
     merged.ambassadors = DEFAULT_CMS.ambassadors;
   }
-  if (!Array.isArray(cms.announcements) || cms.announcements.length === 0) {
+  if (!Array.isArray(cms.announcements)) {
     merged.announcements = DEFAULT_CMS.announcements;
   } else {
     merged.announcements = cms.announcements;

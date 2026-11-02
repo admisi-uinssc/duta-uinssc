@@ -634,24 +634,19 @@ export default function AdminPage() {
     setHasUnsavedCms(true);
   };
 
-  const addAnnouncement = () => {
+  const addAnnouncement = async () => {
     const newAnn = {
       id: Date.now(),
-      badge: 'INFORMASI PENTING',
-      title: 'Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026',
-      target: 'lolos',
-      greeting: 'Halo, Calon Duta Kampus UINSSC 2026!',
-      content: 'Saatnya mempersiapkan diri untuk melangkah ke tahap selanjutnya, yaitu Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026.\n\nSeluruh calon Duta Kampus 2026 WAJIB hadir sebagai bagian dari rangkaian tahapan seleksi resmi.\n\nPastikan hadir tepat waktu dan persiapkan diri sebaik mungkin. Tunjukkan potensi terbaikmu dan jadilah bagian dari perubahan!',
-      date: 'Selasa, 03 November 2026',
-      time: '07.00 WIB s.d. selesai',
-      location: 'Auditorium Rektorat Lt. 3',
-      dressCode: 'Hitam Putih',
+      title: 'Pengumuman Baru',
+      target: 'publik',
+      greeting: '',
+      content: '',
+      date: '',
+      time: '',
+      location: '',
+      dressCode: '',
       contactWa: cmsData?.contacts?.whatsapp || '0851-2292-7628',
-      contactIg: cmsData?.contacts?.instagram || '@duta_uinssc',
-      contactTiktok: cmsData?.contacts?.tiktok || '@duta.uin.ssc',
-      contactEmail: cmsData?.contacts?.email || 'dutakampus@uinssc.ac.id',
       active: true,
-      pinned: true,
       createdAt: new Date().toISOString()
     };
     const newData = {
@@ -659,21 +654,26 @@ export default function AdminPage() {
       announcements: [newAnn, ...(cmsData.announcements || [])]
     };
     setCmsData(newData);
-    setHasUnsavedCms(true);
+    // Sinkronkan langsung ke cloud Firestore & localStorage
+    await CMS.save(newData);
+    setHasUnsavedCms(false);
+    showToast('Pengumuman baru berhasil ditambahkan dan disinkronkan ke database.');
   };
 
   const removeAnnouncement = (idx) => {
-    setModalConfirm({
-      show: true,
+    askConfirmation({
       title: 'Hapus Pengumuman',
-      message: 'Apakah Anda yakin ingin menghapus pengumuman ini?',
-      onConfirm: () => {
+      message: 'Apakah Anda yakin ingin menghapus pengumuman ini secara permanen dari website dan database?',
+      confirmText: 'Hapus Pengumuman',
+      isDestructive: true,
+      onConfirm: async () => {
         const updated = (cmsData.announcements || []).filter((_, i) => i !== idx);
         const newData = { ...cmsData, announcements: updated };
         setCmsData(newData);
-        setHasUnsavedCms(true);
-        setModalConfirm({ show: false });
-        showToast('Pengumuman berhasil dihapus.', 'info');
+        // Sinkronkan langsung ke cloud Firestore & localStorage
+        await CMS.save(newData);
+        setHasUnsavedCms(false);
+        showToast('Pengumuman berhasil dihapus dan disinkronkan ke database.');
       }
     });
   };
@@ -2464,9 +2464,14 @@ export default function AdminPage() {
                 <div className="settings-card-header">
                   <div>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Pengumuman & Agenda Seleksi</h3>
-                    <p>Kelola pengumuman resmi, jadwal seleksi lanjutan (wawancara, tes), notifikasi khusus bagi peserta lolos seleksi berkas, dan informasi publik.</p>
+                    <p>Kelola pengumuman resmi publik (rilis nama pemenang, info seleksi) dan pengumuman khusus peserta yang berkasnya telah disetujui.</p>
                   </div>
-                  <button className="btn btn-sm btn-outline-gold" onClick={addAnnouncement}>+ Tambah Pengumuman Baru</button>
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <button className="btn btn-sm btn-outline-gold" onClick={addAnnouncement}>+ Tambah Pengumuman Baru</button>
+                    <button className="btn btn-sm btn-gold" onClick={handleCmsSave} disabled={isSavingCms}>
+                      {isSavingCms ? 'Menyimpan...' : 'Simpan ke Database'}
+                    </button>
+                  </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginTop: '1.5rem' }}>
@@ -2480,16 +2485,15 @@ export default function AdminPage() {
                             borderRadius: '4px',
                             fontSize: '0.75rem',
                             fontWeight: 700,
-                            background: ann.target === 'lolos' ? '#dcfce7' : ann.target === 'peserta' ? '#fef3c7' : '#e0f2fe',
-                            color: ann.target === 'lolos' ? '#166534' : ann.target === 'peserta' ? '#92400e' : '#0369a1'
+                            background: (ann.target === 'peserta' || ann.target === 'lolos') ? '#dcfce7' : ann.target === 'all' ? '#e0e7ff' : '#e0f2fe',
+                            color: (ann.target === 'peserta' || ann.target === 'lolos') ? '#166534' : ann.target === 'all' ? '#3730a3' : '#0369a1'
                           }}>
-                            {ann.target === 'lolos' ? 'Khusus Peserta Lolos Berkas' : ann.target === 'peserta' ? 'Semua Peserta Terdaftar' : 'Publik & Umum'}
+                            {(ann.target === 'peserta' || ann.target === 'lolos') 
+                              ? 'Khusus Peserta (Berkas Disetujui)' 
+                              : ann.target === 'all' 
+                              ? 'Semua (Publik & Dashboard Peserta)' 
+                              : 'Publik (Halaman Jadwal Website)'}
                           </span>
-                          {ann.pinned && (
-                            <span style={{ padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: 'var(--gold)', color: '#fff' }}>
-                              Disematkan di Beranda
-                            </span>
-                          )}
                           {!ann.active && (
                             <span style={{ padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: '#fee2e2', color: '#991b1b' }}>
                               Nonaktif
@@ -2506,34 +2510,24 @@ export default function AdminPage() {
                             type="text" 
                             value={ann.title || ''} 
                             onChange={e => updateAnnouncement(idx, 'title', e.target.value)} 
-                            placeholder="Contoh: Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026" 
+                            placeholder="Contoh: Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026 atau Pengumuman Pemenang" 
                           />
                         </div>
 
                         <div className="form-group">
-                          <label style={{ fontWeight: 700 }}>Sasaran / Target Notifikasi</label>
+                          <label style={{ fontWeight: 700 }}>Target / Sasaran Pengumuman</label>
                           <select 
-                            value={ann.target || 'lolos'} 
+                            value={ann.target === 'lolos' ? 'peserta' : (ann.target || 'publik')} 
                             onChange={e => updateAnnouncement(idx, 'target', e.target.value)}
                             style={{ padding: '0.65rem 0.75rem', fontSize: '0.88rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', width: '100%' }}
                           >
-                            <option value="lolos">Khusus Peserta Lolos Berkas (Notif Wajib Dashboard)</option>
-                            <option value="peserta">Semua Peserta Terdaftar (Dashboard)</option>
-                            <option value="all">Publik & Semua Pengunjung (Beranda Web & Dashboard)</option>
+                            <option value="publik">Publik (Tampil di Halaman Jadwal Website untuk Semua Pengunjung)</option>
+                            <option value="peserta">Khusus Peserta (Hanya Tampil di Dashboard Peserta Berkas Disetujui)</option>
+                            <option value="all">Semua (Tampil di Publik & Dashboard Peserta)</option>
                           </select>
                         </div>
 
-                        <div className="form-group">
-                          <label style={{ fontWeight: 700 }}>Label Lencana (Badge Atas)</label>
-                          <input 
-                            type="text" 
-                            value={ann.badge || ''} 
-                            onChange={e => updateAnnouncement(idx, 'badge', e.target.value)} 
-                            placeholder="Contoh: INFORMASI PENTING" 
-                          />
-                        </div>
-
-                        <div className="form-group">
+                        <div className="form-group" style={{ gridColumn: 'span 2' }}>
                           <label style={{ fontWeight: 700 }}>Salam Pembuka</label>
                           <input 
                             type="text" 
@@ -2550,13 +2544,13 @@ export default function AdminPage() {
                           rows={4}
                           value={ann.content || ''} 
                           onChange={e => updateAnnouncement(idx, 'content', e.target.value)} 
-                          placeholder="Tuliskan isi informasi, persyaratan kehadiran, atau pengantar..."
+                          placeholder="Tuliskan isi informasi, pengumuman nama pemenang, persyaratan kehadiran, atau pengantar..."
                           style={{ width: '100%', borderRadius: '8px', padding: '0.75rem', border: '1px solid var(--border)', fontFamily: 'inherit', fontSize: '0.9rem', lineHeight: 1.5 }}
                         />
                       </div>
 
                       <div style={{ marginTop: '1.25rem', background: 'var(--surface)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)' }}>
-                        <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Detail Pelaksanaan / Agenda Resmi</div>
+                        <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Detail Pelaksanaan / Agenda Resmi (Opsional)</div>
                         <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
                           <div className="form-group">
                             <label style={{ fontSize: '0.85rem' }}>Hari & Tanggal</label>
@@ -2598,44 +2592,18 @@ export default function AdminPage() {
                       </div>
 
                       <div style={{ marginTop: '1.25rem', background: 'var(--surface)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)' }}>
-                        <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Narahubung Pengumuman</div>
-                        <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-                          <div className="form-group">
-                            <label style={{ fontSize: '0.85rem' }}>WhatsApp</label>
-                            <input 
-                              type="text" 
-                              value={ann.contactWa || ''} 
-                              onChange={e => updateAnnouncement(idx, 'contactWa', e.target.value)} 
-                              placeholder="0851-2292-7628" 
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label style={{ fontSize: '0.85rem' }}>Instagram</label>
-                            <input 
-                              type="text" 
-                              value={ann.contactIg || ''} 
-                              onChange={e => updateAnnouncement(idx, 'contactIg', e.target.value)} 
-                              placeholder="@duta_uinssc" 
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label style={{ fontSize: '0.85rem' }}>TikTok</label>
-                            <input 
-                              type="text" 
-                              value={ann.contactTiktok || ''} 
-                              onChange={e => updateAnnouncement(idx, 'contactTiktok', e.target.value)} 
-                              placeholder="@duta.uin.ssc" 
-                            />
-                          </div>
-                          <div className="form-group">
-                            <label style={{ fontSize: '0.85rem' }}>E-mail</label>
-                            <input 
-                              type="text" 
-                              value={ann.contactEmail || ''} 
-                              onChange={e => updateAnnouncement(idx, 'contactEmail', e.target.value)} 
-                              placeholder="dutakampus@uinssc.ac.id" 
-                            />
-                          </div>
+                        <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '0.35rem', fontSize: '0.95rem' }}>Narahubung Pengumuman (WhatsApp Saja)</div>
+                        <p style={{ margin: '0 0 0.85rem 0', fontSize: '0.825rem', color: 'var(--text-light)' }}>
+                          Sesuai ketentuan, narahubung pada pengumuman hanya menyertakan WhatsApp karena kontak media sosial lainnya sudah tertera di footer website.
+                        </p>
+                        <div className="form-group" style={{ maxWidth: '340px' }}>
+                          <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Nomor WhatsApp</label>
+                          <input 
+                            type="text" 
+                            value={ann.contactWa || ''} 
+                            onChange={e => updateAnnouncement(idx, 'contactWa', e.target.value)} 
+                            placeholder="0851-2292-7628" 
+                          />
                         </div>
                       </div>
 
@@ -2645,16 +2613,8 @@ export default function AdminPage() {
                             type="checkbox" 
                             checked={ann.active !== false} 
                             onChange={e => updateAnnouncement(idx, 'active', e.target.checked)} 
-                          />
+                            />
                           <span>Aktifkan Pengumuman</span>
-                        </label>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
-                          <input 
-                            type="checkbox" 
-                            checked={Boolean(ann.pinned)} 
-                            onChange={e => updateAnnouncement(idx, 'pinned', e.target.checked)} 
-                          />
-                          <span>Sematkan di Beranda Utama</span>
                         </label>
                       </div>
                     </div>
@@ -2662,6 +2622,15 @@ export default function AdminPage() {
 
                   {(!cmsData.announcements || cmsData.announcements.length === 0) && (
                     <p style={{ color: 'var(--text-light)', textAlign: 'center', padding: '2rem 0' }}>Tidak ada pengumuman. Silakan klik tombol "+ Tambah Pengumuman Baru".</p>
+                  )}
+
+                  {(cmsData.announcements && cmsData.announcements.length > 0) && (
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
+                      <button className="btn btn-outline-gold" onClick={addAnnouncement}>+ Tambah Pengumuman Baru</button>
+                      <button className="btn btn-gold" onClick={handleCmsSave} disabled={isSavingCms}>
+                        {isSavingCms ? 'Menyimpan...' : 'Simpan Semua Pengumuman ke Database'}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

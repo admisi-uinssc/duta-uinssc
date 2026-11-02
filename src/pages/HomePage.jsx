@@ -135,7 +135,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="news-list">
-              {(cmsData?.announcements || []).filter(a => a.active !== false).slice(0, 3).map((ann, aIdx) => (
+              {(cmsData?.announcements || []).filter(a => a.active !== false && (a.target === 'publik' || a.target === 'all' || !a.target)).slice(0, 3).map((ann, aIdx) => (
                 <Link key={ann.id || aIdx} href="/timeline" style={{ textDecoration: 'none', display: 'block' }}>
                   <div className="news-item">
                     <div className="news-dot"></div>

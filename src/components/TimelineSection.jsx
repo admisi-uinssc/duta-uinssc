@@ -23,7 +23,9 @@ export default function TimelineSection() {
     { num: '06', date: '9 November 2026', title: 'Pengukuhan Duta Kampus', desc: 'Penetapan resmi dan pengukuhan Duta Kampus UIN SSC 2026.' },
   ];
 
-  const announcements = (cmsData?.announcements || []).filter(a => a.active !== false);
+  const announcements = (cmsData?.announcements || []).filter(
+    a => a.active !== false && (a.target === 'publik' || a.target === 'all' || !a.target)
+  );
   const contacts = cmsData?.contacts || {
     whatsapp: '0851-2292-7628',
     whatsappUrl: 'https://wa.me/6285122927628',
@@ -145,40 +147,15 @@ export default function TimelineSection() {
                       <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.65rem' }}>
                         Narahubung:
                       </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.65rem' }}>
+                      <div>
                         <a 
                           href={waUrl} 
                           target="_blank" 
                           rel="noopener noreferrer" 
                           className="btn btn-sm btn-gold"
-                          style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.85rem', fontWeight: 700, borderRadius: '4px' }}
+                          style={{ textDecoration: 'none', padding: '0.45rem 1.15rem', fontSize: '0.85rem', fontWeight: 700, borderRadius: '4px', display: 'inline-flex', alignItems: 'center' }}
                         >
                           WhatsApp: {ann.contactWa || contacts.whatsapp}
-                        </a>
-                        <a 
-                          href={igUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="btn btn-sm btn-outline-gold"
-                          style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.85rem', fontWeight: 700, borderRadius: '4px' }}
-                        >
-                          Instagram: {ann.contactIg || contacts.instagram}
-                        </a>
-                        <a 
-                          href={ttUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="btn btn-sm btn-outline-gold"
-                          style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.85rem', fontWeight: 700, borderRadius: '4px' }}
-                        >
-                          TikTok: {ann.contactTiktok || contacts.tiktok}
-                        </a>
-                        <a 
-                          href={`mailto:${emailAddress}`} 
-                          className="btn btn-sm btn-outline-gold"
-                          style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.85rem', fontWeight: 700, borderRadius: '4px' }}
-                        >
-                          Email: {emailAddress}
                         </a>
                       </div>
                     </div>

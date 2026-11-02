@@ -557,8 +557,10 @@ export async function syncCmsToCloud(cmsData) {
   if (!db || !cmsData) return false;
   try {
     const cmsRef = doc(db, 'duta_settings', 'cms');
+    // Bersihkan nilai undefined yang dapat memicu error pada Firestore SDK
+    const sanitized = JSON.parse(JSON.stringify(cmsData));
     await setDoc(cmsRef, {
-      ...cmsData,
+      ...sanitized,
       updatedAt: new Date().toISOString()
     }, { merge: true });
     return true;
