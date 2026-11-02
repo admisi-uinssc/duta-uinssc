@@ -2458,7 +2458,7 @@ export default function AdminPage() {
                 <div className="settings-card-header">
                   <div>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Pengumuman & Agenda Seleksi</h3>
-                    <p>Kelola pengumuman resmi publik (rilis nama pemenang, info seleksi) dan pengumuman khusus peserta yang berkasnya telah disetujui.</p>
+                    <p>Tambah, edit, atau hapus pengumuman. Setiap pengumuman dapat ditampilkan ke publik, khusus peserta, atau keduanya.</p>
                   </div>
                   <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                     <button className="btn btn-sm btn-outline-gold" onClick={addAnnouncement}>+ Tambah Pengumuman Baru</button>
@@ -2480,10 +2480,10 @@ export default function AdminPage() {
                             color: (ann.target === 'peserta' || ann.target === 'lolos') ? '#166534' : ann.target === 'all' ? '#3730a3' : '#0369a1'
                           }}>
                             {(ann.target === 'peserta' || ann.target === 'lolos') 
-                              ? 'Khusus Peserta (Berkas Disetujui)' 
+                              ? 'Peserta' 
                               : ann.target === 'all' 
-                              ? 'Semua (Publik & Dashboard Peserta)' 
-                              : 'Publik (Halaman Jadwal Website)'}
+                              ? 'Publik & Peserta' 
+                              : 'Publik'}
                           </span>
                           {!ann.active && (
                             <span style={{ padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: '#fee2e2', color: '#991b1b' }}>
@@ -2601,12 +2601,8 @@ export default function AdminPage() {
                       </div>
 
                       <div style={{ marginTop: '1.25rem', background: 'var(--surface)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)' }}>
-                        <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '0.35rem', fontSize: '0.95rem' }}>Narahubung Pengumuman (WhatsApp Saja)</div>
-                        <p style={{ margin: '0 0 0.85rem 0', fontSize: '0.825rem', color: 'var(--text-light)' }}>
-                          Sesuai ketentuan, narahubung pada pengumuman hanya menyertakan WhatsApp karena kontak media sosial lainnya sudah tertera di footer website.
-                        </p>
                         <div className="form-group" style={{ maxWidth: '340px' }}>
-                          <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Nomor WhatsApp</label>
+                          <label style={{ fontSize: '0.85rem', fontWeight: 700 }}>WhatsApp Narahubung</label>
                           <input 
                             type="text" 
                             value={ann.contactWa || ''} 
@@ -2647,14 +2643,14 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Kontak Narahubung & Media Sosial Resmi</h3>
-                    <p>Atur kontak panitia (WhatsApp, Instagram, TikTok, Email) yang tampil di pengumuman, dashboard peserta, dan footer website publik.</p>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Kontak & Media Sosial</h3>
+                    <p>Atur kontak (WhatsApp, Instagram, TikTok, Email) yang tampil di footer dan dashboard peserta.</p>
                   </div>
                 </div>
 
                 <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
                   <div className="form-group">
-                    <label style={{ fontWeight: 700 }}>Nomor WhatsApp Narahubung</label>
+                    <label style={{ fontWeight: 700 }}>WhatsApp</label>
                     <input 
                       type="text" 
                       value={cmsData.contacts?.whatsapp || '0851-2292-7628'} 
@@ -2665,7 +2661,7 @@ export default function AdminPage() {
                   </div>
 
                   <div className="form-group">
-                    <label style={{ fontWeight: 700 }}>Akun Instagram Resmi</label>
+                    <label style={{ fontWeight: 700 }}>Instagram</label>
                     <input 
                       type="text" 
                       value={cmsData.contacts?.instagram || '@duta_uinssc'} 
@@ -2676,7 +2672,7 @@ export default function AdminPage() {
                   </div>
 
                   <div className="form-group">
-                    <label style={{ fontWeight: 700 }}>Akun TikTok Resmi</label>
+                    <label style={{ fontWeight: 700 }}>TikTok</label>
                     <input 
                       type="text" 
                       value={cmsData.contacts?.tiktok || '@duta.uin.ssc'} 
@@ -3398,7 +3394,7 @@ export default function AdminPage() {
                       rows="3"
                       value={customMsg}
                       onChange={e => setCustomMsg(e.target.value)}
-                      placeholder="Biarkan kosong untuk menggunakan pesan standar resmi..."
+                      placeholder="Biarkan kosong untuk pesan default..."
                       style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem', boxSizing: 'border-box', fontFamily: 'inherit' }}
                     />
                   </div>

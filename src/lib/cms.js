@@ -311,7 +311,7 @@ const DEFAULT_CMS = {
       title: "Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026",
       target: "all",
       greeting: "Halo, Calon Duta Kampus UINSSC 2026!",
-      content: "Saatnya mempersiapkan diri untuk melangkah ke tahap selanjutnya, yaitu Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026.\n\nSeluruh calon Duta Kampus 2026 WAJIB hadir sebagai bagian dari rangkaian tahapan seleksi resmi.\n\nPastikan hadir tepat waktu dan persiapkan diri sebaik mungkin. Tunjukkan potensi terbaikmu dan jadilah bagian dari perubahan!",
+      content: "Tahap selanjutnya adalah Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026. Peserta diharapkan hadir tepat waktu sesuai jadwal dan lokasi yang telah ditentukan.",
       date: "Selasa, 03 November 2026",
       time: "07.00 WIB s.d. selesai",
       location: "Auditorium Rektorat Lt. 3",

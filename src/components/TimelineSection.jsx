@@ -138,14 +138,14 @@ export default function TimelineSection() {
                           )}
                         </div>
                         <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: '#fef2f2', borderLeft: '4px solid #dc2626', color: '#991b1b', fontWeight: 700, fontSize: '0.875rem', borderRadius: '4px' }}>
-                          Seluruh calon Duta Kampus 2026 WAJIB hadir sebagai bagian dari rangkaian tahapan seleksi resmi.
+                          Wajib hadir tepat waktu.
                         </div>
                       </div>
                     )}
 
                     <div style={{ paddingTop: '1.25rem', borderTop: '1px solid var(--border)' }}>
                       <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.65rem' }}>
-                        Narahubung:
+                        Hubungi panitia:
                       </div>
                       <div>
                         <a 

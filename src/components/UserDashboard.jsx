@@ -969,14 +969,14 @@ export default function UserDashboard({ user, onLogout }) {
                                 )}
                               </div>
                               <div style={{ marginTop: '0.85rem', fontSize: '0.825rem', color: '#166534', fontWeight: 600 }}>
-                                Seluruh calon Duta Kampus 2026 WAJIB hadir sebagai bagian dari rangkaian tahapan seleksi resmi.
+                                Wajib hadir tepat waktu.
                               </div>
                             </div>
                           )}
 
                           <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '1rem', border: '1px solid var(--border)' }}>
                             <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
-                              Narahubung:
+                              Hubungi panitia:
                             </div>
                             <div>
                               <a 
