@@ -62,6 +62,7 @@ export default function Navbar() {
           <li><Link href="/gallery" className="nav-link" onClick={closeMenu}>Galeri</Link></li>
           <li><Link href="/timeline" className="nav-link" onClick={closeMenu}>Jadwal</Link></li>
           <li><Link href="/requirements" className="nav-link" onClick={closeMenu}>Persyaratan</Link></li>
+          <li><Link href="/pengumuman" className="nav-link" onClick={closeMenu}>Pengumuman</Link></li>
           <li>
             <a 
               href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH" 

@@ -7,6 +7,7 @@ import { DOSSIER_DOCUMENTS, evaluateDossierCompleteness, DEFAULT_MESSAGES } from
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
 import { listenToUserFromCloud, fetchApplicantFromCloudByIdentifier, listenToApplicantFromCloud, syncUserToCloud } from '../lib/firebase';
 import { Settings } from '../lib/settings';
+import { CMS } from '../lib/cms';
 import DocumentPreviewModal from './DocumentPreviewModal';
 
 export default function UserDashboard({ user, onLogout }) {
@@ -15,6 +16,14 @@ export default function UserDashboard({ user, onLogout }) {
   const [formAlert, setFormAlert] = useState({ show: false, message: '', type: 'info' });
   const [currentUser, setCurrentUser] = useState(user);
   const [previewModal, setPreviewModal] = useState({ isOpen: false, docKey: '', docLabel: '', docValue: null });
+  const [cmsData, setCmsData] = useState(CMS.get());
+
+  useEffect(() => {
+    const unsub = CMS.subscribe((data) => {
+      if (data) setCmsData(data);
+    });
+    return () => unsub();
+  }, []);
 
   const triggerAlert = (message, type = 'info') => {
     setFormAlert({ show: true, message, type });
@@ -890,6 +899,156 @@ export default function UserDashboard({ user, onLogout }) {
                   <p className="announcement-desc announcement-desc-lolos">
                     {selectionMessage || DEFAULT_MESSAGES.lolos}
                   </p>
+
+                  {/* NOTIFIKASI KHUSUS AGENDA ACARA SELEKSI LANJUTAN (CMS SYNCED) */}
+                  {(() => {
+                    const lolosAnnouncements = (cmsData?.announcements || []).filter(
+                      a => a.active !== false && (a.target === 'lolos' || a.target === 'all')
+                    );
+                    const contacts = cmsData?.contacts || {
+                      whatsapp: '0851-2292-7628',
+                      whatsappUrl: 'https://wa.me/6285122927628',
+                      instagram: '@duta_uinssc',
+                      instagramUrl: 'https://www.instagram.com/duta_uinssc',
+                      tiktok: '@duta.uin.ssc',
+                      tiktokUrl: 'https://www.tiktok.com/@duta.uin.ssc',
+                      email: 'dutakampus@uinssc.ac.id'
+                    };
+
+                    return lolosAnnouncements.map((ann, aIdx) => {
+                      const waClean = (ann.contactWa || contacts.whatsapp || '').replace(/\D/g, '').replace(/^0/, '62');
+                      const waUrl = waClean ? `https://wa.me/${waClean}` : (contacts.whatsappUrl || 'https://wa.me/6285122927628');
+                      const igHandle = (ann.contactIg || contacts.instagram || '').replace('@', '').trim();
+                      const igUrl = igHandle ? `https://www.instagram.com/${igHandle}` : (contacts.instagramUrl || 'https://www.instagram.com/duta_uinssc');
+                      const ttHandle = (ann.contactTiktok || contacts.tiktok || '').replace('@', '').trim();
+                      const ttUrl = ttHandle ? `https://www.tiktok.com/@${ttHandle}` : (contacts.tiktokUrl || 'https://www.tiktok.com/@duta.uin.ssc');
+                      const emailAddress = ann.contactEmail || contacts.email || 'dutakampus@uinssc.ac.id';
+
+                      return (
+                        <div 
+                          key={ann.id || aIdx}
+                          style={{
+                            marginTop: '1.25rem',
+                            background: '#ffffff',
+                            borderRadius: '14px',
+                            border: '1.5px solid #86efac',
+                            padding: '1.5rem',
+                            boxShadow: '0 4px 20px rgba(22, 101, 52, 0.08)'
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.65rem', flexWrap: 'wrap' }}>
+                            <span style={{
+                              background: '#166534',
+                              color: '#ffffff',
+                              fontSize: '0.72rem',
+                              fontWeight: 800,
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              letterSpacing: '0.5px'
+                            }}>
+                              {ann.badge || 'INFORMASI PENTING'}
+                            </span>
+                            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#15803d' }}>
+                              Agenda Seleksi Selanjutnya
+                            </span>
+                          </div>
+
+                          <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 0.5rem 0' }}>
+                            {ann.title}
+                          </h4>
+
+                          {ann.greeting && (
+                            <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#15803d', marginBottom: '0.5rem' }}>
+                              {ann.greeting}
+                            </div>
+                          )}
+
+                          <p style={{ fontSize: '0.9rem', color: 'var(--text-mid)', lineHeight: 1.6, margin: '0 0 1.25rem 0', whiteSpace: 'pre-line' }}>
+                            {ann.content}
+                          </p>
+
+                          {(ann.date || ann.time || ann.location || ann.dressCode) && (
+                            <div style={{ background: '#f0fdf4', borderRadius: '12px', padding: '1.25rem', border: '1px solid #bbf7d0', marginBottom: '1.25rem' }}>
+                              <div style={{ fontWeight: 800, color: '#166534', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                                Informasi Pelaksanaan yang Perlu Diperhatikan:
+                              </div>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
+                                {ann.date && (
+                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Hari & Tanggal</div>
+                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.date}</div>
+                                  </div>
+                                )}
+                                {ann.time && (
+                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Waktu</div>
+                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.time}</div>
+                                  </div>
+                                )}
+                                {ann.location && (
+                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Tempat / Lokasi</div>
+                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.location}</div>
+                                  </div>
+                                )}
+                                {ann.dressCode && (
+                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Dress Code</div>
+                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.dressCode}</div>
+                                  </div>
+                                )}
+                              </div>
+                              <div style={{ marginTop: '0.85rem', fontSize: '0.825rem', color: '#166534', fontWeight: 600 }}>
+                                Seluruh calon Duta Kampus 2026 WAJIB hadir sebagai bagian dari rangkaian tahapan seleksi resmi.
+                              </div>
+                            </div>
+                          )}
+
+                          <div style={{ background: '#f8fafc', borderRadius: '10px', padding: '1rem', border: '1px solid var(--border)' }}>
+                            <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
+                              Yuk, Terhubung dengan Kami! Hubungi narahubung resmi di sini:
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+                              <a 
+                                href={waUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-sm btn-gold"
+                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
+                              >
+                                WhatsApp: {ann.contactWa || contacts.whatsapp}
+                              </a>
+                              <a 
+                                href={igUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-sm btn-outline-gold"
+                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
+                              >
+                                Instagram: {ann.contactIg || contacts.instagram}
+                              </a>
+                              <a 
+                                href={ttUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-sm btn-outline-gold"
+                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
+                              >
+                                TikTok: {ann.contactTiktok || contacts.tiktok}
+                              </a>
+                              <a 
+                                href={`mailto:${emailAddress}`} 
+                                className="btn btn-sm btn-outline-gold"
+                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
+                              >
+                                Email: {emailAddress}
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
 
                   <div className="announcement-steps-box announcement-steps-box-lolos">
                     <div className="announcement-steps-header announcement-steps-header-lolos">

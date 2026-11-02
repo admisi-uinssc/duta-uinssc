@@ -18,6 +18,7 @@ export default function Footer() {
             <h4>Tautan</h4>
             <ul>
               <li><Link href="/about">Tentang</Link></li>
+              <li><Link href="/pengumuman">Pengumuman</Link></li>
               <li><Link href="/benefits">Manfaat</Link></li>
               <li><Link href="/timeline">Jadwal</Link></li>
               <li><Link href="/requirements">Persyaratan</Link></li>
@@ -30,16 +31,16 @@ export default function Footer() {
             <ul>
               <li>Jl. Perjuangan By Pass Sunyaragi</li>
               <li>Cirebon, Jawa Barat 45132</li>
-              <li>Email: dutakampus@syekhnurjati.ac.id</li>
-              <li>Telp: (0231) 481264</li>
+              <li>Email: <a href="mailto:dutakampus@uinssc.ac.id" style={{ color: 'inherit' }}>dutakampus@uinssc.ac.id</a></li>
+              <li>WhatsApp: <a href="https://wa.me/6285122927628" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>0851-2292-7628</a></li>
             </ul>
           </div>
           <div className="footer-col">
             <h4>Media Sosial</h4>
             <div className="social-row">
-              <a href="#" className="social-btn">IG</a>
-              <a href="#" className="social-btn">TT</a>
-              <a href="#" className="social-btn">YT</a>
+              <a href="https://www.instagram.com/duta_uinssc" target="_blank" rel="noopener noreferrer" className="social-btn" title="Instagram @duta_uinssc">IG</a>
+              <a href="https://www.tiktok.com/@duta.uin.ssc" target="_blank" rel="noopener noreferrer" className="social-btn" title="TikTok @duta.uin.ssc">TT</a>
+              <a href="https://wa.me/6285122927628" target="_blank" rel="noopener noreferrer" className="social-btn" title="WhatsApp 0851-2292-7628">WA</a>
             </div>
           </div>
         </div>

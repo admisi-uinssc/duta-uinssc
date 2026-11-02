@@ -624,6 +624,84 @@ export default function AdminPage() {
     setHasUnsavedCms(true);
   };
 
+  // CMS Announcements Helpers
+  const updateAnnouncement = (idx, field, val) => {
+    const updated = (cmsData.announcements || []).map((item, i) =>
+      i === idx ? { ...item, [field]: val } : item
+    );
+    const newData = { ...cmsData, announcements: updated };
+    setCmsData(newData);
+    setHasUnsavedCms(true);
+  };
+
+  const addAnnouncement = () => {
+    const newAnn = {
+      id: Date.now(),
+      badge: 'INFORMASI PENTING',
+      title: 'Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026',
+      target: 'lolos',
+      greeting: 'Halo, Calon Duta Kampus UINSSC 2026!',
+      content: 'Saatnya mempersiapkan diri untuk melangkah ke tahap selanjutnya, yaitu Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026.\n\nSeluruh calon Duta Kampus 2026 WAJIB hadir sebagai bagian dari rangkaian tahapan seleksi resmi.\n\nPastikan hadir tepat waktu dan persiapkan diri sebaik mungkin. Tunjukkan potensi terbaikmu dan jadilah bagian dari perubahan!',
+      date: 'Selasa, 03 November 2026',
+      time: '07.00 WIB s.d. selesai',
+      location: 'Auditorium Rektorat Lt. 3',
+      dressCode: 'Hitam Putih',
+      contactWa: cmsData?.contacts?.whatsapp || '0851-2292-7628',
+      contactIg: cmsData?.contacts?.instagram || '@duta_uinssc',
+      contactTiktok: cmsData?.contacts?.tiktok || '@duta.uin.ssc',
+      contactEmail: cmsData?.contacts?.email || 'dutakampus@uinssc.ac.id',
+      active: true,
+      pinned: true,
+      createdAt: new Date().toISOString()
+    };
+    const newData = {
+      ...cmsData,
+      announcements: [newAnn, ...(cmsData.announcements || [])]
+    };
+    setCmsData(newData);
+    setHasUnsavedCms(true);
+  };
+
+  const removeAnnouncement = (idx) => {
+    setModalConfirm({
+      show: true,
+      title: 'Hapus Pengumuman',
+      message: 'Apakah Anda yakin ingin menghapus pengumuman ini?',
+      onConfirm: () => {
+        const updated = (cmsData.announcements || []).filter((_, i) => i !== idx);
+        const newData = { ...cmsData, announcements: updated };
+        setCmsData(newData);
+        setHasUnsavedCms(true);
+        setModalConfirm({ show: false });
+        showToast('Pengumuman berhasil dihapus.', 'info');
+      }
+    });
+  };
+
+  // CMS Contacts Helper
+  const updateContacts = (field, val) => {
+    const updated = {
+      ...(cmsData.contacts || {}),
+      [field]: val
+    };
+    if (field === 'whatsapp') {
+      const cleanPhone = val.replace(/\D/g, '');
+      const waNumber = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone;
+      updated.whatsappUrl = `https://wa.me/${waNumber}`;
+    }
+    if (field === 'instagram') {
+      const handle = val.replace('@', '').trim();
+      updated.instagramUrl = `https://www.instagram.com/${handle}`;
+    }
+    if (field === 'tiktok') {
+      const handle = val.startsWith('@') ? val.trim() : '@' + val.trim();
+      updated.tiktokUrl = `https://www.tiktok.com/${handle}`;
+    }
+    const newData = { ...cmsData, contacts: updated };
+    setCmsData(newData);
+    setHasUnsavedCms(true);
+  };
+
   // Add User Form Submission
   const handleCreateUser = (e) => {
     e.preventDefault();
@@ -1848,6 +1926,18 @@ export default function AdminPage() {
               >
                 Tentang / Program
               </button>
+              <button 
+                className={`btn btn-sm ${cmsTab === 'announcements' ? 'btn-gold' : 'btn-outline-gold'}`} 
+                onClick={() => setCmsTab('announcements')}
+              >
+                Pengumuman & Agenda ({cmsData.announcements?.length || 0})
+              </button>
+              <button 
+                className={`btn btn-sm ${cmsTab === 'contacts' ? 'btn-gold' : 'btn-outline-gold'}`} 
+                onClick={() => setCmsTab('contacts')}
+              >
+                Narahubung & Kontak
+              </button>
             </div>
 
             {/* TAB 1: HERO SLIDER */}
@@ -2363,6 +2453,282 @@ export default function AdminPage() {
                     <p style={{ fontSize: '0.825rem', color: 'var(--text-light)', marginTop: '0.75rem', lineHeight: 1.5 }}>
                       Media ini tampil di halaman Beranda publik (seksi "Program Duta Kampus") dan di halaman Tentang (`/about`).
                     </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 6: PENGUMUMAN & AGENDA SELEKSI */}
+            {cmsTab === 'announcements' && (
+              <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
+                <div className="settings-card-header">
+                  <div>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Pengumuman & Agenda Seleksi</h3>
+                    <p>Kelola pengumuman resmi, jadwal seleksi lanjutan (wawancara, tes), notifikasi khusus bagi peserta lolos seleksi berkas, dan informasi publik.</p>
+                  </div>
+                  <button className="btn btn-sm btn-outline-gold" onClick={addAnnouncement}>+ Tambah Pengumuman Baru</button>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginTop: '1.5rem' }}>
+                  {(cmsData.announcements || []).map((ann, idx) => (
+                    <div key={ann.id || idx} style={{ background: 'var(--bg-alt)', padding: '1.75rem', borderRadius: '16px', border: '1.5px solid var(--border)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                          <h4 style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1.1rem', margin: 0 }}>Pengumuman #{idx + 1}</h4>
+                          <span style={{
+                            padding: '3px 10px',
+                            borderRadius: '999px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            background: ann.target === 'lolos' ? '#dcfce7' : ann.target === 'peserta' ? '#fef3c7' : '#e0f2fe',
+                            color: ann.target === 'lolos' ? '#166534' : ann.target === 'peserta' ? '#92400e' : '#0369a1'
+                          }}>
+                            {ann.target === 'lolos' ? 'Khusus Peserta Lolos Berkas' : ann.target === 'peserta' ? 'Semua Peserta Terdaftar' : 'Publik & Umum'}
+                          </span>
+                          {ann.pinned && (
+                            <span style={{ padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: 'var(--gold)', color: '#fff' }}>
+                              Disematkan di Beranda
+                            </span>
+                          )}
+                          {!ann.active && (
+                            <span style={{ padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: '#fee2e2', color: '#991b1b' }}>
+                              Nonaktif
+                            </span>
+                          )}
+                        </div>
+                        <button className="btn btn-sm btn-danger" onClick={() => removeAnnouncement(idx)}>Hapus Pengumuman</button>
+                      </div>
+
+                      <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                        <div className="form-group">
+                          <label style={{ fontWeight: 700 }}>Judul Pengumuman</label>
+                          <input 
+                            type="text" 
+                            value={ann.title || ''} 
+                            onChange={e => updateAnnouncement(idx, 'title', e.target.value)} 
+                            placeholder="Contoh: Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026" 
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label style={{ fontWeight: 700 }}>Sasaran / Target Notifikasi</label>
+                          <select 
+                            value={ann.target || 'lolos'} 
+                            onChange={e => updateAnnouncement(idx, 'target', e.target.value)}
+                            style={{ padding: '0.65rem 0.75rem', fontSize: '0.88rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', width: '100%' }}
+                          >
+                            <option value="lolos">Khusus Peserta Lolos Berkas (Notif Wajib Dashboard)</option>
+                            <option value="peserta">Semua Peserta Terdaftar (Dashboard)</option>
+                            <option value="all">Publik & Semua Pengunjung (Beranda Web & Dashboard)</option>
+                          </select>
+                        </div>
+
+                        <div className="form-group">
+                          <label style={{ fontWeight: 700 }}>Label Lencana (Badge Atas)</label>
+                          <input 
+                            type="text" 
+                            value={ann.badge || ''} 
+                            onChange={e => updateAnnouncement(idx, 'badge', e.target.value)} 
+                            placeholder="Contoh: INFORMASI PENTING" 
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label style={{ fontWeight: 700 }}>Salam Pembuka</label>
+                          <input 
+                            type="text" 
+                            value={ann.greeting || ''} 
+                            onChange={e => updateAnnouncement(idx, 'greeting', e.target.value)} 
+                            placeholder="Contoh: Halo, Calon Duta Kampus UINSSC 2026!" 
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-group" style={{ marginTop: '1.25rem' }}>
+                        <label style={{ fontWeight: 700 }}>Isi Pesan & Arahan Pengumuman</label>
+                        <textarea 
+                          rows={4}
+                          value={ann.content || ''} 
+                          onChange={e => updateAnnouncement(idx, 'content', e.target.value)} 
+                          placeholder="Tuliskan isi informasi, persyaratan kehadiran, atau pengantar..."
+                          style={{ width: '100%', borderRadius: '8px', padding: '0.75rem', border: '1px solid var(--border)', fontFamily: 'inherit', fontSize: '0.9rem', lineHeight: 1.5 }}
+                        />
+                      </div>
+
+                      <div style={{ marginTop: '1.25rem', background: 'var(--surface)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)' }}>
+                        <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Detail Pelaksanaan / Agenda Resmi</div>
+                        <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+                          <div className="form-group">
+                            <label style={{ fontSize: '0.85rem' }}>Hari & Tanggal</label>
+                            <input 
+                              type="text" 
+                              value={ann.date || ''} 
+                              onChange={e => updateAnnouncement(idx, 'date', e.target.value)} 
+                              placeholder="Contoh: Selasa, 03 November 2026" 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontSize: '0.85rem' }}>Waktu Pelaksanaan</label>
+                            <input 
+                              type="text" 
+                              value={ann.time || ''} 
+                              onChange={e => updateAnnouncement(idx, 'time', e.target.value)} 
+                              placeholder="Contoh: 07.00 WIB s.d. selesai" 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontSize: '0.85rem' }}>Lokasi / Tempat</label>
+                            <input 
+                              type="text" 
+                              value={ann.location || ''} 
+                              onChange={e => updateAnnouncement(idx, 'location', e.target.value)} 
+                              placeholder="Contoh: Auditorium Rektorat Lt. 3" 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontSize: '0.85rem' }}>Dress Code / Ketentuan Pakaian</label>
+                            <input 
+                              type="text" 
+                              value={ann.dressCode || ''} 
+                              onChange={e => updateAnnouncement(idx, 'dressCode', e.target.value)} 
+                              placeholder="Contoh: Hitam Putih" 
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ marginTop: '1.25rem', background: 'var(--surface)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)' }}>
+                        <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Narahubung Pengumuman</div>
+                        <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                          <div className="form-group">
+                            <label style={{ fontSize: '0.85rem' }}>WhatsApp</label>
+                            <input 
+                              type="text" 
+                              value={ann.contactWa || ''} 
+                              onChange={e => updateAnnouncement(idx, 'contactWa', e.target.value)} 
+                              placeholder="0851-2292-7628" 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontSize: '0.85rem' }}>Instagram</label>
+                            <input 
+                              type="text" 
+                              value={ann.contactIg || ''} 
+                              onChange={e => updateAnnouncement(idx, 'contactIg', e.target.value)} 
+                              placeholder="@duta_uinssc" 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontSize: '0.85rem' }}>TikTok</label>
+                            <input 
+                              type="text" 
+                              value={ann.contactTiktok || ''} 
+                              onChange={e => updateAnnouncement(idx, 'contactTiktok', e.target.value)} 
+                              placeholder="@duta.uin.ssc" 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontSize: '0.85rem' }}>E-mail</label>
+                            <input 
+                              type="text" 
+                              value={ann.contactEmail || ''} 
+                              onChange={e => updateAnnouncement(idx, 'contactEmail', e.target.value)} 
+                              placeholder="dutakampus@uinssc.ac.id" 
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.25rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                          <input 
+                            type="checkbox" 
+                            checked={ann.active !== false} 
+                            onChange={e => updateAnnouncement(idx, 'active', e.target.checked)} 
+                          />
+                          <span>Aktifkan Pengumuman</span>
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                          <input 
+                            type="checkbox" 
+                            checked={Boolean(ann.pinned)} 
+                            onChange={e => updateAnnouncement(idx, 'pinned', e.target.checked)} 
+                          />
+                          <span>Sematkan di Beranda Utama</span>
+                        </label>
+                      </div>
+                    </div>
+                  ))}
+
+                  {(!cmsData.announcements || cmsData.announcements.length === 0) && (
+                    <p style={{ color: 'var(--text-light)', textAlign: 'center', padding: '2rem 0' }}>Tidak ada pengumuman. Silakan klik tombol "+ Tambah Pengumuman Baru".</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 7: KONTAK & NARAHUBUNG GLOBAL */}
+            {cmsTab === 'contacts' && (
+              <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
+                <div className="settings-card-header">
+                  <div>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Kontak Narahubung & Media Sosial Resmi</h3>
+                    <p>Atur kontak panitia (WhatsApp, Instagram, TikTok, Email) yang tampil di pengumuman, dashboard peserta, dan footer website publik.</p>
+                  </div>
+                </div>
+
+                <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+                  <div className="form-group">
+                    <label style={{ fontWeight: 700 }}>Nomor WhatsApp Narahubung</label>
+                    <input 
+                      type="text" 
+                      value={cmsData.contacts?.whatsapp || '0851-2292-7628'} 
+                      onChange={e => updateContacts('whatsapp', e.target.value)} 
+                      placeholder="0851-2292-7628" 
+                    />
+                    <small style={{ color: 'var(--text-light)', fontSize: '0.78rem' }}>Tautan chat: {cmsData.contacts?.whatsappUrl || 'https://wa.me/6285122927628'}</small>
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ fontWeight: 700 }}>Akun Instagram Resmi</label>
+                    <input 
+                      type="text" 
+                      value={cmsData.contacts?.instagram || '@duta_uinssc'} 
+                      onChange={e => updateContacts('instagram', e.target.value)} 
+                      placeholder="@duta_uinssc" 
+                    />
+                    <small style={{ color: 'var(--text-light)', fontSize: '0.78rem' }}>Tautan profil: {cmsData.contacts?.instagramUrl || 'https://www.instagram.com/duta_uinssc'}</small>
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ fontWeight: 700 }}>Akun TikTok Resmi</label>
+                    <input 
+                      type="text" 
+                      value={cmsData.contacts?.tiktok || '@duta.uin.ssc'} 
+                      onChange={e => updateContacts('tiktok', e.target.value)} 
+                      placeholder="@duta.uin.ssc" 
+                    />
+                    <small style={{ color: 'var(--text-light)', fontSize: '0.78rem' }}>Tautan profil: {cmsData.contacts?.tiktokUrl || 'https://www.tiktok.com/@duta.uin.ssc'}</small>
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ fontWeight: 700 }}>Alamat E-mail Resmi</label>
+                    <input 
+                      type="text" 
+                      value={cmsData.contacts?.email || 'dutakampus@uinssc.ac.id'} 
+                      onChange={e => updateContacts('email', e.target.value)} 
+                      placeholder="dutakampus@uinssc.ac.id" 
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ fontWeight: 700 }}>Alamat Sekretariat / Kampus</label>
+                    <input 
+                      type="text" 
+                      value={cmsData.contacts?.address || 'Auditorium Rektorat Lt. 3, UIN Siber Syekh Nurjati Cirebon, Jawa Barat 45132'} 
+                      onChange={e => updateContacts('address', e.target.value)} 
+                      placeholder="Auditorium Rektorat Lt. 3..." 
+                    />
                   </div>
                 </div>
               </div>

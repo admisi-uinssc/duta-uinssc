@@ -57,7 +57,7 @@ export default function FAQSection() {
     },
     {
       q: 'Bagaimana jika saya memiliki pertanyaan yang belum tersedia di FAQ?',
-      a: 'Silakan menghubungi narahubung resmi Pemilihan Duta Kampus 2026 melalui kontak yang tercantum pada halaman informasi dan media sosial resmi panitia @dutakampusuinssc.'
+      a: 'Silakan menghubungi narahubung resmi Pemilihan Duta Kampus 2026 melalui WhatsApp 0851-2292-7628 atau media sosial resmi Instagram @duta_uinssc dan TikTok @duta.uin.ssc.'
     }
   ];
 

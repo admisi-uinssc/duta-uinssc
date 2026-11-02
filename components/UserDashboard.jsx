@@ -5,7 +5,9 @@ import { Auth } from '../lib/auth';
 import { DB, formatDateTime } from '../lib/db';
 import { DOSSIER_DOCUMENTS, evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
-import { listenToUserFromCloud, fetchApplicantFromCloudByIdentifier, listenToApplicantFromCloud } from '../lib/firebase';
+import { listenToUserFromCloud, fetchApplicantFromCloudByIdentifier, listenToApplicantFromCloud, syncUserToCloud } from '../lib/firebase';
+import { Settings } from '../lib/settings';
+import { CMS } from '../lib/cms';
 import DocumentPreviewModal from './DocumentPreviewModal';
 
 export default function UserDashboard({ user, onLogout }) {
@@ -14,6 +16,14 @@ export default function UserDashboard({ user, onLogout }) {
   const [formAlert, setFormAlert] = useState({ show: false, message: '', type: 'info' });
   const [currentUser, setCurrentUser] = useState(user);
   const [previewModal, setPreviewModal] = useState({ isOpen: false, docKey: '', docLabel: '', docValue: null });
+  const [cmsData, setCmsData] = useState(CMS.get());
+
+  useEffect(() => {
+    const unsub = CMS.subscribe((data) => {
+      if (data) setCmsData(data);
+    });
+    return () => unsub();
+  }, []);
 
   const triggerAlert = (message, type = 'info') => {
     setFormAlert({ show: true, message, type });
@@ -52,6 +62,48 @@ export default function UserDashboard({ user, onLogout }) {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(user.berkasSubmitted || false);
+  const [loadingDocKey, setLoadingDocKey] = useState(null); // 'deleting-docKey' or 'uploading-docKey'
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Target deadline countdown & status penutupan otomatis: 25 Oktober 2026 pukul 23:59:59 WIB
+  const [countdown, setCountdown] = useState({ d: 0, h: 0, m: 0, s: 0, isExpired: false });
+  const [applicantCount, setApplicantCount] = useState('60+');
+
+  const participantName = formData.namaLengkap || user.namaLengkap || user.name || '';
+  const greetingName = participantName.trim() || 'Calon Duta';
+
+  useEffect(() => {
+    const updateCd = () => {
+      const closed = Settings.isRegistrationClosed();
+      setApplicantCount(Settings.getApplicantCountDisplay());
+
+      if (closed) {
+        setCountdown({ d: 0, h: 0, m: 0, s: 0, isExpired: true });
+        return;
+      }
+
+      const target = Settings.getDeadlineTime();
+      const now = Date.now();
+      const diff = target - now;
+      if (diff > 0) {
+        setCountdown({
+          d: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          h: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          m: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+          s: Math.floor((diff % (1000 * 60)) / 1000),
+          isExpired: false
+        });
+      } else {
+        setCountdown({ d: 0, h: 0, m: 0, s: 0, isExpired: true });
+      }
+    };
+    updateCd();
+    const timer = setInterval(updateCd, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const isRegistrationClosed = countdown.isExpired || Settings.isRegistrationClosed();
 
   // Sync state from storage and live cloud for instant Lolos/Tidak Lolos announcement updates
   useEffect(() => {
@@ -65,16 +117,16 @@ export default function UserDashboard({ user, onLogout }) {
         }
         setFormData(prev => ({
           ...prev,
-          docSuratPernyataan: prev.docSuratPernyataan || fresh.docSuratPernyataan || fresh.berkas?.docSuratPernyataan || '',
-          docCv: prev.docCv || fresh.docCv || fresh.berkas?.docCv || '',
-          docSuratRekomendasi: prev.docSuratRekomendasi || fresh.docSuratRekomendasi || fresh.berkas?.docSuratRekomendasi || '',
-          docSertifikatPrestasi: prev.docSertifikatPrestasi || fresh.docSertifikatPrestasi || fresh.berkas?.docSertifikatPrestasi || '',
-          docFotoLengkap: prev.docFotoLengkap || fresh.docFotoLengkap || fresh.berkas?.docFotoLengkap || '',
-          docMotivationLetter: prev.docMotivationLetter || fresh.docMotivationLetter || fresh.berkas?.docMotivationLetter || '',
-          docBuktiFollow: prev.docBuktiFollow || fresh.docBuktiFollow || fresh.berkas?.docBuktiFollow || '',
-          docKtm: prev.docKtm || fresh.docKtm || fresh.berkas?.docKtm || '',
-          docTranskripNilai: prev.docTranskripNilai || fresh.docTranskripNilai || fresh.berkas?.docTranskripNilai || '',
-          docBuktiDiterima: prev.docBuktiDiterima || fresh.docBuktiDiterima || fresh.berkas?.docBuktiDiterima || '',
+          docSuratPernyataan: fresh.docSuratPernyataan !== undefined ? fresh.docSuratPernyataan : (fresh.berkas?.docSuratPernyataan || ''),
+          docCv: fresh.docCv !== undefined ? fresh.docCv : (fresh.berkas?.docCv || ''),
+          docSuratRekomendasi: fresh.docSuratRekomendasi !== undefined ? fresh.docSuratRekomendasi : (fresh.berkas?.docSuratRekomendasi || ''),
+          docSertifikatPrestasi: fresh.docSertifikatPrestasi !== undefined ? fresh.docSertifikatPrestasi : (fresh.berkas?.docSertifikatPrestasi || ''),
+          docFotoLengkap: fresh.docFotoLengkap !== undefined ? fresh.docFotoLengkap : (fresh.berkas?.docFotoLengkap || ''),
+          docMotivationLetter: fresh.docMotivationLetter !== undefined ? fresh.docMotivationLetter : (fresh.berkas?.docMotivationLetter || ''),
+          docBuktiFollow: fresh.docBuktiFollow !== undefined ? fresh.docBuktiFollow : (fresh.berkas?.docBuktiFollow || ''),
+          docKtm: fresh.docKtm !== undefined ? fresh.docKtm : (fresh.berkas?.docKtm || ''),
+          docTranskripNilai: fresh.docTranskripNilai !== undefined ? fresh.docTranskripNilai : (fresh.berkas?.docTranskripNilai || ''),
+          docBuktiDiterima: fresh.docBuktiDiterima !== undefined ? fresh.docBuktiDiterima : (fresh.berkas?.docBuktiDiterima || ''),
         }));
       }
       const existingInDb = DB.getAll().find(
@@ -88,16 +140,16 @@ export default function UserDashboard({ user, onLogout }) {
         setFormData(prev => ({
           ...prev,
           ...cleanDraft,
-          docSuratPernyataan: cleanDraft.docSuratPernyataan || cleanDraft.berkas?.docSuratPernyataan || prev.docSuratPernyataan,
-          docCv: cleanDraft.docCv || cleanDraft.berkas?.docCv || prev.docCv,
-          docSuratRekomendasi: cleanDraft.docSuratRekomendasi || cleanDraft.berkas?.docSuratRekomendasi || prev.docSuratRekomendasi,
-          docSertifikatPrestasi: cleanDraft.docSertifikatPrestasi || cleanDraft.berkas?.docSertifikatPrestasi || prev.docSertifikatPrestasi,
-          docFotoLengkap: cleanDraft.docFotoLengkap || cleanDraft.berkas?.docFotoLengkap || prev.docFotoLengkap,
-          docMotivationLetter: cleanDraft.docMotivationLetter || cleanDraft.berkas?.docMotivationLetter || prev.docMotivationLetter,
-          docBuktiFollow: cleanDraft.docBuktiFollow || cleanDraft.berkas?.docBuktiFollow || prev.docBuktiFollow,
-          docKtm: cleanDraft.docKtm || cleanDraft.berkas?.docKtm || prev.docKtm,
-          docTranskripNilai: cleanDraft.docTranskripNilai || cleanDraft.berkas?.docTranskripNilai || prev.docTranskripNilai,
-          docBuktiDiterima: cleanDraft.docBuktiDiterima || cleanDraft.berkas?.docBuktiDiterima || prev.docBuktiDiterima,
+          docSuratPernyataan: cleanDraft.docSuratPernyataan !== undefined ? cleanDraft.docSuratPernyataan : (cleanDraft.berkas?.docSuratPernyataan || ''),
+          docCv: cleanDraft.docCv !== undefined ? cleanDraft.docCv : (cleanDraft.berkas?.docCv || ''),
+          docSuratRekomendasi: cleanDraft.docSuratRekomendasi !== undefined ? cleanDraft.docSuratRekomendasi : (cleanDraft.berkas?.docSuratRekomendasi || ''),
+          docSertifikatPrestasi: cleanDraft.docSertifikatPrestasi !== undefined ? cleanDraft.docSertifikatPrestasi : (cleanDraft.berkas?.docSertifikatPrestasi || ''),
+          docFotoLengkap: cleanDraft.docFotoLengkap !== undefined ? cleanDraft.docFotoLengkap : (cleanDraft.berkas?.docFotoLengkap || ''),
+          docMotivationLetter: cleanDraft.docMotivationLetter !== undefined ? cleanDraft.docMotivationLetter : (cleanDraft.berkas?.docMotivationLetter || ''),
+          docBuktiFollow: cleanDraft.docBuktiFollow !== undefined ? cleanDraft.docBuktiFollow : (cleanDraft.berkas?.docBuktiFollow || ''),
+          docKtm: cleanDraft.docKtm !== undefined ? cleanDraft.docKtm : (cleanDraft.berkas?.docKtm || ''),
+          docTranskripNilai: cleanDraft.docTranskripNilai !== undefined ? cleanDraft.docTranskripNilai : (cleanDraft.berkas?.docTranskripNilai || ''),
+          docBuktiDiterima: cleanDraft.docBuktiDiterima !== undefined ? cleanDraft.docBuktiDiterima : (cleanDraft.berkas?.docBuktiDiterima || ''),
         }));
       }
     };
@@ -105,8 +157,33 @@ export default function UserDashboard({ user, onLogout }) {
     refreshUserData();
     window.addEventListener('storage', refreshUserData);
 
+    const handleDocDeleted = (e) => {
+      const { emailOrId, docKey } = e.detail || {};
+      if ((emailOrId || '').toLowerCase() === (user.email || '').toLowerCase()) {
+        setFormData(prev => ({ ...prev, [docKey]: '' }));
+      }
+    };
+    window.addEventListener('document-deleted', handleDocDeleted);
+
     // Live single-user Firestore listener: instant result updates with 0 wasteful reads
     const unsubscribeCloud = listenToUserFromCloud(user.email, (cloudUser) => {
+      if (cloudUser === null) {
+        const sessionCreated = Number(localStorage.getItem('dutauinssc_session_created') || 0);
+        const localUser = Auth.getCurrentUser();
+        const isRecent = (sessionCreated && (Date.now() - sessionCreated < 600000)) ||
+                         (localUser && localUser.createdAt && (Date.now() - new Date(localUser.createdAt).getTime() < 600000));
+        if (isRecent) {
+          if (localUser) syncUserToCloud(localUser);
+          return;
+        }
+        // Account has been deleted from server database!
+        Auth.logout();
+        const allUsers = Auth.getUsers().filter(u => (u.email || '').toLowerCase() !== (user.email || '').toLowerCase());
+        localStorage.setItem('dutauinssc_users', JSON.stringify(allUsers));
+        if (typeof onLogout === 'function') onLogout();
+        else window.location.href = '/login';
+        return;
+      }
       if (cloudUser) {
         setCurrentUser(prev => ({ ...prev, ...cloudUser }));
         if (cloudUser.berkasSubmitted) {
@@ -130,16 +207,16 @@ export default function UserDashboard({ user, onLogout }) {
         setFormData(prev => ({
           ...prev,
           ...cloudApp,
-          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || prev.docSuratPernyataan,
-          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || prev.docCv,
-          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || prev.docSuratRekomendasi,
-          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || prev.docSertifikatPrestasi,
-          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || prev.docFotoLengkap,
-          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || prev.docMotivationLetter,
-          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || prev.docBuktiFollow,
-          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || prev.docKtm,
-          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || prev.docTranskripNilai,
-          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || prev.docBuktiDiterima,
+          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || '',
+          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || '',
+          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || '',
+          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || '',
+          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || '',
+          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || '',
+          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || '',
+          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || '',
+          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || '',
+          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || '',
         }));
         // Cache in local DB so DB.getAll() has it on HP
         const currentList = DB.getAll();
@@ -158,22 +235,30 @@ export default function UserDashboard({ user, onLogout }) {
         setFormData(prev => ({
           ...prev,
           ...cloudApp,
-          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || prev.docSuratPernyataan,
-          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || prev.docCv,
-          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || prev.docSuratRekomendasi,
-          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || prev.docSertifikatPrestasi,
-          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || prev.docFotoLengkap,
-          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || prev.docMotivationLetter,
-          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || prev.docBuktiFollow,
-          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || prev.docKtm,
-          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || prev.docTranskripNilai,
-          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || prev.docBuktiDiterima,
+          docSuratPernyataan: cloudApp.docSuratPernyataan || cloudApp.berkas?.docSuratPernyataan || '',
+          docCv: cloudApp.docCv || cloudApp.berkas?.docCv || '',
+          docSuratRekomendasi: cloudApp.docSuratRekomendasi || cloudApp.berkas?.docSuratRekomendasi || '',
+          docSertifikatPrestasi: cloudApp.docSertifikatPrestasi || cloudApp.berkas?.docSertifikatPrestasi || '',
+          docFotoLengkap: cloudApp.docFotoLengkap || cloudApp.berkas?.docFotoLengkap || '',
+          docMotivationLetter: cloudApp.docMotivationLetter || cloudApp.berkas?.docMotivationLetter || '',
+          docBuktiFollow: cloudApp.docBuktiFollow || cloudApp.berkas?.docBuktiFollow || '',
+          docKtm: cloudApp.docKtm || cloudApp.berkas?.docKtm || '',
+          docTranskripNilai: cloudApp.docTranskripNilai || cloudApp.berkas?.docTranskripNilai || '',
+          docBuktiDiterima: cloudApp.docBuktiDiterima || cloudApp.berkas?.docBuktiDiterima || '',
         }));
       }
     });
 
+    const handleAuthLogout = () => {
+      if (typeof onLogout === 'function') onLogout();
+      else window.location.href = '/login';
+    };
+    window.addEventListener('auth-logout', handleAuthLogout);
+
     return () => {
       window.removeEventListener('storage', refreshUserData);
+      window.removeEventListener('document-deleted', handleDocDeleted);
+      window.removeEventListener('auth-logout', handleAuthLogout);
       if (typeof unsubscribeCloud === 'function') unsubscribeCloud();
       if (typeof unsubscribeAppCloud === 'function') unsubscribeAppCloud();
     };
@@ -185,7 +270,12 @@ export default function UserDashboard({ user, onLogout }) {
   };
 
   const handleFileUpload = async (docKey, file, docLabel) => {
+    if (isRegistrationClosed) {
+      triggerAlert('Pendaftaran telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Pengunggahan berkas baru tidak lagi diizinkan.', 'danger');
+      return;
+    }
     if (!file) return;
+    setLoadingDocKey(`uploading-${docKey}`);
     setSaveNotice(`Mengunggah berkas ${file.name}...`);
     try {
       const docData = await DriveStorage.uploadFile(file, {
@@ -196,37 +286,60 @@ export default function UserDashboard({ user, onLogout }) {
         docLabel
       });
 
-      setFormData(prev => ({ ...prev, [docKey]: docData }));
-      DriveStorage.saveDocument(user.email, docKey, docData);
+      setFormData(prev => ({
+        ...prev,
+        [docKey]: docData,
+        berkas: { ...(prev.berkas || {}), [docKey]: docData }
+      }));
+      await DriveStorage.saveDocument(user.email, docKey, docData);
       setSaveNotice(`Berkas ${file.name} berhasil disimpan.`);
+      triggerAlert(`Berkas ${docLabel} berhasil disimpan.`, 'success');
     } catch (err) {
       const errMsg = 'Kendala unggah berkas: ' + (err.message || 'Gagal menyimpan dokumen.');
       setSaveNotice({ type: 'error', message: errMsg });
       triggerAlert(errMsg, 'danger');
     } finally {
+      setLoadingDocKey(null);
       setTimeout(() => setSaveNotice(''), 4500);
     }
   };
 
   const handleRemoveFile = async (docKey) => {
+    if (isRegistrationClosed) {
+      triggerAlert('Pendaftaran telah resmi ditutup. Berkas yang sudah dikirimkan tidak dapat dihapus.', 'danger');
+      return;
+    }
     const docData = normalizeDocument(formData[docKey]);
-    setFormData(prev => {
-      const next = { ...prev };
-      next[docKey] = '';
-      if (next.berkas) {
-        next.berkas = { ...next.berkas };
-        delete next.berkas[docKey];
-      }
-      return next;
-    });
-    await DriveStorage.deleteDocument(user.email, docKey, docData?.driveId);
-    setSaveNotice('Berkas berhasil dihapus.');
-    triggerAlert('Berkas berhasil dihapus.', 'success');
-    setTimeout(() => setSaveNotice(''), 3000);
+    setLoadingDocKey(`deleting-${docKey}`);
+    setSaveNotice('Menghapus berkas...');
+    try {
+      setFormData(prev => {
+        const next = { ...prev };
+        next[docKey] = '';
+        if (next.berkas) {
+          next.berkas = { ...next.berkas };
+          delete next.berkas[docKey];
+        }
+        return next;
+      });
+      await DriveStorage.deleteDocument(user.email, docKey, docData?.driveId);
+      setSaveNotice('Berkas berhasil dihapus.');
+      triggerAlert('Berkas berhasil dihapus.', 'success');
+    } catch (err) {
+      triggerAlert('Gagal menghapus berkas: ' + (err.message || 'Terjadi kendala'), 'danger');
+    } finally {
+      setLoadingDocKey(null);
+      setTimeout(() => setSaveNotice(''), 3000);
+    }
   };
 
   const handleSaveDraft = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
+    if (isRegistrationClosed) {
+      triggerAlert('Pendaftaran telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Perubahan draf tidak dapat disimpan.', 'danger');
+      return;
+    }
+    setIsSavingDraft(true);
     setSaveNotice('Menyimpan draf formulir dan berkas...');
     try {
       const users = Auth.getUsers();
@@ -239,6 +352,7 @@ export default function UserDashboard({ user, onLogout }) {
       delete cleanForm.accountStatus;
       delete cleanForm.status;
 
+      // Keep only active uploaded documents, never revive deleted documents
       cleanForm.berkas = {};
       DOSSIER_DOCUMENTS.forEach(d => {
         const val = cleanForm[d.key];
@@ -265,6 +379,7 @@ export default function UserDashboard({ user, onLogout }) {
         setCurrentUser(users[idx]);
       }
 
+      // Sync immediately to DB so Admin sees semester and all draft updates right away
       if (existing) {
         let updatedItem = null;
         const allDb = DB.getAll().map(i => {
@@ -304,17 +419,23 @@ export default function UserDashboard({ user, onLogout }) {
     } catch (err) {
       triggerAlert('Gagal menyimpan draf: ' + (err.message || 'Terjadi kesalahan'), 'danger');
     } finally {
+      setIsSavingDraft(false);
       setTimeout(() => setSaveNotice(''), 3500);
     }
   };
 
   const handleSubmitApplication = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
+    if (isRegistrationClosed) {
+      triggerAlert('Pendaftaran telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Terima kasih atas partisipasi Anda, seluruh berkas yang telah dikirimkan sedang dalam proses verifikasi Panitia Seleksi.', 'danger');
+      return;
+    }
     if (!formData.ipk) {
       triggerAlert('Mohon lengkapi data nilai IPK sebelum mengirim pendaftaran.', 'danger');
       return;
     }
 
+    // Validasi 10 Dokumen
     const isSem1 = String(formData.semester || '').trim() === '1';
     const missingDocs = DOSSIER_DOCUMENTS.filter(doc => {
       if (doc.required && !formData[doc.key]) return true;
@@ -330,6 +451,7 @@ export default function UserDashboard({ user, onLogout }) {
       return;
     }
 
+    setIsSubmitting(true);
     setSaveNotice('Mengirim pendaftaran dan berkas persyaratan...');
     try {
       const users = Auth.getUsers();
@@ -351,6 +473,7 @@ export default function UserDashboard({ user, onLogout }) {
         }
       });
 
+      // Save or update in DB
       let savedAppItem = null;
       if (existing) {
         const allDb = DB.getAll().map(i => {
@@ -385,6 +508,7 @@ export default function UserDashboard({ user, onLogout }) {
         DB.add(savedAppItem);
       }
 
+      // Update user status in Auth
       if (idx !== -1) {
         users[idx] = { 
           ...users[idx], 
@@ -408,6 +532,7 @@ export default function UserDashboard({ user, onLogout }) {
     } catch (err) {
       triggerAlert('Gagal mengirim pendaftaran: ' + (err.message || 'Terjadi kendala'), 'danger');
     } finally {
+      setIsSubmitting(false);
       setTimeout(() => setSaveNotice(''), 4000);
     }
   };
@@ -508,9 +633,15 @@ export default function UserDashboard({ user, onLogout }) {
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Pendaftaran Duta
-            {dossierStatus.isComplete && (
-              <span style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: '50%', background: '#22c55e' }} />
+            <span>Pendaftaran Duta</span>
+            {dossierStatus.isComplete ? (
+              <span style={{ marginLeft: 'auto', background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', fontSize: '0.62rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                Lengkap
+              </span>
+            ) : (
+              <span style={{ marginLeft: 'auto', background: 'rgba(217, 119, 6, 0.25)', color: '#fbbf24', fontSize: '0.62rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                Belum Lengkap
+              </span>
             )}
           </button>
 
@@ -769,6 +900,156 @@ export default function UserDashboard({ user, onLogout }) {
                     {selectionMessage || DEFAULT_MESSAGES.lolos}
                   </p>
 
+                  {/* NOTIFIKASI KHUSUS AGENDA ACARA SELEKSI LANJUTAN (CMS SYNCED) */}
+                  {(() => {
+                    const lolosAnnouncements = (cmsData?.announcements || []).filter(
+                      a => a.active !== false && (a.target === 'lolos' || a.target === 'all')
+                    );
+                    const contacts = cmsData?.contacts || {
+                      whatsapp: '0851-2292-7628',
+                      whatsappUrl: 'https://wa.me/6285122927628',
+                      instagram: '@duta_uinssc',
+                      instagramUrl: 'https://www.instagram.com/duta_uinssc',
+                      tiktok: '@duta.uin.ssc',
+                      tiktokUrl: 'https://www.tiktok.com/@duta.uin.ssc',
+                      email: 'dutakampus@uinssc.ac.id'
+                    };
+
+                    return lolosAnnouncements.map((ann, aIdx) => {
+                      const waClean = (ann.contactWa || contacts.whatsapp || '').replace(/\D/g, '').replace(/^0/, '62');
+                      const waUrl = waClean ? `https://wa.me/${waClean}` : (contacts.whatsappUrl || 'https://wa.me/6285122927628');
+                      const igHandle = (ann.contactIg || contacts.instagram || '').replace('@', '').trim();
+                      const igUrl = igHandle ? `https://www.instagram.com/${igHandle}` : (contacts.instagramUrl || 'https://www.instagram.com/duta_uinssc');
+                      const ttHandle = (ann.contactTiktok || contacts.tiktok || '').replace('@', '').trim();
+                      const ttUrl = ttHandle ? `https://www.tiktok.com/@${ttHandle}` : (contacts.tiktokUrl || 'https://www.tiktok.com/@duta.uin.ssc');
+                      const emailAddress = ann.contactEmail || contacts.email || 'dutakampus@uinssc.ac.id';
+
+                      return (
+                        <div 
+                          key={ann.id || aIdx}
+                          style={{
+                            marginTop: '1.25rem',
+                            background: '#ffffff',
+                            borderRadius: '14px',
+                            border: '1.5px solid #86efac',
+                            padding: '1.5rem',
+                            boxShadow: '0 4px 20px rgba(22, 101, 52, 0.08)'
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.65rem', flexWrap: 'wrap' }}>
+                            <span style={{
+                              background: '#166534',
+                              color: '#ffffff',
+                              fontSize: '0.72rem',
+                              fontWeight: 800,
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              letterSpacing: '0.5px'
+                            }}>
+                              {ann.badge || 'INFORMASI PENTING'}
+                            </span>
+                            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#15803d' }}>
+                              Agenda Seleksi Selanjutnya
+                            </span>
+                          </div>
+
+                          <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 0.5rem 0' }}>
+                            {ann.title}
+                          </h4>
+
+                          {ann.greeting && (
+                            <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#15803d', marginBottom: '0.5rem' }}>
+                              {ann.greeting}
+                            </div>
+                          )}
+
+                          <p style={{ fontSize: '0.9rem', color: 'var(--text-mid)', lineHeight: 1.6, margin: '0 0 1.25rem 0', whiteSpace: 'pre-line' }}>
+                            {ann.content}
+                          </p>
+
+                          {(ann.date || ann.time || ann.location || ann.dressCode) && (
+                            <div style={{ background: '#f0fdf4', borderRadius: '12px', padding: '1.25rem', border: '1px solid #bbf7d0', marginBottom: '1.25rem' }}>
+                              <div style={{ fontWeight: 800, color: '#166534', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                                Informasi Pelaksanaan yang Perlu Diperhatikan:
+                              </div>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
+                                {ann.date && (
+                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Hari & Tanggal</div>
+                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.date}</div>
+                                  </div>
+                                )}
+                                {ann.time && (
+                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Waktu</div>
+                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.time}</div>
+                                  </div>
+                                )}
+                                {ann.location && (
+                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Tempat / Lokasi</div>
+                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.location}</div>
+                                  </div>
+                                )}
+                                {ann.dressCode && (
+                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Dress Code</div>
+                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.dressCode}</div>
+                                  </div>
+                                )}
+                              </div>
+                              <div style={{ marginTop: '0.85rem', fontSize: '0.825rem', color: '#166534', fontWeight: 600 }}>
+                                Seluruh calon Duta Kampus 2026 WAJIB hadir sebagai bagian dari rangkaian tahapan seleksi resmi.
+                              </div>
+                            </div>
+                          )}
+
+                          <div style={{ background: '#f8fafc', borderRadius: '10px', padding: '1rem', border: '1px solid var(--border)' }}>
+                            <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
+                              Yuk, Terhubung dengan Kami! Hubungi narahubung resmi di sini:
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+                              <a 
+                                href={waUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-sm btn-gold"
+                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
+                              >
+                                WhatsApp: {ann.contactWa || contacts.whatsapp}
+                              </a>
+                              <a 
+                                href={igUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-sm btn-outline-gold"
+                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
+                              >
+                                Instagram: {ann.contactIg || contacts.instagram}
+                              </a>
+                              <a 
+                                href={ttUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-sm btn-outline-gold"
+                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
+                              >
+                                TikTok: {ann.contactTiktok || contacts.tiktok}
+                              </a>
+                              <a 
+                                href={`mailto:${emailAddress}`} 
+                                className="btn btn-sm btn-outline-gold"
+                                style={{ textDecoration: 'none', padding: '0.4rem 0.85rem', fontSize: '0.8rem', fontWeight: 700 }}
+                              >
+                                Email: {emailAddress}
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
+
                   <div className="announcement-steps-box announcement-steps-box-lolos">
                     <div className="announcement-steps-header announcement-steps-header-lolos">
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
@@ -856,18 +1137,251 @@ export default function UserDashboard({ user, onLogout }) {
                 </div>
               )}
 
-              {/* Card 1: Lengkapi Dokumen */}
-              <div
-                style={{
+              {/* === PENGINGAT BATAS WAKTU & KELENGKAPAN BERKAS (OFFICIAL WARNING STYLE ATAU KARTU PENUTUPAN) === */}
+              {isRegistrationClosed ? (
+                <div className="user-warning-card user-closed-card" style={{
                   background: '#ffffff',
-                  border: '1px solid #e2e8f0',
+                  border: '1.5px solid #e2e8f0',
+                  borderLeft: '4px solid #C49E59',
                   borderRadius: '16px',
-                  padding: '2rem',
-                  boxShadow: 'var(--shadow-sm)',
-                  width: '100%',
-                  boxSizing: 'border-box'
-                }}
-              >
+                  padding: '1.5rem',
+                  boxShadow: 'var(--shadow-sm)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.85rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#dc2626' }}>
+                      Pendaftaran Ditutup
+                    </div>
+                    <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                      25 Oktober 2026 · 23:59 WIB
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '1.25rem' }}>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#16324A', margin: '0 0 0.4rem', lineHeight: 1.35 }}>
+                      Terima Kasih, {greetingName}
+                    </h3>
+                    <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, maxWidth: '880px' }}>
+                      Pendaftaran telah ditutup. Terima kasih {participantName ? `${participantName} ` : ''}dan seluruh {applicantCount} calon duta yang telah mendaftar. Seluruh berkas Anda sudah tersimpan dan saat ini panitia sedang memeriksa kelengkapan berkas untuk tahap berikutnya.
+                    </p>
+                  </div>
+
+                  {/* Ringkasan Status Berkas Peserta */}
+                  <div style={{
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '12px',
+                    padding: '1rem 1.25rem',
+                    marginBottom: '1.25rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '0.75rem'
+                  }}>
+                    <div>
+                      <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '2px' }}>
+                        Status Berkas Anda Saat Penutupan:
+                      </div>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 700, color: dossierStatus.isComplete ? '#16a34a' : '#b45309' }}>
+                        {dossierStatus.filledCount} dari {dossierStatus.totalCount} berkas terunggah ({dossierStatus.percent}%) · {isSubmitted ? 'Telah Diterima Panitia' : 'Tersimpan di Sistem'}
+                      </div>
+                    </div>
+
+                    <div style={{ fontSize: '0.825rem', color: '#64748b' }}>
+                      {dossierStatus.isComplete 
+                        ? '✓ Dokumen persyaratan Anda lengkap untuk dinilai dalam seleksi administrasi.' 
+                        : 'Catatan: Berkas yang telah terunggah akan dinilai kelayakannya oleh dewan juri.'}
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('pendaftaran');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="btn btn-gold btn-sm"
+                      style={{ padding: '0.6rem 1.25rem', borderRadius: '8px', fontWeight: 600 }}
+                    >
+                      Lihat Berkas Saya
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('riwayat');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="btn btn-outline-gold btn-sm"
+                      style={{ padding: '0.6rem 1.25rem', borderRadius: '8px', fontWeight: 600 }}
+                    >
+                      Lihat Linimasa & Hasil Seleksi
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="user-warning-card">
+                  {/* Official Warning Header Bar */}
+                  <div className="user-warning-top-bar">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className="user-warning-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                          <line x1="12" y1="9" x2="12" y2="13"/>
+                          <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                        PERINGATAN
+                      </span>
+                      <span className="user-warning-subtitle">
+                        Batas Akhir Kelengkapan Berkas
+                      </span>
+                    </div>
+                    <div className="user-warning-deadline">
+                      Penutupan: 25 Oktober 2026 · 23:59 WIB
+                    </div>
+                  </div>
+
+                  <div className="user-warning-body">
+                    {/* Warning Header with clean alert icon */}
+                    <div className="user-warning-header-left">
+                      <div className="user-warning-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                          <line x1="12" y1="9" x2="12" y2="13"/>
+                          <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                      </div>
+
+                      <div>
+                        <h3 className="user-warning-title">
+                          {dossierStatus.isComplete
+                            ? 'Berkas Persyaratan Anda Telah Lengkap'
+                            : `Peringatan: ${dossierStatus.missingFields.length} Berkas Persyaratan Belum Diunggah`}
+                        </h3>
+                        <div className="user-warning-desc">
+                          {dossierStatus.isComplete
+                            ? 'Seluruh dokumen persyaratan esensial telah berhasil tersimpan di sistem. Pastikan keabsahan seluruh dokumen sebelum verifikasi panitia ditutup.'
+                            : 'Segera unggah seluruh berkas yang diperlukan. Akun yang belum melengkapi berkas hingga batas waktu penutupan tidak dapat diproses dalam seleksi administrasi.'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Clean Digital Countdown Tiles */}
+                    <div className="user-warning-timer-box">
+                      <div className="user-warning-timer-label">
+                        Sisa Waktu Penutupan
+                      </div>
+                      <div className="user-warning-timer-tiles">
+                        {[
+                          { label: 'Hari', val: countdown.d },
+                          { label: 'Jam', val: countdown.h },
+                          { label: 'Menit', val: countdown.m },
+                          { label: 'Detik', val: countdown.s }
+                        ].map((item, idx) => (
+                          <React.Fragment key={item.label}>
+                            <div className="user-warning-timer-tile">
+                              <div className="user-warning-tile-digit">
+                                {String(item.val).padStart(2, '0')}
+                              </div>
+                              <div className="user-warning-tile-label">
+                                {item.label}
+                              </div>
+                            </div>
+                            {idx < 3 && (
+                              <span className="user-warning-tile-colon">:</span>
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Progress bar & missing documents alert callout */}
+                  <div className="user-warning-progress-box">
+                    <div className="user-warning-progress-head">
+                      <span className="user-warning-progress-title">
+                        Status Kelengkapan Dokumen
+                      </span>
+                      <span style={{ fontSize: '0.825rem', fontWeight: 700, color: dossierStatus.isComplete ? '#16a34a' : '#b45309' }}>
+                        {dossierStatus.filledCount} dari {dossierStatus.totalCount} berkas ({dossierStatus.percent}%)
+                      </span>
+                    </div>
+
+                    <div className="user-warning-track">
+                      <div
+                        className="user-warning-fill"
+                        style={{
+                          width: `${dossierStatus.percent}%`,
+                          background: dossierStatus.isComplete ? '#16a34a' : '#d97706',
+                        }}
+                      />
+                    </div>
+
+                    {dossierStatus.isComplete ? (
+                      <div className="user-warning-complete-note">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        Seluruh berkas persyaratan telah lengkap terunggah di sistem.
+                      </div>
+                    ) : (
+                      <div className="user-warning-missing-section">
+                        <div className="user-warning-missing-title">
+                          Dokumen yang belum diunggah ({dossierStatus.missingFields.length} dokumen):
+                        </div>
+                        <div className="user-warning-tags">
+                          {dossierStatus.missingFields.map((field) => {
+                            const label = typeof field === 'object' ? field.label : field;
+                            return (
+                              <span key={label} className="user-warning-tag-item">
+                                • {label}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="user-warning-actions">
+                    {!isSubmitted ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab('pendaftaran');
+                          window.scrollTo({ top: 350, behavior: 'smooth' });
+                        }}
+                        className="btn btn-gold btn-sm user-warning-btn-primary"
+                      >
+                        Lengkapi Berkas Sekarang →
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab('riwayat');
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="btn btn-gold btn-sm user-warning-btn-primary"
+                      >
+                        Lihat Berkas Saya
+                      </button>
+                    )}
+
+                    <a
+                      href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline-gold btn-sm user-warning-btn-secondary"
+                    >
+                      Unduh Booklet Panduan
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Card 1: Lengkapi Dokumen */}
+              <div className="user-dashboard-card">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span
@@ -945,17 +1459,7 @@ export default function UserDashboard({ user, onLogout }) {
               </div>
 
               {/* Card 2: Program Duta Kampus */}
-              <div
-                style={{
-                  background: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '16px',
-                  padding: '2rem',
-                  boxShadow: 'var(--shadow-sm)',
-                  width: '100%',
-                  boxSizing: 'border-box'
-                }}
-              >
+              <div className="user-dashboard-card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.25rem' }}>
                   <div style={{ flex: 1, minWidth: '300px' }}>
                     <div style={{ fontSize: '0.78rem', color: '#C49E59', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
@@ -1003,12 +1507,13 @@ export default function UserDashboard({ user, onLogout }) {
 
               {/* Status Bar */}
               <div
+                className="registration-status-bar"
                 style={{
-                  background: dossierStatus.bg,
-                  border: `1.5px solid ${dossierStatus.border}`,
+                  background: isRegistrationClosed ? '#fffbeb' : dossierStatus.bg,
+                  border: `1.5px solid ${isRegistrationClosed ? '#fde68a' : dossierStatus.border}`,
                   padding: '1.25rem 1.5rem',
                   borderRadius: '12px',
-                  marginBottom: '2rem',
+                  marginBottom: isRegistrationClosed ? '1.25rem' : '2rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -1017,24 +1522,47 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: 700, color: dossierStatus.color, fontSize: '0.95rem' }}>
-                    Status Berkas: {dossierStatus.statusLabel} ({dossierStatus.percent}%)
+                  <div style={{ fontWeight: 700, color: isRegistrationClosed ? '#92400e' : dossierStatus.color, fontSize: '0.95rem' }}>
+                    Status Formulir: {isRegistrationClosed ? 'Pendaftaran Resmi Ditutup' : `${dossierStatus.statusLabel} (${dossierStatus.percent}%)`}
                   </div>
-                  <div style={{ fontSize: '0.825rem', color: dossierStatus.color, marginTop: '2px' }}>
-                    {dossierStatus.isComplete 
+                  <div style={{ fontSize: '0.825rem', color: isRegistrationClosed ? '#78350f' : dossierStatus.color, marginTop: '2px' }}>
+                    {isRegistrationClosed 
+                      ? `Batas akhir pengisian dan pengunggahan berkas telah berakhir pada 25 Oktober 2026 pukul 23:59 WIB. Berkas Anda (${dossierStatus.filledCount} dari ${dossierStatus.totalCount} berkas) telah tersimpan dan sedang dalam proses verifikasi administrasi.`
+                      : dossierStatus.isComplete 
                       ? 'Seluruh dokumen persyaratan esensial telah lengkap diisi. Anda dapat mengirimkan pendaftaran.'
                       : `Masih ada ${dossierStatus.missingFields.length} data yang belum dilengkapi: ${dossierStatus.missingFields.join(', ')}.`}
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  {isSubmitted && (
-                    <span style={{ background: '#166534', color: '#fff', padding: '6px 12px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
-                      Berkas Telah Diterima Panitia
-                    </span>
-                  )}
-                </div>
+                {isSubmitted && (
+                  <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#166534' }}>
+                    Berkas Telah Diterima Panitia
+                  </div>
+                )}
               </div>
+
+              {/* UCAPAN TERIMA KASIH DARI PANITIA SELEKSI (TAMPIL OTOMATIS SAAT PENDAFTARAN DITUTUP) */}
+              {isRegistrationClosed && (
+                <div style={{
+                  background: '#ffffff',
+                  border: '1.5px solid #e2e8f0',
+                  borderLeft: '4px solid #C49E59',
+                  borderRadius: '12px',
+                  padding: '1.25rem 1.5rem',
+                  marginBottom: '1.5rem',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+                }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#92400e', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                    Pendaftaran Ditutup
+                  </div>
+                  <h4 style={{ margin: '0 0 0.35rem', color: '#16324A', fontSize: '1.05rem', fontWeight: 700 }}>
+                    Terima Kasih, {greetingName}
+                  </h4>
+                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
+                    Terima kasih {participantName ? `${participantName} ` : ''}telah melengkapi berkas pendaftaran bersama {applicantCount} calon duta lainnya. Karena pendaftaran sudah ditutup, seluruh berkas telah dikunci untuk proses seleksi. Anda tetap dapat melihat kembali berkas yang telah Anda unggah di bawah ini.
+                  </p>
+                </div>
+              )}
 
               {/* ALERT BANNER */}
               {formAlert.show && (
@@ -1074,6 +1602,7 @@ export default function UserDashboard({ user, onLogout }) {
               {/* FORM WRAPPER - FULL WIDTH ON DESKTOP, GENEROUS SPACING ON HP */}
               <form
                 onSubmit={handleSubmitApplication}
+                className="user-registration-form"
                 style={{
                   background: '#ffffff',
                   border: '1px solid #e2e8f0',
@@ -1088,7 +1617,7 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 {/* SECTION 1: DATA PRIBADI & MAHASISWA */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div className="user-form-section" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem' }}>
                     <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
                       1. Identitas Pribadi & Kemahasiswaan
@@ -1162,7 +1691,7 @@ export default function UserDashboard({ user, onLogout }) {
                 </div>
 
                 {/* SECTION 2: DATA AKADEMIK & KONTAK */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div className="user-form-section" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem' }}>
                     <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
                       2. Data Akademik & Kontak Aktif
@@ -1240,8 +1769,8 @@ export default function UserDashboard({ user, onLogout }) {
                 </div>
 
                 {/* DOKUMEN PERSYARATAN */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                  <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div className="user-form-section user-form-section-dossier" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div className="dossier-section-header" style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                     <div>
                       <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
                         3. Berkas Dokumen Persyaratan
@@ -1250,12 +1779,12 @@ export default function UserDashboard({ user, onLogout }) {
                         Lampirkan dokumen resmi persyaratan seleksi Pemilihan Duta Kampus 2026.
                       </p>
                     </div>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: dossierStatus.isComplete ? '#dcfce7' : '#fef9c3', color: dossierStatus.isComplete ? '#166534' : '#854d0e' }}>
+                    <span className="dossier-count-badge" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: dossierStatus.isComplete ? '#dcfce7' : '#fef9c3', color: dossierStatus.isComplete ? '#166534' : '#854d0e' }}>
                       Terunggah: {dossierStatus.filledCount} / {DOSSIER_DOCUMENTS.length} Berkas
                     </span>
                   </div>
 
-                  <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                  <div className="form-responsive-grid dossier-items-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
                     {DOSSIER_DOCUMENTS.map((doc, idx) => {
                       const isSem1 = String(formData.semester || '').trim() === '1';
                       const isMandatory = doc.required || (doc.id === 'buktiDiterima' && isSem1);
@@ -1266,6 +1795,7 @@ export default function UserDashboard({ user, onLogout }) {
                       return (
                         <div
                           key={doc.key}
+                          className={`dossier-item-card ${isUploaded ? 'dossier-item-uploaded' : 'dossier-item-empty'}`}
                           style={{
                             background: isUploaded ? '#f0fdf4' : '#f8fafc',
                             border: `1.5px solid ${isUploaded ? '#86efac' : isMandatory ? '#cbd5e1' : '#e2e8f0'}`,
@@ -1277,9 +1807,10 @@ export default function UserDashboard({ user, onLogout }) {
                             gap: '0.75rem'
                           }}
                         >
-                          <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '0.4rem' }}>
+                          <div className="dossier-card-top">
+                            <div className="dossier-badge-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '0.4rem' }}>
                               <span
+                                className="dossier-req-badge"
                                 style={{
                                   fontSize: '0.72rem',
                                   fontWeight: 700,
@@ -1291,24 +1822,59 @@ export default function UserDashboard({ user, onLogout }) {
                               >
                                 {isMandatory ? 'Wajib' : doc.conditionalNote || 'Tidak Wajib'}
                               </span>
-                              <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                              <span className="dossier-format-label" style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
                                 {doc.formatLabel}
                               </span>
                             </div>
 
-                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#16324A', marginBottom: '0.25rem' }}>
+                            <div className="dossier-card-title" style={{ fontSize: '0.9rem', fontWeight: 700, color: '#16324A', marginBottom: '0.25rem' }}>
                               {idx + 1}. {doc.label}
                             </div>
-                            <div style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.4 }}>
+                            <div className="dossier-card-sublabel" style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.4 }}>
                               {doc.sublabel}
                             </div>
                           </div>
 
-                          <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            {isUploaded ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', maxWidth: '100%', flexWrap: 'wrap' }}>
+                          <div className="dossier-card-bottom" style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            {loadingDocKey === `deleting-${doc.key}` ? (
+                              <div className="dossier-status-badge dossier-status-deleting" style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                background: '#fee2e2',
+                                border: '1px solid #fca5a5',
+                                color: '#991b1b',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                animation: 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                              }}>
+                                <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                                Sedang Menghapus...
+                              </div>
+                            ) : loadingDocKey === `uploading-${doc.key}` ? (
+                              <div className="dossier-status-badge dossier-status-uploading" style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                background: '#fef3c7',
+                                border: '1px solid #fde68a',
+                                color: '#92400e',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                animation: 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                              }}>
+                                <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                                Mengunggah & Menyimpan...
+                              </div>
+                            ) : isUploaded ? (
+                              <div className="dossier-uploaded-actions" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <button
                                   type="button"
+                                  className="dossier-btn-preview"
                                   onClick={() => setPreviewModal({
                                     isOpen: true,
                                     docKey: doc.key,
@@ -1334,31 +1900,42 @@ export default function UserDashboard({ user, onLogout }) {
                                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                   Lihat / Pratinjau
                                 </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleRemoveFile(doc.key)}
-                                  style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    color: '#dc2626',
-                                    cursor: 'pointer',
-                                    fontSize: '0.72rem',
-                                    fontWeight: 700,
-                                    padding: '2px 6px',
-                                    borderRadius: '4px'
-                                  }}
-                                >
-                                  Hapus
-                                </button>
+                                {!isRegistrationClosed && (
+                                  <button
+                                    type="button"
+                                    className="dossier-btn-remove"
+                                    onClick={() => handleRemoveFile(doc.key)}
+                                    disabled={loadingDocKey !== null}
+                                    style={{
+                                      background: 'rgba(220, 38, 38, 0.08)',
+                                      border: '1px solid rgba(220, 38, 38, 0.25)',
+                                      color: '#dc2626',
+                                      cursor: loadingDocKey !== null ? 'not-allowed' : 'pointer',
+                                      fontSize: '0.75rem',
+                                      fontWeight: 700,
+                                      padding: '4px 10px',
+                                      borderRadius: '6px',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '4px',
+                                      transition: 'all 0.2s'
+                                    }}
+                                    title="Hapus berkas ini secara permanen"
+                                  >
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                                    Hapus
+                                  </button>
+                                )}
                               </div>
                             ) : (
-                              <span style={{ fontSize: '0.75rem', color: isMandatory ? '#b91c1c' : '#64748b', fontWeight: 500 }}>
-                                {isMandatory ? 'Belum Diunggah' : 'Belum Dilampirkan'}
+                              <span className="dossier-status-empty" style={{ fontSize: '0.75rem', color: isMandatory ? '#b91c1c' : '#64748b', fontWeight: 500 }}>
+                                {isRegistrationClosed ? 'Tidak Diunggah' : isMandatory ? 'Belum Diunggah' : 'Belum Dilampirkan'}
                               </span>
                             )}
 
-                            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                            <div className="dossier-input-actions" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                               <label
+                                className="dossier-btn-upload"
                                 style={{
                                   display: 'inline-flex',
                                   alignItems: 'center',
@@ -1366,11 +1943,13 @@ export default function UserDashboard({ user, onLogout }) {
                                   padding: '5px 10px',
                                   borderRadius: '6px',
                                   border: '1px solid #cbd5e1',
-                                  background: '#ffffff',
+                                  background: isRegistrationClosed ? '#f8fafc' : '#ffffff',
                                   fontSize: '0.75rem',
                                   fontWeight: 600,
-                                  color: 'var(--navy)',
-                                  cursor: 'pointer',
+                                  color: isRegistrationClosed ? '#94a3b8' : 'var(--navy)',
+                                  cursor: (loadingDocKey !== null || isRegistrationClosed) ? 'not-allowed' : 'pointer',
+                                  opacity: (loadingDocKey !== null || isRegistrationClosed) ? 0.6 : 1,
+                                  pointerEvents: isRegistrationClosed ? 'none' : 'auto',
                                   transition: 'all 0.2s'
                                 }}
                               >
@@ -1378,14 +1957,17 @@ export default function UserDashboard({ user, onLogout }) {
                                   type="file"
                                   accept={doc.fileTypes}
                                   style={{ display: 'none' }}
+                                  disabled={loadingDocKey !== null || isRegistrationClosed}
                                   onChange={(e) => handleFileUpload(doc.key, e.target.files[0], doc.label)}
                                 />
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                <span>{isUploaded ? 'Ganti File' : 'Pilih Berkas'}</span>
+                                <span>{isRegistrationClosed ? 'Ditutup' : isUploaded ? 'Ganti File' : 'Pilih Berkas'}</span>
                               </label>
 
                               <button
                                 type="button"
+                                className="dossier-btn-drive"
+                                disabled={loadingDocKey !== null || isRegistrationClosed}
                                 onClick={() => setPreviewModal({
                                   isOpen: true,
                                   docKey: doc.key,
@@ -1398,13 +1980,14 @@ export default function UserDashboard({ user, onLogout }) {
                                   padding: '5px 8px',
                                   borderRadius: '6px',
                                   border: '1px solid #cbd5e1',
-                                  background: '#ffffff',
+                                  background: isRegistrationClosed ? '#f8fafc' : '#ffffff',
                                   fontSize: '0.72rem',
-                                  color: 'var(--navy)',
-                                  cursor: 'pointer',
+                                  color: isRegistrationClosed ? '#94a3b8' : 'var(--navy)',
+                                  cursor: (loadingDocKey !== null || isRegistrationClosed) ? 'not-allowed' : 'pointer',
+                                  opacity: (loadingDocKey !== null || isRegistrationClosed) ? 0.6 : 1,
                                   fontWeight: 600
                                 }}
-                                title="Tautkan Link Google Drive"
+                                title={isRegistrationClosed ? 'Pendaftaran ditutup' : 'Tautkan Link Google Drive'}
                               >
                                 Tautan Drive
                               </button>
@@ -1417,37 +2000,56 @@ export default function UserDashboard({ user, onLogout }) {
                 </div>
 
                 {/* FORM ACTIONS */}
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
+                <div className="user-form-actions" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
                   <button
                     type="button"
                     onClick={handleSaveDraft}
+                    disabled={isSavingDraft || isSubmitting || isRegistrationClosed}
+                    className="save-draft-btn"
                     style={{
                       padding: '0.875rem 1.5rem',
                       borderRadius: '8px',
                       border: '1.5px solid #cbd5e1',
-                      background: '#ffffff',
+                      background: (isSavingDraft || isRegistrationClosed) ? '#f8fafc' : '#ffffff',
                       fontSize: '0.925rem',
                       fontWeight: 600,
-                      color: '#475569',
-                      cursor: 'pointer',
-                      flex: '1 1 auto'
+                      color: (isSavingDraft || isRegistrationClosed) ? '#94a3b8' : '#475569',
+                      cursor: (isSavingDraft || isSubmitting || isRegistrationClosed) ? 'not-allowed' : 'pointer',
+                      flex: '1 1 auto',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px'
                     }}
                   >
-                    Simpan Draf Berkas
+                    {isSavingDraft && (
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                    )}
+                    {isRegistrationClosed ? 'Pendaftaran Telah Ditutup' : isSavingDraft ? 'Menyimpan Draf Berkas...' : 'Simpan Draf Berkas'}
                   </button>
 
                   <button
                     type="submit"
-                    className="btn btn-gold"
+                    disabled={isSubmitting || isSavingDraft || isRegistrationClosed}
+                    className="btn btn-gold submit-application-btn"
                     style={{
                       padding: '0.875rem 2rem',
                       borderRadius: '8px',
                       fontSize: '0.925rem',
                       fontWeight: 700,
-                      flex: '2 1 auto'
+                      flex: '2 1 auto',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      opacity: (isSubmitting || isRegistrationClosed) ? 0.75 : 1,
+                      cursor: (isSubmitting || isSavingDraft || isRegistrationClosed) ? 'not-allowed' : 'pointer'
                     }}
                   >
-                    {isSubmitted ? 'Perbarui & Kirim Ulang Berkas' : 'Kirim Pendaftaran Duta Kampus →'}
+                    {isSubmitting && (
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
+                    )}
+                    {isRegistrationClosed ? 'Pendaftaran Resmi Ditutup' : isSubmitting ? 'Mengirim Pendaftaran...' : (isSubmitted ? 'Perbarui & Kirim Ulang Berkas' : 'Kirim Pendaftaran Duta Kampus →')}
                   </button>
                 </div>
               </form>
@@ -1527,6 +2129,7 @@ export default function UserDashboard({ user, onLogout }) {
 
               {/* Linimasa Tahapan Seleksi */}
               <div
+                className="history-timeline-card"
                 style={{
                   background: '#ffffff',
                   border: '1px solid #e2e8f0',

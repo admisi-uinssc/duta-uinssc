@@ -19,21 +19,26 @@ import { parseMediaUrl } from '../lib/media';
 import MediaModal from '../components/MediaModal';
 
 export default function HomePage() {
+  const [cmsData, setCmsData] = useState(CMS.get());
   const [ambassadors, setAmbassadors] = useState([]);
   const [selectedAmbassadorMedia, setSelectedAmbassadorMedia] = useState(null);
 
   useEffect(() => {
-    setAmbassadors((CMS.get().ambassadors || []).slice(0, 4));
+    const initial = CMS.get();
+    setCmsData(initial);
+    setAmbassadors((initial.ambassadors || []).slice(0, 4));
 
     CMS.getAsync().then((data) => {
-      if (data?.ambassadors) {
-        setAmbassadors(data.ambassadors.slice(0, 4));
+      if (data) {
+        setCmsData(data);
+        if (data.ambassadors) setAmbassadors(data.ambassadors.slice(0, 4));
       }
     }).catch(() => {});
 
     const unsubscribe = CMS.subscribe((data) => {
-      if (data && data.ambassadors) {
-        setAmbassadors(data.ambassadors.slice(0, 4));
+      if (data) {
+        setCmsData(data);
+        if (data.ambassadors) setAmbassadors(data.ambassadors.slice(0, 4));
       }
     });
 
@@ -42,6 +47,8 @@ export default function HomePage() {
     };
   }, []);
 
+  const pinnedAnnouncements = (cmsData?.announcements || []).filter(a => a.active !== false && a.pinned);
+
   return (
     <>
       <Navbar />
@@ -49,6 +56,34 @@ export default function HomePage() {
       
       {/* Hitung Mundur Penutupan Pendaftaran (Tampil di bawah slider, di atas menu pada tampilan HP & desktop) */}
       <RegistrationCountdownBanner />
+
+      {/* Pinned Public Announcements Banner (Desktop & Mobile) */}
+      {pinnedAnnouncements.length > 0 && (
+        <section style={{ background: 'var(--navy)', borderTop: '2px solid var(--gold)', borderBottom: '2px solid var(--gold)', padding: '1rem 0' }}>
+          <div className="container" style={{ maxWidth: '1440px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+              <span style={{ background: 'var(--gold)', color: '#ffffff', fontSize: '0.75rem', fontWeight: 800, padding: '4px 10px', borderRadius: '4px', letterSpacing: '0.5px' }}>
+                {pinnedAnnouncements[0].badge || 'INFORMASI PENTING'}
+              </span>
+              <div style={{ color: '#ffffff', fontSize: '0.95rem', fontWeight: 700 }}>
+                {pinnedAnnouncements[0].title}
+                {pinnedAnnouncements[0].date && (
+                  <span style={{ opacity: 0.85, fontWeight: 500, fontSize: '0.85rem', marginLeft: '8px' }}>
+                    — {pinnedAnnouncements[0].date}{pinnedAnnouncements[0].location ? ` (${pinnedAnnouncements[0].location})` : ''}
+                  </span>
+                )}
+              </div>
+            </div>
+            <Link 
+              href="/pengumuman" 
+              className="btn btn-sm btn-outline-gold"
+              style={{ textDecoration: 'none', padding: '0.4rem 1rem', fontSize: '0.82rem', whiteSpace: 'nowrap' }}
+            >
+              Lihat Detail Pengumuman ↗
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Pop-up Pengumuman Penutupan Pendaftaran di Tampilan Publik (Hanya muncul sekali per sesi) */}
       <RegistrationClosedModal />
@@ -108,6 +143,15 @@ export default function HomePage() {
               </div>
               <span>Persyaratan</span>
             </Link>
+            <Link href="/pengumuman" className="hub-card" style={{ border: '1.5px solid rgba(196, 158, 89, 0.4)', background: 'linear-gradient(135deg, #ffffff 0%, rgba(196, 158, 89, 0.08) 100%)' }}>
+              <div className="hub-icon" style={{ background: 'var(--gold)', color: '#ffffff' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+              </div>
+              <span style={{ fontWeight: 800, color: 'var(--navy)' }}>Pengumuman</span>
+            </Link>
             <a 
               href="https://drive.google.com/drive/folders/1WQUTBWazFp6GbT4r4wjIKTD6HNGKrgoH" 
               target="_blank" 
@@ -131,10 +175,34 @@ export default function HomePage() {
           </div>
           
           <div className="hub-news" style={{ marginTop: '2.5rem' }}>
-            <h3>Informasi Terbaru</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+              <h3 style={{ margin: 0 }}>Informasi & Pengumuman</h3>
+              <Link href="/pengumuman" style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 700, textDecoration: 'none' }}>
+                Lihat Semua ↗
+              </Link>
+            </div>
             <div className="news-list">
-              <div className="news-item"><div className="news-dot"></div><p>Pendaftaran Duta Kampus 2026 telah dibuka. Pastikan Anda membaca persyaratan sebelum mendaftar.</p></div>
-              <div className="news-item"><div className="news-dot"></div><p>Siapkan berkas administrasi seperti KTM, Transkrip Nilai, dan Surat Keterangan Aktif Kuliah.</p></div>
+              {(cmsData?.announcements || []).filter(a => a.active !== false).slice(0, 3).map((ann, aIdx) => (
+                <Link key={ann.id || aIdx} href="/pengumuman" style={{ textDecoration: 'none', display: 'block' }}>
+                  <div className="news-item">
+                    <div className="news-dot"></div>
+                    <div>
+                      <strong style={{ color: 'var(--navy)', fontSize: '0.9rem', display: 'block', marginBottom: '2px' }}>
+                        {ann.title}
+                      </strong>
+                      <p style={{ margin: 0, fontSize: '0.825rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
+                        {ann.date ? `${ann.date} — ` : ''}{ann.content?.slice(0, 100)}...
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+              {(!cmsData?.announcements || cmsData.announcements.length === 0) && (
+                <>
+                  <div className="news-item"><div className="news-dot"></div><p>Pendaftaran Duta Kampus 2026 telah dibuka. Pastikan Anda membaca persyaratan sebelum mendaftar.</p></div>
+                  <div className="news-item"><div className="news-dot"></div><p>Siapkan berkas administrasi seperti KTM, Transkrip Nilai, dan Surat Keterangan Aktif Kuliah.</p></div>
+                </>
+              )}
             </div>
           </div>
         </div>

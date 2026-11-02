@@ -304,6 +304,38 @@ const DEFAULT_CMS = {
     point2Desc: 'Menghadirkan konten kreatif flyer, video promosi, dan aktivasi media sosial institusi.',
     btnText: 'Ajukan Akun & Mulai Pendaftaran',
     btnLink: '/login'
+  },
+  announcements: [
+    {
+      id: 1,
+      badge: "INFORMASI PENTING",
+      title: "Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026",
+      target: "lolos",
+      greeting: "Halo, Calon Duta Kampus UINSSC 2026!",
+      content: "Saatnya mempersiapkan diri untuk melangkah ke tahap selanjutnya, yaitu Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026.\n\nSeluruh calon Duta Kampus 2026 WAJIB hadir sebagai bagian dari rangkaian tahapan seleksi resmi.\n\nPastikan hadir tepat waktu dan persiapkan diri sebaik mungkin. Tunjukkan potensi terbaikmu dan jadilah bagian dari perubahan!",
+      date: "Selasa, 03 November 2026",
+      time: "07.00 WIB s.d. selesai",
+      location: "Auditorium Rektorat Lt. 3",
+      dressCode: "Hitam Putih",
+      contactWa: "0851-2292-7628",
+      contactIg: "@duta_uinssc",
+      contactTiktok: "@duta.uin.ssc",
+      contactEmail: "dutakampus@uinssc.ac.id",
+      active: true,
+      pinned: true,
+      createdAt: "2026-11-02T00:00:00.000Z"
+    }
+  ],
+  contacts: {
+    whatsapp: "0851-2292-7628",
+    whatsappUrl: "https://wa.me/6285122927628",
+    instagram: "@duta_uinssc",
+    instagramUrl: "https://www.instagram.com/duta_uinssc",
+    tiktok: "@duta.uin.ssc",
+    tiktokUrl: "https://www.tiktok.com/@duta.uin.ssc",
+    email: "dutakampus@uinssc.ac.id",
+    phone: "0851-2292-7628",
+    address: "Auditorium Rektorat Lt. 3, UIN Siber Syekh Nurjati Cirebon, Jawa Barat 45132"
   }
 };
 
@@ -328,6 +360,16 @@ function mergeWithDefaults(cms) {
     });
   } else {
     merged.ambassadors = DEFAULT_CMS.ambassadors;
+  }
+  if (!Array.isArray(cms.announcements) || cms.announcements.length === 0) {
+    merged.announcements = DEFAULT_CMS.announcements;
+  } else {
+    merged.announcements = cms.announcements;
+  }
+  if (!cms.contacts || typeof cms.contacts !== 'object') {
+    merged.contacts = DEFAULT_CMS.contacts;
+  } else {
+    merged.contacts = { ...DEFAULT_CMS.contacts, ...cms.contacts };
   }
   return merged;
 }
