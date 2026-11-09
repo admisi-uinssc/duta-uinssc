@@ -168,6 +168,7 @@ export default function LoginPage() {
 
       {/* Main Container Card */}
       <div
+        className="login-card-container"
         style={{
           width: '100%',
           maxWidth: isLogin ? '440px' : '580px',

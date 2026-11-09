@@ -226,31 +226,31 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
   if (isClosed && !activeFinalistToken) {
     return (
-      <div style={{
-        padding: '2rem 1.5rem',
+      <div className="closed-container" style={{
+        padding: '1.75rem 1.25rem',
         textAlign: 'center',
         background: '#ffffff',
-        borderRadius: '16px',
+        borderRadius: '14px',
         border: '1px solid rgba(196, 158, 89, 0.3)',
-        boxShadow: '0 4px 20px rgba(10, 25, 47, 0.06)'
+        boxShadow: '0 4px 20px rgba(10, 25, 47, 0.06)',
+        width: '100%',
+        boxSizing: 'border-box'
       }}>
         <div style={{
           color: 'var(--gold)',
-          fontSize: '0.78rem',
+          fontSize: '0.85rem',
           fontWeight: 700,
-          letterSpacing: '0.5px',
-          textTransform: 'uppercase',
           marginBottom: '0.5rem'
         }}>
           Pendaftaran Ditutup
         </div>
 
         <h3 style={{
-          fontSize: '1.25rem',
+          fontSize: '1.2rem',
           fontWeight: 700,
           color: 'var(--navy)',
           marginBottom: '0.65rem',
-          lineHeight: 1.3
+          lineHeight: 1.35
         }}>
           Terima Kasih Kepada Calon Duta
         </h3>
@@ -266,20 +266,22 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
         </p>
 
         {/* Cek Nomor Pendaftaran Form */}
-        <div style={{
-          padding: '1.1rem',
+        <div className="token-box-wrapper" style={{
+          padding: '1rem',
           background: '#f8fafc',
-          borderRadius: '12px',
+          borderRadius: '10px',
           border: '1px solid #e2e8f0',
-          marginBottom: '1.5rem',
-          textAlign: 'left'
+          marginBottom: '1.25rem',
+          textAlign: 'left',
+          width: '100%',
+          boxSizing: 'border-box'
         }}>
           <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.88rem', marginBottom: '8px' }}>
             Cek Nomor Pendaftaran
           </div>
 
-          <form onSubmit={handleVerifyToken} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{ display: 'flex', gap: '8px' }}>
+          <form onSubmit={handleVerifyToken} style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <div className="token-input-group" style={{ display: 'flex', gap: '8px', width: '100%', flexWrap: 'wrap' }}>
               <input
                 type="text"
                 value={tokenInput}
@@ -288,7 +290,9 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
                   if (tokenError) setTokenError('');
                 }}
                 style={{
-                  flex: 1,
+                  flex: '1 1 200px',
+                  minWidth: 0,
+                  width: '100%',
                   padding: '0.65rem 0.85rem',
                   fontSize: '0.85rem',
                   border: tokenError ? '1px solid #ef4444' : '1px solid #cbd5e1',
@@ -296,14 +300,15 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
                   outline: 'none',
                   textTransform: 'uppercase',
                   fontWeight: 600,
-                  letterSpacing: '0.5px'
+                  letterSpacing: '0.5px',
+                  boxSizing: 'border-box'
                 }}
                 disabled={tokenLoading}
               />
               <button
                 type="submit"
                 disabled={tokenLoading || !tokenInput.trim()}
-                className="btn btn-navy"
+                className="btn btn-navy token-submit-btn"
                 style={{
                   padding: '0.65rem 1rem',
                   fontSize: '0.82rem',
@@ -346,15 +351,15 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           </form>
         </div>
 
-        <div style={{
-          padding: '1rem',
+        <div className="info-box-wrapper" style={{
+          padding: '0.9rem',
           background: '#f8fafc',
-          borderRadius: '12px',
+          borderRadius: '10px',
           border: '1px solid #e2e8f0',
           fontSize: '0.82rem',
           color: '#334155',
           lineHeight: 1.55,
-          marginBottom: '1.5rem',
+          marginBottom: '1.25rem',
           textAlign: 'left'
         }}>
           <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '4px' }}>
@@ -363,17 +368,17 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           Silakan masuk ke akun Anda untuk mengecek kelengkapan berkas dan melihat informasi pengumuman tahap berikutnya.
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <button
             type="button"
             onClick={onSwitchToLogin}
             className="btn btn-gold"
             style={{
               width: '100%',
-              padding: '0.85rem',
-              borderRadius: '10px',
+              padding: '0.8rem',
+              borderRadius: '8px',
               fontWeight: 700,
-              fontSize: '0.9rem',
+              fontSize: '0.88rem',
               justifyContent: 'center'
             }}
           >
@@ -382,9 +387,9 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           <a
             href="/"
             style={{
-              padding: '0.75rem',
-              borderRadius: '10px',
-              fontSize: '0.85rem',
+              padding: '0.65rem',
+              borderRadius: '8px',
+              fontSize: '0.82rem',
               color: 'var(--text-mid)',
               textDecoration: 'none',
               fontWeight: 600,
@@ -400,44 +405,15 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
   return (
     <div className="registration-wizard" style={{ width: '100%' }}>
-      {/* 2-Step Progress Indicator */}
-      <div style={{ marginBottom: '1.75rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.625rem' }}>
-          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+      {/* 2-Step Simple Header Tracker */}
+      <div style={{ marginBottom: '1.25rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '4px' }}>
+          <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--navy)' }}>
             Formulir Pendaftaran Akun
           </span>
-          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-mid)', background: 'var(--bg-alt)', padding: '3px 10px', borderRadius: '6px', border: '1px solid var(--border-soft)' }}>
-            Langkah {step} dari 2: {step === 1 ? 'Informasi Akun' : 'Informasi Pribadi'}
+          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-mid)' }}>
+            Langkah {step} dari 2
           </span>
-        </div>
-
-        {/* 2-Steps Visual Tracker */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.875rem' }}>
-          <div style={{ 
-            background: step === 1 ? 'rgba(196,158,89,0.1)' : 'var(--bg-alt)',
-            border: step === 1 ? '1.5px solid var(--gold)' : '1px solid var(--border-soft)',
-            borderRadius: '8px', padding: '10px 14px'
-          }}>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: step >= 1 ? 'var(--navy)' : 'var(--text-light)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Langkah 1
-            </div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 600, color: step === 1 ? 'var(--navy)' : 'var(--text-mid)', marginTop: '2px' }}>
-              Informasi Akun
-            </div>
-          </div>
-
-          <div style={{ 
-            background: step === 2 ? 'rgba(196,158,89,0.1)' : 'var(--bg-alt)',
-            border: step === 2 ? '1.5px solid var(--gold)' : '1px solid var(--border-soft)',
-            borderRadius: '8px', padding: '10px 14px'
-          }}>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: step === 2 ? 'var(--navy)' : 'var(--text-light)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Langkah 2
-            </div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 600, color: step === 2 ? 'var(--navy)' : 'var(--text-mid)', marginTop: '2px' }}>
-              Informasi Pribadi
-            </div>
-          </div>
         </div>
 
         {/* Progress Line */}
@@ -827,7 +803,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           </div>
 
           {/* Tempat Lahir & Tanggal Lahir in 2 columns */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+          <div className="wizard-two-cols" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
               <label htmlFor={tempatLahirInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
                 Tempat Lahir <span style={{ color: '#dc2626' }}>*</span>
@@ -879,13 +855,13 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
             <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
               Jenis Kelamin <span style={{ color: '#dc2626' }}>*</span>
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <div className="wizard-two-cols" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem' }}>
               <label style={{
                 display: 'flex', alignItems: 'center', gap: '0.5rem',
                 padding: '0.75rem 1rem', borderRadius: '8px',
                 border: `1px solid ${jenisKelamin === 'Laki-laki' ? 'var(--gold)' : 'var(--border)'}`,
                 background: jenisKelamin === 'Laki-laki' ? 'rgba(196,158,89,0.06)' : 'var(--bg)',
-                cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500
+                cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500, boxSizing: 'border-box'
               }}>
                 <input
                   type="radio"
@@ -903,7 +879,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
                 padding: '0.75rem 1rem', borderRadius: '8px',
                 border: `1px solid ${jenisKelamin === 'Perempuan' ? 'var(--gold)' : 'var(--border)'}`,
                 background: jenisKelamin === 'Perempuan' ? 'rgba(196,158,89,0.06)' : 'var(--bg)',
-                cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500
+                cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500, boxSizing: 'border-box'
               }}>
                 <input
                   type="radio"
@@ -919,14 +895,14 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           </div>
 
           {/* Navigation Buttons: Back & Ajukan Akun */}
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.75rem' }}>
+          <div className="wizard-nav-btns" style={{ display: 'flex', gap: '0.75rem', marginTop: '0.75rem', flexWrap: 'wrap' }}>
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="btn btn-outline-gold"
+              className="btn btn-outline-gold wizard-btn-back"
               style={{
-                flex: 1, borderRadius: '8px', padding: '0.85rem',
-                fontSize: '0.9rem', fontWeight: 600
+                flex: '1 1 120px', borderRadius: '8px', padding: '0.85rem',
+                fontSize: '0.9rem', fontWeight: 600, boxSizing: 'border-box'
               }}
             >
               Kembali
@@ -935,12 +911,13 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
             <button
               type="submit"
               disabled={submitting}
-              className="btn btn-gold"
+              className="btn btn-gold wizard-btn-submit"
               style={{
-                flex: 2, borderRadius: '8px', padding: '0.85rem',
+                flex: '2 1 200px', borderRadius: '8px', padding: '0.85rem',
                 fontSize: '0.95rem', fontWeight: 600,
                 opacity: submitting ? 0.7 : 1,
-                cursor: submitting ? 'not-allowed' : 'pointer'
+                cursor: submitting ? 'not-allowed' : 'pointer',
+                boxSizing: 'border-box'
               }}
             >
               {submitting ? 'Memproses Pendaftaran...' : 'Daftar & Masuk ke Dashboard'}
