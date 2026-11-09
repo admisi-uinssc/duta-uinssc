@@ -877,7 +877,7 @@ export default function UserDashboard({ user, onLogout }) {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '6px 14px',
-                borderRadius: '9999px',
+                borderRadius: '6px',
                 background: dossierStatus.bg,
                 border: `1px solid ${dossierStatus.border}`,
                 fontSize: '0.8rem',
@@ -1558,13 +1558,13 @@ export default function UserDashboard({ user, onLogout }) {
                 </p>
 
                 {/* Progress track */}
-                <div style={{ background: '#f1f5f9', borderRadius: '9999px', height: '8px', overflow: 'hidden', marginBottom: '1.5rem', maxWidth: '600px' }}>
+                <div style={{ background: '#f1f5f9', borderRadius: '6px', height: '8px', overflow: 'hidden', marginBottom: '1.5rem', maxWidth: '600px' }}>
                   <div
                     style={{
                       height: '100%',
                       width: `${dossierStatus.percent}%`,
                       background: dossierStatus.isComplete ? '#16a34a' : '#C49E59',
-                      borderRadius: '9999px',
+                      borderRadius: '6px',
                       transition: 'width 0.4s ease'
                     }}
                   />
@@ -1911,7 +1911,7 @@ export default function UserDashboard({ user, onLogout }) {
                         Lampirkan dokumen resmi persyaratan seleksi Pemilihan Duta Kampus 2026.
                       </p>
                     </div>
-                    <span className="dossier-count-badge" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: dossierStatus.isComplete ? '#dcfce7' : '#fef9c3', color: dossierStatus.isComplete ? '#166534' : '#854d0e' }}>
+                    <span className="dossier-count-badge" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '4px 12px', borderRadius: '6px', background: dossierStatus.isComplete ? '#dcfce7' : '#fef9c3', color: dossierStatus.isComplete ? '#166534' : '#854d0e' }}>
                       Terunggah: {dossierStatus.filledCount} / {DOSSIER_DOCUMENTS.length} Berkas
                     </span>
                   </div>

@@ -87,7 +87,7 @@ export default function FAQSection() {
               style={{
                 width: '100%',
                 padding: '0.85rem 1.25rem 0.85rem 2.75rem',
-                borderRadius: '9999px',
+                borderRadius: '8px',
                 border: '1.5px solid #cbd5e1',
                 fontSize: '0.9rem',
                 outline: 'none',

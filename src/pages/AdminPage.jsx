@@ -1551,7 +1551,7 @@ export default function AdminPage() {
                                 fontSize: '0.75rem', 
                                 fontWeight: 700, 
                                 padding: '3px 9px', 
-                                borderRadius: '9999px',
+                                borderRadius: '6px',
                                 background: evalData.bg,
                                 color: evalData.color,
                                 border: `1px solid ${evalData.border}`
@@ -1728,7 +1728,7 @@ export default function AdminPage() {
                                 fontSize: '0.75rem', 
                                 fontWeight: 700, 
                                 padding: '3px 9px', 
-                                borderRadius: '9999px',
+                                borderRadius: '6px',
                                 background: evalData.bg,
                                 color: evalData.color,
                                 border: `1px solid ${evalData.border}`
@@ -1954,7 +1954,7 @@ export default function AdminPage() {
                               fontSize: '0.75rem', 
                               fontWeight: 700, 
                               padding: '3px 8px', 
-                              borderRadius: '9999px',
+                              borderRadius: '6px',
                               background: evalData.bg,
                               color: evalData.color,
                               border: `1px solid ${evalData.border}`
@@ -3331,7 +3331,7 @@ export default function AdminPage() {
                     <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: 'var(--navy)' }}>
                       {mergedSelectedItem.namaLengkap}
                     </h2>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: selectedDossier.bg, color: selectedDossier.color, border: `1px solid ${selectedDossier.border}` }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, padding: '4px 12px', borderRadius: '6px', background: selectedDossier.bg, color: selectedDossier.color, border: `1px solid ${selectedDossier.border}` }}>
                       <span style={{ width: 7, height: 7, borderRadius: '50%', background: selectedDossier.color }} />
                       {selectedDossier.statusLabel}
                     </span>
@@ -3353,8 +3353,8 @@ export default function AdminPage() {
                     {selectedDossier.filledCount} / {selectedDossier.totalCount} ({selectedDossier.percent}%)
                   </span>
                 </div>
-                <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '9999px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${selectedDossier.percent}%`, background: selectedDossier.color, borderRadius: '9999px', transition: 'width 0.4s ease' }} />
+                <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${selectedDossier.percent}%`, background: selectedDossier.color, borderRadius: '6px', transition: 'width 0.4s ease' }} />
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
                   {selectedDossier.isComplete ? 'Seluruh berkas persyaratan telah lengkap.' : `Kurang ${selectedDossier.missingFields.length} berkas wajib.`}
