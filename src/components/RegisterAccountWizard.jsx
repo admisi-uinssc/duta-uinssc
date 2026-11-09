@@ -97,12 +97,9 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           marginBottom: '1.5rem',
           textAlign: 'left'
         }}>
-          <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.88rem', marginBottom: '4px' }}>
+          <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.88rem', marginBottom: '8px' }}>
             Cek Nomor Pendaftaran
           </div>
-          <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '0 0 10px 0', lineHeight: 1.45 }}>
-            Bagi pendaftar jalur seleksi berkas atau verifikasi khusus, masukkan nomor pendaftaran Anda untuk memeriksa status dan aktivasi akun peserta.
-          </p>
 
           <form onSubmit={handleVerifyToken} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -113,7 +110,6 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
                   setTokenInput(e.target.value);
                   if (tokenError) setTokenError('');
                 }}
-                placeholder="Contoh: DU-FINAL-PA01"
                 style={{
                   flex: 1,
                   padding: '0.65rem 0.85rem',

@@ -31,7 +31,86 @@ export default function UserDashboard({ user, onLogout }) {
     setTimeout(() => setFormAlert({ show: false, message: '', type: 'info' }), 6000);
   };
 
-  // Form state for Pendaftaran Duta (10 Dokumen Resmi & Profil Lengkap)
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [showOldPass, setShowOldPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [passLoading, setPassLoading] = useState(false);
+  const [passMessage, setPassMessage] = useState({ text: '', type: '' });
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPassMessage({ text: '', type: '' });
+
+    if (!passwordForm.newPassword || passwordForm.newPassword.length < 6) {
+      setPassMessage({ text: 'Kata sandi baru minimal 6 karakter.', type: 'danger' });
+      return;
+    }
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPassMessage({ text: 'Konfirmasi kata sandi baru tidak cocok.', type: 'danger' });
+      return;
+    }
+
+    setPassLoading(true);
+    try {
+      // Update in local Auth and DB
+      const allUsers = Auth.getUsers();
+      const uIdx = allUsers.findIndex(u => 
+        (u.id && u.id === currentUser.id) ||
+        (u.email && u.email.toLowerCase() === (currentUser.email || '').toLowerCase())
+      );
+
+      const targetPassword = passwordForm.newPassword;
+
+      if (uIdx !== -1) {
+        allUsers[uIdx].password = targetPassword;
+        allUsers[uIdx].updatedAt = new Date().toISOString();
+        Auth.saveUsers(allUsers, allUsers[uIdx]);
+      }
+
+      // Update in DB applicants
+      const allDb = DB.getApplicants();
+      const dbIdx = allDb.findIndex(a => 
+        (a.userId && a.userId === currentUser.id) ||
+        (a.email && a.email.toLowerCase() === (currentUser.email || '').toLowerCase())
+      );
+
+      if (dbIdx !== -1) {
+        allDb[dbIdx].password = targetPassword;
+        allDb[dbIdx].updatedAt = new Date().toISOString();
+        DB.saveApplicants(allDb);
+        try {
+          await syncApplicantToCloud(allDb[dbIdx]);
+        } catch (e) {
+          console.warn('Sync applicant pass failed:', e);
+        }
+      }
+
+      // Update currentUser session
+      const updatedCurUser = {
+        ...currentUser,
+        password: targetPassword,
+        updatedAt: new Date().toISOString()
+      };
+      setCurrentUser(updatedCurUser);
+      Auth.setCurrentUser(updatedCurUser);
+
+      // Cloud sync
+      try {
+        await syncUserToCloud(updatedCurUser);
+      } catch (err) {
+        console.warn('Sync password to cloud failed:', err);
+      }
+
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setPassMessage({ text: 'Kata sandi berhasil diperbarui.', type: 'success' });
+    } catch (err) {
+      console.error('Change password failed:', err);
+      setPassMessage({ text: 'Gagal memperbarui kata sandi. Silakan coba lagi.', type: 'danger' });
+    } finally {
+      setPassLoading(false);
+    }
+  };
   const [formData, setFormData] = useState({
     namaLengkap: user.namaLengkap || user.name || '',
     nim: user.nim || '',
@@ -684,6 +763,29 @@ export default function UserDashboard({ user, onLogout }) {
               </span>
             )}
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('pengaturan')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              width: '100%',
+              padding: '0.75rem 1rem',
+              borderRadius: '8px',
+              border: 'none',
+              background: activeTab === 'pengaturan' ? 'rgba(196, 158, 89, 0.18)' : 'transparent',
+              color: activeTab === 'pengaturan' ? '#C49E59' : '#cbd5e1',
+              fontWeight: activeTab === 'pengaturan' ? 600 : 500,
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              textAlign: 'left',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Kata Sandi
+          </button>
         </nav>
 
         {/* User Card & Logout (Sidebar Footer) */}
@@ -763,6 +865,7 @@ export default function UserDashboard({ user, onLogout }) {
               {activeTab === 'beranda' && 'Beranda'}
               {activeTab === 'pendaftaran' && 'Pendaftaran'}
               {activeTab === 'riwayat' && 'Riwayat'}
+              {activeTab === 'pengaturan' && 'Pengaturan Kata Sandi'}
             </h2>
           </div>
 
@@ -2304,6 +2407,134 @@ export default function UserDashboard({ user, onLogout }) {
               </div>
             </div>
           )}
+          {/* TAB PENGATURAN KATA SANDI */}
+          {activeTab === 'pengaturan' && (
+            <div style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div
+                style={{
+                  background: '#ffffff',
+                  borderRadius: '16px',
+                  border: '1px solid #e2e8f0',
+                  padding: '2rem',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.04)'
+                }}
+              >
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#16324A', margin: '0 0 6px 0' }}>
+                    Pengaturan Kata Sandi
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                    Atur kata sandi akun Anda agar lebih mudah diingat dan tetap aman untuk masuk ke akun peserta.
+                  </p>
+                </div>
+
+                {passMessage.text && (
+                  <div
+                    style={{
+                      padding: '0.75rem 1rem',
+                      borderRadius: '8px',
+                      marginBottom: '1.25rem',
+                      fontSize: '0.85rem',
+                      fontWeight: 500,
+                      background: passMessage.type === 'success' ? '#f0fdf4' : '#fef2f2',
+                      color: passMessage.type === 'success' ? '#166534' : '#991b1b',
+                      border: passMessage.type === 'success' ? '1px solid #bbf7d0' : '1px solid #fecaca'
+                    }}
+                  >
+                    {passMessage.text}
+                  </div>
+                )}
+
+                <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                      Kata Sandi Baru
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type={showNewPass ? 'text' : 'password'}
+                        value={passwordForm.newPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                        placeholder="Minimal 6 karakter"
+                        required
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 2.8rem 0.75rem 0.85rem',
+                          borderRadius: '8px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '0.9rem',
+                          outline: 'none',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPass(!showNewPass)}
+                        style={{
+                          position: 'absolute',
+                          right: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: '#64748b',
+                          display: 'flex',
+                          alignItems: 'center'
+                        }}
+                        aria-label="Lihat kata sandi"
+                      >
+                        {showNewPass ? (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                        ) : (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                      Konfirmasi Kata Sandi Baru
+                    </label>
+                    <input
+                      type={showNewPass ? 'text' : 'password'}
+                      value={passwordForm.confirmPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                      placeholder="Ulangi kata sandi baru"
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem 0.85rem',
+                        borderRadius: '8px',
+                        border: '1px solid #cbd5e1',
+                        fontSize: '0.9rem',
+                        outline: 'none',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ paddingTop: '0.5rem' }}>
+                    <button
+                      type="submit"
+                      disabled={passLoading}
+                      className="btn btn-navy"
+                      style={{
+                        padding: '0.75rem 1.75rem',
+                        fontSize: '0.9rem',
+                        fontWeight: 700,
+                        borderRadius: '8px',
+                        cursor: passLoading ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      {passLoading ? 'Menyimpan...' : 'Simpan Kata Sandi'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </main>
       </div>
 
@@ -2354,6 +2585,21 @@ export default function UserDashboard({ user, onLogout }) {
             <polyline points="12 6 12 12 16 14"/>
           </svg>
           <span>Riwayat</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab('pengaturan');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className={`user-bottom-nav-item ${activeTab === 'pengaturan' ? 'active' : ''}`}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Sandi</span>
         </button>
 
         <button
