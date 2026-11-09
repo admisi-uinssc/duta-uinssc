@@ -82,30 +82,30 @@ export default function RegistrationClosedModal() {
             right: '14px',
             width: '32px',
             height: '32px',
-            borderRadius: '50%',
+            borderRadius: '6px',
             border: 'none',
-            background: '#f1f5f9',
+            background: 'transparent',
             color: '#64748b',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            fontSize: '1rem',
-            fontWeight: 700,
+            padding: 0,
             transition: 'all 0.2s'
           }}
         >
-          ✕
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
         </button>
 
         {/* Brand Kicker */}
         <div
           style={{
-            fontSize: '0.78rem',
+            fontSize: '0.82rem',
             fontWeight: 700,
             color: 'var(--gold)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
             marginBottom: '0.4rem'
           }}
         >

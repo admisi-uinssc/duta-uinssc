@@ -47,7 +47,7 @@
 .step-item.active .step-circle { background: var(--gold); border-color: var(--gold); color: #fff; box-shadow: 0 0 0 4px rgba(196,158,89,0.15); }
 .step-item.active .step-label { color: var(--gold); font-weight: 700; }
 .step-item.done .step-circle { background: var(--navy); border-color: var(--navy); color: #fff; font-size: 0; }
-.step-item.done .step-circle::before { content: '✓'; font-size: 0.9rem; }
+.step-item.done .step-circle::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #ffffff; }
 .step-item.done .step-label { color: var(--navy); }
 
 /* STEPS */
@@ -120,7 +120,7 @@
 .checkbox-label input { display: none; }
 .checkbox-custom { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: center; transition: all 0.25s; flex-shrink: 0; }
 .checkbox-label input:checked + .checkbox-custom { background: var(--gold); border-color: var(--gold); }
-.checkbox-label input:checked + .checkbox-custom::after { content: '✓'; color: #fff; font-size: 0.78rem; font-weight: 800; }
+.checkbox-label input:checked + .checkbox-custom::after { content: ''; width: 6px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); display: block; margin-top: -2px; }
 .checkbox-label span:last-child { font-size: 0.875rem; color: var(--text); }
 
 /* ACTIONS */
