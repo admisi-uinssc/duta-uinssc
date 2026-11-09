@@ -4,11 +4,48 @@ import { Auth, validateEmailFormat } from '../lib/auth';
 import { FAKULTAS_DATA, KEWARGANEGARAAN_OPTIONS } from '../lib/fakultasData';
 import { isFirebaseConfigured, fetchUserFromCloudByIdentifier } from '../lib/firebase';
 import { Settings } from '../lib/settings';
+import { verifyAndClaimFinalistToken } from '../lib/finalistTokens';
 
 export default function RegisterAccountWizard({ onSwitchToLogin }) {
   const router = useRouter();
   const isClosed = Settings.isRegistrationClosed();
   const applicantCount = Settings.getApplicantCountDisplay();
+
+  // State for Cek Nomor Pendaftaran (token verification)
+  const [tokenInput, setTokenInput] = useState('');
+  const [tokenLoading, setTokenLoading] = useState(false);
+  const [tokenError, setTokenError] = useState('');
+  const [tokenSuccess, setTokenSuccess] = useState('');
+
+  const handleVerifyToken = async (e) => {
+    e.preventDefault();
+    if (!tokenInput.trim()) {
+      setTokenError('Masukkan nomor pendaftaran Anda.');
+      return;
+    }
+    setTokenLoading(true);
+    setTokenError('');
+    setTokenSuccess('');
+
+    try {
+      const result = await verifyAndClaimFinalistToken(tokenInput);
+      if (!result.success) {
+        setTokenError(result.message || 'Nomor pendaftaran tidak terdaftar pada sistem seleksi.');
+        setTokenLoading(false);
+        return;
+      }
+
+      setTokenSuccess(result.message || 'Verifikasi berhasil. Mengalihkan ke halaman profil...');
+      setTimeout(() => {
+        router.navigate('/profil');
+      }, 1200);
+    } catch (err) {
+      console.error('Token verification error:', err);
+      setTokenError('Terjadi kendala saat verifikasi. Silakan coba beberapa saat lagi.');
+    } finally {
+      setTokenLoading(false);
+    }
+  };
 
   if (isClosed) {
     return (
@@ -50,6 +87,91 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
         }}>
           Pendaftaran Duta Kampus UIN SSC 2026 sudah ditutup. Terima kasih banyak kepada <strong>{applicantCount} calon duta</strong> yang telah mendaftar dan mengirimkan berkas.
         </p>
+
+        {/* Cek Nomor Pendaftaran Form */}
+        <div style={{
+          padding: '1.1rem',
+          background: '#f8fafc',
+          borderRadius: '12px',
+          border: '1px solid #e2e8f0',
+          marginBottom: '1.5rem',
+          textAlign: 'left'
+        }}>
+          <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.88rem', marginBottom: '4px' }}>
+            Cek Nomor Pendaftaran
+          </div>
+          <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '0 0 10px 0', lineHeight: 1.45 }}>
+            Bagi pendaftar jalur seleksi berkas atau verifikasi khusus, masukkan nomor pendaftaran Anda untuk memeriksa status dan aktivasi akun peserta.
+          </p>
+
+          <form onSubmit={handleVerifyToken} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type="text"
+                value={tokenInput}
+                onChange={(e) => {
+                  setTokenInput(e.target.value);
+                  if (tokenError) setTokenError('');
+                }}
+                placeholder="Contoh: DU-FINAL-PA01"
+                style={{
+                  flex: 1,
+                  padding: '0.65rem 0.85rem',
+                  fontSize: '0.85rem',
+                  border: tokenError ? '1px solid #ef4444' : '1px solid #cbd5e1',
+                  borderRadius: '8px',
+                  outline: 'none',
+                  textTransform: 'uppercase',
+                  fontWeight: 600,
+                  letterSpacing: '0.5px'
+                }}
+                disabled={tokenLoading}
+              />
+              <button
+                type="submit"
+                disabled={tokenLoading || !tokenInput.trim()}
+                className="btn btn-navy"
+                style={{
+                  padding: '0.65rem 1rem',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  borderRadius: '8px',
+                  whiteSpace: 'nowrap',
+                  cursor: tokenLoading ? 'not-allowed' : 'pointer',
+                  opacity: (!tokenInput.trim() || tokenLoading) ? 0.6 : 1
+                }}
+              >
+                {tokenLoading ? 'Memeriksa...' : 'Cek Status'}
+              </button>
+            </div>
+
+            {tokenError && (
+              <div style={{
+                fontSize: '0.78rem',
+                color: '#b91c1c',
+                background: '#fef2f2',
+                border: '1px solid #fecaca',
+                padding: '6px 10px',
+                borderRadius: '6px'
+              }}>
+                {tokenError}
+              </div>
+            )}
+
+            {tokenSuccess && (
+              <div style={{
+                fontSize: '0.78rem',
+                color: '#15803d',
+                background: '#f0fdf4',
+                border: '1px solid #bbf7d0',
+                padding: '6px 10px',
+                borderRadius: '6px'
+              }}>
+                {tokenSuccess}
+              </div>
+            )}
+          </form>
+        </div>
 
         <div style={{
           padding: '1rem',
