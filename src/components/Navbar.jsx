@@ -10,9 +10,13 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     setUser(Auth.getCurrentUser());
+    if (typeof window !== 'undefined') {
+      setIsAdmin(localStorage.getItem('dutauinssc_admin_logged') === 'true');
+    }
     let lastScrollY = window.scrollY;
 
     const onScroll = () => {
@@ -75,8 +79,8 @@ export default function Navbar() {
           </li>
           <li><Link href="/faq" className="nav-link" onClick={closeMenu}>FAQ</Link></li>
           <li>
-            <Link href={user ? "/profil" : "/login"} className="nav-cta" onClick={closeMenu}>
-              {user ? "Profil" : "Masuk"}
+            <Link href={isAdmin ? "/admin" : user ? "/profil" : "/login"} className="nav-cta" onClick={closeMenu}>
+              {isAdmin ? "Admin" : user ? "Profil" : "Masuk"}
             </Link>
           </li>
         </ul>

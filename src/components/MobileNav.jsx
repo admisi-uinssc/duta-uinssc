@@ -5,16 +5,24 @@ import { Auth } from '../lib/auth';
 
 export default function MobileNav() {
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { pathname } = useLocation();
 
   useEffect(() => {
     setUser(Auth.getCurrentUser());
+    if (typeof window !== 'undefined') {
+      setIsAdmin(localStorage.getItem('dutauinssc_admin_logged') === 'true');
+    }
   }, [pathname]);
 
   const isActive = (route) => {
     if (route === '/') return pathname === '/';
     return pathname.startsWith(route);
   };
+
+  const accountHref = isAdmin ? "/admin" : user ? "/profil" : "/login";
+  const accountActive = isActive('/profil') || isActive('/login') || isActive('/daftar') || isActive('/admin');
+  const accountLabel = isAdmin ? "Admin" : user ? "Dashboard" : "Masuk";
 
   return (
     <nav className="mobile-bottom-nav">
@@ -34,8 +42,12 @@ export default function MobileNav() {
         <span>Tentang</span>
       </Link>
       
-      <Link href={user ? "/profil" : "/login"} className={`mobile-nav-item ${isActive('/profil') || isActive('/login') || isActive('/daftar') ? 'active' : ''}`}>
-        {user ? (
+      <Link href={accountHref} className={`mobile-nav-item ${accountActive ? 'active' : ''}`}>
+        {isAdmin ? (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        ) : user ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
             <circle cx="12" cy="7" r="4"/>
@@ -45,7 +57,7 @@ export default function MobileNav() {
             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
           </svg>
         )}
-        <span>{user ? "Dashboard" : "Masuk"}</span>
+        <span>{accountLabel}</span>
       </Link>
       <Link href="/timeline" className={`mobile-nav-item ${isActive('/timeline') ? 'active' : ''}`}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

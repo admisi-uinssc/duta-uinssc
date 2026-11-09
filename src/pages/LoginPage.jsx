@@ -30,7 +30,13 @@ export default function LoginPage() {
   const [isIosDevice, setIsIosDevice] = useState(false);
 
   useEffect(() => {
-    // If already logged in, redirect to profil
+    // If already logged in as admin, redirect to admin
+    if (typeof window !== 'undefined' && localStorage.getItem('dutauinssc_admin_logged') === 'true') {
+      router.push('/admin');
+      return;
+    }
+
+    // If already logged in as participant, redirect to profil
     const user = Auth.getCurrentUser();
     if (user) {
       router.push('/profil');
@@ -118,6 +124,21 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      // 1. Check if login credentials match Administrator
+      const s = Settings.get();
+      const validAdminUser = (s.adminUser || 'rasikinganteng').trim().toLowerCase();
+      const inputUser = (email || '').trim().toLowerCase();
+      const validAdminPass = s.adminPass || 'ghoriztea2026';
+
+      if (inputUser === validAdminUser && password === validAdminPass) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('dutauinssc_admin_logged', 'true');
+        }
+        router.push('/admin');
+        return;
+      }
+
+      // 2. Otherwise process standard applicant / user login
       const res = await Auth.login(email, password);
       if (res.success) {
         router.push('/profil');
