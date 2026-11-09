@@ -92,7 +92,8 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
     }
 
     setActiveFinalistToken(matched);
-    setNamaLengkap(matched.namaLengkap);
+    // Wajibkan calon peserta mengisi nama lengkap mereka sendiri secara valid
+    setNamaLengkap('');
     setJenisKelamin(matched.jenisKelamin);
     setStep(1);
     setTokenLoading(false);
@@ -175,6 +176,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           const res = await verifyAndClaimFinalistToken(activeFinalistToken.token, {
             email,
             password,
+            namaLengkap,
             kewarganegaraan,
             nim,
             fakultas,

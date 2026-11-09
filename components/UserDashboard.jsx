@@ -149,8 +149,8 @@ export default function UserDashboard({ user, onLogout }) {
   const [countdown, setCountdown] = useState({ d: 0, h: 0, m: 0, s: 0, isExpired: false });
   const [applicantCount, setApplicantCount] = useState('60+');
 
-  const participantName = formData.namaLengkap || user.namaLengkap || user.name || '';
-  const greetingName = participantName.trim() || 'Calon Duta';
+  const participantName = (formData.namaLengkap || user.namaLengkap || user.fullName || user.name || '').trim();
+  const greetingName = participantName || (user.email ? user.email.split('@')[0] : 'Peserta Duta');
 
   useEffect(() => {
     const updateCd = () => {
@@ -634,189 +634,220 @@ export default function UserDashboard({ user, onLogout }) {
       <aside 
         className="user-dashboard-sidebar"
         style={{
+          width: '270px',
+          minWidth: '270px',
           height: '100vh',
           maxHeight: '100vh',
-          overflow: 'hidden',
+          overflowY: 'auto',
           position: 'sticky',
           top: 0,
           left: 0,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          flexShrink: 0
+          flexShrink: 0,
+          background: 'linear-gradient(180deg, #16324A 0%, #0f2436 100%)',
+          borderRight: '1px solid rgba(196, 158, 89, 0.2)',
+          boxShadow: '4px 0 24px rgba(0, 0, 0, 0.25)',
+          zIndex: 40
         }}
       >
         {/* Brand Header */}
-        <div
-          style={{
-            padding: '1.5rem',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem'
-          }}
-        >
-          <Image
-            src="/assets/logo-circle.png"
-            alt="Logo UIN Siber Cirebon"
-            width={38}
-            height={38}
-            style={{ borderRadius: '50%' }}
-          />
-          <div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 700, letterSpacing: '-0.2px', color: '#ffffff' }}>
-              Portal Peserta
+        <div>
+          <div
+            style={{
+              padding: '1.25rem 1.25rem',
+              borderBottom: '1px solid rgba(196, 158, 89, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.85rem',
+              background: 'rgba(22, 50, 74, 0.5)'
+            }}
+          >
+            <div style={{
+              padding: '2px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #C49E59, #e0bf7a)',
+              boxShadow: '0 2px 8px rgba(196, 158, 89, 0.3)',
+              flexShrink: 0
+            }}>
+              <Image
+                src="/assets/logo-circle.png"
+                alt="Logo UIN Siber Cirebon"
+                width={38}
+                height={38}
+                style={{ borderRadius: '50%', display: 'block' }}
+              />
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#C49E59', fontWeight: 600 }}>
-              Duta Kampus 2026
+            <div style={{ overflow: 'hidden' }}>
+              <div style={{ fontSize: '0.95rem', fontWeight: 700, letterSpacing: '-0.2px', color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                Portal Peserta
+              </div>
+              <div style={{ fontSize: '0.72rem', color: '#C49E59', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                Duta Kampus 2026
+              </div>
             </div>
           </div>
+
+          {/* Navigation Section */}
+          <div style={{ padding: '0.85rem 0.75rem 0.25rem' }}>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'rgba(255, 255, 255, 0.45)', textTransform: 'uppercase', letterSpacing: '0.8px', padding: '0 0.5rem 0.4rem' }}>
+              Menu Utama
+            </div>
+          </div>
+
+          <nav style={{ padding: '0 0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <button
+              type="button"
+              onClick={() => setActiveTab('beranda')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                width: '100%',
+                padding: '0.7rem 0.85rem',
+                borderRadius: '8px',
+                border: activeTab === 'beranda' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
+                background: activeTab === 'beranda' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
+                color: activeTab === 'beranda' ? '#ffd88a' : '#cbd5e1',
+                fontWeight: activeTab === 'beranda' ? 600 : 500,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'beranda' ? '#C49E59' : 'currentColor', flexShrink: 0 }}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span>Beranda</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('pendaftaran')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                width: '100%',
+                padding: '0.7rem 0.85rem',
+                borderRadius: '8px',
+                border: activeTab === 'pendaftaran' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
+                background: activeTab === 'pendaftaran' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
+                color: activeTab === 'pendaftaran' ? '#ffd88a' : '#cbd5e1',
+                fontWeight: activeTab === 'pendaftaran' ? 600 : 500,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'pendaftaran' ? '#C49E59' : 'currentColor', flexShrink: 0 }}>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Profil & Berkas</span>
+              {dossierStatus.isComplete ? (
+                <span style={{ marginLeft: 'auto', background: 'rgba(34, 197, 94, 0.18)', color: '#4ade80', fontSize: '0.62rem', padding: '2px 7px', borderRadius: '4px', fontWeight: 700, border: '1px solid rgba(34, 197, 94, 0.35)' }}>
+                  Lengkap
+                </span>
+              ) : (
+                <span style={{ marginLeft: 'auto', background: 'rgba(217, 119, 6, 0.22)', color: '#fbbf24', fontSize: '0.62rem', padding: '2px 7px', borderRadius: '4px', fontWeight: 700, border: '1px solid rgba(217, 119, 6, 0.35)' }}>
+                  {dossierStatus.completedDocs}/{dossierStatus.totalDocs}
+                </span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('riwayat')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                width: '100%',
+                padding: '0.7rem 0.85rem',
+                borderRadius: '8px',
+                border: activeTab === 'riwayat' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
+                background: activeTab === 'riwayat' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
+                color: activeTab === 'riwayat' ? '#ffd88a' : '#cbd5e1',
+                fontWeight: activeTab === 'riwayat' ? 600 : 500,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'riwayat' ? '#C49E59' : 'currentColor', flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Riwayat Seleksi</span>
+              {isFinalist ? (
+                <span style={{ marginLeft: 'auto', background: '#C49E59', color: '#16324A', fontSize: '0.62rem', padding: '2px 7px', borderRadius: '4px', fontWeight: 800 }}>
+                  Finalis
+                </span>
+              ) : selectionStage === 'lolos' ? (
+                <span style={{ marginLeft: 'auto', background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', fontSize: '0.62rem', padding: '2px 7px', borderRadius: '4px', fontWeight: 700, border: '1px solid rgba(34, 197, 94, 0.35)' }}>
+                  Lolos
+                </span>
+              ) : null}
+            </button>
+
+            <div style={{ marginTop: '0.75rem', marginBottom: '0.25rem' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'rgba(255, 255, 255, 0.45)', textTransform: 'uppercase', letterSpacing: '0.8px', padding: '0 0.5rem 0.4rem' }}>
+                Keamanan
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('pengaturan')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                width: '100%',
+                padding: '0.7rem 0.85rem',
+                borderRadius: '8px',
+                border: activeTab === 'pengaturan' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
+                background: activeTab === 'pengaturan' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
+                color: activeTab === 'pengaturan' ? '#ffd88a' : '#cbd5e1',
+                fontWeight: activeTab === 'pengaturan' ? 600 : 500,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'pengaturan' ? '#C49E59' : 'currentColor', flexShrink: 0 }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Kata Sandi</span>
+            </button>
+          </nav>
         </div>
 
-        {/* Navigation Menu */}
-        <nav style={{ padding: '1.25rem 0.75rem', display: 'flex', flexDirection: 'column', gap: '0.35rem', flex: 1 }}>
-          <button
-            type="button"
-            onClick={() => setActiveTab('beranda')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              width: '100%',
-              padding: '0.75rem 1rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: activeTab === 'beranda' ? 'rgba(196, 158, 89, 0.18)' : 'transparent',
-              color: activeTab === 'beranda' ? '#C49E59' : '#cbd5e1',
-              fontWeight: activeTab === 'beranda' ? 600 : 500,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-              textAlign: 'left',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            Beranda
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('pendaftaran')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              width: '100%',
-              padding: '0.75rem 1rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: activeTab === 'pendaftaran' ? 'rgba(196, 158, 89, 0.18)' : 'transparent',
-              color: activeTab === 'pendaftaran' ? '#C49E59' : '#cbd5e1',
-              fontWeight: activeTab === 'pendaftaran' ? 600 : 500,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-              textAlign: 'left',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            <span>Profil & Berkas</span>
-            {dossierStatus.isComplete ? (
-              <span style={{ marginLeft: 'auto', background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', fontSize: '0.62rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
-                Lengkap
-              </span>
-            ) : (
-              <span style={{ marginLeft: 'auto', background: 'rgba(217, 119, 6, 0.25)', color: '#fbbf24', fontSize: '0.62rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
-                Belum Lengkap
-              </span>
-            )}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('riwayat')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              width: '100%',
-              padding: '0.75rem 1rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: activeTab === 'riwayat' ? 'rgba(196, 158, 89, 0.18)' : 'transparent',
-              color: activeTab === 'riwayat' ? '#C49E59' : '#cbd5e1',
-              fontWeight: activeTab === 'riwayat' ? 600 : 500,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-              textAlign: 'left',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Riwayat Pendaftaran
-            {selectionStage === 'lolos' && (
-              <span style={{ marginLeft: 'auto', background: '#16a34a', color: '#fff', fontSize: '0.65rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
-                Berkas Diterima
-              </span>
-            )}
-            {isFinalist && (
-              <span style={{ marginLeft: selectionStage === 'lolos' ? '4px' : 'auto', background: '#C49E59', color: '#16324A', fontSize: '0.65rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 800 }}>
-                Finalis
-              </span>
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('pengaturan')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              width: '100%',
-              padding: '0.75rem 1rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: activeTab === 'pengaturan' ? 'rgba(196, 158, 89, 0.18)' : 'transparent',
-              color: activeTab === 'pengaturan' ? '#C49E59' : '#cbd5e1',
-              fontWeight: activeTab === 'pengaturan' ? 600 : 500,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-              textAlign: 'left',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Kata Sandi
-          </button>
-        </nav>
-
         {/* User Card & Logout (Sidebar Footer) */}
-        <div style={{ padding: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <div style={{ padding: '1rem', borderTop: '1px solid rgba(196, 158, 89, 0.15)', background: 'rgba(15, 36, 54, 0.7)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
             <div
               style={{
                 width: 36,
                 height: 36,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #C49E59, #b58d4a)',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #C49E59, #9e7b36)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#ffffff',
                 fontWeight: 700,
-                fontSize: '0.9rem'
+                fontSize: '0.85rem',
+                boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                flexShrink: 0
               }}
             >
-              {(formData.namaLengkap || 'U').charAt(0).toUpperCase()}
+              {(formData.namaLengkap || user.namaLengkap || user.fullName || user.name || user.email || 'P').charAt(0).toUpperCase()}
             </div>
-            <div style={{ overflow: 'hidden' }}>
+            <div style={{ overflow: 'hidden', flex: 1 }}>
               <div style={{ fontSize: '0.825rem', fontWeight: 600, color: '#ffffff', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                {formData.namaLengkap || user.name || 'Calon Duta'}
+                {formData.namaLengkap || user.namaLengkap || user.fullName || user.name || user.email || 'Peserta'}
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#94a3b8', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+              <div style={{ fontSize: '0.7rem', color: '#94a3b8', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                 {user.email}
               </div>
             </div>
@@ -833,16 +864,16 @@ export default function UserDashboard({ user, onLogout }) {
               background: 'rgba(239, 68, 68, 0.1)',
               color: '#fca5a5',
               fontSize: '0.8rem',
-              fontWeight: 500,
+              fontWeight: 600,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.5rem',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.15s ease'
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Keluar Akun
           </button>
         </div>
