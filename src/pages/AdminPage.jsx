@@ -1096,38 +1096,79 @@ export default function AdminPage() {
   const selectedDossier = mergedSelectedItem ? evaluateDossierCompleteness(mergedSelectedItem) : null;
 
   const exportCSV = () => {
-    if (!applicants.length) return;
-    const headers = ['ID','Nama Lengkap','NIM','Fakultas','Prodi','Semester','Jenis Kelamin','TTL','No HP','Email','Alamat','IPK','Kelengkapan Dokumen','Status Seleksi Berkas','Tanggal Daftar'];
-    const rows = applicants.map(i => {
+    // Export data based on current filtered table results
+    const exportData = filtered.length ? filtered : combinedApplicants;
+    if (!exportData.length) {
+      showToast('Tidak ada data pendaftar untuk diekspor.', 'warning');
+      return;
+    }
+
+    const headers = [
+      'No',
+      'Nama Lengkap',
+      'NIM',
+      'Fakultas',
+      'Program Studi',
+      'Semester',
+      'Jenis Kelamin',
+      'Tempat, Tanggal Lahir',
+      'No WhatsApp',
+      'Email',
+      'Alamat',
+      'IPK',
+      'Kelengkapan Dokumen',
+      'Hasil Seleksi Berkas',
+      'Status Finalis',
+      'Tanggal Pendaftaran'
+    ];
+
+    const rows = exportData.map((i, index) => {
       const evalData = evaluateDossierCompleteness(i);
-      const stage = i.selectionStage || (i.status === 'diterima' ? 'Lolos' : i.status === 'ditolak' ? 'Tidak Lolos' : 'Menunggu Review');
+      const stage = i.selectionStage === 'lolos' || i.status === 'diterima'
+        ? 'Lolos Seleksi Berkas'
+        : i.selectionStage === 'tidak_lolos' || i.status === 'ditolak'
+        ? 'Tidak Lolos'
+        : 'Menunggu Review';
+
+      const finalistLabel = (i.isFinalist || i.finalistStatus === 'finalis')
+        ? 'Lolos Finalis'
+        : i.finalistStatus === 'tidak_lolos'
+        ? 'Tidak Lolos Final'
+        : 'Belum Ditentukan';
+
       return [
-        i.id,
-        i.namaLengkap,
-        i.nim,
+        index + 1,
+        i.namaLengkap || i.name || '',
+        i.nim || '—',
         i.fakultas || '—',
-        i.prodi || i.jurusan,
-        i.semester,
-        i.jenisKelamin,
-        i.ttl,
-        i.noHp,
-        i.email,
-        i.alamat,
-        i.ipk,
-        evalData.statusLabel,
+        i.prodi || i.jurusan || '—',
+        i.semester && i.semester !== '—' ? i.semester : '—',
+        i.jenisKelamin || '—',
+        i.ttl || (i.tempatLahir && i.tanggalLahir ? `${i.tempatLahir}, ${i.tanggalLahir}` : '—'),
+        i.noHp || '—',
+        i.email || '—',
+        i.alamat || '—',
+        i.ipk || '—',
+        evalData.statusLabel || '—',
         stage,
+        finalistLabel,
         formatDateTime(i.createdAt)
       ].map(v => `"${String(v || '').replace(/"/g, '""')}"`);
     });
+
     const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `pendaftar-duta-uinssc-${new Date().toISOString().slice(0, 10)}.csv`;
+
+    // Suffix file name according to active filter
+    const filterSuffix = filterSelection ? `_${filterSelection}` : '';
+    a.download = `pendaftar_duta_uinssc${filterSuffix}_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a);
     a.click();
     a.remove();
+    showToast(`Berhasil mengekspor ${exportData.length} data pendaftar sesuai filter.`);
   };
 
   const handleSort = (key) => { 
