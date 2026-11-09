@@ -298,9 +298,7 @@ export default function LoginPage() {
                       fontSize: '0.75rem',
                       fontWeight: 600,
                       cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      letterSpacing: '0.3px',
-                      textTransform: 'uppercase'
+                      whiteSpace: 'nowrap'
                     }}
                   >
                     Daftar Sekarang
@@ -455,12 +453,10 @@ export default function LoginPage() {
               textAlign: 'center'
             }}>
               <div style={{ 
-                fontSize: '0.72rem', 
-                color: 'var(--text-light)', 
+                fontSize: '0.8rem', 
+                color: 'var(--text-mid)', 
                 marginBottom: '0.6rem', 
-                fontWeight: 700, 
-                letterSpacing: '0.75px', 
-                textTransform: 'uppercase' 
+                fontWeight: 600 
               }}>
                 Aplikasi Resmi PADUKA Mobile
               </div>
@@ -470,15 +466,13 @@ export default function LoginPage() {
                 onClick={handleInstallClick}
                 style={{
                   width: '100%',
-                  padding: '0.85rem 1.25rem',
+                  padding: '0.8rem 1rem',
                   borderRadius: '8px',
                   background: isInstalled ? 'rgba(196, 158, 89, 0.08)' : 'var(--navy)',
                   color: isInstalled ? 'var(--navy)' : 'var(--gold)',
                   border: isInstalled ? '1px solid rgba(196, 158, 89, 0.4)' : '1px solid var(--gold)',
                   fontSize: '0.85rem',
-                  fontWeight: 700,
-                  letterSpacing: '0.75px',
-                  textTransform: 'uppercase',
+                  fontWeight: 600,
                   cursor: 'pointer',
                   boxShadow: isInstalled ? 'none' : '0 4px 14px rgba(11, 19, 41, 0.15)',
                   transition: 'all 0.2s ease',

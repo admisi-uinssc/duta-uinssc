@@ -1219,8 +1219,10 @@ p {
 
   .token-box-wrapper,
   .info-box-wrapper {
-    padding: 0.9rem !important;
-    border-radius: 8px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
   }
 
   .registration-wizard {
@@ -1237,13 +1239,26 @@ p {
   }
 
   .token-input-group {
-    flex-direction: column !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .token-input-group input {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    padding: 0.55rem 0.75rem !important;
+    font-size: 0.82rem !important;
   }
 
   .token-submit-btn {
-    width: 100% !important;
-    justify-content: center !important;
-    padding: 0.75rem !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    padding: 0.55rem 0.85rem !important;
+    font-size: 0.78rem !important;
   }
 
   .wizard-two-cols {
