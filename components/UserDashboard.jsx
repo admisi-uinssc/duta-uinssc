@@ -990,7 +990,7 @@ export default function UserDashboard({ user, onLogout }) {
         })()}
 
         {/* TAB CONTENTS (FULL WIDTH ON DESKTOP, COMFORTABLE ON HP) */}
-        <main style={{ padding: '1.75rem 2.5rem', flex: 1, width: '100%', boxSizing: 'border-box' }}>
+        <main className="user-dashboard-content-main" style={{ padding: '1.75rem 2.5rem', flex: 1, width: '100%', boxSizing: 'border-box' }}>
           {/* TAB 1: BERANDA */}
           {activeTab === 'beranda' && (
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
@@ -1598,7 +1598,7 @@ export default function UserDashboard({ user, onLogout }) {
               {/* Card 2: Program Duta Kampus */}
               <div className="user-dashboard-card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.25rem' }}>
-                  <div style={{ flex: 1, minWidth: '300px' }}>
+                  <div style={{ flex: 1, minWidth: '0' }}>
                     <div style={{ fontSize: '0.78rem', color: '#C49E59', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
                       Program Resmi Universitas
                     </div>
