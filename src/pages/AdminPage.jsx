@@ -1034,8 +1034,11 @@ export default function AdminPage() {
 
       const stage = i.selectionStage || (i.status === 'diterima' ? 'lolos' : i.status === 'ditolak' ? 'tidak_lolos' : 'review');
       const matchSelection = !filterSelection 
-        || (filterSelection === 'finalis' ? Boolean(i.isFinalist || i.finalistStatus === 'finalis')
+        || (filterSelection === 'lolos_berkas' ? (stage === 'lolos')
+        : filterSelection === 'lolos_finalis' ? Boolean(i.isFinalist || i.finalistStatus === 'finalis')
+        : filterSelection === 'finalis' ? Boolean(i.isFinalist || i.finalistStatus === 'finalis')
         : filterSelection === 'tidak_lolos_final' ? (i.finalistStatus === 'tidak_lolos')
+        : filterSelection === 'tidak_lolos' ? (stage === 'tidak_lolos')
         : stage === filterSelection);
 
       return matchQ && matchFakultas && matchProdi && matchComp && matchSelection;
@@ -1811,8 +1814,8 @@ export default function AdminPage() {
                 {/* Filter Status Seleksi Berkas & Finalis */}
                 <select className="filter-select" value={filterSelection} onChange={e => setFilterSelection(e.target.value)}>
                   <option value="">Semua Hasil Seleksi</option>
-                  <option value="lolos">Berkas Diterima</option>
-                  <option value="finalis">Lolos Finalis (Terpilih)</option>
+                  <option value="lolos_berkas">Lolos Berkas</option>
+                  <option value="lolos_finalis">Lolos Finalis</option>
                   <option value="tidak_lolos_final">Tidak Lolos Final</option>
                   <option value="tidak_lolos">Tidak Lolos Berkas</option>
                   <option value="review">Dalam Peninjauan</option>
