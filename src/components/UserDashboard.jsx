@@ -352,7 +352,7 @@ export default function UserDashboard({ user, onLogout }) {
   };
 
   const handleFileUpload = async (docKey, file, docLabel) => {
-    if (isRegistrationClosed) {
+    if (isRegistrationClosed && !isFinalist) {
       triggerAlert('Pendaftaran telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Pengunggahan berkas baru tidak lagi diizinkan.', 'danger');
       return;
     }
@@ -387,7 +387,7 @@ export default function UserDashboard({ user, onLogout }) {
   };
 
   const handleRemoveFile = async (docKey) => {
-    if (isRegistrationClosed) {
+    if (isRegistrationClosed && !isFinalist) {
       triggerAlert('Pendaftaran telah resmi ditutup. Berkas yang sudah dikirimkan tidak dapat dihapus.', 'danger');
       return;
     }
@@ -417,7 +417,7 @@ export default function UserDashboard({ user, onLogout }) {
 
   const handleSaveDraft = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    if (isRegistrationClosed) {
+    if (isRegistrationClosed && !isFinalist) {
       triggerAlert('Pendaftaran telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Perubahan draf tidak dapat disimpan.', 'danger');
       return;
     }
@@ -508,7 +508,7 @@ export default function UserDashboard({ user, onLogout }) {
 
   const handleSubmitApplication = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    if (isRegistrationClosed) {
+    if (isRegistrationClosed && !isFinalist) {
       triggerAlert('Pendaftaran telah resmi ditutup pada 25 Oktober 2026 pukul 23:59 WIB. Terima kasih atas partisipasi Anda, seluruh berkas yang telah dikirimkan sedang dalam proses verifikasi Panitia Seleksi.', 'danger');
       return;
     }
@@ -625,6 +625,8 @@ export default function UserDashboard({ user, onLogout }) {
   const finalistStatus = currentUser.finalistStatus || formData.finalistStatus || (currentUser.isFinalist || formData.isFinalist ? 'finalis' : 'belum');
   const isFinalist = (finalistStatus === 'finalis');
   const isNotFinalist = (finalistStatus === 'tidak_lolos');
+  // Khusus peserta berstatus Finalis: akses pengisian/revisi seluruh berkas dibuka penuh
+  const isFormLocked = isRegistrationClosed && !isFinalist;
 
   return (
     <div className="user-dashboard-container">
@@ -1647,11 +1649,11 @@ export default function UserDashboard({ user, onLogout }) {
               <div
                 className="registration-status-bar"
                 style={{
-                  background: isRegistrationClosed ? '#fffbeb' : dossierStatus.bg,
-                  border: `1.5px solid ${isRegistrationClosed ? '#fde68a' : dossierStatus.border}`,
+                  background: isFinalist ? '#f0fdf4' : isRegistrationClosed ? '#fffbeb' : dossierStatus.bg,
+                  border: `1.5px solid ${isFinalist ? '#86efac' : isRegistrationClosed ? '#fde68a' : dossierStatus.border}`,
                   padding: '1.25rem 1.5rem',
                   borderRadius: '12px',
-                  marginBottom: isRegistrationClosed ? '1.25rem' : '2rem',
+                  marginBottom: '1.25rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -1660,11 +1662,13 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: 700, color: isRegistrationClosed ? '#92400e' : dossierStatus.color, fontSize: '0.95rem' }}>
-                    Status Formulir: {isRegistrationClosed ? 'Pendaftaran Resmi Ditutup' : `${dossierStatus.statusLabel} (${dossierStatus.percent}%)`}
+                  <div style={{ fontWeight: 700, color: isFinalist ? '#166534' : isRegistrationClosed ? '#92400e' : dossierStatus.color, fontSize: '0.95rem' }}>
+                    Status Formulir: {isFinalist ? 'Akses Terbuka — Finalis Duta Kampus 2026' : isRegistrationClosed ? 'Pendaftaran Resmi Ditutup' : `${dossierStatus.statusLabel} (${dossierStatus.percent}%)`}
                   </div>
-                  <div style={{ fontSize: '0.825rem', color: isRegistrationClosed ? '#78350f' : dossierStatus.color, marginTop: '2px' }}>
-                    {isRegistrationClosed 
+                  <div style={{ fontSize: '0.825rem', color: isFinalist ? '#15803d' : isRegistrationClosed ? '#78350f' : dossierStatus.color, marginTop: '2px' }}>
+                    {isFinalist
+                      ? `Selamat atas pencapaian Anda sebagai Finalis. Akses pengunggahan dan perbaikan berkas dibuka penuh agar Anda dapat melengkapi atau memperbarui berkas dan profil Anda.`
+                      : isRegistrationClosed 
                       ? `Batas akhir pengisian dan pengunggahan berkas telah berakhir pada 25 Oktober 2026 pukul 23:59 WIB. Berkas Anda (${dossierStatus.filledCount} dari ${dossierStatus.totalCount} berkas) telah tersimpan dan sedang dalam proses verifikasi administrasi.`
                       : dossierStatus.isComplete 
                       ? 'Seluruh dokumen persyaratan esensial telah lengkap diisi. Anda dapat mengirimkan pendaftaran.'
@@ -1672,15 +1676,22 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
                 </div>
 
-                {isSubmitted && (
-                  <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#166534' }}>
-                    Berkas Telah Diterima Panitia
-                  </div>
-                )}
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {isFinalist && (
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, background: '#C49E59', color: '#16324A', padding: '3px 8px', borderRadius: '4px' }}>
+                      Finalis Resmi
+                    </span>
+                  )}
+                  {isSubmitted && (
+                    <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#166534' }}>
+                      Berkas Telah Diterima Panitia
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* UCAPAN TERIMA KASIH DARI PANITIA SELEKSI (TAMPIL OTOMATIS SAAT PENDAFTARAN DITUTUP) */}
-              {isRegistrationClosed && (
+              {/* UCAPAN TERIMA KASIH DARI PANITIA SELEKSI (HANYA JIKA BUKAN FINALIS) */}
+              {isRegistrationClosed && !isFinalist && (
                 <div style={{
                   background: '#ffffff',
                   border: '1.5px solid #e2e8f0',
@@ -2038,7 +2049,7 @@ export default function UserDashboard({ user, onLogout }) {
                                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                   Lihat / Pratinjau
                                 </button>
-                                {!isRegistrationClosed && (
+                                {!isFormLocked && (
                                   <button
                                     type="button"
                                     className="dossier-btn-remove"
@@ -2067,7 +2078,7 @@ export default function UserDashboard({ user, onLogout }) {
                               </div>
                             ) : (
                               <span className="dossier-status-empty" style={{ fontSize: '0.75rem', color: isMandatory ? '#b91c1c' : '#64748b', fontWeight: 500 }}>
-                                {isRegistrationClosed ? 'Tidak Diunggah' : isMandatory ? 'Belum Diunggah' : 'Belum Dilampirkan'}
+                                {isFormLocked ? 'Tidak Diunggah' : isMandatory ? 'Belum Diunggah' : 'Belum Dilampirkan'}
                               </span>
                             )}
 
@@ -2081,13 +2092,13 @@ export default function UserDashboard({ user, onLogout }) {
                                   padding: '5px 10px',
                                   borderRadius: '6px',
                                   border: '1px solid #cbd5e1',
-                                  background: isRegistrationClosed ? '#f8fafc' : '#ffffff',
+                                  background: isFormLocked ? '#f8fafc' : '#ffffff',
                                   fontSize: '0.75rem',
                                   fontWeight: 600,
-                                  color: isRegistrationClosed ? '#94a3b8' : 'var(--navy)',
-                                  cursor: (loadingDocKey !== null || isRegistrationClosed) ? 'not-allowed' : 'pointer',
-                                  opacity: (loadingDocKey !== null || isRegistrationClosed) ? 0.6 : 1,
-                                  pointerEvents: isRegistrationClosed ? 'none' : 'auto',
+                                  color: isFormLocked ? '#94a3b8' : 'var(--navy)',
+                                  cursor: (loadingDocKey !== null || isFormLocked) ? 'not-allowed' : 'pointer',
+                                  opacity: (loadingDocKey !== null || isFormLocked) ? 0.6 : 1,
+                                  pointerEvents: isFormLocked ? 'none' : 'auto',
                                   transition: 'all 0.2s'
                                 }}
                               >
@@ -2095,17 +2106,17 @@ export default function UserDashboard({ user, onLogout }) {
                                   type="file"
                                   accept={doc.fileTypes}
                                   style={{ display: 'none' }}
-                                  disabled={loadingDocKey !== null || isRegistrationClosed}
+                                  disabled={loadingDocKey !== null || isFormLocked}
                                   onChange={(e) => handleFileUpload(doc.key, e.target.files[0], doc.label)}
                                 />
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                <span>{isRegistrationClosed ? 'Ditutup' : isUploaded ? 'Ganti File' : 'Pilih Berkas'}</span>
+                                <span>{isFormLocked ? 'Ditutup' : isUploaded ? 'Ganti File' : 'Pilih Berkas'}</span>
                               </label>
 
                               <button
                                 type="button"
                                 className="dossier-btn-drive"
-                                disabled={loadingDocKey !== null || isRegistrationClosed}
+                                disabled={loadingDocKey !== null || isFormLocked}
                                 onClick={() => setPreviewModal({
                                   isOpen: true,
                                   docKey: doc.key,
@@ -2118,14 +2129,14 @@ export default function UserDashboard({ user, onLogout }) {
                                   padding: '5px 8px',
                                   borderRadius: '6px',
                                   border: '1px solid #cbd5e1',
-                                  background: isRegistrationClosed ? '#f8fafc' : '#ffffff',
+                                  background: isFormLocked ? '#f8fafc' : '#ffffff',
                                   fontSize: '0.72rem',
-                                  color: isRegistrationClosed ? '#94a3b8' : 'var(--navy)',
-                                  cursor: (loadingDocKey !== null || isRegistrationClosed) ? 'not-allowed' : 'pointer',
-                                  opacity: (loadingDocKey !== null || isRegistrationClosed) ? 0.6 : 1,
+                                  color: isFormLocked ? '#94a3b8' : 'var(--navy)',
+                                  cursor: (loadingDocKey !== null || isFormLocked) ? 'not-allowed' : 'pointer',
+                                  opacity: (loadingDocKey !== null || isFormLocked) ? 0.6 : 1,
                                   fontWeight: 600
                                 }}
-                                title={isRegistrationClosed ? 'Pendaftaran ditutup' : 'Tautkan Link Google Drive'}
+                                title={isFormLocked ? 'Pendaftaran ditutup' : 'Tautkan Link Google Drive'}
                               >
                                 Tautan Drive
                               </button>
@@ -2142,17 +2153,17 @@ export default function UserDashboard({ user, onLogout }) {
                   <button
                     type="button"
                     onClick={handleSaveDraft}
-                    disabled={isSavingDraft || isSubmitting || isRegistrationClosed}
+                    disabled={isSavingDraft || isSubmitting || isFormLocked}
                     className="save-draft-btn"
                     style={{
                       padding: '0.875rem 1.5rem',
                       borderRadius: '8px',
                       border: '1.5px solid #cbd5e1',
-                      background: (isSavingDraft || isRegistrationClosed) ? '#f8fafc' : '#ffffff',
+                      background: (isSavingDraft || isFormLocked) ? '#f8fafc' : '#ffffff',
                       fontSize: '0.925rem',
                       fontWeight: 600,
-                      color: (isSavingDraft || isRegistrationClosed) ? '#94a3b8' : '#475569',
-                      cursor: (isSavingDraft || isSubmitting || isRegistrationClosed) ? 'not-allowed' : 'pointer',
+                      color: (isSavingDraft || isFormLocked) ? '#94a3b8' : '#475569',
+                      cursor: (isSavingDraft || isSubmitting || isFormLocked) ? 'not-allowed' : 'pointer',
                       flex: '1 1 auto',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -2163,12 +2174,12 @@ export default function UserDashboard({ user, onLogout }) {
                     {isSavingDraft && (
                       <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
                     )}
-                    {isRegistrationClosed ? 'Pendaftaran Telah Ditutup' : isSavingDraft ? 'Menyimpan Draf Berkas...' : 'Simpan Draf Berkas'}
+                    {isFormLocked ? 'Pendaftaran Telah Ditutup' : isSavingDraft ? 'Menyimpan Draf Berkas...' : 'Simpan Draf Berkas'}
                   </button>
 
                   <button
                     type="submit"
-                    disabled={isSubmitting || isSavingDraft || isRegistrationClosed}
+                    disabled={isSubmitting || isSavingDraft || isFormLocked}
                     className="btn btn-gold submit-application-btn"
                     style={{
                       padding: '0.875rem 2rem',
@@ -2180,14 +2191,14 @@ export default function UserDashboard({ user, onLogout }) {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      opacity: (isSubmitting || isRegistrationClosed) ? 0.75 : 1,
-                      cursor: (isSubmitting || isSavingDraft || isRegistrationClosed) ? 'not-allowed' : 'pointer'
+                      opacity: (isSubmitting || isFormLocked) ? 0.75 : 1,
+                      cursor: (isSubmitting || isSavingDraft || isFormLocked) ? 'not-allowed' : 'pointer'
                     }}
                   >
                     {isSubmitting && (
                       <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
                     )}
-                    {isRegistrationClosed ? 'Pendaftaran Resmi Ditutup' : isSubmitting ? 'Mengirim Pendaftaran...' : (isSubmitted ? 'Perbarui & Kirim Ulang Berkas' : 'Kirim Pendaftaran Duta Kampus →')}
+                    {isFormLocked ? 'Pendaftaran Resmi Ditutup' : isSubmitting ? 'Menyimpan Perubahan...' : (isFinalist || isSubmitted ? 'Perbarui & Simpan Berkas Finalis' : 'Kirim Pendaftaran Duta Kampus →')}
                   </button>
                 </div>
               </form>
