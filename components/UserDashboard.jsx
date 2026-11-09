@@ -110,8 +110,14 @@ export default function UserDashboard({ user, onLogout }) {
     const refreshUserData = () => {
       const users = Auth.getUsers();
       const fresh = users.find(u => u.email.toLowerCase() === (user.email || '').toLowerCase());
+      const existingInDb = DB.getAll().find(
+        (item) => (item.email || '').toLowerCase() === (user.email || '').toLowerCase()
+      );
       if (fresh) {
-        setCurrentUser(fresh);
+        setCurrentUser({
+          ...fresh,
+          isFinalist: fresh.isFinalist !== undefined ? fresh.isFinalist : Boolean(existingInDb?.isFinalist)
+        });
         if (fresh.berkasSubmitted) {
           setIsSubmitted(true);
         }
@@ -129,9 +135,6 @@ export default function UserDashboard({ user, onLogout }) {
           docBuktiDiterima: fresh.docBuktiDiterima !== undefined ? fresh.docBuktiDiterima : (fresh.berkas?.docBuktiDiterima || ''),
         }));
       }
-      const existingInDb = DB.getAll().find(
-        (item) => (item.email || '').toLowerCase() === (user.email || '').toLowerCase()
-      );
       if (existingInDb && !existingInDb.isAccountApplication) {
         if (existingInDb.berkasSubmitted) {
           setIsSubmitted(true);
@@ -540,6 +543,7 @@ export default function UserDashboard({ user, onLogout }) {
   const dossierStatus = evaluateDossierCompleteness(formData);
   const selectionStage = currentUser.selectionStage || (isSubmitted ? 'review' : 'none');
   const selectionMessage = currentUser.selectionMessage;
+  const isFinalist = Boolean(currentUser.isFinalist || formData.isFinalist);
 
   return (
     <div className="user-dashboard-container">
@@ -668,8 +672,13 @@ export default function UserDashboard({ user, onLogout }) {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             Riwayat Pendaftaran
             {selectionStage === 'lolos' && (
-              <span style={{ marginLeft: 'auto', background: '#22c55e', color: '#fff', fontSize: '0.65rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
-                Lolos
+              <span style={{ marginLeft: 'auto', background: '#16a34a', color: '#fff', fontSize: '0.65rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                Berkas Diterima
+              </span>
+            )}
+            {isFinalist && (
+              <span style={{ marginLeft: selectionStage === 'lolos' ? '4px' : 'auto', background: '#C49E59', color: '#16324A', fontSize: '0.65rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 800 }}>
+                Finalis
               </span>
             )}
           </button>
@@ -876,155 +885,210 @@ export default function UserDashboard({ user, onLogout }) {
           {activeTab === 'beranda' && (
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
               
-              {/* === HASIL KELULUSAN SELEKSI BERKAS (JIKA ADMIN ACC / TOLAK) === */}
+              {/* STATUS KELULUSAN BERKAS (TANDA HIJAU JIKA DITERIMA) */}
               {selectionStage === 'lolos' && (
-                <div className="announcement-card announcement-card-lolos">
-                  <h3 className="announcement-title announcement-title-lolos">
-                    Selamat, {formData.namaLengkap}! Anda Dinyatakan Lolos Seleksi Berkas Administrasi
-                  </h3>
-
-                  <p className="announcement-desc announcement-desc-lolos">
-                    {selectionMessage || DEFAULT_MESSAGES.lolos}
-                  </p>
-
-                  {/* NOTIFIKASI KHUSUS AGENDA ACARA SELEKSI LANJUTAN (CMS SYNCED) */}
-                  {(() => {
-                    const lolosAnnouncements = (cmsData?.announcements || []).filter(
-                      a => a.active !== false && (a.target === 'peserta' || a.target === 'lolos' || a.target === 'all')
-                    );
-                    const contacts = cmsData?.contacts || {
-                      whatsapp: '0851-2292-7628',
-                      whatsappUrl: 'https://wa.me/6285122927628',
-                      instagram: '@duta_uinssc',
-                      instagramUrl: 'https://www.instagram.com/duta_uinssc',
-                      tiktok: '@duta.uin.ssc',
-                      tiktokUrl: 'https://www.tiktok.com/@duta.uin.ssc',
-                      email: 'dutakampus@uinssc.ac.id'
-                    };
-
-                    return lolosAnnouncements.map((ann, aIdx) => {
-                      const waClean = (ann.contactWa || contacts.whatsapp || '').replace(/\D/g, '').replace(/^0/, '62');
-                      const waUrl = waClean ? `https://wa.me/${waClean}` : (contacts.whatsappUrl || 'https://wa.me/6285122927628');
-                      const igHandle = (ann.contactIg || contacts.instagram || '').replace('@', '').trim();
-                      const igUrl = igHandle ? `https://www.instagram.com/${igHandle}` : (contacts.instagramUrl || 'https://www.instagram.com/duta_uinssc');
-                      const ttHandle = (ann.contactTiktok || contacts.tiktok || '').replace('@', '').trim();
-                      const ttUrl = ttHandle ? `https://www.tiktok.com/@${ttHandle}` : (contacts.tiktokUrl || 'https://www.tiktok.com/@duta.uin.ssc');
-                      const emailAddress = ann.contactEmail || contacts.email || 'dutakampus@uinssc.ac.id';
-
-                      return (
-                        <div 
-                          key={ann.id || aIdx}
-                          style={{
-                            marginTop: '1.25rem',
-                            background: '#ffffff',
-                            borderRadius: '10px',
-                            border: '1.5px solid #86efac',
-                            padding: '1.5rem',
-                            boxShadow: '0 4px 20px rgba(22, 101, 52, 0.08)'
-                          }}
-                        >
-                          <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 0.5rem 0' }}>
-                            {ann.title}
-                          </h4>
-
-                          {ann.greeting && (
-                            <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#15803d', marginBottom: '0.5rem' }}>
-                              {ann.greeting}
-                            </div>
-                          )}
-
-                          <p style={{ fontSize: '0.9rem', color: 'var(--text-mid)', lineHeight: 1.6, margin: '0 0 1.25rem 0', whiteSpace: 'pre-line' }}>
-                            {ann.content}
-                          </p>
-
-                          {(ann.date || ann.time || ann.location || ann.dressCode) && (
-                            <div style={{ background: '#f0fdf4', borderRadius: '12px', padding: '1.25rem', border: '1px solid #bbf7d0', marginBottom: '1.25rem' }}>
-                              <div style={{ fontWeight: 800, color: '#166534', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-                                Informasi Pelaksanaan yang Perlu Diperhatikan:
-                              </div>
-                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
-                                {ann.date && (
-                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
-                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Hari & Tanggal</div>
-                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.date}</div>
-                                  </div>
-                                )}
-                                {ann.time && (
-                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
-                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Waktu</div>
-                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.time}</div>
-                                  </div>
-                                )}
-                                {ann.location && (
-                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
-                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Tempat / Lokasi</div>
-                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.location}</div>
-                                  </div>
-                                )}
-                                {ann.dressCode && (
-                                  <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
-                                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Dress Code</div>
-                                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.dressCode}</div>
-                                  </div>
-                                )}
-                              </div>
-                              <div style={{ marginTop: '0.85rem', fontSize: '0.825rem', color: '#166534', fontWeight: 600 }}>
-                                Wajib hadir tepat waktu.
-                              </div>
-                            </div>
-                          )}
-
-                          <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '1rem', border: '1px solid var(--border)' }}>
-                            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
-                              Hubungi panitia:
-                            </div>
-                            <div>
-                              <a 
-                                href={waUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="btn btn-sm btn-gold"
-                                style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.825rem', fontWeight: 700, borderRadius: '4px', display: 'inline-block' }}
-                              >
-                                WhatsApp: {ann.contactWa || contacts.whatsapp}
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    });
-                  })()}
-
-                  <div className="announcement-steps-box announcement-steps-box-lolos">
-                    <div className="announcement-steps-header announcement-steps-header-lolos">
-                      <span>Petunjuk Tahapan Lanjutan:</span>
-                    </div>
-                    <div className="announcement-steps-list">
-                      <div className="announcement-step-item announcement-step-item-lolos">
-                        <span className="announcement-step-num announcement-step-num-lolos">1</span>
-                        <span>Bergabung ke grup koordinasi calon duta melalui tautan WhatsApp yang dikirimkan ke <strong>{formData.noHp || 'kontak terdaftar'}</strong>.</span>
-                      </div>
-                      <div className="announcement-step-item announcement-step-item-lolos">
-                        <span className="announcement-step-num announcement-step-num-lolos">2</span>
-                        <span>Siapkan pakaian formal institusi (jas almamater) untuk rangkaian sesi wawancara dan uji bakat.</span>
-                      </div>
-                      <div className="announcement-step-item announcement-step-item-lolos">
-                        <span className="announcement-step-num announcement-step-num-lolos">3</span>
-                        <span>Pantau perkembangan linimasa resmi pada menu Riwayat Pendaftaran secara berkala.</span>
-                      </div>
-                    </div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '0.75rem',
+                  background: '#f0fdf4',
+                  border: '1.5px solid #86efac',
+                  borderRadius: '10px',
+                  padding: '0.85rem 1.25rem'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                    <span style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: '50%',
+                      background: '#16a34a',
+                      boxShadow: '0 0 0 3px rgba(34, 197, 94, 0.25)',
+                      flexShrink: 0
+                    }} />
+                    <span style={{ fontWeight: 700, color: '#166534', fontSize: '0.9rem' }}>
+                      Status Kelengkapan: Berkas Diterima
+                    </span>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('riwayat')}
-                    className="btn btn-gold announcement-btn"
-                    style={{ borderRadius: '4px' }}
-                  >
-                    <span>Lihat Linimasa Lengkap</span>
-                  </button>
+                  <span style={{
+                    background: '#166534',
+                    color: '#ffffff',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    padding: '3px 10px',
+                    borderRadius: '4px'
+                  }}>
+                    Berkas Diterima
+                  </span>
                 </div>
               )}
+
+              {/* STATUS TERPILIH SEBAGAI FINALIS (JIKA STATUS FINALIS ON) */}
+              {isFinalist && (
+                <div style={{
+                  background: 'linear-gradient(135deg, #16324A 0%, #0d2233 100%)',
+                  border: '1.5px solid #C49E59',
+                  borderRadius: '12px',
+                  padding: '1.5rem 1.75rem',
+                  color: '#ffffff',
+                  boxShadow: '0 8px 24px rgba(22, 50, 74, 0.15)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                    <span style={{
+                      background: '#C49E59',
+                      color: '#16324A',
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                      padding: '3px 10px',
+                      borderRadius: '4px',
+                      letterSpacing: '0.5px'
+                    }}>
+                      FINALIS DUTA KAMPUS 2026
+                    </span>
+                    <span style={{ fontSize: '0.78rem', color: '#cbd5e1' }}>
+                      UIN Siber Syekh Nurjati Cirebon
+                    </span>
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#ffffff', margin: '0 0 0.5rem 0' }}>
+                    Selamat, {participantName}! Anda Dinyatakan Terpilih Sebagai Finalis
+                  </h3>
+                  <p style={{ fontSize: '0.9rem', color: '#e2e8f0', lineHeight: 1.6, margin: '0 0 1rem 0' }}>
+                    Berdasarkan hasil penilaian rangkaian tahapan seleksi Pemilihan Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026, Anda dinyatakan resmi terpilih sebagai Finalis. Persiapkan diri Anda untuk tahapan pembekalan dan Grand Final. Informasi teknis serta jadwal kegiatan akan disampaikan melalui pengumuman berkala pada portal ini.
+                  </p>
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <a
+                      href={cmsData?.contacts?.whatsappUrl || 'https://wa.me/6285122927628'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-gold"
+                      style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.82rem', fontWeight: 700, borderRadius: '4px' }}
+                    >
+                      Hubungi Panitia
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* NOTIFIKASI KHUSUS AGENDA & PENGUMUMAN PESERTA (HANYA MUNCUL KEPADA PESERTA DENGAN STATUS BERKAS DITERIMA) */}
+              {selectionStage === 'lolos' && (() => {
+                const lolosAnnouncements = (cmsData?.announcements || []).filter(
+                  a => a.active !== false && (a.target === 'peserta' || a.target === 'lolos' || a.target === 'all')
+                );
+                if (lolosAnnouncements.length === 0) return null;
+
+                const contacts = cmsData?.contacts || {
+                  whatsapp: '0851-2292-7628',
+                  whatsappUrl: 'https://wa.me/6285122927628',
+                  instagram: '@duta_uinssc',
+                  instagramUrl: 'https://www.instagram.com/duta_uinssc',
+                  tiktok: '@duta.uin.ssc',
+                  tiktokUrl: 'https://www.tiktok.com/@duta.uin.ssc',
+                  email: 'dutakampus@uinssc.ac.id'
+                };
+
+                return lolosAnnouncements.map((ann, aIdx) => {
+                  // Personalisasi sapaan dan isi dengan nama peserta
+                  let renderedGreeting = ann.greeting 
+                    ? ann.greeting.replace(/{nama}|{name}|\[nama\]|\[Nama\]/gi, participantName)
+                    : `Halo, ${participantName}!`;
+
+                  if (ann.greeting && !renderedGreeting.toLowerCase().includes(participantName.toLowerCase())) {
+                    renderedGreeting = `Halo, ${participantName}! ${renderedGreeting}`;
+                  }
+
+                  const renderedTitle = (ann.title || 'Pengumuman Peserta').replace(/{nama}|{name}|\[nama\]|\[Nama\]/gi, participantName);
+                  const renderedContent = (ann.content || '').replace(/{nama}|{name}|\[nama\]|\[Nama\]/gi, participantName);
+
+                  const waClean = (ann.contactWa || contacts.whatsapp || '').replace(/\D/g, '').replace(/^0/, '62');
+                  const waUrl = waClean ? `https://wa.me/${waClean}` : (contacts.whatsappUrl || 'https://wa.me/6285122927628');
+
+                  return (
+                    <div 
+                      key={ann.id || aIdx}
+                      style={{
+                        marginTop: '0.5rem',
+                        background: '#ffffff',
+                        borderRadius: '10px',
+                        border: '1.5px solid #86efac',
+                        padding: '1.5rem',
+                        boxShadow: '0 4px 20px rgba(22, 101, 52, 0.08)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                        <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', margin: 0 }}>
+                          {renderedTitle}
+                        </h4>
+                        <span style={{ fontSize: '0.72rem', background: '#dcfce7', color: '#166534', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                          Pengumuman Peserta
+                        </span>
+                      </div>
+
+                      <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#15803d', marginBottom: '0.5rem' }}>
+                        {renderedGreeting}
+                      </div>
+
+                      <p style={{ fontSize: '0.9rem', color: 'var(--text-mid)', lineHeight: 1.6, margin: '0 0 1.25rem 0', whiteSpace: 'pre-line' }}>
+                        {renderedContent}
+                      </p>
+
+                      {(ann.date || ann.time || ann.location || ann.dressCode) && (
+                        <div style={{ background: '#f0fdf4', borderRadius: '12px', padding: '1.25rem', border: '1px solid #bbf7d0', marginBottom: '1.25rem' }}>
+                          <div style={{ fontWeight: 800, color: '#166534', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                            Informasi Pelaksanaan yang Perlu Diperhatikan:
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
+                            {ann.date && (
+                              <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Hari & Tanggal</div>
+                                <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.date}</div>
+                              </div>
+                            )}
+                            {ann.time && (
+                              <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Waktu</div>
+                                <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.time}</div>
+                              </div>
+                            )}
+                            {ann.location && (
+                              <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Tempat / Lokasi</div>
+                                <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.location}</div>
+                              </div>
+                            )}
+                            {ann.dressCode && (
+                              <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Dress Code</div>
+                                <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.dressCode}</div>
+                              </div>
+                            )}
+                          </div>
+                          <div style={{ marginTop: '0.85rem', fontSize: '0.825rem', color: '#166534', fontWeight: 600 }}>
+                            Wajib hadir tepat waktu.
+                          </div>
+                        </div>
+                      )}
+
+                      <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '1rem', border: '1px solid var(--border)' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
+                          Hubungi panitia:
+                        </div>
+                        <div>
+                          <a 
+                            href={waUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="btn btn-sm btn-gold"
+                            style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.825rem', fontWeight: 700, borderRadius: '4px', display: 'inline-block' }}
+                          >
+                            WhatsApp: {ann.contactWa || contacts.whatsapp}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
 
               {selectionStage === 'tidak_lolos' && (
                 <div className="announcement-card announcement-card-tidak-lolos">
@@ -2027,22 +2091,27 @@ export default function UserDashboard({ user, onLogout }) {
                   
                   <span
                     style={{
-                      background: selectionStage === 'lolos' ? '#166534' : selectionStage === 'tidak_lolos' ? '#991b1b' : isSubmitted ? '#b45309' : '#64748b',
-                      color: '#ffffff',
+                      background: isFinalist ? '#C49E59' : selectionStage === 'lolos' ? '#166534' : selectionStage === 'tidak_lolos' ? '#991b1b' : isSubmitted ? '#b45309' : '#64748b',
+                      color: isFinalist ? '#16324A' : '#ffffff',
                       fontSize: '0.8rem',
-                      fontWeight: 700,
+                      fontWeight: 800,
                       padding: '4px 12px',
                       borderRadius: '6px'
                     }}
                   >
-                    {selectionStage === 'lolos' && 'LOLOS SELEKSI BERKAS'}
-                    {selectionStage === 'tidak_lolos' && 'TIDAK LOLOS'}
-                    {selectionStage !== 'lolos' && selectionStage !== 'tidak_lolos' && (isSubmitted ? 'DALAM REVIEW PANITIA' : 'BELUM KIRIM BERKAS')}
+                    {isFinalist 
+                      ? 'FINALIS DUTA KAMPUS' 
+                      : selectionStage === 'lolos' 
+                      ? 'BERKAS DITERIMA' 
+                      : selectionStage === 'tidak_lolos' 
+                      ? 'TIDAK LOLOS' 
+                      : (isSubmitted ? 'DALAM REVIEW PANITIA' : 'BELUM KIRIM BERKAS')}
                   </span>
                 </div>
 
                 <p style={{ fontSize: '0.925rem', color: '#334155', lineHeight: 1.6, margin: '0 0 1rem' }}>
-                  {selectionStage === 'lolos' && (selectionMessage || DEFAULT_MESSAGES.lolos)}
+                  {isFinalist && 'Selamat, Anda dinyatakan resmi terpilih sebagai Finalis Pemilihan Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026. Persiapkan diri Anda untuk tahapan berikutnya.'}
+                  {!isFinalist && selectionStage === 'lolos' && 'Berkas persyaratan administrasi Anda telah diverifikasi dan dinyatakan diterima oleh panitia seleksi.'}
                   {selectionStage === 'tidak_lolos' && (selectionMessage || DEFAULT_MESSAGES.tidak_lolos)}
                   {selectionStage !== 'lolos' && selectionStage !== 'tidak_lolos' && (
                     isSubmitted 

@@ -407,11 +407,39 @@ export default function AdminPage() {
     refreshUsers();
     showToast(
       stage === 'lolos' 
-        ? 'Status berkas pendaftar ditetapkan: Lolos Seleksi Berkas.' 
+        ? 'Status berkas pendaftar ditetapkan: Berkas Diterima.' 
         : stage === 'tidak_lolos' 
         ? 'Status berkas pendaftar ditetapkan: Tidak Lolos.' 
         : 'Status berkas diatur dalam peninjauan.'
     );
+  };
+
+  // Toggle Finalist Status Controller
+  const handleToggleFinalist = (identifier) => {
+    // Sync to DB
+    const allDb = DB.getAll();
+    const dbIdx = allDb.findIndex(i => String(i.id) === String(identifier) || (i.email && i.email.toLowerCase() === String(identifier).toLowerCase()));
+    let nextState = true;
+    if (dbIdx !== -1) {
+      nextState = !allDb[dbIdx].isFinalist;
+      allDb[dbIdx].isFinalist = nextState;
+      allDb[dbIdx].updatedAt = new Date().toISOString();
+      DB.save(allDb, allDb[dbIdx]);
+    }
+
+    // Sync to Auth Users
+    const allUsers = Auth.getUsers();
+    const userIdx = allUsers.findIndex(u => String(u.id) === String(identifier) || (u.email && u.email.toLowerCase() === String(identifier).toLowerCase()));
+    if (userIdx !== -1) {
+      if (dbIdx === -1) nextState = !allUsers[userIdx].isFinalist;
+      allUsers[userIdx].isFinalist = nextState;
+      allUsers[userIdx].updatedAt = new Date().toISOString();
+      Auth.saveUsers(allUsers, allUsers[userIdx]);
+    }
+
+    refresh();
+    refreshUsers();
+    showToast(nextState ? 'Peserta ditetapkan sebagai Finalis Duta Kampus.' : 'Status Finalis peserta dinonaktifkan.');
   };
 
   const handleCmsSave = async () => {
@@ -883,6 +911,7 @@ export default function AdminPage() {
       jurusan: a.jurusan || matchingUser.jurusan,
       prodi: a.prodi || a.jurusan || matchingUser.jurusan || matchingUser.fakultas,
       accountStatus: matchingUser.accountStatus || a.accountStatus || 'approved',
+      isFinalist: Boolean(a.isFinalist !== undefined ? a.isFinalist : matchingUser.isFinalist),
     };
   });
 
@@ -903,6 +932,7 @@ export default function AdminPage() {
         status: u.accountStatus === 'approved' ? (u.status === 'Lolos Seleksi Berkas' ? 'diterima' : u.status === 'Tidak Lolos' ? 'ditolak' : 'pending') : 'pending',
         accountStatus: u.accountStatus || 'pending',
         selectionStage: u.selectionStage || 'review',
+        isFinalist: Boolean(u.isFinalist),
         isAccountApplication: true,
         createdAt: u.createdAt || new Date().toISOString()
       });
@@ -924,7 +954,8 @@ export default function AdminPage() {
         || (filterCompleteness === 'kosong' && !evalData.isStarted);
 
       const stage = i.selectionStage || (i.status === 'diterima' ? 'lolos' : i.status === 'ditolak' ? 'tidak_lolos' : 'review');
-      const matchSelection = !filterSelection || stage === filterSelection;
+      const matchSelection = !filterSelection 
+        || (filterSelection === 'finalis' ? Boolean(i.isFinalist) : stage === filterSelection);
 
       return matchQ && matchFakultas && matchProdi && matchComp && matchSelection;
     })
@@ -939,6 +970,7 @@ export default function AdminPage() {
   const completeDossiersCount = combinedApplicants.filter(a => evaluateDossierCompleteness(a).isComplete).length;
   const incompleteDossiersCount = combinedApplicants.filter(a => !evaluateDossierCompleteness(a).isComplete).length;
   const lolosCount = combinedApplicants.filter(a => a.selectionStage === 'lolos' || a.status === 'diterima').length;
+  const finalistCount = combinedApplicants.filter(a => a.isFinalist).length;
 
   const selectedItem = selectedId ? (
     combinedApplicants.find(a => String(a.id) === String(selectedId) || (a.email && String(a.email).toLowerCase() === String(selectedId).toLowerCase())) ||
@@ -1679,7 +1711,8 @@ export default function AdminPage() {
                 {/* Filter Status Seleksi Berkas */}
                 <select className="filter-select" value={filterSelection} onChange={e => setFilterSelection(e.target.value)}>
                   <option value="">Semua Hasil Seleksi</option>
-                  <option value="lolos">Lolos Seleksi Berkas</option>
+                  <option value="lolos">Berkas Diterima</option>
+                  <option value="finalis">Finalis Terpilih</option>
                   <option value="tidak_lolos">Tidak Lolos</option>
                   <option value="review">Dalam Peninjauan</option>
                 </select>
@@ -1711,12 +1744,13 @@ export default function AdminPage() {
                     <th>IPK</th>
                     <th>Kelengkapan Dokumen</th>
                     <th>Hasil Seleksi Berkas</th>
+                    <th>Status Finalis</th>
                     <th>Aksi Seleksi</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.length === 0 ? (
-                    <tr><td colSpan={8} className="table-empty"><p>Tidak ada pendaftar yang cocok dengan filter yang dipilih.</p></td></tr>
+                    <tr><td colSpan={9} className="table-empty"><p>Tidak ada pendaftar yang cocok dengan filter yang dipilih.</p></td></tr>
                   ) : filtered.map((item, idx) => {
                     const evalData = evaluateDossierCompleteness(item);
                     const stage = item.selectionStage || (item.status === 'diterima' ? 'lolos' : item.status === 'ditolak' ? 'tidak_lolos' : 'review');
@@ -1788,7 +1822,7 @@ export default function AdminPage() {
                         <td>
                           {stage === 'lolos' && (
                             <span className="badge" style={{ background: '#dcfce7', color: '#166534', border: '1px solid #86efac', fontWeight: 800 }}>
-                              LOLOS SELEKSI
+                              BERKAS DITERIMA
                             </span>
                           )}
                           {stage === 'tidak_lolos' && (
@@ -1801,6 +1835,35 @@ export default function AdminPage() {
                               DALAM PENINJAUAN
                             </span>
                           )}
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleFinalist(item.id)}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              padding: '4px 10px',
+                              borderRadius: '20px',
+                              border: item.isFinalist ? '1.5px solid #16a34a' : '1.5px solid #cbd5e1',
+                              background: item.isFinalist ? '#dcfce7' : '#f8fafc',
+                              color: item.isFinalist ? '#166534' : '#64748b',
+                              fontWeight: 700,
+                              fontSize: '0.74rem',
+                              cursor: 'pointer',
+                              transition: 'all 0.15s ease'
+                            }}
+                            title={item.isFinalist ? 'Klik untuk nonaktifkan status Finalis' : 'Klik untuk tetapkan sebagai Finalis'}
+                          >
+                            <span style={{
+                              width: 7,
+                              height: 7,
+                              borderRadius: '50%',
+                              background: item.isFinalist ? '#16a34a' : '#94a3b8'
+                            }} />
+                            {item.isFinalist ? 'Finalis (On)' : 'Nonaktif (Off)'}
+                          </button>
                         </td>
                         <td>
                           <div className="td-actions" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
@@ -1817,15 +1880,15 @@ export default function AdminPage() {
                               Buka Direktori Berkas
                             </button>
 
-                            {/* Quick Toggle Lolos / Batalkan */}
+                            {/* Quick Toggle Terima Berkas / Batalkan */}
                             {stage !== 'lolos' ? (
                               <button
                                 className="btn btn-sm btn-gold"
                                 style={{ padding: '4px 8px', fontSize: '0.72rem' }}
                                 onClick={() => handleSetDossierStatus(item.id, 'lolos')}
-                                title="Terima dan nyatakan lolos seleksi berkas"
+                                title="Terima dan setujui kelengkapan berkas"
                               >
-                                Loloskan Berkas
+                                Terima Berkas
                               </button>
                             ) : (
                               <button
@@ -2542,8 +2605,11 @@ export default function AdminPage() {
                             type="text" 
                             value={ann.greeting || ''} 
                             onChange={e => updateAnnouncement(idx, 'greeting', e.target.value)} 
-                            placeholder="Contoh: Halo, Calon Duta Kampus UINSSC 2026!" 
+                            placeholder="Contoh: Halo, {nama}! (Gunakan {nama} untuk menyebut nama peserta)" 
                           />
+                          <small style={{ color: 'var(--text-light)', fontSize: '0.78rem', marginTop: '4px', display: 'block' }}>
+                            Gunakan kode <code>{'{nama}'}</code> di salam atau isi agar otomatis menampilkan nama lengkap masing-masing peserta.
+                          </small>
                         </div>
                       </div>
 
@@ -3379,11 +3445,65 @@ export default function AdminPage() {
 
                 {/* BOTTOM DECISION CONSOLE */}
                 <div style={{ marginTop: '2rem', background: '#f8fafc', border: '1.5px solid #e2e8f0', borderRadius: '14px', padding: '1.5rem' }}>
+                  {/* TOGGLE FINALIS */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '1rem',
+                    padding: '1rem 1.25rem',
+                    background: '#ffffff',
+                    borderRadius: '10px',
+                    border: '1.5px solid #e2e8f0',
+                    marginBottom: '1.5rem'
+                  }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{
+                          width: 9,
+                          height: 9,
+                          borderRadius: '50%',
+                          background: mergedSelectedItem.isFinalist ? '#16a34a' : '#94a3b8'
+                        }} />
+                        <h5 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)' }}>
+                          Status Finalis Duta Kampus 2026
+                        </h5>
+                      </div>
+                      <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: '#64748b' }}>
+                        {mergedSelectedItem.isFinalist 
+                          ? 'Peserta saat ini aktif berstatus sebagai Finalis Duta Kampus 2026.' 
+                          : 'Peserta belum ditetapkan sebagai Finalis.'}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleToggleFinalist(mergedSelectedItem.id)}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 16px',
+                        borderRadius: '20px',
+                        border: mergedSelectedItem.isFinalist ? '1.5px solid #16a34a' : '1.5px solid #cbd5e1',
+                        background: mergedSelectedItem.isFinalist ? '#dcfce7' : '#f1f5f9',
+                        color: mergedSelectedItem.isFinalist ? '#166534' : '#475569',
+                        fontWeight: 700,
+                        fontSize: '0.82rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      {mergedSelectedItem.isFinalist ? 'Finalis: Aktif (On)' : 'Finalis: Nonaktif (Off)'}
+                    </button>
+                  </div>
+
                   <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 800, color: 'var(--navy)' }}>
-                    Keputusan Hasil Seleksi Administrasi Berkas
+                    Keputusan Kelayakan Berkas
                   </h4>
                   <p style={{ margin: '0 0 1rem', fontSize: '0.825rem', color: '#64748b' }}>
-                    Tentukan kelulusan seleksi berkas calon duta ini. Status akan langsung tampil di dashboard peserta secara real-time.
+                    Tentukan kelayakan dokumen administrasi calon duta ini. Status akan langsung tampil di dashboard peserta secara real-time.
                   </p>
 
                   <div style={{ marginBottom: '1.25rem' }}>
@@ -3406,7 +3526,7 @@ export default function AdminPage() {
                       style={{ background: '#16a34a', color: '#fff', padding: '0.75rem 1.6rem', fontWeight: 700, borderRadius: '8px', border: 'none', cursor: 'pointer' }}
                       onClick={() => { handleSetDossierStatus(mergedSelectedItem.id, 'lolos', customMsg); }}
                     >
-                      Tetapkan LOLOS Seleksi Berkas
+                      Tetapkan Berkas Diterima
                     </button>
 
                     <button
