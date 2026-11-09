@@ -4,7 +4,7 @@ import { Auth, validateEmailFormat } from '../lib/auth';
 import { FAKULTAS_DATA, KEWARGANEGARAAN_OPTIONS } from '../lib/fakultasData';
 import { isFirebaseConfigured, fetchUserFromCloudByIdentifier } from '../lib/firebase';
 import { Settings } from '../lib/settings';
-import { verifyAndClaimFinalistToken } from '../lib/finalistTokens';
+import { verifyAndClaimFinalistToken, findFinalistToken } from '../lib/finalistTokens';
 
 export default function RegisterAccountWizard({ onSwitchToLogin }) {
   const router = useRouter();
@@ -16,6 +16,63 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
   const [tokenLoading, setTokenLoading] = useState(false);
   const [tokenError, setTokenError] = useState('');
   const [tokenSuccess, setTokenSuccess] = useState('');
+  const [activeFinalistToken, setActiveFinalistToken] = useState(null);
+
+  // Form registration state
+  const [step, setStep] = useState(1); // 1: Informasi Akun, 2: Informasi Pribadi
+
+  // Step 1: Data Akun
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
+
+  // Step 2: Informasi Pribadi
+  const [kewarganegaraan, setKewarganegaraan] = useState('Warga Negara Indonesia (WNI)');
+  const [namaLengkap, setNamaLengkap] = useState('');
+  const [nim, setNim] = useState('');
+  const [fakultas, setFakultas] = useState('');
+  const [jurusan, setJurusan] = useState('');
+  const [semester, setSemester] = useState('4');
+  const [tempatLahir, setTempatLahir] = useState('');
+  const [tanggalLahir, setTanggalLahir] = useState('');
+  const [jenisKelamin, setJenisKelamin] = useState('Laki-laki');
+
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+
+  // Unique IDs for accessibility
+  const emailInputId = useId();
+  const passwordInputId = useId();
+  const confirmPasswordInputId = useId();
+  const kewarganegaraanSelectId = useId();
+  const namaInputId = useId();
+  const nimInputId = useId();
+  const fakultasSelectId = useId();
+  const jurusanSelectId = useId();
+  const semesterSelectId = useId();
+  const tempatLahirInputId = useId();
+  const tanggalLahirInputId = useId();
+
+  // Dynamic majors list based on selected faculty
+  const selectedFakultasObj = FAKULTAS_DATA.find((f) => f.name === fakultas);
+  const availableJurusan = selectedFakultasObj ? selectedFakultasObj.jurusan : [];
+
+  // Live email validation
+  const emailVal = validateEmailFormat(email);
+  const isEmailDuplicate = email.trim() && Auth.getUsers().some(
+    (u) => u.email.toLowerCase() === email.trim().toLowerCase()
+  );
+
+  // Handle Faculty Change
+  const handleFakultasChange = (e) => {
+    const newFakultas = e.target.value;
+    setFakultas(newFakultas);
+    setJurusan('');
+    if (errors.fakultas) setErrors((prev) => ({ ...prev, fakultas: '' }));
+  };
 
   const handleVerifyToken = async (e) => {
     e.preventDefault();
@@ -27,27 +84,147 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
     setTokenError('');
     setTokenSuccess('');
 
-    try {
-      const result = await verifyAndClaimFinalistToken(tokenInput);
-      if (!result.success) {
-        setTokenError(result.message || 'Nomor pendaftaran tidak terdaftar pada sistem seleksi.');
-        setTokenLoading(false);
-        return;
-      }
-
-      setTokenSuccess(result.message || 'Verifikasi berhasil. Mengalihkan ke halaman profil...');
-      setTimeout(() => {
-        router.navigate('/profil');
-      }, 1200);
-    } catch (err) {
-      console.error('Token verification error:', err);
-      setTokenError('Terjadi kendala saat verifikasi. Silakan coba beberapa saat lagi.');
-    } finally {
+    const matched = findFinalistToken(tokenInput);
+    if (!matched) {
+      setTokenError('Nomor pendaftaran tidak terdaftar pada sistem seleksi.');
       setTokenLoading(false);
+      return;
+    }
+
+    setActiveFinalistToken(matched);
+    setNamaLengkap(matched.namaLengkap);
+    setJenisKelamin(matched.jenisKelamin);
+    setStep(1);
+    setTokenLoading(false);
+  };
+
+  // Validate Step 1
+  const handleNextToStep2 = async (e) => {
+    e.preventDefault();
+    setEmailTouched(true);
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = 'Alamat email wajib diisi.';
+    } else if (!emailVal.isValid) {
+      newErrors.email = emailVal.message;
+    } else {
+      if (isFirebaseConfigured) {
+        try {
+          const cloudUser = await fetchUserFromCloudByIdentifier(email.trim());
+          if (cloudUser && cloudUser.password) {
+            newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
+          } else {
+            const cleaned = Auth.getUsers().filter(u => u.email.toLowerCase() !== email.trim().toLowerCase());
+            localStorage.setItem('dutauinssc_users', JSON.stringify(cleaned));
+            try {
+              window.dispatchEvent(new Event('storage'));
+              window.dispatchEvent(new CustomEvent('users-updated', { detail: cleaned }));
+            } catch (e) {}
+          }
+        } catch (err) {
+          if (isEmailDuplicate) {
+            newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
+          }
+        }
+      } else if (isEmailDuplicate) {
+        newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
+      }
+    }
+
+    if (!password) {
+      newErrors.password = 'Kata sandi wajib diisi.';
+    } else if (password.length < 6) {
+      newErrors.password = 'Kata sandi minimal 6 karakter.';
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = 'Konfirmasi kata sandi wajib diisi.';
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = 'Konfirmasi kata sandi tidak sesuai dengan kata sandi.';
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setStep(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  if (isClosed) {
+  // Validate Step 2 and Submit
+  const handleFinalSubmit = async (e) => {
+    e.preventDefault();
+    const newErrors = {};
+
+    if (!kewarganegaraan) newErrors.kewarganegaraan = 'Pilih status kewarganegaraan.';
+    if (!namaLengkap.trim()) newErrors.namaLengkap = 'Nama lengkap wajib diisi.';
+    if (!nim.trim()) newErrors.nim = 'NIM wajib diisi.';
+    if (!fakultas) newErrors.fakultas = 'Pilih fakultas asal.';
+    if (!jurusan) newErrors.jurusan = 'Pilih program studi / jurusan.';
+    if (!tempatLahir.trim()) newErrors.tempatLahir = 'Tempat lahir wajib diisi.';
+    if (!tanggalLahir) newErrors.tanggalLahir = 'Tanggal lahir wajib diisi.';
+    if (!jenisKelamin) newErrors.jenisKelamin = 'Pilih jenis kelamin.';
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setSubmitting(true);
+      try {
+        if (activeFinalistToken) {
+          const res = await verifyAndClaimFinalistToken(activeFinalistToken.token, {
+            email,
+            password,
+            kewarganegaraan,
+            nim,
+            fakultas,
+            jurusan,
+            semester: semester || '4',
+            tempatLahir,
+            tanggalLahir,
+            jenisKelamin
+          });
+          if (res && res.success) {
+            localStorage.setItem('dutauinssc_session_created', Date.now().toString());
+            window.location.href = '/profil';
+            return;
+          } else {
+            setSubmitting(false);
+            setErrors({ general: res?.message || 'Gagal mendaftarkan akun.' });
+            return;
+          }
+        }
+
+        const res = await Auth.registerAccount({
+          email,
+          password,
+          kewarganegaraan,
+          namaLengkap,
+          nim,
+          fakultas,
+          jurusan,
+          semester: semester || '4',
+          tempatLahir,
+          tanggalLahir,
+          jenisKelamin,
+        });
+
+        if (res && res.success) {
+          localStorage.setItem('dutauinssc_session_created', Date.now().toString());
+          window.location.href = '/profil';
+        } else {
+          setSubmitting(false);
+          setErrors({ general: res?.error || 'Terjadi kesalahan saat mengajukan akun.' });
+        }
+      } catch (err) {
+        console.error('Registration submit error:', err);
+        setSubmitting(false);
+        setErrors({ general: err.message || 'Terjadi kendala saat menghubungkan ke database server.' });
+      }
+    }
+  };
+
+  if (isClosed && !activeFinalistToken) {
     return (
       <div style={{
         padding: '2rem 1.5rem',
@@ -220,165 +397,6 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
       </div>
     );
   }
-
-  const [step, setStep] = useState(1); // 1: Informasi Akun, 2: Informasi Pribadi
-
-  // Step 1: Data Akun
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [emailTouched, setEmailTouched] = useState(false);
-
-  // Step 2: Informasi Pribadi
-  const [kewarganegaraan, setKewarganegaraan] = useState('Warga Negara Indonesia (WNI)');
-  const [namaLengkap, setNamaLengkap] = useState('');
-  const [nim, setNim] = useState('');
-  const [fakultas, setFakultas] = useState('');
-  const [jurusan, setJurusan] = useState('');
-  const [semester, setSemester] = useState('4');
-  const [tempatLahir, setTempatLahir] = useState('');
-  const [tanggalLahir, setTanggalLahir] = useState('');
-  const [jenisKelamin, setJenisKelamin] = useState('Laki-laki');
-
-  const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
-
-  // Unique IDs for accessibility
-  const emailInputId = useId();
-  const passwordInputId = useId();
-  const confirmPasswordInputId = useId();
-  const kewarganegaraanSelectId = useId();
-  const namaInputId = useId();
-  const nimInputId = useId();
-  const fakultasSelectId = useId();
-  const jurusanSelectId = useId();
-  const semesterSelectId = useId();
-  const tempatLahirInputId = useId();
-  const tanggalLahirInputId = useId();
-
-  // Dynamic majors list based on selected faculty
-  const selectedFakultasObj = FAKULTAS_DATA.find((f) => f.name === fakultas);
-  const availableJurusan = selectedFakultasObj ? selectedFakultasObj.jurusan : [];
-
-  // Live email validation
-  const emailVal = validateEmailFormat(email);
-  const isEmailDuplicate = email.trim() && Auth.getUsers().some(
-    (u) => u.email.toLowerCase() === email.trim().toLowerCase()
-  );
-
-  // Handle Faculty Change
-  const handleFakultasChange = (e) => {
-    const newFakultas = e.target.value;
-    setFakultas(newFakultas);
-    setJurusan(''); // Reset major when faculty changes
-    if (errors.fakultas) setErrors((prev) => ({ ...prev, fakultas: '' }));
-  };
-
-  // Validate Step 1
-  const handleNextToStep2 = async (e) => {
-    e.preventDefault();
-    setEmailTouched(true);
-    const newErrors = {};
-
-    if (!email.trim()) {
-      newErrors.email = 'Alamat email wajib diisi.';
-    } else if (!emailVal.isValid) {
-      newErrors.email = emailVal.message;
-    } else {
-      // Re-verify against authoritative server database
-      if (isFirebaseConfigured) {
-        try {
-          const cloudUser = await fetchUserFromCloudByIdentifier(email.trim());
-          if (cloudUser && cloudUser.password) {
-            newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
-          } else {
-            // Not in database or was deleted! Purge stale local copy so re-registration is never blocked
-            const cleaned = Auth.getUsers().filter(u => u.email.toLowerCase() !== email.trim().toLowerCase());
-            localStorage.setItem('dutauinssc_users', JSON.stringify(cleaned));
-            try {
-              window.dispatchEvent(new Event('storage'));
-              window.dispatchEvent(new CustomEvent('users-updated', { detail: cleaned }));
-            } catch (e) {}
-          }
-        } catch (err) {
-          if (isEmailDuplicate) {
-            newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
-          }
-        }
-      } else if (isEmailDuplicate) {
-        newErrors.email = 'Alamat email ini sudah terdaftar. Silakan gunakan email lain atau masuk.';
-      }
-    }
-
-    if (!password) {
-      newErrors.password = 'Kata sandi wajib diisi.';
-    } else if (password.length < 6) {
-      newErrors.password = 'Kata sandi minimal 6 karakter.';
-    }
-
-    if (!confirmPassword) {
-      newErrors.confirmPassword = 'Konfirmasi kata sandi wajib diisi.';
-    } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Konfirmasi kata sandi tidak sesuai dengan kata sandi.';
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      setStep(2);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  // Validate Step 2 and Submit
-  const handleFinalSubmit = async (e) => {
-    e.preventDefault();
-    const newErrors = {};
-
-    if (!kewarganegaraan) newErrors.kewarganegaraan = 'Pilih status kewarganegaraan.';
-    if (!namaLengkap.trim()) newErrors.namaLengkap = 'Nama lengkap wajib diisi.';
-    if (!nim.trim()) newErrors.nim = 'NIM wajib diisi.';
-    if (!fakultas) newErrors.fakultas = 'Pilih fakultas asal.';
-    if (!jurusan) newErrors.jurusan = 'Pilih program studi / jurusan.';
-    if (!tempatLahir.trim()) newErrors.tempatLahir = 'Tempat lahir wajib diisi.';
-    if (!tanggalLahir) newErrors.tanggalLahir = 'Tanggal lahir wajib diisi.';
-    if (!jenisKelamin) newErrors.jenisKelamin = 'Pilih jenis kelamin.';
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      setSubmitting(true);
-      try {
-        const res = await Auth.registerAccount({
-          email,
-          password,
-          kewarganegaraan,
-          namaLengkap,
-          nim,
-          fakultas,
-          jurusan,
-          semester: semester || '4',
-          tempatLahir,
-          tanggalLahir,
-          jenisKelamin,
-        });
-
-        if (res && res.success) {
-          localStorage.setItem('dutauinssc_session_created', Date.now().toString());
-          window.location.href = '/profil';
-        } else {
-          setSubmitting(false);
-          setErrors({ general: res?.error || 'Terjadi kesalahan saat mengajukan akun.' });
-        }
-      } catch (err) {
-        console.error('Registration submit error:', err);
-        setSubmitting(false);
-        setErrors({ general: err.message || 'Terjadi kendala saat menghubungkan ke database server.' });
-      }
-    }
-  };
 
   return (
     <div className="registration-wizard" style={{ width: '100%' }}>
