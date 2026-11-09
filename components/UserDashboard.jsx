@@ -543,7 +543,9 @@ export default function UserDashboard({ user, onLogout }) {
   const dossierStatus = evaluateDossierCompleteness(formData);
   const selectionStage = currentUser.selectionStage || (isSubmitted ? 'review' : 'none');
   const selectionMessage = currentUser.selectionMessage;
-  const isFinalist = Boolean(currentUser.isFinalist || formData.isFinalist);
+  const finalistStatus = currentUser.finalistStatus || formData.finalistStatus || (currentUser.isFinalist || formData.isFinalist ? 'finalis' : 'belum');
+  const isFinalist = (finalistStatus === 'finalis');
+  const isNotFinalist = (finalistStatus === 'tidak_lolos');
 
   return (
     <div className="user-dashboard-container">
@@ -967,6 +969,39 @@ export default function UserDashboard({ user, onLogout }) {
                       Hubungi Panitia
                     </a>
                   </div>
+                </div>
+              )}
+
+              {/* STATUS TIDAK LOLOS KE FINAL (JIKA DITETAPKAN TIDAK LOLOS FINAL) */}
+              {isNotFinalist && (
+                <div style={{
+                  background: '#fef2f2',
+                  border: '1.5px solid #fca5a5',
+                  borderRadius: '12px',
+                  padding: '1.25rem 1.5rem',
+                  color: '#991b1b'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <span style={{
+                      background: '#fee2e2',
+                      color: '#991b1b',
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      padding: '3px 8px',
+                      borderRadius: '4px'
+                    }}>
+                      HASIL SELEKSI FINALIS
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: '#7f1d1d' }}>
+                      UIN Siber Syekh Nurjati Cirebon
+                    </span>
+                  </div>
+                  <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#991b1b', margin: '0 0 0.35rem 0' }}>
+                    Pemberitahuan Hasil Seleksi Finalis
+                  </h4>
+                  <p style={{ fontSize: '0.88rem', color: '#7f1d1d', lineHeight: 1.55, margin: 0 }}>
+                    Terima kasih atas partisipasi dan dedikasi {participantName} dalam mengikuti rangkaian tahapan seleksi Duta Kampus 2026. Berdasarkan hasil penilaian dewan juri, Anda belum berhasil melangkah ke babak Grand Final. Terus kembangkan potensi dan prestasi terbaik Anda di kampus tercinta.
+                  </p>
                 </div>
               )}
 
@@ -2091,7 +2126,7 @@ export default function UserDashboard({ user, onLogout }) {
                   
                   <span
                     style={{
-                      background: isFinalist ? '#C49E59' : selectionStage === 'lolos' ? '#166534' : selectionStage === 'tidak_lolos' ? '#991b1b' : isSubmitted ? '#b45309' : '#64748b',
+                      background: isFinalist ? '#C49E59' : isNotFinalist ? '#991b1b' : selectionStage === 'lolos' ? '#166534' : selectionStage === 'tidak_lolos' ? '#991b1b' : isSubmitted ? '#b45309' : '#64748b',
                       color: isFinalist ? '#16324A' : '#ffffff',
                       fontSize: '0.8rem',
                       fontWeight: 800,
@@ -2101,6 +2136,8 @@ export default function UserDashboard({ user, onLogout }) {
                   >
                     {isFinalist 
                       ? 'FINALIS DUTA KAMPUS' 
+                      : isNotFinalist
+                      ? 'TIDAK LOLOS FINAL'
                       : selectionStage === 'lolos' 
                       ? 'BERKAS DITERIMA' 
                       : selectionStage === 'tidak_lolos' 
@@ -2111,7 +2148,8 @@ export default function UserDashboard({ user, onLogout }) {
 
                 <p style={{ fontSize: '0.925rem', color: '#334155', lineHeight: 1.6, margin: '0 0 1rem' }}>
                   {isFinalist && 'Selamat, Anda dinyatakan resmi terpilih sebagai Finalis Pemilihan Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026. Persiapkan diri Anda untuk tahapan berikutnya.'}
-                  {!isFinalist && selectionStage === 'lolos' && 'Berkas persyaratan administrasi Anda telah diverifikasi dan dinyatakan diterima oleh panitia seleksi.'}
+                  {isNotFinalist && 'Terima kasih atas partisipasi Anda dalam seleksi Duta Kampus 2026. Berdasarkan hasil penilaian dewan juri, Anda belum berhasil melangkah ke babak Grand Final.'}
+                  {!isFinalist && !isNotFinalist && selectionStage === 'lolos' && 'Berkas persyaratan administrasi Anda telah diverifikasi dan dinyatakan diterima oleh panitia seleksi.'}
                   {selectionStage === 'tidak_lolos' && (selectionMessage || DEFAULT_MESSAGES.tidak_lolos)}
                   {selectionStage !== 'lolos' && selectionStage !== 'tidak_lolos' && (
                     isSubmitted 
