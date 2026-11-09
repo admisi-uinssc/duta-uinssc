@@ -20,7 +20,7 @@ export default function TimelineSection() {
     { num: '03', date: '31 Oktober 2026', title: 'Technical Meeting', desc: 'Pengarahan teknis mekanisme seleksi dan tata tertib pemilihan.' },
     { num: '04', date: '3 November 2026', title: 'Seleksi Tahap 1 (Wawancara)', desc: 'Penilaian wawasan kebangsaan, keislaman, kelembagaan UIN SSC, dan motivasi.' },
     { num: '05', date: '7 November 2026', title: 'Seleksi Tahap 2 (Unjuk Bakat)', desc: 'Penampilan minat bakat seni, budaya, public speaking, atau inovasi.' },
-    { num: '06', date: '9 November 2026', title: 'Pengukuhan Duta Kampus', desc: 'Penetapan resmi dan pengukuhan Duta Kampus UIN SSC 2026.' },
+    { num: '06', date: '10 November 2026', title: 'Pengukuhan Duta Kampus', desc: 'Penetapan resmi dan pengukuhan Duta Kampus UIN SSC 2026.' },
   ];
 
   const announcements = (cmsData?.announcements || []).filter(

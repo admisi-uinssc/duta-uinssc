@@ -717,8 +717,11 @@ export default function UserDashboard({ user, onLogout }) {
               transition: 'all 0.15s ease'
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            <span>Pendaftaran Duta</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Profil & Berkas</span>
             {dossierStatus.isComplete ? (
               <span style={{ marginLeft: 'auto', background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', fontSize: '0.62rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>
                 Lengkap
@@ -863,8 +866,8 @@ export default function UserDashboard({ user, onLogout }) {
           <div>
             <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#16324A', margin: 0 }}>
               {activeTab === 'beranda' && 'Beranda'}
-              {activeTab === 'pendaftaran' && 'Pendaftaran'}
-              {activeTab === 'riwayat' && 'Riwayat'}
+              {activeTab === 'pendaftaran' && 'Profil & Berkas'}
+              {activeTab === 'riwayat' && 'Riwayat & Linimasa'}
               {activeTab === 'pengaturan' && 'Pengaturan Kata Sandi'}
             </h2>
           </div>
@@ -877,7 +880,7 @@ export default function UserDashboard({ user, onLogout }) {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '6px 14px',
-                borderRadius: '9999px',
+                borderRadius: '6px',
                 background: dossierStatus.bg,
                 border: `1px solid ${dossierStatus.border}`,
                 fontSize: '0.8rem',
@@ -1558,13 +1561,13 @@ export default function UserDashboard({ user, onLogout }) {
                 </p>
 
                 {/* Progress track */}
-                <div style={{ background: '#f1f5f9', borderRadius: '9999px', height: '8px', overflow: 'hidden', marginBottom: '1.5rem', maxWidth: '600px' }}>
+                <div style={{ background: '#f1f5f9', borderRadius: '6px', height: '8px', overflow: 'hidden', marginBottom: '1.5rem', maxWidth: '600px' }}>
                   <div
                     style={{
                       height: '100%',
                       width: `${dossierStatus.percent}%`,
                       background: dossierStatus.isComplete ? '#16a34a' : '#C49E59',
-                      borderRadius: '9999px',
+                      borderRadius: '6px',
                       transition: 'width 0.4s ease'
                     }}
                   />
@@ -1628,13 +1631,16 @@ export default function UserDashboard({ user, onLogout }) {
             </div>
           )}
 
-          {/* TAB 2: PENDAFTARAN DUTA */}
+          {/* TAB 2: PROFIL & BERKAS */}
           {activeTab === 'pendaftaran' && (
             <div style={{ width: '100%', boxSizing: 'border-box' }}>
               <div style={{ marginBottom: '1.75rem' }}>
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#16324A', margin: '0' }}>
-                  Formulir Pendaftaran
+                  Profil & Berkas Pendaftaran
                 </h3>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.35rem 0 0' }}>
+                  Lengkapi data profil identitas, data akademik, dan 10 berkas persyaratan calon duta kampus.
+                </p>
               </div>
 
               {/* Status Bar */}
@@ -1911,7 +1917,7 @@ export default function UserDashboard({ user, onLogout }) {
                         Lampirkan dokumen resmi persyaratan seleksi Pemilihan Duta Kampus 2026.
                       </p>
                     </div>
-                    <span className="dossier-count-badge" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: dossierStatus.isComplete ? '#dcfce7' : '#fef9c3', color: dossierStatus.isComplete ? '#166534' : '#854d0e' }}>
+                    <span className="dossier-count-badge" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '4px 12px', borderRadius: '6px', background: dossierStatus.isComplete ? '#dcfce7' : '#fef9c3', color: dossierStatus.isComplete ? '#166534' : '#854d0e' }}>
                       Terunggah: {dossierStatus.filledCount} / {DOSSIER_DOCUMENTS.length} Berkas
                     </span>
                   </div>
@@ -2283,126 +2289,138 @@ export default function UserDashboard({ user, onLogout }) {
                 </h4>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  {[
-                    {
-                      no: '1',
-                      title: 'Batch 1: Pendaftaran Akun & Dokumen',
-                      date: '5 – 15 Oktober 2026',
-                      desc: 'Pengisian biodata pribadi, data akademik, dan pengunggahan 10 berkas persyaratan.',
-                      isDone: Boolean(isSubmitted || dossierStatus.isComplete),
-                      isCurrent: !isSubmitted,
-                      badge: isSubmitted ? 'Selesai Dikirim' : 'Sedang Dilakukan'
-                    },
-                    {
-                      no: '2',
-                      title: 'Batch 2: Masa Perpanjangan Berkas',
-                      date: '17 s.d. 25 Oktober 2026',
-                      desc: 'Perpanjangan pendaftaran dan verifikasi kelengkapan dokumen oleh tim juri admisi.',
-                      isDone: selectionStage === 'lolos',
-                      isCurrent: selectionStage === 'review',
-                      badge: selectionStage === 'lolos' ? 'Dinyatakan Lolos' : selectionStage === 'tidak_lolos' ? 'Belum Berhasil' : 'Dalam Proses'
-                    },
-                    {
-                      no: '3',
-                      title: 'Technical Meeting (TM) Pemilihan',
-                      date: '31 Oktober 2026',
-                      desc: 'Pengarahan teknis mekanisme seleksi, tata tertib, dan penjelasan tahapan tes.',
-                      isDone: false,
-                      isCurrent: selectionStage === 'lolos',
-                      badge: selectionStage === 'lolos' ? 'Tahap Selanjutnya' : 'Menunggu'
-                    },
-                    {
-                      no: '4',
-                      title: 'Seleksi Tahap 1: Wawancara Komprehensif',
-                      date: '3 November 2026',
-                      desc: 'Uji wawasan kebangsaan, keislaman siber, keuniversitasan UIN SSC, dan public speaking.',
-                      isDone: false,
-                      isCurrent: false,
-                      badge: 'Tahap 1'
-                    },
-                    {
-                      no: '5',
-                      title: 'Seleksi Tahap 2: Unjuk Bakat & Potensi Diri',
-                      date: '7 November 2026',
-                      desc: 'Penampilan minat bakat seni, budaya, riset, atau inovasi di hadapan tim juri.',
-                      isDone: false,
-                      isCurrent: false,
-                      badge: 'Tahap 2'
-                    },
-                    {
-                      no: '6',
-                      title: 'Pengukuhan & Penobatan Resmi Duta Kampus 2026',
-                      date: '9 November 2026',
-                      desc: 'Penetapan resmi representasi mahasiswa unggul UIN Siber Syekh Nurjati Cirebon.',
-                      isDone: false,
-                      isCurrent: false,
-                      badge: 'Pengukuhan'
-                    }
-                  ].map((step) => (
-                    <div
-                      key={step.no}
-                      style={{
-                        display: 'flex',
-                        gap: '1.25rem',
-                        alignItems: 'flex-start',
-                        borderLeft: `2.5px solid ${step.isDone ? '#16a34a' : step.isCurrent ? '#C49E59' : '#e2e8f0'}`,
-                        paddingLeft: '1.5rem',
-                        position: 'relative'
-                      }}
-                    >
+                  {(() => {
+                    const nowTime = Date.now();
+                    const t1 = new Date(2026, 9, 15, 23, 59, 59).getTime(); // 15 Okt 2026
+                    const t2 = new Date(2026, 9, 25, 23, 59, 59).getTime(); // 25 Okt 2026
+                    const t3 = new Date(2026, 9, 31, 23, 59, 59).getTime(); // 31 Okt 2026
+                    const t4 = new Date(2026, 10, 3, 23, 59, 59).getTime(); // 3 Nov 2026
+                    const t5 = new Date(2026, 10, 7, 23, 59, 59).getTime(); // 7 Nov 2026
+                    const t6 = new Date(2026, 10, 10, 23, 59, 59).getTime(); // 10 Nov 2026
+
+                    const timelineItems = [
+                      {
+                        no: '1',
+                        title: 'Batch 1: Pendaftaran Akun & Dokumen',
+                        date: '5 – 15 Oktober 2026',
+                        desc: 'Pengisian biodata pribadi, data akademik, dan pengunggahan 10 berkas persyaratan.',
+                        isDone: nowTime > t1 || Boolean(isSubmitted || dossierStatus.isComplete),
+                        isCurrent: nowTime <= t1 && !isSubmitted,
+                        badge: (isSubmitted || dossierStatus.isComplete) ? 'Selesai Dikirim' : nowTime > t1 ? 'Ditutup' : 'Sedang Berjalan'
+                      },
+                      {
+                        no: '2',
+                        title: 'Batch 2: Masa Perpanjangan Berkas',
+                        date: '17 s.d. 25 Oktober 2026',
+                        desc: 'Perpanjangan pendaftaran dan verifikasi kelengkapan dokumen oleh tim juri admisi.',
+                        isDone: nowTime > t2,
+                        isCurrent: nowTime > t1 && nowTime <= t2,
+                        badge: selectionStage === 'lolos' ? 'Dinyatakan Lolos' : selectionStage === 'tidak_lolos' ? 'Belum Berhasil' : nowTime > t2 ? 'Selesai' : 'Dalam Proses'
+                      },
+                      {
+                        no: '3',
+                        title: 'Technical Meeting (TM) Pemilihan',
+                        date: '31 Oktober 2026',
+                        desc: 'Pengarahan teknis mekanisme seleksi, tata tertib, dan penjelasan tahapan tes.',
+                        isDone: nowTime > t3,
+                        isCurrent: nowTime > t2 && nowTime <= t3,
+                        badge: nowTime > t3 ? 'Selesai' : (isFinalist || selectionStage === 'lolos') ? 'Wajib Diikuti' : 'Menunggu'
+                      },
+                      {
+                        no: '4',
+                        title: 'Seleksi Tahap 1: Wawancara Komprehensif',
+                        date: '3 November 2026',
+                        desc: 'Uji wawasan kebangsaan, keislaman siber, keuniversitasan UIN SSC, dan public speaking.',
+                        isDone: nowTime > t4,
+                        isCurrent: nowTime > t3 && nowTime <= t4,
+                        badge: nowTime > t4 ? 'Selesai' : 'Tahap 1'
+                      },
+                      {
+                        no: '5',
+                        title: 'Seleksi Tahap 2: Unjuk Bakat & Potensi Diri',
+                        date: '7 November 2026',
+                        desc: 'Penampilan minat bakat seni, budaya, riset, atau inovasi di hadapan tim juri.',
+                        isDone: nowTime > t5,
+                        isCurrent: nowTime > t4 && nowTime <= t5,
+                        badge: nowTime > t5 ? 'Selesai' : 'Tahap 2'
+                      },
+                      {
+                        no: '6',
+                        title: 'Pengukuhan & Penobatan Resmi Duta Kampus 2026',
+                        date: '10 November 2026',
+                        desc: 'Penetapan resmi representasi mahasiswa unggul UIN Siber Syekh Nurjati Cirebon.',
+                        isDone: nowTime > t6,
+                        isCurrent: nowTime > t5 && nowTime <= t6,
+                        badge: nowTime > t6 ? 'Selesai' : (isFinalist || selectionStage === 'lolos') ? 'Agenda Utama' : 'Pengukuhan'
+                      }
+                    ];
+
+                    return timelineItems.map((step) => (
                       <div
+                        key={step.no}
                         style={{
-                          position: 'absolute',
-                          left: '-13px',
-                          top: '0px',
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: '50%',
-                          background: step.isDone ? '#16a34a' : step.isCurrent ? '#C49E59' : '#e2e8f0',
-                          color: step.isDone || step.isCurrent ? '#ffffff' : '#64748b',
                           display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.75rem',
-                          fontWeight: 800,
-                          boxShadow: '0 0 0 3px #fff'
+                          gap: '1.25rem',
+                          alignItems: 'flex-start',
+                          borderLeft: `2.5px solid ${step.isDone ? '#16a34a' : step.isCurrent ? '#C49E59' : '#e2e8f0'}`,
+                          paddingLeft: '1.5rem',
+                          position: 'relative'
                         }}
                       >
-                        {step.isDone ? (
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-                        ) : (
-                          step.no
-                        )}
-                      </div>
-
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                          <span style={{ fontWeight: 700, color: '#16324A', fontSize: '0.975rem' }}>
-                            {step.title}
-                          </span>
-                          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>
-                            {step.date}
-                          </span>
-                        </div>
-                        <p style={{ margin: '0.35rem 0', fontSize: '0.85rem', color: '#64748b', lineHeight: 1.5 }}>
-                          {step.desc}
-                        </p>
-                        <span
+                        <div
                           style={{
-                            display: 'inline-block',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            padding: '2px 8px',
-                            borderRadius: '4px',
-                            background: step.isDone ? '#dcfce7' : step.isCurrent ? '#fef3c7' : '#f1f5f9',
-                            color: step.isDone ? '#166534' : step.isCurrent ? '#92400e' : '#64748b'
+                            position: 'absolute',
+                            left: '-13px',
+                            top: '0px',
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            background: step.isDone ? '#16a34a' : step.isCurrent ? '#C49E59' : '#e2e8f0',
+                            color: step.isDone || step.isCurrent ? '#ffffff' : '#64748b',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.75rem',
+                            fontWeight: 800,
+                            boxShadow: '0 0 0 3px #fff'
                           }}
                         >
-                          {step.badge}
-                        </span>
+                          {step.isDone ? (
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                          ) : (
+                            step.no
+                          )}
+                        </div>
+
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            <span style={{ fontWeight: 700, color: step.isCurrent ? '#C49E59' : '#16324A', fontSize: '0.975rem' }}>
+                              {step.title}
+                            </span>
+                            <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>
+                              {step.date}
+                            </span>
+                          </div>
+                          <p style={{ margin: '0.35rem 0', fontSize: '0.85rem', color: '#64748b', lineHeight: 1.5 }}>
+                            {step.desc}
+                          </p>
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              padding: '2px 8px',
+                              borderRadius: '4px',
+                              background: step.isDone ? '#dcfce7' : step.isCurrent ? '#fef3c7' : '#f1f5f9',
+                              color: step.isDone ? '#166534' : step.isCurrent ? '#92400e' : '#64748b'
+                            }}
+                          >
+                            {step.badge}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ));
+                  })()}
                 </div>
               </div>
             </div>
@@ -2564,12 +2582,10 @@ export default function UserDashboard({ user, onLogout }) {
           className={`user-bottom-nav-item ${activeTab === 'pendaftaran' ? 'active' : ''}`}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
           </svg>
-          <span>Berkas</span>
+          <span>Profil</span>
         </button>
 
         <button
