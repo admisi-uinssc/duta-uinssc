@@ -79,6 +79,12 @@ export const DB = {
     DB.save(filtered);
     deleteApplicantFromCloud(id);
   },
+  getApplicants: () => {
+    return DB.getAll();
+  },
+  saveApplicants: (data, specificItemToSync = null) => {
+    return DB.save(data, specificItemToSync);
+  },
   clearAll: () => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(DB_KEY, JSON.stringify([]));
