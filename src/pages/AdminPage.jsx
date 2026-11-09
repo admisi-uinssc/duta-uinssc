@@ -310,7 +310,17 @@ export default function AdminPage() {
           }
         });
 
-        const sorted = Array.from(mergedMap.values()).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        // Sort deterministically:
+        // Priority 1: createdAt timestamp descending
+        // Priority 2: stable tie-breaker by id or email
+        const sorted = Array.from(mergedMap.values()).sort((a, b) => {
+          const tA = new Date(a.createdAt || 0).getTime();
+          const tB = new Date(b.createdAt || 0).getTime();
+          if (tA !== tB) return tB - tA;
+          const keyA = String(a.id || a.email || a.nim || '');
+          const keyB = String(b.id || b.email || b.nim || '');
+          return keyA.localeCompare(keyB);
+        });
         localStorage.setItem('dutauinssc_pendaftar', JSON.stringify(sorted));
         setApplicants(sorted);
       }
@@ -342,7 +352,14 @@ export default function AdminPage() {
           }
         });
 
-        const deduped = Array.from(userMap.values());
+        const deduped = Array.from(userMap.values()).sort((a, b) => {
+          const tA = new Date(a.createdAt || 0).getTime();
+          const tB = new Date(b.createdAt || 0).getTime();
+          if (tA !== tB) return tB - tA;
+          const keyA = String(a.id || a.email || a.username || '');
+          const keyB = String(b.id || b.email || b.username || '');
+          return keyA.localeCompare(keyB);
+        });
         localStorage.setItem('dutauinssc_users', JSON.stringify(deduped));
         setRegisteredUsers(deduped);
       }
@@ -1024,15 +1041,28 @@ export default function AdminPage() {
       return matchQ && matchFakultas && matchProdi && matchComp && matchSelection;
     })
     .sort((a, b) => {
-      const va = a[sortKey] || '';
-      const vb = b[sortKey] || '';
-      if (va !== vb) {
-        return va < vb ? -sortDir : sortDir;
+      // Deterministic primary sorting: by sortKey (default: 'createdAt')
+      const va = a[sortKey];
+      const vb = b[sortKey];
+
+      if (sortKey === 'createdAt') {
+        const timeA = new Date(va || 0).getTime();
+        const timeB = new Date(vb || 0).getTime();
+        if (timeA !== timeB) {
+          return sortDir === -1 ? timeB - timeA : timeA - timeB;
+        }
+      } else {
+        const strA = String(va || '');
+        const strB = String(vb || '');
+        if (strA !== strB) {
+          return strA.localeCompare(strB) * (sortDir || 1);
+        }
       }
-      // Secondary stable sort by unique key
-      const idA = String(a.id || a.email || '');
-      const idB = String(b.id || b.email || '');
-      return idA.localeCompare(idB);
+
+      // Secondary strictly deterministic sort by unique ID / Nama / Email to guarantee ZERO position jitter
+      const keyA = String(a.id || a.namaLengkap || a.email || a.nim || '');
+      const keyB = String(b.id || b.namaLengkap || b.email || b.nim || '');
+      return keyA.localeCompare(keyB);
     });
 
   // Summary counts

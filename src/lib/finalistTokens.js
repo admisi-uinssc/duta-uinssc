@@ -9,47 +9,41 @@ export const FINALIST_TOKENS = [
     token: 'DU-FINAL-PA01',
     namaLengkap: 'MOH SYAH NURPAZRIA',
     jenisKelamin: 'Laki-laki',
-    kategori: 'putra',
-    email: 'moh.syah@uinssc.ac.id'
+    kategori: 'putra'
   },
   {
     token: 'DU-FINAL-PA02',
     namaLengkap: 'TONY S. GUIAMAN',
     jenisKelamin: 'Laki-laki',
-    kategori: 'putra',
-    email: 'tony.guiaman@uinssc.ac.id'
+    kategori: 'putra'
   },
   {
     token: 'DU-FINAL-PI01',
     namaLengkap: "SEPTIANI LU'LUATUL FAJRIYAH",
     jenisKelamin: 'Perempuan',
-    kategori: 'putri',
-    email: 'septiani.luluatul@uinssc.ac.id'
+    kategori: 'putri'
   },
   {
     token: 'DU-FINAL-PI02',
     namaLengkap: 'DUROTUNNAFISAH',
     jenisKelamin: 'Perempuan',
-    kategori: 'putri',
-    email: 'durotunnafisah@uinssc.ac.id'
+    kategori: 'putri'
   },
   {
     token: 'DU-FINAL-PI03',
     namaLengkap: 'AZIZATUL FIKRIYAH AL QORY',
     jenisKelamin: 'Perempuan',
-    kategori: 'putri',
-    email: 'azizatul.fikriyah@uinssc.ac.id'
+    kategori: 'putri'
   },
   {
     token: 'DU-FINAL-PI04',
     namaLengkap: 'SAKIA MUSDALIFAH',
     jenisKelamin: 'Perempuan',
-    kategori: 'putri',
-    email: 'sakia.musdalifah@uinssc.ac.id'
+    kategori: 'putri'
   }
 ];
 
-export async function verifyAndClaimFinalistToken(inputToken) {
+export async function verifyAndClaimFinalistToken(inputToken, userEmail = '', userPassword = '') {
   if (!inputToken || typeof inputToken !== 'string') {
     return { success: false, message: 'Nomor pendaftaran tidak terdaftar pada sistem seleksi.' };
   }
@@ -61,25 +55,26 @@ export async function verifyAndClaimFinalistToken(inputToken) {
     return { success: false, message: 'Nomor pendaftaran tidak terdaftar pada sistem seleksi.' };
   }
 
-  // Check if an account already exists with this token or email or name
+  // Check if an account already exists with this token or name
   const existingUsers = Auth.getUsers();
   let user = existingUsers.find(u => 
     (u.finalistToken && u.finalistToken.toUpperCase() === clean) ||
-    (u.email && u.email.toLowerCase() === matched.email.toLowerCase()) ||
+    (userEmail && u.email && u.email.toLowerCase() === userEmail.trim().toLowerCase()) ||
     (u.fullName && u.fullName.trim().toUpperCase() === matched.namaLengkap.toUpperCase())
   );
 
   const nowIso = new Date().toISOString();
+  const effectiveEmail = (userEmail || (user && user.email) || '').trim().toLowerCase();
+  const effectivePassword = userPassword || (user && user.password) || 'duta2026';
 
   if (!user) {
-    // Generate new participant account
     const cleanUsername = matched.namaLengkap.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 16) || 'finalis';
     user = {
       id: 'fin_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
       fullName: matched.namaLengkap,
       username: cleanUsername,
-      password: 'duta2026', // Password awal default yang bisa diubah oleh peserta di profil
-      email: matched.email,
+      password: effectivePassword,
+      email: effectiveEmail,
       jenisKelamin: matched.jenisKelamin,
       kategori: matched.kategori,
       role: 'user',
@@ -93,7 +88,6 @@ export async function verifyAndClaimFinalistToken(inputToken) {
       updatedAt: nowIso
     };
 
-    // Save to users list
     const updatedUsers = [...existingUsers, user];
     Auth.saveUsers(updatedUsers, user);
     try {
@@ -102,11 +96,12 @@ export async function verifyAndClaimFinalistToken(inputToken) {
       console.warn('Sync user to cloud failed:', e);
     }
   } else {
-    // Ensure finalist flags are set
     user = {
       ...user,
       fullName: matched.namaLengkap,
       jenisKelamin: matched.jenisKelamin,
+      email: effectiveEmail || user.email || '',
+      password: userPassword || user.password || effectivePassword,
       accountStatus: 'approved',
       selectionStage: 'lolos',
       isFinalist: true,
@@ -126,7 +121,8 @@ export async function verifyAndClaimFinalistToken(inputToken) {
   const existingApplicants = DB.getApplicants();
   let applicant = existingApplicants.find(a => 
     (a.userId && a.userId === user.id) ||
-    (a.email && a.email.toLowerCase() === matched.email.toLowerCase()) ||
+    (effectiveEmail && a.email && a.email.toLowerCase() === effectiveEmail) ||
+    (a.finalistToken && a.finalistToken.toUpperCase() === clean) ||
     (a.namaLengkap && a.namaLengkap.trim().toUpperCase() === matched.namaLengkap.toUpperCase())
   );
 
@@ -135,7 +131,8 @@ export async function verifyAndClaimFinalistToken(inputToken) {
       id: 'app_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
       userId: user.id,
       namaLengkap: matched.namaLengkap,
-      email: matched.email,
+      email: effectiveEmail,
+      password: effectivePassword,
       jenisKelamin: matched.jenisKelamin,
       kategori: matched.kategori,
       status: 'approved',
@@ -143,7 +140,7 @@ export async function verifyAndClaimFinalistToken(inputToken) {
       isFinalist: true,
       finalistStatus: 'finalis',
       finalistToken: matched.token,
-      createdAt: nowIso,
+      createdAt: user.createdAt || nowIso,
       submittedAt: nowIso
     };
     const updatedApplicants = [...existingApplicants, applicant];
@@ -158,6 +155,8 @@ export async function verifyAndClaimFinalistToken(inputToken) {
       ...applicant,
       userId: user.id,
       namaLengkap: matched.namaLengkap,
+      email: effectiveEmail || applicant.email || '',
+      password: userPassword || applicant.password || effectivePassword,
       jenisKelamin: matched.jenisKelamin,
       status: 'approved',
       selectionStage: 'lolos',
