@@ -14,6 +14,24 @@ import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
 import DocumentPreviewModal from '../components/DocumentPreviewModal';
 import { parseMediaUrl } from '../lib/media';
 import MediaModal from '../components/MediaModal';
+import { FINALIST_TOKENS } from '../lib/finalistTokens';
+
+// Helper to resolve display name from all potential sources (token, applicant, user fields)
+export function resolveApplicantName(u, fallbackEmail = '') {
+  if (!u) return fallbackEmail || 'Peserta';
+  const direct = (u.namaLengkap || u.fullName || u.name || '').trim();
+  if (direct && direct.toLowerCase() !== 'calon duta' && direct.toLowerCase() !== 'finalis') {
+    return direct;
+  }
+  // Lookup via finalistToken
+  if (u.finalistToken) {
+    const tok = FINALIST_TOKENS.find(t => t.token.toUpperCase() === String(u.finalistToken).trim().toUpperCase());
+    if (tok && tok.namaLengkap) return tok.namaLengkap;
+  }
+  // If fallbackEmail exists, try extracting clean name from email prefix or return email
+  const em = u.email || fallbackEmail;
+  return em || 'Peserta';
+}
 
 export default function AdminPage() {
   const [loggedIn, setLoggedIn] = useState(() => typeof window !== 'undefined' && localStorage.getItem('dutauinssc_admin_logged') === 'true');
@@ -963,13 +981,14 @@ export default function AdminPage() {
     applicants.forEach(a => {
       if (!a) return;
       const key = (a.email || a.nim || String(a.id)).trim().toLowerCase();
-      map.set(key, { ...a });
+      map.set(key, { ...a, namaLengkap: resolveApplicantName(a, a.email) });
     });
 
     // 2. Gabungkan dengan data akun user (jika belum ada pendaftar, buat entry baru; jika sudah ada, merge field yang lebih up to date)
     registeredUsers.forEach(u => {
       if (!u) return;
       const key = (u.email || u.nim || String(u.id)).trim().toLowerCase();
+      const resolvedName = resolveApplicantName(u, u.email);
       if (map.has(key)) {
         const existing = map.get(key);
         const resolvedSemester = (existing.semester && existing.semester !== '—' && String(existing.semester).trim())
@@ -982,19 +1001,20 @@ export default function AdminPage() {
           ...u,
           ...existing,
           semester: resolvedSemester,
-          namaLengkap: existing.namaLengkap || u.namaLengkap || u.name,
+          namaLengkap: resolveApplicantName(existing) || resolvedName,
           nim: existing.nim || u.nim,
           fakultas: existing.fakultas || u.fakultas,
           jurusan: existing.jurusan || u.jurusan,
           prodi: existing.prodi || existing.jurusan || u.jurusan || u.fakultas,
           accountStatus: u.accountStatus || existing.accountStatus || 'approved',
           isFinalist: Boolean(existing.isFinalist !== undefined ? existing.isFinalist : u.isFinalist),
-          finalistStatus: existing.finalistStatus || u.finalistStatus || (existing.isFinalist || u.isFinalist ? 'finalis' : 'belum')
+          finalistStatus: existing.finalistStatus || u.finalistStatus || (existing.isFinalist || u.isFinalist ? 'finalis' : 'belum'),
+          finalistToken: existing.finalistToken || u.finalistToken
         });
       } else {
         map.set(key, {
           id: u.id,
-          namaLengkap: u.namaLengkap || u.name,
+          namaLengkap: resolvedName,
           nim: u.nim,
           fakultas: u.fakultas,
           jurusan: u.jurusan,
@@ -1009,6 +1029,7 @@ export default function AdminPage() {
           selectionStage: u.selectionStage || 'review',
           isFinalist: Boolean(u.isFinalist),
           finalistStatus: u.finalistStatus || (u.isFinalist ? 'finalis' : 'belum'),
+          finalistToken: u.finalistToken,
           isAccountApplication: true,
           createdAt: u.createdAt || new Date().toISOString()
         });
@@ -1085,6 +1106,7 @@ export default function AdminPage() {
   const mergedSelectedItem = selectedItem ? {
     ...matchingRegUser,
     ...selectedItem,
+    namaLengkap: resolveApplicantName(selectedItem) || resolveApplicantName(matchingRegUser, selectedItem.email),
     semester: (selectedItem.semester && selectedItem.semester !== '—' && String(selectedItem.semester).trim()) 
       ? String(selectedItem.semester).trim() 
       : (matchingRegUser?.semester && matchingRegUser.semester !== '—' && String(matchingRegUser.semester).trim() 
@@ -1378,7 +1400,7 @@ export default function AdminPage() {
                       }}
                     >
                       <div>
-                        <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.875rem' }}>{u.namaLengkap || u.name}</div>
+                        <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.875rem' }}>{resolveApplicantName(u, u.email)}</div>
                         <div style={{ fontSize: '0.75rem', color: '#64748b' }}>NIM: {u.nim || '—'} · {u.fakultas || u.jurusan}</div>
                       </div>
                       <div style={{ display: 'flex', gap: '6px' }}>
@@ -1537,7 +1559,7 @@ export default function AdminPage() {
                         <tr key={u.id || idx}>
                           <td style={{ color: 'var(--text-light)' }}>{idx + 1}</td>
                           <td>
-                            <div className="td-name">{u.namaLengkap || u.name}</div>
+                            <div className="td-name">{resolveApplicantName(u, u.email)}</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>{u.email}</div>
                           </td>
                           <td className="td-nim">{u.nim || '—'}</td>
@@ -1667,7 +1689,8 @@ export default function AdminPage() {
                   {registeredUsers
                     .filter(u => {
                       const s = userSearch.toLowerCase();
-                      const matchSearch = !userSearch || [u.namaLengkap, u.email, u.nim, u.fakultas, u.jurusan].some(v => (v || '').toLowerCase().includes(s));
+                      const resolvedName = resolveApplicantName(u, u.email);
+                      const matchSearch = !userSearch || [resolvedName, u.namaLengkap, u.fullName, u.name, u.email, u.nim, u.fakultas, u.jurusan].some(v => (v || '').toLowerCase().includes(s));
                       const matchStatus = !userFilterStatus || (u.accountStatus || 'pending') === userFilterStatus;
                       const matchFac = !userFilterFakultas || (u.fakultas || '').toLowerCase().includes(userFilterFakultas.toLowerCase());
                       return matchSearch && matchStatus && matchFac;
@@ -1680,7 +1703,7 @@ export default function AdminPage() {
                         <tr key={u.id || idx}>
                           <td style={{ color: 'var(--text-light)' }}>{idx + 1}</td>
                           <td>
-                            <div className="td-name">{u.namaLengkap || u.name}</div>
+                            <div className="td-name">{resolveApplicantName(u, u.email)}</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>{u.email}</div>
                           </td>
                           <td>

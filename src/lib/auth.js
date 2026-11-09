@@ -469,6 +469,32 @@ export const Auth = {
     }
   },
 
+  setCurrentUser: (user) => {
+    if (typeof window !== 'undefined' && user) {
+      const email = user.email || '';
+      if (email) {
+        localStorage.setItem('dutauinssc_auth_token', email);
+      }
+    }
+  },
+
+  updateUser: (updatedUser) => {
+    if (!updatedUser) return;
+    const users = Auth.getUsers();
+    const cleanEmail = (updatedUser.email || '').trim().toLowerCase();
+    const idx = users.findIndex(u => 
+      (u.id && u.id === updatedUser.id) ||
+      ((u.email || '').trim().toLowerCase() === cleanEmail)
+    );
+    if (idx !== -1) {
+      users[idx] = { ...users[idx], ...updatedUser };
+      Auth.saveUsers(users, users[idx]);
+    } else {
+      users.push(updatedUser);
+      Auth.saveUsers(users, updatedUser);
+    }
+  },
+
   updateStatus: (email, newStatus) => {
     const users = Auth.getUsers();
     const cleanEmail = (email || '').trim().toLowerCase();

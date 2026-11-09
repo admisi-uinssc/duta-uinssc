@@ -89,6 +89,8 @@ export async function verifyAndClaimFinalistToken(inputToken, userDetails = {}) 
     user = {
       id: 'fin_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
       fullName: resolvedNama,
+      namaLengkap: resolvedNama,
+      name: resolvedNama,
       username: cleanUsername,
       password: effectivePassword,
       email: effectiveEmail,
@@ -123,6 +125,8 @@ export async function verifyAndClaimFinalistToken(inputToken, userDetails = {}) 
     user = {
       ...user,
       fullName: resolvedNama,
+      namaLengkap: resolvedNama,
+      name: resolvedNama,
       jenisKelamin: jenisKelamin || matched.jenisKelamin,
       email: effectiveEmail || user.email || '',
       password: password || user.password || effectivePassword,

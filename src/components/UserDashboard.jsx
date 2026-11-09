@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Link from './Link';
 import Image from './Image';
-import { Auth } from '../lib/auth';
+import { Auth, validateEmailFormat } from '../lib/auth';
 import { DB, formatDateTime } from '../lib/db';
 import { DOSSIER_DOCUMENTS, evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
 import { DriveStorage, normalizeDocument } from '../lib/driveStorage';
-import { listenToUserFromCloud, fetchApplicantFromCloudByIdentifier, listenToApplicantFromCloud, syncUserToCloud } from '../lib/firebase';
+import { listenToUserFromCloud, fetchApplicantFromCloudByIdentifier, listenToApplicantFromCloud, syncUserToCloud, syncApplicantToCloud, deleteUserFromCloud } from '../lib/firebase';
 import { Settings } from '../lib/settings';
 import { CMS } from '../lib/cms';
 import DocumentPreviewModal from './DocumentPreviewModal';
@@ -36,6 +36,134 @@ export default function UserDashboard({ user, onLogout }) {
   const [showNewPass, setShowNewPass] = useState(false);
   const [passLoading, setPassLoading] = useState(false);
   const [passMessage, setPassMessage] = useState({ text: '', type: '' });
+
+  // State untuk Perubahan Email Login
+  const [emailForm, setEmailForm] = useState({
+    newEmail: user.email || '',
+    confirmPassword: ''
+  });
+  const [showEmailPass, setShowEmailPass] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [emailMessage, setEmailMessage] = useState({ text: '', type: '' });
+
+  const handleChangeEmail = async (e) => {
+    e.preventDefault();
+    setEmailMessage({ text: '', type: '' });
+
+    const cleanNewEmail = (emailForm.newEmail || '').trim().toLowerCase();
+    const currentEmail = (currentUser.email || '').trim().toLowerCase();
+
+    if (!cleanNewEmail) {
+      setEmailMessage({ text: 'Alamat email baru wajib diisi.', type: 'danger' });
+      return;
+    }
+
+    if (cleanNewEmail === currentEmail) {
+      setEmailMessage({ text: 'Email baru sama dengan email yang sedang digunakan.', type: 'danger' });
+      return;
+    }
+
+    const emailVal = validateEmailFormat(cleanNewEmail);
+    if (!emailVal.isValid) {
+      setEmailMessage({ text: emailVal.message, type: 'danger' });
+      return;
+    }
+
+    // Verifikasi kata sandi akun untuk keamanan perubahan email
+    if (!emailForm.confirmPassword) {
+      setEmailMessage({ text: 'Masukkan kata sandi akun Anda untuk konfirmasi perubahan email.', type: 'danger' });
+      return;
+    }
+
+    if (emailForm.confirmPassword !== currentUser.password) {
+      setEmailMessage({ text: 'Kata sandi tidak sesuai.', type: 'danger' });
+      return;
+    }
+
+    // Pastikan email baru belum digunakan akun lain
+    const allUsers = Auth.getUsers();
+    const emailConflict = allUsers.some(u => 
+      (u.email || '').trim().toLowerCase() === cleanNewEmail && 
+      u.id !== currentUser.id
+    );
+
+    if (emailConflict) {
+      setEmailMessage({ text: 'Alamat email baru tersebut sudah terdaftar pada sistem. Gunakan email lain.', type: 'danger' });
+      return;
+    }
+
+    setEmailLoading(true);
+    try {
+      const nowIso = new Date().toISOString();
+
+      // 1. Update user record in Auth list
+      const uIdx = allUsers.findIndex(u => 
+        (u.id && u.id === currentUser.id) ||
+        (u.email && u.email.toLowerCase() === currentEmail)
+      );
+
+      const updatedCurUser = {
+        ...currentUser,
+        email: cleanNewEmail,
+        updatedAt: nowIso
+      };
+
+      if (uIdx !== -1) {
+        allUsers[uIdx] = {
+          ...allUsers[uIdx],
+          email: cleanNewEmail,
+          updatedAt: nowIso
+        };
+      } else {
+        allUsers.push(updatedCurUser);
+      }
+      Auth.saveUsers(allUsers, updatedCurUser);
+
+      // 2. Update DB Applicants
+      const allDb = DB.getApplicants();
+      const dbIdx = allDb.findIndex(a => 
+        (a.userId && a.userId === currentUser.id) ||
+        (a.email && a.email.toLowerCase() === currentEmail)
+      );
+
+      if (dbIdx !== -1) {
+        allDb[dbIdx] = {
+          ...allDb[dbIdx],
+          email: cleanNewEmail,
+          updatedAt: nowIso
+        };
+        DB.saveApplicants(allDb);
+        try {
+          await syncApplicantToCloud(allDb[dbIdx]);
+        } catch (e) {
+          console.warn('Sync applicant email to cloud failed:', e);
+        }
+      }
+
+      // 3. Update session token & active state
+      setCurrentUser(updatedCurUser);
+      Auth.setCurrentUser(updatedCurUser);
+
+      // 4. Cloud sync: Sync document with new email, and clean old doc if needed
+      try {
+        await syncUserToCloud(updatedCurUser);
+        if (currentEmail && currentEmail !== cleanNewEmail) {
+          await deleteUserFromCloud(currentEmail).catch(() => {});
+        }
+      } catch (err) {
+        console.warn('Sync updated email to cloud failed:', err);
+      }
+
+      setEmailForm({ newEmail: cleanNewEmail, confirmPassword: '' });
+      setEmailMessage({ text: `Email login berhasil diubah menjadi ${cleanNewEmail}. Gunakan email ini untuk masuk selanjutnya.`, type: 'success' });
+      triggerAlert(`Email login berhasil diperbarui ke ${cleanNewEmail}.`, 'success');
+    } catch (err) {
+      console.error('Change email failed:', err);
+      setEmailMessage({ text: 'Gagal memperbarui alamat email: ' + (err.message || 'Terjadi kendala'), type: 'danger' });
+    } finally {
+      setEmailLoading(false);
+    }
+  };
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -817,7 +945,7 @@ export default function UserDashboard({ user, onLogout }) {
               }}
             >
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'pengaturan' ? '#C49E59' : 'currentColor', flexShrink: 0 }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <span>Kata Sandi</span>
+              <span>Email & Sandi</span>
             </button>
           </nav>
         </div>
@@ -901,7 +1029,7 @@ export default function UserDashboard({ user, onLogout }) {
               {activeTab === 'beranda' && 'Beranda'}
               {activeTab === 'pendaftaran' && 'Profil & Berkas'}
               {activeTab === 'riwayat' && 'Riwayat & Linimasa'}
-              {activeTab === 'pengaturan' && 'Pengaturan Kata Sandi'}
+              {activeTab === 'pengaturan' && 'Keamanan Akun (Email & Kata Sandi)'}
             </h2>
           </div>
 
@@ -2467,9 +2595,11 @@ export default function UserDashboard({ user, onLogout }) {
               </div>
             </div>
           )}
-          {/* TAB PENGATURAN KATA SANDI */}
+          {/* TAB PENGATURAN KATA SANDI & EMAIL (KEAMANAN AKUN) */}
           {activeTab === 'pengaturan' && (
             <div style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              
+              {/* Card 1: Pengaturan Email Login */}
               <div
                 style={{
                   background: '#ffffff',
@@ -2479,7 +2609,163 @@ export default function UserDashboard({ user, onLogout }) {
                   boxShadow: '0 4px 16px rgba(0,0,0,0.04)'
                 }}
               >
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(22, 50, 74, 0.08)', color: '#16324A', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                    Akses Masuk Akun
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#16324A', margin: '0 0 6px 0' }}>
+                    Alamat Email Login
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                    Email ini digunakan sebagai identitas akun dan sarana masuk ke portal pendaftar Duta Kampus 2026.
+                  </p>
+                </div>
+
+                {emailMessage.text && (
+                  <div
+                    style={{
+                      padding: '0.75rem 1rem',
+                      borderRadius: '8px',
+                      marginBottom: '1.25rem',
+                      fontSize: '0.85rem',
+                      fontWeight: 500,
+                      background: emailMessage.type === 'success' ? '#f0fdf4' : '#fef2f2',
+                      color: emailMessage.type === 'success' ? '#166534' : '#991b1b',
+                      border: emailMessage.type === 'success' ? '1px solid #bbf7d0' : '1px solid #fecaca'
+                    }}
+                  >
+                    {emailMessage.text}
+                  </div>
+                )}
+
+                <form onSubmit={handleChangeEmail} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                      Alamat Email Saat Ini
+                    </label>
+                    <input
+                      type="text"
+                      disabled
+                      value={currentUser.email || ''}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem 0.85rem',
+                        borderRadius: '8px',
+                        border: '1px solid #e2e8f0',
+                        background: '#f8fafc',
+                        color: '#64748b',
+                        fontSize: '0.9rem',
+                        boxSizing: 'border-box',
+                        cursor: 'not-allowed'
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                      Alamat Email Baru <span style={{ color: '#dc2626' }}>*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={emailForm.newEmail}
+                      onChange={(e) => setEmailForm({ ...emailForm, newEmail: e.target.value })}
+                      placeholder="contoh: namaanda@gmail.com"
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem 0.85rem',
+                        borderRadius: '8px',
+                        border: '1px solid #cbd5e1',
+                        fontSize: '0.9rem',
+                        outline: 'none',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                      Konfirmasi Kata Sandi Akun <span style={{ color: '#dc2626' }}>*</span>
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type={showEmailPass ? 'text' : 'password'}
+                        value={emailForm.confirmPassword}
+                        onChange={(e) => setEmailForm({ ...emailForm, confirmPassword: e.target.value })}
+                        placeholder="Masukkan kata sandi untuk verifikasi"
+                        required
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 2.8rem 0.75rem 0.85rem',
+                          borderRadius: '8px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '0.9rem',
+                          outline: 'none',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowEmailPass(!showEmailPass)}
+                        style={{
+                          position: 'absolute',
+                          right: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: '#64748b',
+                          display: 'flex',
+                          alignItems: 'center'
+                        }}
+                        aria-label="Lihat kata sandi"
+                      >
+                        {showEmailPass ? (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                        ) : (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        )}
+                      </button>
+                    </div>
+                    <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>
+                      Kata sandi Anda diperlukan untuk memverifikasi kepemilikan akun sebelum email diubah.
+                    </span>
+                  </div>
+
+                  <div style={{ paddingTop: '0.25rem' }}>
+                    <button
+                      type="submit"
+                      disabled={emailLoading}
+                      className="btn btn-navy"
+                      style={{
+                        padding: '0.75rem 1.75rem',
+                        fontSize: '0.9rem',
+                        fontWeight: 700,
+                        borderRadius: '8px',
+                        cursor: emailLoading ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      {emailLoading ? 'Menyimpan...' : 'Perbarui Alamat Email'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Card 2: Pengaturan Kata Sandi */}
+              <div
+                style={{
+                  background: '#ffffff',
+                  borderRadius: '16px',
+                  border: '1px solid #e2e8f0',
+                  padding: '2rem',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.04)'
+                }}
+              >
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(196, 158, 89, 0.15)', color: '#9e7b36', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                    Keamanan Sandi
+                  </div>
                   <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#16324A', margin: '0 0 6px 0' }}>
                     Pengaturan Kata Sandi
                   </h3>
@@ -2508,7 +2794,7 @@ export default function UserDashboard({ user, onLogout }) {
                 <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
-                      Kata Sandi Baru
+                      Kata Sandi Baru <span style={{ color: '#dc2626' }}>*</span>
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
@@ -2555,7 +2841,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
-                      Konfirmasi Kata Sandi Baru
+                      Konfirmasi Kata Sandi Baru <span style={{ color: '#dc2626' }}>*</span>
                     </label>
                     <input
                       type={showNewPass ? 'text' : 'password'}
@@ -2575,7 +2861,7 @@ export default function UserDashboard({ user, onLogout }) {
                     />
                   </div>
 
-                  <div style={{ paddingTop: '0.5rem' }}>
+                  <div style={{ paddingTop: '0.25rem' }}>
                     <button
                       type="submit"
                       disabled={passLoading}
@@ -2657,7 +2943,7 @@ export default function UserDashboard({ user, onLogout }) {
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
-          <span>Sandi</span>
+          <span>Keamanan</span>
         </button>
 
         <button
