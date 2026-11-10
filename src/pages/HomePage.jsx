@@ -127,37 +127,39 @@ export default function HomePage() {
             </Link>
           </div>
           
-          <div className="hub-news" style={{ marginTop: '2.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <h3 style={{ margin: 0 }}>Pengumuman</h3>
-              <Link href="/timeline" style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 700, textDecoration: 'none' }}>
-                Lihat Jadwal ↗
-              </Link>
-            </div>
-            <div className="news-list">
-              {(cmsData?.announcements || []).filter(a => a.active !== false && (a.target === 'publik' || a.target === 'all' || !a.target)).slice(0, 3).map((ann, aIdx) => (
-                <Link key={ann.id || aIdx} href="/timeline" style={{ textDecoration: 'none', display: 'block' }}>
-                  <div className="news-item">
-                    <div className="news-dot"></div>
-                    <div>
-                      <strong style={{ color: 'var(--navy)', fontSize: '0.9rem', display: 'block', marginBottom: '2px' }}>
-                        {ann.title}
-                      </strong>
-                      <p style={{ margin: 0, fontSize: '0.825rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
-                        {ann.date ? `${ann.date} — ` : ''}{ann.content?.slice(0, 100)}...
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-              {(!cmsData?.announcements || cmsData.announcements.length === 0) && (
-                <>
-                  <div className="news-item"><div className="news-dot"></div><p>Pendaftaran Duta Kampus 2026 telah dibuka. Pastikan Anda membaca persyaratan sebelum mendaftar.</p></div>
-                  <div className="news-item"><div className="news-dot"></div><p>Siapkan berkas administrasi seperti KTM, Transkrip Nilai, dan Surat Keterangan Aktif Kuliah.</p></div>
-                </>
-              )}
-            </div>
-          </div>
+          {/* PENGUMUMAN (Hanya muncul jika ada pengumuman aktif yang dipublikasikan oleh Admin) */}
+          {(() => {
+            const activeAnnouncements = (cmsData?.announcements || []).filter(a => a.active !== false && (a.target === 'publik' || a.target === 'all' || !a.target));
+            if (!activeAnnouncements || activeAnnouncements.length === 0) return null;
+
+            return (
+              <div className="hub-news" style={{ marginTop: '2.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                  <h3 style={{ margin: 0 }}>Pengumuman</h3>
+                  <Link href="/timeline" style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 700, textDecoration: 'none' }}>
+                    Lihat Jadwal ↗
+                  </Link>
+                </div>
+                <div className="news-list">
+                  {activeAnnouncements.slice(0, 3).map((ann, aIdx) => (
+                    <Link key={ann.id || aIdx} href="/timeline" style={{ textDecoration: 'none', display: 'block' }}>
+                      <div className="news-item">
+                        <div className="news-dot"></div>
+                        <div>
+                          <strong style={{ color: 'var(--navy)', fontSize: '0.9rem', display: 'block', marginBottom: '2px' }}>
+                            {ann.title}
+                          </strong>
+                          <p style={{ margin: 0, fontSize: '0.825rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
+                            {ann.date ? `${ann.date} — ` : ''}{ann.content?.slice(0, 100)}...
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </section>
 

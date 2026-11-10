@@ -58,134 +58,127 @@ export default function ProfilDutaPage() {
       <Navbar />
       <div className="page-wrapper" style={{ paddingTop: '100px', minHeight: 'calc(100vh - 64px)', background: 'var(--bg-alt)' }}>
         <div className="container">
-          <div className="section-header text-center" style={{ marginBottom: '2rem' }}>
+          <div className="section-header text-center" style={{ marginBottom: '1.5rem' }}>
             <h1 className="heading-lg">Profil <span>Duta Kampus</span></h1>
             <p className="lead" style={{ margin: '0.5rem auto 1.5rem', maxWidth: '640px' }}>
               Mengenal representasi mahasiswa unggul dan inspiratif UIN Siber Syekh Nurjati Cirebon.
             </p>
+          </div>
 
-            {/* FILTER KONTROL UMUM (BERSIH & MODERN) */}
+          {/* FILTER BAR MINIMALIS & SEJAJAR (CLEAN UI/UX) */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '1rem',
+            padding: '1rem 0',
+            marginBottom: '2rem',
+            borderBottom: '1px solid var(--border)'
+          }}>
+            {/* Bagian Kiri: Kategori Tab Pills yang bisa di-scroll secara horizontal */}
             <div style={{
-              maxWidth: '860px',
-              margin: '1.5rem auto 0',
-              padding: '1.25rem 1.5rem',
-              background: '#ffffff',
-              borderRadius: '16px',
-              border: '1px solid var(--border)',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.04)'
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              overflowX: 'auto',
+              maxWidth: '100%',
+              paddingBottom: '4px',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
             }}>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                gap: '1rem',
-                alignItems: 'center'
-              }}>
-                {/* Dropdown / Select Tahun Angkatan */}
-                <div>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    color: 'var(--navy)',
-                    marginBottom: '6px',
-                    textAlign: 'left'
-                  }}>
-                    Tahun Angkatan
-                  </label>
-                  <select
-                    value={selectedYear}
-                    onChange={(e) => setSelectedYear(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.65rem 0.85rem',
-                      borderRadius: '8px',
-                      border: '1.5px solid var(--border)',
-                      background: '#ffffff',
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      color: 'var(--navy)',
-                      cursor: 'pointer',
-                      outline: 'none'
-                    }}
-                  >
-                    <option value="all">Semua Angkatan</option>
-                    {availableYears.map(year => (
-                      <option key={year} value={year}>Duta {year}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Dropdown / Select Kategori Duta */}
-                <div>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    color: 'var(--navy)',
-                    marginBottom: '6px',
-                    textAlign: 'left'
-                  }}>
-                    Kategori Gelar
-                  </label>
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.65rem 0.85rem',
-                      borderRadius: '8px',
-                      border: '1.5px solid var(--border)',
-                      background: '#ffffff',
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      color: 'var(--navy)',
-                      cursor: 'pointer',
-                      outline: 'none'
-                    }}
-                  >
-                    {AMBASSADOR_CATEGORIES.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Status Hasil & Tombol Reset Cepat */}
-              <div style={{
-                marginTop: '1rem',
-                paddingTop: '0.75rem',
-                borderTop: '1px solid #f1f5f9',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '0.5rem',
-                fontSize: '0.78rem',
-                color: 'var(--text-light)'
-              }}>
-                <div>
-                  Menampilkan <strong style={{ color: 'var(--navy)' }}>{filteredAmbassadors.length}</strong> profil
-                  {selectedYear !== 'all' && ` • Duta ${selectedYear}`}
-                  {selectedCategory !== 'all' && ` • ${getAmbassadorCategoryLabel(selectedCategory)}`}
-                </div>
-                {(selectedYear !== 'all' || selectedCategory !== 'all') && (
+              {AMBASSADOR_CATEGORIES.map(cat => {
+                const isActive = selectedCategory === cat.id;
+                return (
                   <button
+                    key={cat.id}
                     type="button"
-                    onClick={() => { setSelectedYear('all'); setSelectedCategory('all'); }}
+                    onClick={() => setSelectedCategory(cat.id)}
                     style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--gold)',
-                      fontWeight: 700,
-                      fontSize: '0.78rem',
+                      whiteSpace: 'nowrap',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '8px',
+                      fontSize: '0.825rem',
+                      fontWeight: isActive ? 700 : 500,
                       cursor: 'pointer',
-                      padding: 0
+                      border: isActive ? '1px solid var(--navy)' : '1px solid var(--border)',
+                      background: isActive ? 'var(--navy)' : '#ffffff',
+                      color: isActive ? '#ffffff' : 'var(--text-mid)',
+                      transition: 'all 0.15s ease'
                     }}
                   >
-                    Atur Ulang Filter
+                    {cat.label}
                   </button>
-                )}
+                );
+              })}
+            </div>
+
+            {/* Bagian Kanan: Filter Tahun & Counter */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              marginLeft: 'auto'
+            }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-light)', fontWeight: 600 }}>
+                {filteredAmbassadors.length} Profil
+              </span>
+              <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  style={{
+                    appearance: 'none',
+                    WebkitAppearance: 'none',
+                    padding: '0.5rem 2.2rem 0.5rem 0.9rem',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border)',
+                    background: '#ffffff',
+                    fontSize: '0.825rem',
+                    fontWeight: 700,
+                    color: 'var(--navy)',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+                  }}
+                >
+                  <option value="all">Semua Tahun</option>
+                  {availableYears.map(year => (
+                    <option key={year} value={year}>Duta {year}</option>
+                  ))}
+                </select>
+                <div style={{
+                  position: 'absolute',
+                  right: '10px',
+                  pointerEvents: 'none',
+                  color: 'var(--text-light)',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </div>
               </div>
+
+              {(selectedYear !== 'all' || selectedCategory !== 'all') && (
+                <button
+                  type="button"
+                  onClick={() => { setSelectedYear('all'); setSelectedCategory('all'); }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#dc2626',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    padding: '0.4rem 0.6rem'
+                  }}
+                  title="Reset Filter"
+                >
+                  Reset
+                </button>
+              )}
             </div>
           </div>
           

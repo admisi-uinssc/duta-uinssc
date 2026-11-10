@@ -7,9 +7,9 @@ export const AMBASSADOR_CATEGORIES = [
   { id: 'wakil_1', label: 'Duta Kampus Wakil 1' },
   { id: 'digital_innovation', label: 'Duta Inovasi Digital' },
   { id: 'kip', label: 'Duta Keterbukaan Informasi Publik' },
-  { id: 'sdgs_eco', label: "Duta SDG's Bidang Eco-Innovation" },
-  { id: 'sdgs_inklusivitas', label: "Duta SDG's Bidang Inklusivitas" },
-  { id: 'sdgs_empowerment', label: "Duta SDG's Bidang Social Empowerment" },
+  { id: 'sdgs_eco', label: 'Duta SDGs Eco-Innovation' },
+  { id: 'sdgs_inklusivitas', label: 'Duta SDGs Inklusivitas' },
+  { id: 'sdgs_empowerment', label: 'Duta SDGs Social Empowerment' },
   { id: 'intercultural_partnership', label: 'Duta Intercultural and Partnership' }
 ];
 
@@ -20,7 +20,10 @@ export function getAmbassadorCategoryLabel(catId) {
   const clean = String(catId).trim().toLowerCase();
   if (clean === 'winner' || clean === 'utama' || clean === 'duta winner (duta utama)') return 'Duta Kampus Utama';
   if (clean === 'wakil_1' || clean === 'duta wakil 1') return 'Duta Kampus Wakil 1';
-  if (clean === 'sdgs') return "Duta SDG's";
+  if (clean === 'sdgs' || clean === "sdg's") return 'Duta SDGs';
+  if (clean.includes('eco')) return 'Duta SDGs Eco-Innovation';
+  if (clean.includes('inklusiv')) return 'Duta SDGs Inklusivitas';
+  if (clean.includes('empowerment') || clean.includes('sosial')) return 'Duta SDGs Social Empowerment';
   const match = AMBASSADOR_CATEGORIES.find(c => c.id === catId || c.label.toLowerCase() === clean);
   return match && match.id !== 'all' ? match.label : (catId === 'all' ? 'Semua Kategori' : catId);
 }
@@ -330,22 +333,7 @@ const DEFAULT_CMS = {
     btnText: 'Ajukan Akun & Mulai Pendaftaran',
     btnLink: '/login'
   },
-  announcements: [
-    {
-      id: 1,
-      title: "Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026",
-      target: "all",
-      greeting: "Halo, Calon Duta Kampus UINSSC 2026!",
-      content: "Tahap selanjutnya adalah Seleksi Wawancara Pemilihan Duta Kampus UINSSC 2026. Peserta diharapkan hadir tepat waktu sesuai jadwal dan lokasi yang telah ditentukan.",
-      date: "Selasa, 03 November 2026",
-      time: "07.00 WIB s.d. selesai",
-      location: "Auditorium Rektorat Lt. 3",
-      dressCode: "Hitam Putih",
-      contactWa: "0851-2292-7628",
-      active: true,
-      createdAt: "2026-11-02T00:00:00.000Z"
-    }
-  ],
+  announcements: [],
   contacts: {
     whatsapp: "0851-2292-7628",
     whatsappUrl: "https://wa.me/6285122927628",

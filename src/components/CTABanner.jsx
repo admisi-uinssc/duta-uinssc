@@ -6,8 +6,8 @@ import { Settings } from '../lib/settings';
 
 export default function CTABanner() {
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
-  const [isClosed, setIsClosed] = useState(false);
-  const [applicantCount, setApplicantCount] = useState('60+');
+  const [isClosed, setIsClosed] = useState(() => Settings.isRegistrationClosed());
+  const [applicantCount, setApplicantCount] = useState(() => Settings.getApplicantCountDisplay());
 
   useEffect(() => {
     const updateCountdown = () => {
