@@ -651,7 +651,7 @@ export default function AdminPage() {
           major: 'Tadris Bahasa Inggris',
           img: '',
           year: '2026',
-          category: 'winner'
+          category: 'duta_kampus'
         },
         ...(cmsData.ambassadors || [])
       ]
@@ -2456,10 +2456,10 @@ export default function AdminPage() {
                           }}
                         >
                           {AMBASSADOR_YEARS.map(y => (
-                            <option key={y} value={y}>Angkatan {y}</option>
+                            <option key={y} value={y}>Duta {y}</option>
                           ))}
                           {item.year && !AMBASSADOR_YEARS.includes(String(item.year)) && (
-                            <option value={item.year}>Angkatan {item.year}</option>
+                            <option value={item.year}>Duta {item.year}</option>
                           )}
                         </select>
                       </div>
@@ -2467,7 +2467,7 @@ export default function AdminPage() {
                       <div className="form-group" style={{ marginBottom: '0.75rem' }}>
                         <label>Kategori Gelar Duta</label>
                         <select 
-                          value={item.category || 'winner'} 
+                          value={item.category || 'duta_kampus'} 
                           onChange={e => updateAmbassador(idx, 'category', e.target.value)}
                           style={{
                             width: '100%',

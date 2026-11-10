@@ -2,20 +2,27 @@ const OFFICIAL_SHOWCASE_IMG = 'https://ppid.uinssc.ac.id/storage/duta-kampus/01K
 
 export const AMBASSADOR_CATEGORIES = [
   { id: 'all', label: 'Semua Kategori' },
-  { id: 'winner', label: 'Duta Winner (Duta Utama)' },
-  { id: 'wakil_1', label: 'Duta Wakil 1' },
+  { id: 'duta_kampus', label: 'Duta Kampus' },
+  { id: 'utama', label: 'Duta Kampus Utama' },
+  { id: 'wakil_1', label: 'Duta Kampus Wakil 1' },
   { id: 'digital_innovation', label: 'Duta Inovasi Digital' },
   { id: 'kip', label: 'Duta Keterbukaan Informasi Publik' },
-  { id: 'sdgs', label: "Duta SDG's (Eco-innovation, Inklusivitas, Social Empowerment)" },
+  { id: 'sdgs_eco', label: "Duta SDG's Bidang Eco-Innovation" },
+  { id: 'sdgs_inklusivitas', label: "Duta SDG's Bidang Inklusivitas" },
+  { id: 'sdgs_empowerment', label: "Duta SDG's Bidang Social Empowerment" },
   { id: 'intercultural_partnership', label: 'Duta Intercultural and Partnership' }
 ];
 
 export const AMBASSADOR_YEARS = ['2026', '2025'];
 
 export function getAmbassadorCategoryLabel(catId) {
-  if (!catId) return '';
-  const match = AMBASSADOR_CATEGORIES.find(c => c.id === catId || c.label.toLowerCase() === String(catId).toLowerCase());
-  return match && match.id !== 'all' ? match.label : catId;
+  if (!catId) return 'Duta Kampus';
+  const clean = String(catId).trim().toLowerCase();
+  if (clean === 'winner' || clean === 'utama' || clean === 'duta winner (duta utama)') return 'Duta Kampus Utama';
+  if (clean === 'wakil_1' || clean === 'duta wakil 1') return 'Duta Kampus Wakil 1';
+  if (clean === 'sdgs') return "Duta SDG's";
+  const match = AMBASSADOR_CATEGORIES.find(c => c.id === catId || c.label.toLowerCase() === clean);
+  return match && match.id !== 'all' ? match.label : (catId === 'all' ? 'Semua Kategori' : catId);
 }
 
 const DEFAULT_CMS = {
@@ -367,7 +374,8 @@ function mergeWithDefaults(cms) {
     merged.ambassadors = cms.ambassadors.map((amb, idx) => {
       const defAmb = DEFAULT_CMS.ambassadors[idx];
       const resolvedYear = String(amb.year || (defAmb?.year) || '2025');
-      const resolvedCategory = amb.category || (defAmb?.category) || 'winner';
+      let resolvedCategory = amb.category || (defAmb?.category) || 'duta_kampus';
+      if (resolvedCategory === 'winner') resolvedCategory = 'utama';
       if (!amb.img && defAmb?.img) {
         return { ...amb, img: defAmb.img, year: resolvedYear, category: resolvedCategory };
       }
@@ -377,7 +385,7 @@ function mergeWithDefaults(cms) {
     merged.ambassadors = DEFAULT_CMS.ambassadors.map(a => ({
       ...a,
       year: String(a.year || '2025'),
-      category: a.category || 'winner'
+      category: a.category === 'winner' ? 'utama' : (a.category || 'duta_kampus')
     }));
   }
   if (!Array.isArray(cms.announcements)) {

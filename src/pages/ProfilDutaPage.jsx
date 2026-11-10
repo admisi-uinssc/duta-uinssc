@@ -43,7 +43,8 @@ export default function ProfilDutaPage() {
   const filteredAmbassadors = useMemo(() => {
     return ambassadors.filter((duta) => {
       const dutaYear = String(duta.year || '2025').trim();
-      const dutaCategory = String(duta.category || 'winner').trim().toLowerCase();
+      let dutaCategory = String(duta.category || 'duta_kampus').trim().toLowerCase();
+      if (dutaCategory === 'winner') dutaCategory = 'utama';
 
       const matchYear = selectedYear === 'all' || dutaYear === selectedYear;
       const matchCategory = selectedCategory === 'all' || dutaCategory === selectedCategory.toLowerCase();
@@ -63,95 +64,127 @@ export default function ProfilDutaPage() {
               Mengenal representasi mahasiswa unggul dan inspiratif UIN Siber Syekh Nurjati Cirebon.
             </p>
 
-            {/* FILTER KONTROL TAHUN & KATEGORI */}
+            {/* FILTER KONTROL UMUM (BERSIH & MODERN) */}
             <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1rem',
-              maxWidth: '820px',
+              maxWidth: '860px',
               margin: '1.5rem auto 0',
-              padding: '1rem',
+              padding: '1.25rem 1.5rem',
               background: '#ffffff',
-              borderRadius: '14px',
+              borderRadius: '16px',
               border: '1px solid var(--border)',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.03)'
+              boxShadow: '0 4px 20px rgba(0,0,0,0.04)'
             }}>
-              {/* Filter Tahun (Tab Pills) */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', marginRight: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  Tahun Angkatan:
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setSelectedYear('all')}
-                  style={{
-                    padding: '0.4rem 0.9rem',
-                    borderRadius: '8px',
-                    fontSize: '0.825rem',
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+                gap: '1rem',
+                alignItems: 'center'
+              }}>
+                {/* Dropdown / Select Tahun Angkatan */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.8rem',
                     fontWeight: 700,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    border: selectedYear === 'all' ? '1px solid var(--gold)' : '1px solid #e2e8f0',
-                    background: selectedYear === 'all' ? 'var(--navy)' : '#f8fafc',
-                    color: selectedYear === 'all' ? '#ffffff' : 'var(--text-mid)'
-                  }}
-                >
-                  Semua Angkatan
-                </button>
-                {availableYears.map(year => (
-                  <button
-                    key={year}
-                    type="button"
-                    onClick={() => setSelectedYear(year)}
+                    color: 'var(--navy)',
+                    marginBottom: '6px',
+                    textAlign: 'left'
+                  }}>
+                    Tahun Angkatan
+                  </label>
+                  <select
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(e.target.value)}
                     style={{
-                      padding: '0.4rem 0.9rem',
+                      width: '100%',
+                      padding: '0.65rem 0.85rem',
                       borderRadius: '8px',
-                      fontSize: '0.825rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                      border: selectedYear === year ? '1px solid var(--gold)' : '1px solid #e2e8f0',
-                      background: selectedYear === year ? 'linear-gradient(135deg, #16324A 0%, #0d1e2d 100%)' : '#f8fafc',
-                      color: selectedYear === year ? 'var(--gold)' : 'var(--text-mid)'
-                    }}
-                  >
-                    Angkatan {year}
-                  </button>
-                ))}
-              </div>
-
-              {/* Filter Kategori Duta */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.4rem', borderTop: '1px solid #f1f5f9', paddingTop: '0.85rem' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', marginRight: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  Kategori Duta:
-                </span>
-                {AMBASSADOR_CATEGORIES.map(cat => (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat.id)}
-                    style={{
-                      padding: '0.35rem 0.75rem',
-                      borderRadius: '6px',
-                      fontSize: '0.78rem',
+                      border: '1.5px solid var(--border)',
+                      background: '#ffffff',
+                      fontSize: '0.875rem',
                       fontWeight: 600,
+                      color: 'var(--navy)',
                       cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                      border: selectedCategory === cat.id ? '1px solid var(--gold)' : '1px solid transparent',
-                      background: selectedCategory === cat.id ? 'rgba(196, 158, 89, 0.15)' : 'transparent',
-                      color: selectedCategory === cat.id ? '#9e7b36' : 'var(--text-mid)'
+                      outline: 'none'
                     }}
                   >
-                    {cat.label}
-                  </button>
-                ))}
+                    <option value="all">Semua Angkatan</option>
+                    {availableYears.map(year => (
+                      <option key={year} value={year}>Duta {year}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Dropdown / Select Kategori Duta */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    color: 'var(--navy)',
+                    marginBottom: '6px',
+                    textAlign: 'left'
+                  }}>
+                    Kategori Gelar
+                  </label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.85rem',
+                      borderRadius: '8px',
+                      border: '1.5px solid var(--border)',
+                      background: '#ffffff',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      color: 'var(--navy)',
+                      cursor: 'pointer',
+                      outline: 'none'
+                    }}
+                  >
+                    {AMBASSADOR_CATEGORIES.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
-              {/* Status Hasil Filter */}
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', textAlign: 'center', marginTop: '-0.25rem' }}>
-                Menampilkan <strong>{filteredAmbassadors.length}</strong> profil Duta Kampus
-                {selectedYear !== 'all' && ` • Angkatan ${selectedYear}`}
-                {selectedCategory !== 'all' && ` • ${getAmbassadorCategoryLabel(selectedCategory)}`}
+              {/* Status Hasil & Tombol Reset Cepat */}
+              <div style={{
+                marginTop: '1rem',
+                paddingTop: '0.75rem',
+                borderTop: '1px solid #f1f5f9',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '0.5rem',
+                fontSize: '0.78rem',
+                color: 'var(--text-light)'
+              }}>
+                <div>
+                  Menampilkan <strong style={{ color: 'var(--navy)' }}>{filteredAmbassadors.length}</strong> profil
+                  {selectedYear !== 'all' && ` • Duta ${selectedYear}`}
+                  {selectedCategory !== 'all' && ` • ${getAmbassadorCategoryLabel(selectedCategory)}`}
+                </div>
+                {(selectedYear !== 'all' || selectedCategory !== 'all') && (
+                  <button
+                    type="button"
+                    onClick={() => { setSelectedYear('all'); setSelectedCategory('all'); }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--gold)',
+                      fontWeight: 700,
+                      fontSize: '0.78rem',
+                      cursor: 'pointer',
+                      padding: 0
+                    }}
+                  >
+                    Atur Ulang Filter
+                  </button>
+                )}
               </div>
             </div>
           </div>
