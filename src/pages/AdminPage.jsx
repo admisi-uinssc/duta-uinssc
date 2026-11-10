@@ -5,7 +5,7 @@ import Image, { formatImageUrl } from '../components/Image';
 import Link from '../components/Link';
 import { DB, seedDemoData, formatDate, formatDateTime } from '../lib/db';
 import { Settings } from '../lib/settings';
-import { CMS } from '../lib/cms';
+import { CMS, AMBASSADOR_CATEGORIES, AMBASSADOR_YEARS, getAmbassadorCategoryLabel } from '../lib/cms';
 import { Auth } from '../lib/auth';
 import { FAKULTAS_DATA } from '../lib/fakultasData';
 import { evaluateDossierCompleteness, DEFAULT_MESSAGES } from '../lib/dossier';
@@ -644,15 +644,16 @@ export default function AdminPage() {
     const newData = {
       ...cmsData,
       ambassadors: [
-        ...(cmsData.ambassadors || []),
         {
           id: Date.now(),
           name: 'Nama Duta Baru',
           faculty: 'FITK',
           major: 'Tadris Bahasa Inggris',
           img: '',
-          year: '2026'
-        }
+          year: '2026',
+          category: 'winner'
+        },
+        ...(cmsData.ambassadors || [])
       ]
     };
     setCmsData(newData);
@@ -2411,7 +2412,9 @@ export default function AdminPage() {
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Profil Duta Kampus</h3>
                     <p>Atur daftar profil duta mahasiswa yang ditampilkan di halaman publik Profil Duta dan showcase Beranda.</p>
                   </div>
-                  <button className="btn btn-sm btn-outline-gold" onClick={addAmbassador}>+ Tambah Duta Baru</button>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button className="btn btn-sm btn-outline-gold" onClick={addAmbassador}>+ Tambah Duta Baru</button>
+                  </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
@@ -2439,7 +2442,47 @@ export default function AdminPage() {
 
                       <div className="form-group" style={{ marginBottom: '0.75rem' }}>
                         <label>Tahun Angkatan</label>
-                        <input type="text" value={item.year || '2026'} onChange={e => updateAmbassador(idx, 'year', e.target.value)} placeholder="2026" />
+                        <select 
+                          value={item.year || '2026'} 
+                          onChange={e => updateAmbassador(idx, 'year', e.target.value)}
+                          style={{
+                            width: '100%',
+                            padding: '0.6rem 0.75rem',
+                            borderRadius: '8px',
+                            border: '1px solid var(--border)',
+                            background: '#ffffff',
+                            fontWeight: 600,
+                            color: 'var(--navy)'
+                          }}
+                        >
+                          {AMBASSADOR_YEARS.map(y => (
+                            <option key={y} value={y}>Angkatan {y}</option>
+                          ))}
+                          {item.year && !AMBASSADOR_YEARS.includes(String(item.year)) && (
+                            <option value={item.year}>Angkatan {item.year}</option>
+                          )}
+                        </select>
+                      </div>
+
+                      <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                        <label>Kategori Gelar Duta</label>
+                        <select 
+                          value={item.category || 'winner'} 
+                          onChange={e => updateAmbassador(idx, 'category', e.target.value)}
+                          style={{
+                            width: '100%',
+                            padding: '0.6rem 0.75rem',
+                            borderRadius: '8px',
+                            border: '1px solid var(--border)',
+                            background: '#ffffff',
+                            fontWeight: 600,
+                            color: 'var(--navy)'
+                          }}
+                        >
+                          {AMBASSADOR_CATEGORIES.filter(c => c.id !== 'all').map(c => (
+                            <option key={c.id} value={c.id}>{c.label}</option>
+                          ))}
+                        </select>
                       </div>
 
                       <div className="form-group">
@@ -2460,6 +2503,9 @@ export default function AdminPage() {
                             </div>
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-mid)', flex: 1 }}>
                               <strong>{item.name || 'Nama'}</strong>
+                              <div style={{ color: 'var(--gold)', fontWeight: 600, fontSize: '0.75rem' }}>
+                                {getAmbassadorCategoryLabel(item.category || 'winner')} · Angkatan {item.year || '2026'}
+                              </div>
                               <div>{item.faculty} · {item.major}</div>
                               {media.isVideo && (
                                 <button

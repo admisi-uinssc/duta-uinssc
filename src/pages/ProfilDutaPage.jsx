@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Image from '../components/Image';
-import { CMS } from '../lib/cms';
+import { CMS, AMBASSADOR_CATEGORIES, AMBASSADOR_YEARS, getAmbassadorCategoryLabel } from '../lib/cms';
 import { parseMediaUrl } from '../lib/media';
 import MediaModal from '../components/MediaModal';
 
 export default function ProfilDutaPage() {
   const [ambassadors, setAmbassadors] = useState([]);
   const [selectedMedia, setSelectedMedia] = useState(null);
+  const [selectedYear, setSelectedYear] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
     setAmbassadors(CMS.get().ambassadors || []);
@@ -28,21 +30,138 @@ export default function ProfilDutaPage() {
     return unsubscribe;
   }, []);
 
+  // Compute available years dynamically combining preset years and items from data
+  const availableYears = useMemo(() => {
+    const set = new Set(AMBASSADOR_YEARS);
+    ambassadors.forEach(a => {
+      if (a.year) set.add(String(a.year).trim());
+    });
+    return Array.from(set).sort((a, b) => b.localeCompare(a));
+  }, [ambassadors]);
+
+  // Filtered ambassadors
+  const filteredAmbassadors = useMemo(() => {
+    return ambassadors.filter((duta) => {
+      const dutaYear = String(duta.year || '2025').trim();
+      const dutaCategory = String(duta.category || 'winner').trim().toLowerCase();
+
+      const matchYear = selectedYear === 'all' || dutaYear === selectedYear;
+      const matchCategory = selectedCategory === 'all' || dutaCategory === selectedCategory.toLowerCase();
+
+      return matchYear && matchCategory;
+    });
+  }, [ambassadors, selectedYear, selectedCategory]);
+
   return (
     <>
       <Navbar />
       <div className="page-wrapper" style={{ paddingTop: '100px', minHeight: 'calc(100vh - 64px)', background: 'var(--bg-alt)' }}>
         <div className="container">
-          <div className="section-header text-center" style={{ marginBottom: '2.5rem' }}>
+          <div className="section-header text-center" style={{ marginBottom: '2rem' }}>
             <h1 className="heading-lg">Profil <span>Duta Kampus</span></h1>
-            <p className="lead" style={{ margin: '0.5rem auto 1.5rem' }}>
-              Mengenal representasi mahasiswa unggul UIN Siber Syekh Nurjati Cirebon.
+            <p className="lead" style={{ margin: '0.5rem auto 1.5rem', maxWidth: '640px' }}>
+              Mengenal representasi mahasiswa unggul dan inspiratif UIN Siber Syekh Nurjati Cirebon.
             </p>
+
+            {/* FILTER KONTROL TAHUN & KATEGORI */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              maxWidth: '820px',
+              margin: '1.5rem auto 0',
+              padding: '1rem',
+              background: '#ffffff',
+              borderRadius: '14px',
+              border: '1px solid var(--border)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.03)'
+            }}>
+              {/* Filter Tahun (Tab Pills) */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', marginRight: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Tahun Angkatan:
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedYear('all')}
+                  style={{
+                    padding: '0.4rem 0.9rem',
+                    borderRadius: '8px',
+                    fontSize: '0.825rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    border: selectedYear === 'all' ? '1px solid var(--gold)' : '1px solid #e2e8f0',
+                    background: selectedYear === 'all' ? 'var(--navy)' : '#f8fafc',
+                    color: selectedYear === 'all' ? '#ffffff' : 'var(--text-mid)'
+                  }}
+                >
+                  Semua Angkatan
+                </button>
+                {availableYears.map(year => (
+                  <button
+                    key={year}
+                    type="button"
+                    onClick={() => setSelectedYear(year)}
+                    style={{
+                      padding: '0.4rem 0.9rem',
+                      borderRadius: '8px',
+                      fontSize: '0.825rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      border: selectedYear === year ? '1px solid var(--gold)' : '1px solid #e2e8f0',
+                      background: selectedYear === year ? 'linear-gradient(135deg, #16324A 0%, #0d1e2d 100%)' : '#f8fafc',
+                      color: selectedYear === year ? 'var(--gold)' : 'var(--text-mid)'
+                    }}
+                  >
+                    Angkatan {year}
+                  </button>
+                ))}
+              </div>
+
+              {/* Filter Kategori Duta */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.4rem', borderTop: '1px solid #f1f5f9', paddingTop: '0.85rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', marginRight: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Kategori Duta:
+                </span>
+                {AMBASSADOR_CATEGORIES.map(cat => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    style={{
+                      padding: '0.35rem 0.75rem',
+                      borderRadius: '6px',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      border: selectedCategory === cat.id ? '1px solid var(--gold)' : '1px solid transparent',
+                      background: selectedCategory === cat.id ? 'rgba(196, 158, 89, 0.15)' : 'transparent',
+                      color: selectedCategory === cat.id ? '#9e7b36' : 'var(--text-mid)'
+                    }}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Status Hasil Filter */}
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', textAlign: 'center', marginTop: '-0.25rem' }}>
+                Menampilkan <strong>{filteredAmbassadors.length}</strong> profil Duta Kampus
+                {selectedYear !== 'all' && ` • Angkatan ${selectedYear}`}
+                {selectedCategory !== 'all' && ` • ${getAmbassadorCategoryLabel(selectedCategory)}`}
+              </div>
+            </div>
           </div>
           
           <div className="ambassador-grid">
-            {ambassadors.map((duta) => {
+            {filteredAmbassadors.map((duta) => {
               const media = duta.img ? parseMediaUrl(duta.img, duta.mediaType) : null;
+              const categoryLabel = getAmbassadorCategoryLabel(duta.category);
+              const dutaYear = String(duta.year || '2025');
+
               return (
                 <div 
                   key={duta.id} 
@@ -53,7 +172,7 @@ export default function ProfilDutaPage() {
                       setSelectedMedia({
                         url: duta.img,
                         title: duta.name || 'Profil Duta Kampus',
-                        caption: `${duta.name || 'Duta'} · ${duta.major || duta.faculty || 'Duta Kampus'}${duta.year ? ` (Angkatan ${duta.year})` : ''}`,
+                        caption: `${duta.name || 'Duta'}${categoryLabel ? ` · ${categoryLabel}` : ''} · ${duta.major || duta.faculty || 'Duta Kampus'} (Angkatan ${dutaYear})`,
                         mediaType: duta.mediaType
                       });
                     }
@@ -143,20 +262,42 @@ export default function ProfilDutaPage() {
                     )}
                   </div>
                   <div className="ambassador-info">
+                    {categoryLabel && (
+                      <div style={{
+                        fontSize: '0.68rem',
+                        fontWeight: 700,
+                        color: 'var(--gold)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        marginBottom: '4px'
+                      }}>
+                        {categoryLabel}
+                      </div>
+                    )}
                     <h3>{duta.name}</h3>
                     <p>{duta.major || duta.faculty || 'Duta Kampus'}</p>
-                    {duta.year && (
-                      <span style={{ display: 'inline-block', marginTop: '4px', fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 600 }}>
-                        Angkatan {duta.year}
-                      </span>
-                    )}
+                    <span style={{ display: 'inline-block', marginTop: '6px', fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>
+                      Angkatan {dutaYear}
+                    </span>
                   </div>
                 </div>
               );
             })}
-            {ambassadors.length === 0 && (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)', padding: '3rem 0' }}>
-                Data Profil Duta Kampus belum tersedia.
+            {filteredAmbassadors.length === 0 && (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)', padding: '3.5rem 1rem' }}>
+                <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--navy)', marginBottom: '0.5rem' }}>
+                  Tidak ada data profil Duta Kampus untuk filter ini.
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-mid)', maxWidth: '400px', margin: '0 auto 1.5rem' }}>
+                  Silakan pilih kombinasi tahun angkatan atau kategori lainnya.
+                </p>
+                <button
+                  type="button"
+                  className="btn btn-outline-gold btn-sm"
+                  onClick={() => { setSelectedYear('all'); setSelectedCategory('all'); }}
+                >
+                  Reset Filter
+                </button>
               </div>
             )}
           </div>
