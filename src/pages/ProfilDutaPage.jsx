@@ -39,18 +39,50 @@ export default function ProfilDutaPage() {
     return Array.from(set).sort((a, b) => b.localeCompare(a));
   }, [ambassadors]);
 
-  // Filtered ambassadors
+  // Filtered ambassadors (diurutkan descending: tahun terbaru paling atas, diikuti kategori/prioritas)
   const filteredAmbassadors = useMemo(() => {
-    return ambassadors.filter((duta) => {
-      const dutaYear = String(duta.year || '2025').trim();
-      let dutaCategory = String(duta.category || 'duta_kampus').trim().toLowerCase();
-      if (dutaCategory === 'winner') dutaCategory = 'utama';
+    return ambassadors
+      .filter((duta) => {
+        const dutaYear = String(duta.year || '2025').trim();
+        let dutaCategory = String(duta.category || 'duta_kampus').trim().toLowerCase();
+        if (dutaCategory === 'winner') dutaCategory = 'utama';
 
-      const matchYear = selectedYear === 'all' || dutaYear === selectedYear;
-      const matchCategory = selectedCategory === 'all' || dutaCategory === selectedCategory.toLowerCase();
+        const matchYear = selectedYear === 'all' || dutaYear === selectedYear;
+        const matchCategory = selectedCategory === 'all' || dutaCategory === selectedCategory.toLowerCase();
 
-      return matchYear && matchCategory;
-    });
+        return matchYear && matchCategory;
+      })
+      .sort((a, b) => {
+        // Urutkan tahun terbaru di paling atas (misal 2026 di atas 2025)
+        const yearA = parseInt(a.year || '2025', 10);
+        const yearB = parseInt(b.year || '2025', 10);
+        if (yearB !== yearA) {
+          return yearB - yearA;
+        }
+
+        // Jika tahun sama, urutkan berdasarkan prioritas gelar duta
+        const categoryPriority = {
+          'utama': 1,
+          'winner': 1,
+          'wakil_1': 2,
+          'digital_innovation': 3,
+          'kip': 4,
+          'sdgs_eco': 5,
+          'sdgs_inklusivitas': 6,
+          'sdgs_empowerment': 7,
+          'intercultural_partnership': 8,
+          'duta_kampus': 9
+        };
+
+        const catA = categoryPriority[a.category] || 99;
+        const catB = categoryPriority[b.category] || 99;
+        if (catA !== catB) {
+          return catA - catB;
+        }
+
+        // Fallback urut ID / abjad
+        return (a.id || 0) - (b.id || 0);
+      });
   }, [ambassadors, selectedYear, selectedCategory]);
 
   return (

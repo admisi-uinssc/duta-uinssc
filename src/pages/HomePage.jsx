@@ -22,21 +22,45 @@ export default function HomePage() {
   const [selectedAmbassadorMedia, setSelectedAmbassadorMedia] = useState(null);
 
   useEffect(() => {
+    const sortAmbassadors = (list) => {
+      return [...(list || [])].sort((a, b) => {
+        const yearA = parseInt(a.year || '2025', 10);
+        const yearB = parseInt(b.year || '2025', 10);
+        if (yearB !== yearA) return yearB - yearA;
+
+        const categoryPriority = {
+          'utama': 1,
+          'winner': 1,
+          'wakil_1': 2,
+          'digital_innovation': 3,
+          'kip': 4,
+          'sdgs_eco': 5,
+          'sdgs_inklusivitas': 6,
+          'sdgs_empowerment': 7,
+          'intercultural_partnership': 8,
+          'duta_kampus': 9
+        };
+        const catA = categoryPriority[a.category] || 99;
+        const catB = categoryPriority[b.category] || 99;
+        return catA - catB;
+      });
+    };
+
     const initial = CMS.get();
     setCmsData(initial);
-    setAmbassadors((initial.ambassadors || []).slice(0, 4));
+    setAmbassadors(sortAmbassadors(initial.ambassadors).slice(0, 4));
 
     CMS.getAsync().then((data) => {
       if (data) {
         setCmsData(data);
-        if (data.ambassadors) setAmbassadors(data.ambassadors.slice(0, 4));
+        if (data.ambassadors) setAmbassadors(sortAmbassadors(data.ambassadors).slice(0, 4));
       }
     }).catch(() => {});
 
     const unsubscribe = CMS.subscribe((data) => {
       if (data) {
         setCmsData(data);
-        if (data.ambassadors) setAmbassadors(data.ambassadors.slice(0, 4));
+        if (data.ambassadors) setAmbassadors(sortAmbassadors(data.ambassadors).slice(0, 4));
       }
     });
 
