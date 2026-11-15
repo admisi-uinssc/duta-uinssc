@@ -138,7 +138,82 @@ span, label, small, strong, li {
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 1.25rem;
+    padding: 0 1rem;
+  }
+
+  /* Native Mobile App Typography & Spacing Optimization (Gojek / Shopee Style) */
+  .heading-lg {
+    font-size: 2.2rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0.65rem !important;
+  }
+  .lead {
+    font-size: 0.85rem !important;
+    line-height: 1.55 !important;
+    margin-bottom: 1.25rem !important;
+  }
+  .eyebrow, .section-eyebrow, .kicker-label {
+    font-size: 1.05rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+  .section-pad {
+    padding: 2.5rem 0 !important;
+  }
+
+  /* Compact native app buttons */
+  .btn {
+    padding: 0.6rem 1.25rem !important;
+    font-size: 0.825rem !important;
+  }
+  .btn-lg {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.875rem !important;
+  }
+  .btn-sm {
+    padding: 0.35rem 0.85rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Native App Cards: smooth corners & compact padding */
+  .card {
+    border-radius: 14px !important;
+    padding: 1.15rem !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  /* General Table to Native Mobile Cards conversion */
+  table:not(.preserve-table) {
+    border: 0 !important;
+    display: block !important;
+    width: 100% !important;
+  }
+  table:not(.preserve-table) thead {
+    display: none !important;
+  }
+  table:not(.preserve-table) tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+  table:not(.preserve-table) tr {
+    display: flex !important;
+    flex-direction: column !important;
+    margin-bottom: 0.75rem !important;
+    background: #ffffff !important;
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 12px !important;
+    padding: 0.85rem 1rem !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+  }
+  table:not(.preserve-table) td {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0.35rem 0 !important;
+    font-size: 0.82rem !important;
+    border-bottom: 1px solid #f8fafc !important;
+  }
+  table:not(.preserve-table) td:last-child {
+    border-bottom: none !important;
   }
 }
 
