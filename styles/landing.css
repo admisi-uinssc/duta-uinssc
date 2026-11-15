@@ -803,60 +803,68 @@
    ======================================================== */
 @media (max-width: 768px) {
   .finalist-showcase-section {
-    padding: 1.75rem 0 2rem !important;
+    padding: 1.25rem 0 1.5rem !important;
+    background: #0d1e2d !important;
   }
 
   .finalist-header-row {
-    margin-bottom: 1rem !important;
+    margin-bottom: 0.75rem !important;
   }
 
   .finalist-section-title {
-    font-size: 1.75rem !important;
-    line-height: 1.12 !important;
-    margin-bottom: 0.25rem !important;
+    font-size: 1.55rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0.2rem !important;
   }
 
   .finalist-section-subtitle {
-    font-size: 0.8rem !important;
-    line-height: 1.45 !important;
+    font-size: 0.78rem !important;
+    line-height: 1.4 !important;
+    color: rgba(255, 255, 255, 0.65) !important;
   }
 
   .finalist-slider-track {
-    gap: 0.75rem !important;
-    padding-bottom: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    gap: 0.65rem !important;
+    padding-bottom: 0.4rem !important;
+    padding-right: 0.85rem !important;
+    -webkit-overflow-scrolling: touch;
   }
 
   .finalist-slide-card {
-    flex: 0 0 155px !important; /* Compact card width for mobile phones */
+    flex: 0 0 142px !important; /* Presisi kartu HP ala Shopee */
     border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    background: #16324A !important;
+    border: 1px solid rgba(196, 158, 89, 0.25) !important;
   }
 
-  .finalist-slide-card:hover {
+  .finalist-slide-card:hover,
+  .finalist-slide-card:active {
     transform: none !important;
   }
 
   .finalist-slide-img-wrap {
-    aspect-ratio: 1 / 1.18 !important; /* Native app card aspect ratio */
+    aspect-ratio: 1 / 1.15 !important;
   }
 
   .finalist-slide-info {
-    padding: 0.65rem 0.5rem 0.75rem !important;
+    padding: 0.55rem 0.5rem 0.65rem !important;
   }
 
   .finalist-slide-info h4 {
-    font-size: 1.05rem !important;
+    font-size: 0.98rem !important;
     margin-bottom: 2px !important;
+    line-height: 1.15 !important;
   }
 
   .finalist-slide-info p {
     font-size: 0.68rem !important;
+    line-height: 1.25 !important;
   }
 
   .finalist-slide-faculty {
-    font-size: 0.62rem !important;
-    margin-top: 3px !important;
+    font-size: 0.6rem !important;
+    margin-top: 2px !important;
   }
 }
 

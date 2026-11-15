@@ -91,23 +91,22 @@ export default function FinalistShowcaseSlider() {
     scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
   };
 
-  // Auto slide di Desktop (setiap 3.5 detik berjalan otomatis jika kursor tidak dihover)
+  // Robust Auto-slide: Berjalan mulus di Desktop & Tablet setiap 3 detik
   useEffect(() => {
-    if (finalists.length <= 1 || isHovered) return;
+    if (finalists.length <= 1) return;
 
     const interval = setInterval(() => {
-      if (!scrollRef.current) return;
+      if (isHovered || !scrollRef.current) return;
       const el = scrollRef.current;
-      const cardWidth = 240;
+      const step = (el.firstElementChild?.clientWidth || 240) + 16;
       const maxScroll = el.scrollWidth - el.clientWidth;
 
-      if (el.scrollLeft >= maxScroll - 15) {
-        // Kembali ke titik awal secara halus
+      if (el.scrollLeft >= maxScroll - 20) {
         el.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        el.scrollBy({ left: step, behavior: 'smooth' });
       }
-    }, 3500);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [finalists.length, isHovered]);
@@ -126,9 +125,13 @@ export default function FinalistShowcaseSlider() {
       className="finalist-showcase-section"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={() => setIsHovered(true)}
+      onTouchEnd={() => {
+        setTimeout(() => setIsHovered(false), 2000);
+      }}
     >
       <div className="container">
-        {/* Header Section: Minimalis, Clean, Bebas dari Pill Badge & Bebas dari Eyebrow Text */}
+        {/* Header Section: Clean, Tanpa Pill Badge, Tanpa Eyebrow */}
         <div className="finalist-header-row">
           <div>
             <h2 className="finalist-section-title">
@@ -143,7 +146,7 @@ export default function FinalistShowcaseSlider() {
           <div className="finalist-nav-arrows desktop-only">
             <button
               type="button"
-              onClick={() => scrollByOffset(-300)}
+              onClick={() => scrollByOffset(-320)}
               disabled={!canScrollLeft}
               className={`finalist-arrow-btn ${canScrollLeft ? 'active' : ''}`}
               title="Geser Sebelumnya"
@@ -152,7 +155,7 @@ export default function FinalistShowcaseSlider() {
             </button>
             <button
               type="button"
-              onClick={() => scrollByOffset(300)}
+              onClick={() => scrollByOffset(320)}
               disabled={!canScrollRight}
               className={`finalist-arrow-btn ${canScrollRight ? 'active' : ''}`}
               title="Geser Selanjutnya"
@@ -162,7 +165,7 @@ export default function FinalistShowcaseSlider() {
           </div>
         </div>
 
-        {/* Horizontal Slider Container (Desktop: Auto-slide & Smooth Scroll; HP: Native Swipe Card Scroll) */}
+        {/* Horizontal Slider Container (Desktop & HP: Card Smooth Scroll) */}
         <div
           ref={scrollRef}
           onScroll={checkScroll}
