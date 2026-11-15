@@ -614,3 +614,249 @@
   }
 }
 
+/* ========================================================
+   FINALIST SHOWCASE SLIDER (EDITORIAL WCCE + GOJEK/SHOPEE APP-CARD)
+   ======================================================== */
+.finalist-showcase-section {
+  padding: 3.5rem 0 3.75rem;
+  background: #0f2233;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.finalist-header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.finalist-section-title {
+  font-family: "Instrument Serif", "Times New Roman", Georgia, serif !important;
+  font-size: 2.75rem !important;
+  font-weight: 400 !important;
+  color: #ffffff !important;
+  margin: 0 0 0.5rem !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.01em;
+}
+
+.finalist-section-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.925rem;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.finalist-nav-arrows {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.finalist-arrow-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  transition: all 0.25s ease;
+  padding: 0;
+}
+
+.finalist-arrow-btn.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #16324A;
+  cursor: pointer;
+}
+
+.finalist-arrow-btn.active:hover {
+  background: var(--gold-dark);
+  transform: scale(1.05);
+}
+
+.finalist-slider-track {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 1rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+
+.finalist-slider-track::-webkit-scrollbar {
+  display: none;
+}
+
+.finalist-slide-card {
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+  background: #16324A;
+  border-radius: 16px;
+  border: 1px solid rgba(196, 158, 89, 0.22);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.finalist-slide-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+  border-color: var(--gold);
+}
+
+.finalist-slide-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: #0d1e2d;
+  overflow: hidden;
+}
+
+.finalist-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #16324A 0%, #0d1e2d 100%);
+  color: var(--gold);
+  gap: 8px;
+}
+
+.finalist-avatar-initials {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(196, 158, 89, 0.15);
+  border: 2px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+
+.finalist-avatar-caption {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.5px;
+}
+
+.finalist-slide-info {
+  padding: 1rem 0.85rem 1.15rem;
+  text-align: center;
+}
+
+.finalist-slide-info h4 {
+  font-family: "Instrument Serif", "Times New Roman", Georgia, serif !important;
+  font-size: 1.35rem !important;
+  font-weight: 400 !important;
+  color: #ffffff !important;
+  margin: 0 0 3px !important;
+  line-height: 1.15 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.finalist-slide-info p {
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  color: #cbd5e1;
+  margin: 0;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.finalist-slide-faculty {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 0.68rem;
+  color: #ffd88a;
+  font-weight: 600;
+}
+
+/* ========================================================
+   RESPONSIVE HP / MOBILE (NATIVE APP PRECISION - GOJEK/SHOPEE STYLE)
+   ======================================================== */
+@media (max-width: 768px) {
+  .finalist-showcase-section {
+    padding: 1.75rem 0 2rem !important;
+  }
+
+  .finalist-header-row {
+    margin-bottom: 1rem !important;
+  }
+
+  .finalist-section-title {
+    font-size: 1.75rem !important;
+    line-height: 1.12 !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .finalist-section-subtitle {
+    font-size: 0.8rem !important;
+    line-height: 1.45 !important;
+  }
+
+  .finalist-slider-track {
+    gap: 0.75rem !important;
+    padding-bottom: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .finalist-slide-card {
+    flex: 0 0 155px !important; /* Compact card width for mobile phones */
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+  }
+
+  .finalist-slide-card:hover {
+    transform: none !important;
+  }
+
+  .finalist-slide-img-wrap {
+    aspect-ratio: 1 / 1.18 !important; /* Native app card aspect ratio */
+  }
+
+  .finalist-slide-info {
+    padding: 0.65rem 0.5rem 0.75rem !important;
+  }
+
+  .finalist-slide-info h4 {
+    font-size: 1.05rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .finalist-slide-info p {
+    font-size: 0.68rem !important;
+  }
+
+  .finalist-slide-faculty {
+    font-size: 0.62rem !important;
+    margin-top: 3px !important;
+  }
+}
+
