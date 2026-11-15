@@ -54,26 +54,38 @@ export default function GallerySection() {
           <p className="lead">Dokumentasi foto dan video momen inspiratif kegiatan Duta Kampus UINSSC</p>
         </div>
 
-        {/* Filter Kategori Galeri: Responsif, Minimalis, Native Mobile Scroll */}
+        {/* Filter Kategori Galeri: Responsif, Minimalis, Native Mobile Scroll dengan Penanda Geser */}
         <div className="gallery-filter-bar">
-          <div className="gallery-filter-scroll">
-            {GALLERY_CATEGORIES.map(cat => {
-              const isActive = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedCategory(cat.id);
-                    setVisibleCount(typeof window !== 'undefined' && window.innerWidth > 900 ? 12 : 6);
-                  }}
-                  className={`gallery-filter-btn ${isActive ? 'active' : ''}`}
-                >
-                  {cat.label}
-                </button>
-              );
-            })}
+          <div className="gallery-filter-scroll-wrapper">
+            <div className="gallery-filter-scroll">
+              {GALLERY_CATEGORIES.map(cat => {
+                const isActive = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedCategory(cat.id);
+                      setVisibleCount(typeof window !== 'undefined' && window.innerWidth > 900 ? 12 : 6);
+                    }}
+                    className={`gallery-filter-btn ${isActive ? 'active' : ''}`}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
+
+          {/* Penanda Geser (Scroll Hint) Desktop & HP */}
+          <div className="filter-scroll-hint">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M7 16l-4-4 4-4M17 8l4 4-4 4M3 12h18"/>
+            </svg>
+            <span className="desktop-only" style={{ fontSize: '0.75rem' }}>Geser kategori</span>
+            <span className="mobile-only" style={{ fontSize: '0.68rem' }}>Geser</span>
+          </div>
+          
           <span className="gallery-counter desktop-only">
             {filteredGallery.length} Dokumentasi
           </span>

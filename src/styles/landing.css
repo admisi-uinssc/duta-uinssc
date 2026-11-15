@@ -1678,6 +1678,14 @@
   padding-bottom: 0.75rem;
 }
 
+.gallery-filter-scroll-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
 .gallery-filter-scroll {
   display: flex;
   align-items: center;
@@ -1687,10 +1695,24 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   padding-bottom: 4px;
+  scroll-behavior: smooth;
 }
 
 .gallery-filter-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* Penanda Indikator Geser / Scroll Hint */
+.filter-scroll-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  margin-left: 0.5rem;
 }
 
 .gallery-filter-btn {
@@ -1735,12 +1757,25 @@
 
   .gallery-filter-scroll {
     gap: 0.4rem !important;
+    padding-right: 1.5rem !important;
   }
 
   .gallery-filter-btn {
     padding: 0.38rem 0.85rem !important;
     font-size: 0.76rem !important;
     border-radius: 8px !important;
+  }
+
+  /* Fade indicator gradient di kanan filter HP */
+  .gallery-filter-scroll-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 4px;
+    width: 24px;
+    pointer-events: none;
+    background: linear-gradient(to right, transparent, var(--bg-alt));
   }
 }
 

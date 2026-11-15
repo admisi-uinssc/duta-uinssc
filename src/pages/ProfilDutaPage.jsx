@@ -210,40 +210,52 @@ export default function ProfilDutaPage() {
             borderBottom: '1px solid var(--border)'
           }}>
             {/* Bagian Kiri: Kategori Tab Pills yang bisa di-scroll secara horizontal */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              overflowX: 'auto',
-              maxWidth: '100%',
-              paddingBottom: '4px',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
-            }}>
-              {AMBASSADOR_CATEGORIES.map(cat => {
-                const isActive = selectedCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat.id)}
-                    style={{
-                      whiteSpace: 'nowrap',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '8px',
-                      fontSize: '0.825rem',
-                      fontWeight: isActive ? 700 : 500,
-                      cursor: 'pointer',
-                      border: isActive ? '1px solid var(--navy)' : '1px solid var(--border)',
-                      background: isActive ? 'var(--navy)' : '#ffffff',
-                      color: isActive ? '#ffffff' : 'var(--text-mid)',
-                      transition: 'all 0.15s ease'
-                    }}
-                  >
-                    {cat.label}
-                  </button>
-                );
-              })}
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', flex: '1 1 300px', minWidth: 0 }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                overflowX: 'auto',
+                maxWidth: '100%',
+                paddingBottom: '4px',
+                paddingRight: '1rem',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
+              }}>
+                {AMBASSADOR_CATEGORIES.map(cat => {
+                  const isActive = selectedCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setSelectedCategory(cat.id)}
+                      style={{
+                        whiteSpace: 'nowrap',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '8px',
+                        fontSize: '0.825rem',
+                        fontWeight: isActive ? 700 : 500,
+                        cursor: 'pointer',
+                        border: isActive ? '1px solid var(--navy)' : '1px solid var(--border)',
+                        background: isActive ? 'var(--navy)' : '#ffffff',
+                        color: isActive ? '#ffffff' : 'var(--text-mid)',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      {cat.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Penanda Geser Kategori */}
+              <div className="filter-scroll-hint" style={{ marginLeft: '0.5rem' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M7 16l-4-4 4-4M17 8l4 4-4 4M3 12h18"/>
+                </svg>
+                <span className="desktop-only" style={{ fontSize: '0.72rem' }}>Geser</span>
+                <span className="mobile-only" style={{ fontSize: '0.65rem' }}>Geser</span>
+              </div>
             </div>
 
             {/* Bagian Kanan: Filter Tahun & Counter */}
