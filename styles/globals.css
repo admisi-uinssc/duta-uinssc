@@ -23,13 +23,14 @@
   /* Typography Design Tokens */
   --font-serif: "Instrument Serif", "Times New Roman", Georgia, serif;
   --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font: var(--font-sans);
+  --font-main: var(--font-serif);
+  --font: var(--font-serif);
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   color: var(--text-dark);
   background-color: var(--white);
   -webkit-font-smoothing: antialiased;
@@ -63,13 +64,14 @@ a {
 }
 
 button, input, select, textarea {
-  font-family: inherit;
+  font-family: var(--font-sans);
 }
 
 /* Typography Utils */
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   color: var(--navy);
+  font-family: var(--font-serif);
 }
 
 p {
@@ -109,6 +111,7 @@ p {
   padding: 0.75rem 1.6rem;
   font-size: 0.9rem;
   font-weight: 600;
+  font-family: var(--font-sans);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.25s ease;
