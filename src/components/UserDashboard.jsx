@@ -1225,7 +1225,7 @@ export default function UserDashboard({ user, onLogout }) {
                   <p style={{ fontSize: '0.9rem', color: '#e2e8f0', lineHeight: 1.6, margin: '0 0 1rem 0' }}>
                     Berdasarkan hasil penilaian rangkaian tahapan seleksi Pemilihan Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026, Anda dinyatakan resmi terpilih sebagai Finalis. Persiapkan diri Anda untuk tahapan pembekalan dan Grand Final. Informasi teknis serta jadwal kegiatan akan disampaikan melalui pengumuman berkala pada portal ini.
                   </p>
-                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
                     <a
                       href={cmsData?.contacts?.whatsappUrl || 'https://wa.me/6285122927628'}
                       target="_blank"
@@ -1235,6 +1235,164 @@ export default function UserDashboard({ user, onLogout }) {
                     >
                       Hubungi Panitia
                     </a>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('pendaftaran')}
+                      className="btn btn-sm btn-outline-gold"
+                      style={{ padding: '0.45rem 1rem', fontSize: '0.82rem', fontWeight: 700, borderRadius: '4px', color: '#ffd88a', borderColor: '#C49E59' }}
+                    >
+                      Kelola Foto Profil Finalis
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* KARTU KHUSUS FINALIS: FOTO PROFIL UNTUK TAMPILAN PUBLIK */}
+              {isFinalist && (
+                <div style={{
+                  background: '#ffffff',
+                  border: '1.5px solid #C49E59',
+                  borderRadius: '14px',
+                  padding: '1.5rem',
+                  boxShadow: '0 4px 18px rgba(196, 158, 89, 0.12)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#C49E59' }} />
+                      <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#16324A' }}>
+                        Foto Profil Resmi Finalis (Tampilan Publik)
+                      </h4>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                      Mendukung Google Drive Link / Upload Foto
+                    </span>
+                  </div>
+
+                  <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                    Foto ini akan menjadi representasi resmi Anda pada halaman <strong>Profil Duta & Finalis Kampus</strong> yang dapat diakses oleh publik. Anda dapat memasukkan link foto dari Google Drive pribadi Anda, atau mengunggah file foto langsung.
+                  </p>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
+                    {/* Preview Foto */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+                      <div style={{
+                        width: '140px',
+                        height: '175px',
+                        borderRadius: '10px',
+                        overflow: 'hidden',
+                        position: 'relative',
+                        background: '#16324A',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        {formData.fotoProfil || formData.docFotoLengkap ? (
+                          <Image
+                            src={typeof formData.fotoProfil === 'object' ? (formData.fotoProfil.url || formData.fotoProfil.previewUrl) : (formData.fotoProfil || (typeof formData.docFotoLengkap === 'object' ? formData.docFotoLengkap.url : formData.docFotoLengkap))}
+                            alt="Foto Profil Finalis"
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            fallbackSrc="/assets/logo-circle.png"
+                          />
+                        ) : (
+                          <div style={{ textAlign: 'center', color: '#94a3b8', padding: '1rem' }}>
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto 6px' }}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <div style={{ fontSize: '0.72rem' }}>Belum ada foto profil</div>
+                          </div>
+                        )}
+                      </div>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#16324A', marginTop: '0.75rem' }}>
+                        {participantName || 'Finalis Duta Kampus'}
+                      </span>
+                      <span style={{ fontSize: '0.68rem', color: '#64748b' }}>
+                        {formData.fakultas || formData.jurusan || 'UIN Siber Cirebon'}
+                      </span>
+                    </div>
+
+                    {/* Input Link Drive & Upload */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#16324A', marginBottom: '0.35rem' }}>
+                          Tautan Foto Google Drive (Rekomendasi)
+                        </label>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <input
+                            type="url"
+                            placeholder="Contoh: https://drive.google.com/file/d/.../view"
+                            value={typeof formData.fotoProfil === 'string' ? formData.fotoProfil : (formData.fotoProfil?.url || '')}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setFormData(prev => ({ ...prev, fotoProfil: val }));
+                            }}
+                            style={{
+                              flex: 1,
+                              padding: '0.6rem 0.85rem',
+                              fontSize: '0.825rem',
+                              border: '1.5px solid #cbd5e1',
+                              borderRadius: '8px',
+                              outline: 'none'
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              try {
+                                await handleSaveDraft();
+                                triggerAlert('Foto profil Google Drive berhasil disimpan dan diperbarui.', 'success');
+                              } catch (err) {
+                                triggerAlert('Gagal menyimpan foto profil: ' + err.message, 'danger');
+                              }
+                            }}
+                            className="btn btn-sm btn-gold"
+                            style={{ whiteSpace: 'nowrap', borderRadius: '8px', padding: '0 1rem' }}
+                          >
+                            Simpan Link
+                          </button>
+                        </div>
+                        <small style={{ fontSize: '0.72rem', color: '#64748b', display: 'block', marginTop: '4px' }}>
+                          *Pastikan akses sharing link Google Drive diatur ke <em>"Anyone with the link / Siapa saja yang memiliki link"</em>.
+                        </small>
+                      </div>
+
+                      <div style={{ borderTop: '1px dashed #e2e8f0', paddingTop: '0.75rem' }}>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#16324A', marginBottom: '0.35rem' }}>
+                          Atau Unggah Langsung File Foto (JPG / PNG):
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            try {
+                              setLoadingDocKey('uploading-fotoProfil');
+                              setSaveNotice('Mengunggah foto profil...');
+                              const docData = await DriveStorage.uploadFile(file, {
+                                applicantName: formData.namaLengkap,
+                                applicantNim: formData.nim,
+                                applicantEmail: user.email,
+                                docKey: 'fotoProfil',
+                                docLabel: 'Foto Profil Finalis'
+                              });
+                              setFormData(prev => ({ ...prev, fotoProfil: docData }));
+                              await DriveStorage.saveDocument(user.email, 'fotoProfil', docData);
+                              triggerAlert('Foto profil berhasil diunggah dan disimpan.', 'success');
+                            } catch (err) {
+                              triggerAlert('Gagal mengunggah foto profil: ' + err.message, 'danger');
+                            } finally {
+                              setLoadingDocKey(null);
+                              setTimeout(() => setSaveNotice(''), 3000);
+                            }
+                          }}
+                          style={{
+                            fontSize: '0.8rem',
+                            color: '#475569',
+                            width: '100%'
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

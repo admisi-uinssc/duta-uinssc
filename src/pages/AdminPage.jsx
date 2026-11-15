@@ -3064,6 +3064,40 @@ export default function AdminPage() {
                 </div>
               </div>
 
+              {/* Toggle Tampilkan Finalis di Public View */}
+              <div className="settings-card">
+                <div className="settings-card-header">
+                  <div className="settings-card-icon" style={{ background: 'rgba(196, 158, 89, 0.15)', color: 'var(--gold)' }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  </div>
+                  <div>
+                    <h3>Publikasi Finalis ke Public View</h3>
+                    <p>Tampilkan seluruh profil peserta yang lolos sebagai Finalis Duta Kampus 2026 di halaman publik.</p>
+                  </div>
+                </div>
+                <div className="toggle-row">
+                  <span>
+                    Status Tampilan Finalis:{' '}
+                    <strong style={{ color: Settings.isShowFinalistsPublic() ? '#16a34a' : '#64748b' }}>
+                      {Settings.isShowFinalistsPublic() ? 'Ditampilkan ke Publik' : 'Disembunyikan'}
+                    </strong>
+                  </span>
+                  <label className="toggle-switch">
+                    <input 
+                      type="checkbox" 
+                      checked={Settings.isShowFinalistsPublic()} 
+                      onChange={() => { 
+                        const isPub = Settings.toggleFinalistsPublic(); 
+                        showToast(`Profil finalis berhasil ${isPub ? 'ditampilkan ke publik' : 'disembunyikan dari publik'}.`); 
+                        // Force re-render
+                        setRegOpen(prev => prev);
+                      }} 
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
               {/* Password update */}
               <div className="settings-card">
                 <div className="settings-card-header">

@@ -16,11 +16,12 @@ export const Settings = {
         pendaftaranOpen: saved.pendaftaranOpen !== undefined ? saved.pendaftaranOpen : true,
         customDeadline: saved.customDeadline || null,
         forceOpen: saved.forceOpen || false,
+        showFinalistsPublic: saved.showFinalistsPublic !== undefined ? saved.showFinalistsPublic : false,
         adminUser: saved.adminUser || 'rasikinganteng',
         adminPass: (!saved.adminPass || saved.adminPass === 'dutauinssc2026') ? 'ghoriztea2026' : saved.adminPass,
       };
     } catch {
-      return { pendaftaranOpen: true, adminUser: 'rasikinganteng', adminPass: 'ghoriztea2026' };
+      return { pendaftaranOpen: true, showFinalistsPublic: false, adminUser: 'rasikinganteng', adminPass: 'ghoriztea2026' };
     }
   },
 
@@ -29,6 +30,19 @@ export const Settings = {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
       window.dispatchEvent(new Event('storage'));
     }
+  },
+
+  // Toggle publikasi daftar Finalis Duta ke Public View
+  toggleFinalistsPublic: () => {
+    const s = Settings.get();
+    s.showFinalistsPublic = !s.showFinalistsPublic;
+    Settings.save(s);
+    return s.showFinalistsPublic;
+  },
+
+  isShowFinalistsPublic: () => {
+    if (typeof window === 'undefined') return false;
+    return Boolean(Settings.get().showFinalistsPublic);
   },
 
   // Menentukan status pendaftaran:

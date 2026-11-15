@@ -4,13 +4,20 @@ import Footer from '../components/Footer';
 import Image from '../components/Image';
 import { CMS, AMBASSADOR_CATEGORIES, AMBASSADOR_YEARS, getAmbassadorCategoryLabel } from '../lib/cms';
 import { parseMediaUrl } from '../lib/media';
+import { Settings } from '../lib/settings';
+import { DB } from '../lib/db';
+import { Auth } from '../lib/auth';
+import { fetchApplicantsFromCloud } from '../lib/firebase';
 import MediaModal from '../components/MediaModal';
 
 export default function ProfilDutaPage() {
   const [ambassadors, setAmbassadors] = useState([]);
+  const [finalists, setFinalists] = useState([]);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [selectedYear, setSelectedYear] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [activeMainTab, setActiveMainTab] = useState('duta'); // 'duta' | 'finalis'
+  const isFinalistsPublic = Settings.isShowFinalistsPublic();
 
   useEffect(() => {
     setAmbassadors(CMS.get().ambassadors || []);
@@ -27,7 +34,50 @@ export default function ProfilDutaPage() {
         setAmbassadors(data.ambassadors);
       }
     });
-    return unsubscribe;
+
+    // Load finalis dari local database & cloud
+    const loadFinalists = () => {
+      try {
+        const dbApps = DB.getAll();
+        const users = Auth.getUsers();
+        const map = new Map();
+
+        // Gabungkan data pelamar yang isFinalist / finalistStatus === 'finalis'
+        [...dbApps, ...users].forEach((item) => {
+          if (!item) return;
+          const isFin = item.isFinalist || item.finalistStatus === 'finalis';
+          if (!isFin) return;
+          const key = (item.email || item.id || '').toLowerCase();
+          if (!key) return;
+
+          const existing = map.get(key) || {};
+          const photoUrl = item.fotoProfil?.url || item.fotoProfil || item.docFotoLengkap?.url || item.docFotoLengkap || existing.img || '';
+
+          map.set(key, {
+            ...existing,
+            ...item,
+            id: item.id || existing.id || key,
+            name: item.namaLengkap || item.fullName || item.name || existing.name || 'Finalis Duta Kampus',
+            faculty: item.fakultas || existing.faculty || '',
+            major: item.jurusan || existing.major || 'Finalis Duta Kampus',
+            year: item.year || '2026',
+            category: 'finalis',
+            img: photoUrl
+          });
+        });
+
+        setFinalists(Array.from(map.values()));
+      } catch (err) {}
+    };
+
+    loadFinalists();
+    fetchApplicantsFromCloud().then(loadFinalists).catch(() => {});
+
+    window.addEventListener('storage', loadFinalists);
+    return () => {
+      unsubscribe();
+      window.removeEventListener('storage', loadFinalists);
+    };
   }, []);
 
   // Compute available years dynamically combining preset years and items from data
@@ -91,10 +141,61 @@ export default function ProfilDutaPage() {
       <div className="page-wrapper" style={{ paddingTop: '100px', minHeight: 'calc(100vh - 64px)', background: 'var(--bg-alt)' }}>
         <div className="container">
           <div className="section-header text-center" style={{ marginBottom: '1.5rem' }}>
-            <h1 className="heading-lg">Profil <span>Duta Kampus</span></h1>
+            <h1 className="heading-lg">
+              {activeMainTab === 'finalis' ? <>Daftar <span>Finalis Duta 2026</span></> : <>Profil <span>Duta Kampus</span></>}
+            </h1>
             <p className="lead" style={{ margin: '0.5rem auto 1.5rem', maxWidth: '640px' }}>
-              Mengenal representasi mahasiswa unggul dan inspiratif UIN Siber Syekh Nurjati Cirebon.
+              {activeMainTab === 'finalis'
+                ? 'Mengenal para mahasiswa terpilih sebagai Finalis Pemilihan Duta Kampus UIN Siber Cirebon 2026.'
+                : 'Mengenal representasi mahasiswa unggul dan inspiratif UIN Siber Syekh Nurjati Cirebon.'}
             </p>
+
+            {/* SWITCH TAB DUTA KAMPUS & FINALIS (JIKA FINALIS AKTIF DARI ADMIN) */}
+            {isFinalistsPublic && (
+              <div style={{
+                display: 'inline-flex',
+                background: '#e2e8f0',
+                padding: '4px',
+                borderRadius: '9999px',
+                gap: '4px',
+                marginBottom: '1rem'
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setActiveMainTab('duta')}
+                  style={{
+                    padding: '0.5rem 1.25rem',
+                    borderRadius: '9999px',
+                    border: 'none',
+                    fontSize: '0.85rem',
+                    fontWeight: activeMainTab === 'duta' ? 700 : 500,
+                    background: activeMainTab === 'duta' ? 'var(--navy)' : 'transparent',
+                    color: activeMainTab === 'duta' ? '#ffffff' : 'var(--text-mid)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  Duta Kampus Resmi
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMainTab('finalis')}
+                  style={{
+                    padding: '0.5rem 1.25rem',
+                    borderRadius: '9999px',
+                    border: 'none',
+                    fontSize: '0.85rem',
+                    fontWeight: activeMainTab === 'finalis' ? 700 : 500,
+                    background: activeMainTab === 'finalis' ? 'var(--gold)' : 'transparent',
+                    color: activeMainTab === 'finalis' ? '#16324A' : 'var(--text-mid)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  Finalis 2026 ({finalists.length})
+                </button>
+              </div>
+            )}
           </div>
 
           {/* FILTER BAR MINIMALIS & SEJAJAR (CLEAN UI/UX) */}
@@ -214,22 +315,23 @@ export default function ProfilDutaPage() {
             </div>
           </div>
           
+          {/* TAMPILAN KATALOG KARTU: DUTA ATAU FINALIS */}
           <div className="ambassador-grid">
-            {filteredAmbassadors.map((duta) => {
+            {(activeMainTab === 'finalis' ? finalists : filteredAmbassadors).map((duta) => {
               const media = duta.img ? parseMediaUrl(duta.img, duta.mediaType) : null;
-              const categoryLabel = getAmbassadorCategoryLabel(duta.category);
-              const dutaYear = String(duta.year || '2025');
+              const categoryLabel = activeMainTab === 'finalis' ? 'Finalis Duta Kampus 2026' : getAmbassadorCategoryLabel(duta.category);
+              const dutaYear = String(duta.year || (activeMainTab === 'finalis' ? '2026' : '2025'));
 
               return (
                 <div 
-                  key={duta.id} 
+                  key={duta.id || duta.email} 
                   className="ambassador-card"
                   style={{ cursor: duta.img ? 'pointer' : 'default' }}
                   onClick={() => {
                     if (duta.img) {
                       setSelectedMedia({
                         url: duta.img,
-                        title: duta.name || 'Profil Duta Kampus',
+                        title: duta.name || 'Profil Finalis / Duta Kampus',
                         caption: `${duta.name || 'Duta'}${categoryLabel ? ` · ${categoryLabel}` : ''} · ${duta.major || duta.faculty || 'Duta Kampus'} (Angkatan ${dutaYear})`,
                         mediaType: duta.mediaType
                       });
@@ -309,12 +411,12 @@ export default function ProfilDutaPage() {
                           {duta.name ? duta.name.split(' ').slice(0, 2).map(n => n[0]).join('') : 'DK'}
                         </div>
                         <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-                          Duta Kampus UINSSC
+                          {activeMainTab === 'finalis' ? 'Finalis Duta 2026' : 'Duta Kampus UINSSC'}
                         </span>
                       </div>
                     )}
                     {duta.faculty && (
-                      <div className="ambassador-badge">
+                      <div className="ambassador-badge" style={{ background: activeMainTab === 'finalis' ? '#16324A' : 'var(--gold)', color: '#ffffff' }}>
                         {duta.faculty}
                       </div>
                     )}
@@ -333,29 +435,31 @@ export default function ProfilDutaPage() {
                       </div>
                     )}
                     <h3>{duta.name}</h3>
-                    <p>{duta.major || duta.faculty || 'Duta Kampus'}</p>
+                    <p>{duta.major || duta.faculty || (activeMainTab === 'finalis' ? 'Finalis Duta Kampus 2026' : 'Duta Kampus')}</p>
                     <span style={{ display: 'inline-block', marginTop: '6px', fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>
-                      Angkatan {dutaYear}
+                      {activeMainTab === 'finalis' ? 'Tahun Seleksi 2026' : `Angkatan ${dutaYear}`}
                     </span>
                   </div>
                 </div>
               );
             })}
-            {filteredAmbassadors.length === 0 && (
+            {(activeMainTab === 'finalis' ? finalists : filteredAmbassadors).length === 0 && (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)', padding: '3.5rem 1rem' }}>
                 <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--navy)', marginBottom: '0.5rem' }}>
-                  Tidak ada data profil Duta Kampus untuk filter ini.
+                  {activeMainTab === 'finalis' ? 'Belum ada data finalis yang dipublikasikan.' : 'Tidak ada data profil Duta Kampus untuk filter ini.'}
                 </div>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-mid)', maxWidth: '400px', margin: '0 auto 1.5rem' }}>
-                  Silakan pilih kombinasi tahun angkatan atau kategori lainnya.
+                  {activeMainTab === 'finalis' ? 'Silakan periksa kembali berkala atau kembali ke profil duta resmi.' : 'Silakan pilih kombinasi tahun angkatan atau kategori lainnya.'}
                 </p>
-                <button
-                  type="button"
-                  className="btn btn-outline-gold btn-sm"
-                  onClick={() => { setSelectedYear('all'); setSelectedCategory('all'); }}
-                >
-                  Reset Filter
-                </button>
+                {activeMainTab !== 'finalis' && (
+                  <button
+                    type="button"
+                    className="btn btn-outline-gold btn-sm"
+                    onClick={() => { setSelectedYear('all'); setSelectedCategory('all'); }}
+                  >
+                    Reset Filter
+                  </button>
+                )}
               </div>
             )}
           </div>
