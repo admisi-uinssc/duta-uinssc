@@ -894,10 +894,36 @@
 @media (max-width: 1024px) {
   .about-grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .about-visual {
-    display: none;
+    display: block;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .about-img-wrap {
+    aspect-ratio: 16 / 10;
+    border-radius: 14px;
+  }
+
+  .about-img-accent {
+    width: auto;
+    height: auto;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
+  }
+
+  .about-img-accent strong {
+    font-size: 1.15rem;
+  }
+
+  .about-img-accent span {
+    font-size: 0.65rem;
   }
 
   .benefits-grid,
@@ -1847,5 +1873,47 @@
   .finalist-slide-faculty {
     font-size: 0.6rem !important;
     margin-top: 2px !important;
+  }
+
+  /* Khusus Hero Foto / Video Tentang Program di Tampilan HP */
+  .about-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .about-visual {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 1rem 0 !important;
+  }
+
+  .about-img-wrap {
+    width: 100% !important;
+    aspect-ratio: 16 / 10 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(22, 50, 74, 0.08) !important;
+  }
+
+  .about-img-accent {
+    position: absolute !important;
+    bottom: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 4px 10px !important;
+    border-radius: 6px !important;
+    background: var(--navy) !important;
+  }
+
+  .about-img-accent strong {
+    font-size: 0.95rem !important;
+    line-height: 1 !important;
+  }
+
+  .about-img-accent span {
+    font-size: 0.6rem !important;
+    letter-spacing: 0.2px !important;
   }
 }
