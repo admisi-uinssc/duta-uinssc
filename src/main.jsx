@@ -23,6 +23,40 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 // Capture native PWA install prompt globally so it is always ready on demand
 if (typeof window !== 'undefined') {
+  // Global Asset Protection: cegah klik kanan (contextmenu) pada gambar, video, dan media
+  document.addEventListener('contextmenu', (e) => {
+    const target = e.target;
+    if (
+      target &&
+      (target.tagName === 'IMG' ||
+        target.tagName === 'VIDEO' ||
+        target.closest('img') ||
+        target.closest('video') ||
+        target.closest('.ambassador-img-wrapper') ||
+        target.closest('.gallery-item') ||
+        target.closest('.promo-image-wrapper') ||
+        target.closest('.slide-img'))
+    ) {
+      e.preventDefault();
+      return false;
+    }
+  }, { capture: true });
+
+  // Cegah drag and drop gambar / video ke desktop atau browser tab baru
+  document.addEventListener('dragstart', (e) => {
+    const target = e.target;
+    if (
+      target &&
+      (target.tagName === 'IMG' ||
+        target.tagName === 'VIDEO' ||
+        target.closest('img') ||
+        target.closest('video'))
+    ) {
+      e.preventDefault();
+      return false;
+    }
+  }, { capture: true });
+
   window.deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();

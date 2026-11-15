@@ -127,6 +127,8 @@ export default function Image({
       onError={handleImgError}
       loading="lazy"
       referrerPolicy="no-referrer"
+      draggable="false"
+      onContextMenu={(e) => e.preventDefault()}
       {...rest}
     />
   );

@@ -95,8 +95,11 @@ export default function MediaModal({ isOpen, onClose, item, fallbackTitle = '' }
               <video
                 src={parsed.directVideoUrl}
                 controls
+                controlsList="nodownload noremoteplayback"
+                disablePictureInPicture
                 autoPlay
                 playsInline
+                onContextMenu={(e) => e.preventDefault()}
                 style={{
                   width: '100%',
                   maxHeight: '75vh',
