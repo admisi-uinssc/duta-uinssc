@@ -235,9 +235,9 @@
     display: flex !important;
     position: relative !important;
     background: var(--white) !important;
-    box-shadow: 0 4px 12px rgba(22,50,74,0.04) !important;
+    box-shadow: 0 2px 8px rgba(22,50,74,0.04) !important;
     border-bottom: 1px solid var(--border-soft) !important;
-    padding: 1rem 1.5rem !important;
+    padding: 0.65rem 1rem !important;
     justify-content: center;
     z-index: 500;
   }
@@ -245,7 +245,7 @@
     position: relative; /* prevents sticky behavior */
     backdrop-filter: none;
     background: var(--white);
-    box-shadow: 0 4px 12px rgba(22,50,74,0.04);
+    box-shadow: 0 2px 8px rgba(22,50,74,0.04);
   }
   .nav-inner { justify-content: center; width: 100%; }
   .nav-logo { justify-content: center; margin: 0 auto; }
@@ -254,7 +254,7 @@
   .nav-logo::after {
     content: 'PADUKA | dutauinssc';
     font-family: var(--font-sans);
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 800;
     color: var(--navy);
     letter-spacing: -0.2px;
@@ -270,14 +270,14 @@
     max-height: unset !important;
     aspect-ratio: 1920 / 1080 !important;
   }
-  .page-wrapper > section { padding-top: 1.5rem !important; }
+  .page-wrapper > section { padding-top: 1rem !important; }
   
-  .heading-lg { font-size: 1.5rem; }
-  .hub-header h2 { font-size: 1.25rem; }
-  .cta-banner h2 { font-size: 1.25rem; }
+  .heading-lg { font-size: 1.65rem !important; margin-bottom: 0.35rem !important; }
+  .hub-header h2 { font-size: 1.15rem !important; }
+  .cta-banner h2 { font-size: 1.25rem !important; margin-bottom: 0.75rem !important; }
   .footer { display: none !important; }
   .mobile-bottom-nav { display: flex; }
-  body { padding-bottom: 68px; }
+  body { padding-bottom: 64px; }
 
   .hub-grid { 
     grid-template-columns: repeat(4, 1fr) !important; 
@@ -344,15 +344,19 @@
   .slide-actions .btn { padding: 6px 14px !important; font-size: 0.75rem !important; }
   .slider-nav { bottom: 0.35rem; }
   
-  .hub-header { text-align: left; padding: 0 1.5rem; }
-  .cta-banner { text-align: left; padding: 4rem 1.5rem; }
+  .hub-header { text-align: left; padding: 0 1rem; margin-bottom: 1.25rem !important; }
+  .cta-banner { text-align: center; padding: 2.25rem 1rem !important; }
+  .hub-section { padding: 1.75rem 0 !important; }
 
-  .benefits-grid, .req-grid, .footer-grid { grid-template-columns: 1fr; }
+  .benefits-grid, .req-grid, .footer-grid { grid-template-columns: 1fr; gap: 0.75rem !important; }
+  .benefit-card { padding: 1.15rem 1rem !important; }
+  .req-card { padding: 1.15rem 1rem !important; }
+  .req-card-title { margin-bottom: 1rem !important; padding-bottom: 0.65rem !important; }
 
   /* About Page Mobile Gallery Placement */
   .about-gallery-mobile-top {
     display: block;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem !important;
   }
   .about-gallery-desktop-bottom {
     display: none;
