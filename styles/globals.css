@@ -34,6 +34,7 @@ html, body {
   color: var(--text-dark);
   background-color: var(--white);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
   overflow-x: clip; /* Aman mencegah horizontal scroll tanpa merusak vertical scroll */
   max-width: 100vw;
@@ -67,18 +68,66 @@ button, input, select, textarea {
   font-family: var(--font-sans);
 }
 
-/* Typography Utils */
+/* Typography Utils - Editorial Modern Aesthetic */
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   color: var(--navy);
   font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
 }
 
 p {
   margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-mid);
 }
 
-/* Layout */
+span, label, small, strong, li {
+  font-family: inherit;
+}
+
+/* Editorial Eyebrow / Section Kicker (seperti "Background", "Main Theme" pada referensi) */
+.eyebrow, .section-eyebrow, .kicker-label {
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+}
+
+.heading-lg {
+  font-family: var(--font-serif);
+  font-size: 3.25rem;
+  font-weight: 400;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+.heading-lg span {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.lead {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  line-height: 1.75;
+  font-weight: 400;
+  margin-bottom: 2.5rem;
+  max-width: 760px;
+}
+
+.section-header { text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+/* Layout & Button Tokens */
 .container {
   width: 100%;
   max-width: 1480px;
@@ -103,34 +152,26 @@ p {
   background-color: var(--bg-alt);
 }
 
-/* Shared UI */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1.6rem;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 500;
   font-family: var(--font-sans);
-  border-radius: 8px;
+  border-radius: 9999px; /* Editorial round pill style as per reference */
   cursor: pointer;
   transition: all 0.25s ease;
-  border: none;
+  border: 1.5px solid transparent;
   line-height: 1.2;
 }
-.btn-lg { padding: 0.95rem 2.25rem; font-size: 1rem; }
-.btn-sm { padding: 0.5rem 1.15rem; font-size: 0.8rem; }
+.btn-lg { padding: 0.9rem 2.25rem; font-size: 0.95rem; }
+.btn-sm { padding: 0.45rem 1.15rem; font-size: 0.8rem; }
 .btn-gold { background: var(--gold); color: #fff; }
 .btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(196,158,89,0.35); }
 .btn-outline-gold { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); }
 .btn-outline-gold:hover { background: var(--gold); color: #fff; }
-
-.heading-lg { font-size: 2.75rem; font-weight: 800; margin-bottom: 1.25rem; letter-spacing: -1px; line-height: 1.2; }
-.heading-lg span { color: var(--gold); }
-.lead { font-size: 1.125rem; color: var(--text-mid); line-height: 1.65; font-weight: 400; margin-bottom: 2.5rem; max-width: 720px; }
-.eyebrow { display: inline-block; font-size: 0.75rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.75rem; }
-
-.section-header { text-align: center; display: flex; flex-direction: column; align-items: center; }
 
 .card {
   background: var(--white);
