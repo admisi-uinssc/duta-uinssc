@@ -494,10 +494,12 @@
   justify-content: center;
 }
 .ambassador-info h3 {
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 400;
   color: var(--navy);
   margin-bottom: 0.25rem;
+  line-height: 1.15;
 }
 .ambassador-info p {
   color: var(--text-mid);
@@ -538,7 +540,9 @@
     flex-grow: 1;
   }
   .ambassador-info h3 {
-    font-size: 1rem;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 400;
   }
   .ambassador-info p {
     font-size: 0.8rem;
