@@ -251,7 +251,7 @@
   .nav-logo-text { display: none !important; }
   .nav-logo::after {
     content: 'PADUKA | dutauinssc';
-    font-family: var(--font-fira);
+    font-family: var(--font-sans);
     font-size: 1.15rem;
     font-weight: 800;
     color: var(--navy);
