@@ -2174,6 +2174,18 @@ export default function AdminPage() {
                 Profil Duta Kampus ({cmsData.ambassadors?.length || 0})
               </button>
               <button 
+                className={`btn btn-sm ${cmsTab === 'finalist_showcase' ? 'btn-gold' : 'btn-outline-gold'}`} 
+                onClick={() => setCmsTab('finalist_showcase')}
+                style={{
+                  background: cmsTab === 'finalist_showcase' ? 'var(--gold)' : 'transparent',
+                  color: cmsTab === 'finalist_showcase' ? '#16324A' : 'var(--gold)',
+                  borderColor: 'var(--gold)',
+                  fontWeight: 700
+                }}
+              >
+                Showcase Finalis Beranda {cmsData.finalistShowcase?.enabled ? '(Aktif)' : '(Nonaktif)'}
+              </button>
+              <button 
                 className={`btn btn-sm ${cmsTab === 'gallery' ? 'btn-gold' : 'btn-outline-gold'}`} 
                 onClick={() => setCmsTab('gallery')}
               >
@@ -2524,6 +2536,111 @@ export default function AdminPage() {
                     </div>
                   ))}
                   {(!cmsData.ambassadors || cmsData.ambassadors.length === 0) && <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)' }}>Belum ada profil duta.</div>}
+                </div>
+              </div>
+            )}
+
+            {/* TAB KHUSUS: SHOWCASE SLIDER FINALIS BERANDA */}
+            {cmsTab === 'finalist_showcase' && (
+              <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
+                <div className="settings-card-header">
+                  <div>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>
+                      Pengaturan Showcase Slider Finalis di Beranda Utama
+                    </h3>
+                    <p>
+                      Atur apakah deretan Finalis Duta Kampus 2026 disorot langsung dalam slider tampak depan halaman utama. Foto finalis akan otomatis terisi dari input foto profil masing-masing finalis atau dapat ditambahkan secara manual di bawah.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)', marginBottom: '1.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                    <div>
+                      <strong style={{ fontSize: '0.95rem', color: 'var(--navy)' }}>Status Tampil di Halaman Utama (Slider Beranda)</strong>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-mid)', marginTop: '2px' }}>
+                        {cmsData.finalistShowcase?.enabled !== false ? 'Aktif — Ditampilkan sebagai sorotan utama tepat di bawah hero slider.' : 'Nonaktif — Slider finalis disembunyikan dari halaman depan.'}
+                      </div>
+                    </div>
+                    <label className="toggle-switch">
+                      <input 
+                        type="checkbox" 
+                        checked={cmsData.finalistShowcase?.enabled !== false} 
+                        onChange={() => {
+                          const current = cmsData.finalistShowcase?.enabled !== false;
+                          setCmsData(prev => ({
+                            ...prev,
+                            finalistShowcase: {
+                              ...(prev.finalistShowcase || {}),
+                              enabled: !current
+                            }
+                          }));
+                          setHasUnsavedCms(true);
+                        }} 
+                      />
+                      <span className="toggle-slider"></span>
+                    </label>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-soft)' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-mid)', marginBottom: '0.35rem' }}>
+                        Judul Bagian Showcase
+                      </label>
+                      <input
+                        type="text"
+                        value={cmsData.finalistShowcase?.title || 'Sorotan Finalis Duta Kampus 2026'}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setCmsData(prev => ({
+                            ...prev,
+                            finalistShowcase: {
+                              ...(prev.finalistShowcase || {}),
+                              title: val
+                            }
+                          }));
+                          setHasUnsavedCms(true);
+                        }}
+                        style={{ width: '100%', padding: '0.6rem 0.85rem', fontSize: '0.85rem', borderRadius: '8px', border: '1px solid var(--border)' }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-mid)', marginBottom: '0.35rem' }}>
+                        Subjudul / Keterangan Singkat
+                      </label>
+                      <input
+                        type="text"
+                        value={cmsData.finalistShowcase?.subtitle || 'Representasi mahasiswa berprestasi dan berdaya saing global UIN Siber Syekh Nurjati Cirebon.'}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setCmsData(prev => ({
+                            ...prev,
+                            finalistShowcase: {
+                              ...(prev.finalistShowcase || {}),
+                              subtitle: val
+                            }
+                          }));
+                          setHasUnsavedCms(true);
+                        }}
+                        style={{ width: '100%', padding: '0.6rem 0.85rem', fontSize: '0.85rem', borderRadius: '8px', border: '1px solid var(--border)' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{
+                  background: '#f0fdf4',
+                  border: '1.5px solid #86efac',
+                  borderRadius: '12px',
+                  padding: '1rem 1.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem'
+                }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <div style={{ fontSize: '0.825rem', color: '#166534', lineHeight: 1.5 }}>
+                    <strong>Otomatis Terhubung:</strong> Setiap peserta yang Anda tetapkan sebagai <em>"Lolos Finalis"</em> dan telah memasukkan foto profil di dashboard mereka akan otomatis tampil pada slider beranda ini tanpa perlu input ulang manual.
+                  </div>
                 </div>
               </div>
             )}

@@ -320,6 +320,12 @@ const DEFAULT_CMS = {
       year: "2025"
     }
   ],
+  finalistShowcase: {
+    enabled: true,
+    title: "Sorotan Finalis Duta Kampus 2026",
+    subtitle: "Representasi mahasiswa berprestasi dan berdaya saing global UIN Siber Syekh Nurjati Cirebon."
+  },
+  finalists: [],
   about: {
     img: "https://drive.google.com/file/d/1JWhQOHveU5GNgf2boZsmTryK3rhO3cer/view?usp=drive_link",
     badgeYear: '2026',

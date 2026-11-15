@@ -3,6 +3,7 @@ import Link from '../components/Link';
 import Image from '../components/Image';
 import Navbar from '../components/Navbar';
 import HeroSlider from '../components/HeroSlider';
+import FinalistShowcaseSlider from '../components/FinalistShowcaseSlider';
 import PromoBannerSlider from '../components/PromoBannerSlider';
 import AboutSection from '../components/AboutSection';
 import BenefitsSection from '../components/BenefitsSection';
@@ -73,6 +74,9 @@ export default function HomePage() {
     <>
       <Navbar />
       <HeroSlider />
+
+      {/* SOROTAN UTAMA: SLIDER FINALIS DUTA KAMPUS 2026 */}
+      <FinalistShowcaseSlider />
 
       {/* App Hub Menu (Hanya muncul di Mobile lewat CSS) */}
       <section className="hub-section mobile-only">
