@@ -692,6 +692,7 @@ export default function AdminPage() {
       id: Date.now(), 
       img: 'https://drive.google.com/file/d/1-SIIie_r4i1XCETrAOwJTgeUhssscHtQ/view?usp=drive_link', 
       caption: 'Kegiatan Duta Kampus',
+      category: 'sosialisasi',
       mediaType: 'auto'
     });
     setCmsData(newData);
@@ -2681,6 +2682,21 @@ export default function AdminPage() {
                             <option value="auto">Deteksi Otomatis</option>
                             <option value="photo">Foto</option>
                             <option value="video">Video</option>
+                          </select>
+                        </div>
+
+                        <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                          <label>Kategori Kegiatan</label>
+                          <select
+                            value={item.category || 'sosialisasi'}
+                            onChange={e => updateGallery(idx, 'category', e.target.value)}
+                            style={{ width: '100%', padding: '0.5rem 0.75rem', fontSize: '0.825rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                          >
+                            <option value="sosialisasi">1. Sosialisasi</option>
+                            <option value="pelayanan">2. Pelayanan</option>
+                            <option value="produksi_konten">3. Produksi Konten</option>
+                            <option value="event_kampus">4. Event Kampus</option>
+                            <option value="lainnya">5. Lainnya</option>
                           </select>
                         </div>
 

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Image from './Image';
-import { CMS } from '../lib/cms';
+import { CMS, GALLERY_CATEGORIES, getGalleryCategoryLabel } from '../lib/cms';
 import { parseMediaUrl } from '../lib/media';
 import MediaModal from './MediaModal';
 
 export default function GallerySection() {
   const [gallery, setGallery] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [visibleCount, setVisibleCount] = useState(6);
   const [selectedMedia, setSelectedMedia] = useState(null);
 
@@ -30,19 +31,55 @@ export default function GallerySection() {
     }
   }, []);
 
+  // Filter gallery items berdasarkan kategori
+  const filteredGallery = useMemo(() => {
+    if (selectedCategory === 'all') return gallery;
+    return gallery.filter(item => {
+      const cat = (item.category || 'sosialisasi').toLowerCase();
+      return cat === selectedCategory.toLowerCase();
+    });
+  }, [gallery, selectedCategory]);
+
   if (gallery.length === 0) return null;
 
-  const displayedGallery = gallery.slice(0, visibleCount);
-  const hasMore = visibleCount < gallery.length;
+  const displayedGallery = filteredGallery.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredGallery.length;
 
   return (
     <section className="section-pad bg-alt" id="gallery">
-      <div className="container" style={{ maxWidth: '1480px', margin: '0 auto', padding: '0 1.5rem' }}>
-        <div className="section-header text-center" style={{ marginBottom: '2.5rem' }}>
+      <div className="container" style={{ maxWidth: '1480px', margin: '0 auto' }}>
+        {/* Header Section: Clean, Tanpa Eyebrow, Tanpa Pill Badge */}
+        <div className="section-header text-center" style={{ marginBottom: '1.75rem' }}>
           <h2 className="heading-lg">Galeri <span>Duta Kampus</span></h2>
           <p className="lead">Dokumentasi foto dan video momen inspiratif kegiatan Duta Kampus UINSSC</p>
         </div>
+
+        {/* Filter Kategori Galeri: Responsif, Minimalis, Native Mobile Scroll */}
+        <div className="gallery-filter-bar">
+          <div className="gallery-filter-scroll">
+            {GALLERY_CATEGORIES.map(cat => {
+              const isActive = selectedCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategory(cat.id);
+                    setVisibleCount(typeof window !== 'undefined' && window.innerWidth > 900 ? 12 : 6);
+                  }}
+                  className={`gallery-filter-btn ${isActive ? 'active' : ''}`}
+                >
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
+          <span className="gallery-counter desktop-only">
+            {filteredGallery.length} Dokumentasi
+          </span>
+        </div>
         
+        {/* Grid Galeri: Desktop 3-4 kolom, HP 2 kolom rapi ala katalog */}
         <div className="gallery-grid">
           {displayedGallery.map((item, idx) => {
             const parsed = parseMediaUrl(item.img, item.mediaType);
@@ -104,23 +141,38 @@ export default function GallerySection() {
           })}
         </div>
 
-        {gallery.length > 6 && (
-          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+        {filteredGallery.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-light)' }}>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-mid)', marginBottom: '1rem' }}>
+              Belum ada foto atau video pada kategori ini.
+            </p>
+            <button
+              type="button"
+              className="btn btn-outline-gold btn-sm"
+              onClick={() => setSelectedCategory('all')}
+            >
+              Lihat Semua Kegiatan
+            </button>
+          </div>
+        )}
+
+        {filteredGallery.length > 6 && (
+          <div style={{ textAlign: 'center', marginTop: '1.75rem' }}>
             {hasMore ? (
               <button 
                 type="button"
-                onClick={() => setVisibleCount(gallery.length)}
+                onClick={() => setVisibleCount(filteredGallery.length)}
                 className="btn btn-outline-gold"
-                style={{ padding: '0.65rem 1.75rem', fontSize: '0.85rem', fontWeight: 600, borderRadius: '50px', cursor: 'pointer' }}
+                style={{ padding: '0.55rem 1.5rem', fontSize: '0.825rem', fontWeight: 600, borderRadius: '9999px', cursor: 'pointer' }}
               >
-                Lihat Semua Dokumentasi ({gallery.length})
+                Lihat Semua Dokumentasi ({filteredGallery.length})
               </button>
             ) : (
               <button 
                 type="button"
                 onClick={() => setVisibleCount(typeof window !== 'undefined' && window.innerWidth > 900 ? 12 : 6)}
                 className="btn btn-outline-gold"
-                style={{ padding: '0.5rem 1.5rem', fontSize: '0.8rem', fontWeight: 600, borderRadius: '50px', cursor: 'pointer', opacity: 0.85 }}
+                style={{ padding: '0.45rem 1.25rem', fontSize: '0.78rem', fontWeight: 600, borderRadius: '9999px', cursor: 'pointer', opacity: 0.85 }}
               >
                 Tampilkan Lebih Sedikit
               </button>

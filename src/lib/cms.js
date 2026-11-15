@@ -15,6 +15,21 @@ export const AMBASSADOR_CATEGORIES = [
 
 export const AMBASSADOR_YEARS = ['2026', '2025'];
 
+export const GALLERY_CATEGORIES = [
+  { id: 'all', label: 'Semua Kegiatan' },
+  { id: 'sosialisasi', label: 'Sosialisasi' },
+  { id: 'pelayanan', label: 'Pelayanan' },
+  { id: 'produksi_konten', label: 'Produksi Konten' },
+  { id: 'event_kampus', label: 'Event Kampus' },
+  { id: 'lainnya', label: 'Lainnya' }
+];
+
+export function getGalleryCategoryLabel(catId) {
+  if (!catId) return 'Sosialisasi';
+  const match = GALLERY_CATEGORIES.find(c => c.id === catId || c.label.toLowerCase() === String(catId).toLowerCase());
+  return match && match.id !== 'all' ? match.label : 'Kegiatan Duta';
+}
+
 export function getAmbassadorCategoryLabel(catId) {
   if (!catId) return 'Duta Kampus';
   const clean = String(catId).trim().toLowerCase();
