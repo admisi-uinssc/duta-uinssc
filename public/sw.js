@@ -1,4 +1,4 @@
-const CACHE_NAME = 'paduka-pwa-v5';
+const CACHE_NAME = 'paduka-pwa-v6-dark';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

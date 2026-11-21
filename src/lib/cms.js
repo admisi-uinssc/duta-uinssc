@@ -4,7 +4,7 @@ export const AMBASSADOR_CATEGORIES = [
   { id: 'all', label: 'Semua Kategori' },
   { id: 'duta_kampus', label: 'Duta Kampus' },
   { id: 'utama', label: 'Duta Kampus Utama' },
-  { id: 'wakil_1', label: 'Duta Kampus Wakil 1' },
+  { id: 'wakil_1', label: 'Wakil Duta Kampus' },
   { id: 'digital_innovation', label: 'Duta Inovasi Digital' },
   { id: 'kip', label: 'Duta Keterbukaan Informasi Publik' },
   { id: 'sdgs_eco', label: 'Duta SDGs Eco-Innovation' },
@@ -34,7 +34,7 @@ export function getAmbassadorCategoryLabel(catId) {
   if (!catId) return 'Duta Kampus';
   const clean = String(catId).trim().toLowerCase();
   if (clean === 'winner' || clean === 'utama' || clean === 'duta winner (duta utama)') return 'Duta Kampus Utama';
-  if (clean === 'wakil_1' || clean === 'duta wakil 1') return 'Duta Kampus Wakil 1';
+  if (clean === 'wakil_1' || clean === 'duta wakil 1' || clean === 'wakil 1') return 'Wakil Duta Kampus';
   if (clean === 'sdgs' || clean === "sdg's") return 'Duta SDGs';
   if (clean.includes('eco')) return 'Duta SDGs Eco-Innovation';
   if (clean.includes('inklusiv')) return 'Duta SDGs Inklusivitas';
