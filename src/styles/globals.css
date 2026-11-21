@@ -56,8 +56,8 @@
   --text-mid: #dcd7e3;
   --text-light: #b3adbb;
   --text-light: var(--muted);
-  --border: #291f36;
-  --border-soft: #1d1627;
+  --border: rgba(255, 255, 255, 0.12);
+  --border-soft: rgba(255, 255, 255, 0.07);
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
   --shadow: 0 4px 12px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(104 61 151 / 0.2);
@@ -361,16 +361,17 @@ span, label, small, strong, li {
 .badge-soft { background: #111111; color: var(--white); border: 1px solid #333333; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
 
 .card {
-  background: #110d17;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  transition: transform 0.3s, box-shadow 0.3s;
+  background: linear-gradient(180deg, rgba(12, 28, 52, 0.55) 0%, rgba(3, 10, 22, 0.85) 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(0, 145, 255, 0.2);
+  backdrop-filter: blur(12px);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
 }
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--purple);
+  box-shadow: 0 14px 32px rgba(0, 145, 255, 0.35);
+  border-color: rgba(0, 145, 255, 0.6);
 }
 
 /* ========================================================

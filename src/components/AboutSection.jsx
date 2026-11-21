@@ -179,7 +179,7 @@ export default function AboutSection() {
         </div>
 
         {/* STRUKTUR ORGANISASI PAGUYUBAN DUTA KAMPUS */}
-        <div style={{ background: '#050505', border: '1px solid var(--border)', borderRadius: '16px', padding: '2.5rem 2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+        <div style={{ background: '#050505', border: '1px solid rgba(0, 145, 255, 0.22)', borderRadius: '16px', padding: '2.5rem 2rem', boxShadow: '0 8px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)' }}>
           <div className="section-header text-center" style={{ maxWidth: '640px', margin: '0 auto 2rem' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '1px', textTransform: 'uppercase' }}>
               Kepengurusan Resmi
@@ -219,7 +219,7 @@ export default function AboutSection() {
           {/* DIVISI */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
             {orgStructure.divisions.map((div, i) => (
-              <div key={i} style={{ background: '#000000', border: '1px solid var(--border)', borderRadius: '12px', padding: '1.25rem' }}>
+              <div key={i} style={{ background: '#000000', border: '1px solid rgba(0, 145, 255, 0.18)', borderRadius: '12px', padding: '1.25rem', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.85rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border)' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--gold)' }} />
                   <h4 style={{ margin: 0, fontSize: '0.925rem', fontWeight: 700, color: 'var(--white)' }}>{div.name}</h4>
