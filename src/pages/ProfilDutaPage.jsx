@@ -154,7 +154,7 @@ export default function ProfilDutaPage() {
             {isFinalistsPublic && (
               <div style={{
                 display: 'inline-flex',
-                background: '#e2e8f0',
+                background: 'rgba(0, 18, 38, 0.8)', border: '1px solid rgba(0, 145, 255, 0.25)',
                 padding: '4px',
                 borderRadius: '9999px',
                 gap: '4px',
@@ -169,7 +169,7 @@ export default function ProfilDutaPage() {
                     border: 'none',
                     fontSize: '0.85rem',
                     fontWeight: activeMainTab === 'duta' ? 700 : 500,
-                    background: activeMainTab === 'duta' ? 'var(--navy)' : 'transparent',
+                    background: activeMainTab === 'duta' ? '#0091ff' : 'transparent',
                     color: activeMainTab === 'duta' ? '#ffffff' : 'var(--text-mid)',
                     cursor: 'pointer',
                     transition: 'all 0.2s'
@@ -236,9 +236,11 @@ export default function ProfilDutaPage() {
                         fontSize: '0.825rem',
                         fontWeight: isActive ? 700 : 500,
                         cursor: 'pointer',
-                        border: isActive ? '1px solid var(--navy)' : '1px solid var(--border)',
-                        background: isActive ? 'var(--navy)' : '#ffffff',
-                        color: isActive ? '#ffffff' : 'var(--text-mid)',
+                        border: isActive ? '1px solid #0091ff' : '1px solid rgba(0, 145, 255, 0.22)',
+                        background: isActive ? '#0091ff' : 'linear-gradient(180deg, rgba(10, 26, 48, 0.6) 0%, rgba(2, 8, 18, 0.9) 100%)',
+                        color: isActive ? '#ffffff' : '#e2e8f0',
+                        boxShadow: isActive ? '0 4px 16px rgba(0, 145, 255, 0.45)' : '0 2px 8px rgba(0,0,0,0.3)',
+                        borderRadius: '9999px',
                         transition: 'all 0.15s ease'
                       }}
                     >
@@ -415,7 +417,7 @@ export default function ProfilDutaPage() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: 'var(--gold)',
+                          color: '#0091ff', textShadow: '0 0 12px rgba(0,145,255,0.4)',
                           fontWeight: 800,
                           fontSize: '1.25rem',
                           letterSpacing: '1px'
@@ -438,7 +440,7 @@ export default function ProfilDutaPage() {
                       <div style={{
                         fontSize: '0.68rem',
                         fontWeight: 700,
-                        color: 'var(--gold)',
+                        color: '#0091ff', textShadow: '0 0 12px rgba(0,145,255,0.4)',
                         textTransform: 'uppercase',
                         letterSpacing: '0.5px',
                         marginBottom: '4px'
@@ -447,7 +449,7 @@ export default function ProfilDutaPage() {
                       </div>
                     )}
                     <h3>{duta.name}</h3>
-                    <p>{duta.major || duta.faculty || (activeMainTab === 'finalis' ? 'Finalis Duta Kampus 2026' : 'Duta Kampus')}</p>
+                    <p style={{ color: '#e2e8f0', fontSize: '0.825rem', margin: '4px 0 0' }}>{duta.major || duta.faculty || (activeMainTab === 'finalis' ? 'Finalis Duta Kampus 2026' : 'Duta Kampus')}</p>
                     <span style={{ display: 'inline-block', marginTop: '6px', fontSize: '0.72rem', color: 'var(--white)', fontWeight: 600 }}>
                       {activeMainTab === 'finalis' ? 'Tahun Seleksi 2026' : `Angkatan ${dutaYear}`}
                     </span>

@@ -66,12 +66,12 @@
 .required { color: var(--red); }
 .form-group input, .form-group select, .form-group textarea {
   width: 100%; background: #000; border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm); color: var(--white); font-size: 0.9rem;
+  border-radius: 10px; border: 1px solid rgba(0, 145, 255, 0.22); color: var(--white); font-size: 0.9rem;
   padding: 0.875rem 1rem; transition: all 0.25s; outline: none; font-family: var(--font);
 }
 .form-group textarea {
   background: #000; border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm); color: var(--white); font-size: 0.9rem;
+  border-radius: 10px; border: 1px solid rgba(0, 145, 255, 0.22); color: var(--white); font-size: 0.9rem;
   padding: 0.75rem 1rem; transition: all 0.25s; outline: none; font-family: var(--font);
 }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
@@ -103,7 +103,7 @@
 
 /* REVIEW */
 .review-grid { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
-.review-item { display: flex; justify-content: space-between; padding: 0.875rem 1rem; background: #000; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.review-item { display: flex; justify-content: space-between; padding: 0.875rem 1rem; background: #000; border-radius: 10px; border: 1px solid rgba(0, 145, 255, 0.22); border: 1px solid var(--border); }
 .review-item-label { font-size: 0.82rem; color: var(--muted); }
 .review-title { font-size: 0.9rem; font-weight: 700; color: var(--white); margin-bottom: 1rem; }
 .review-item-value { font-size: 0.875rem; color: var(--white); font-weight: 500; word-break: break-word; }
@@ -130,6 +130,6 @@
 .success-screen h2 { font-size: 2rem; font-weight: 800; color: var(--white); margin-bottom: 0.75rem; }
 .success-screen p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
 .success-screen p strong { color: var(--white); }
-.success-id { font-family: monospace; font-size: 1.25rem; font-weight: 800; color: var(--white); background: #000; padding: 0.75rem 1.5rem; border-radius: var(--radius-sm); border: 1px dashed var(--border); display: inline-block; margin-bottom: 2rem; }
+.success-id { font-family: monospace; font-size: 1.25rem; font-weight: 800; color: var(--white); background: #000; padding: 0.75rem 1.5rem; border-radius: 10px; border: 1px solid rgba(0, 145, 255, 0.22); border: 1px dashed var(--border); display: inline-block; margin-bottom: 2rem; }
 .success-id strong { color: var(--red); }
 .success-icon-wrap { width: 80px; height: 80px; border-radius: 50%; background: rgba(219,31,38,0.15); border: 2px solid var(--red); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--red); }

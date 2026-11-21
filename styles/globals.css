@@ -1837,3 +1837,63 @@ span, label, small, strong, li {
 
 
 
+
+
+/* ==========================================================================
+   NATIVE MOBILE APP POLISH (TYPOGRAPHY, PADDING, LINE HEIGHT & TOUCH TARGETS)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Prevent horizontal stretch & provide clean iOS/Android system margins */
+  .container {
+    padding-left: 1.15rem !important;
+    padding-right: 1.15rem !important;
+  }
+
+  /* Section padding optimized for mobile screens (clean rhythm, no excessive empty heights) */
+  .section-pad {
+    padding: 3.25rem 0 !important;
+  }
+
+  /* Clean Native Headings Hierarchy */
+  h1, .heading-xl {
+    font-size: 2.1rem !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  h2, .heading-lg {
+    font-size: 1.85rem !important;
+    line-height: 1.18 !important;
+    letter-spacing: -0.01em !important;
+    margin-bottom: 0.6rem !important;
+  }
+
+  h3 {
+    font-size: 1.35rem !important;
+    line-height: 1.25 !important;
+  }
+
+  h4 {
+    font-size: 1.05rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Native Mobile Body & Lead Text: crisp line-height for effortless reading */
+  p, .lead {
+    font-size: 0.88rem !important;
+    line-height: 1.55 !important;
+    letter-spacing: -0.005em !important;
+  }
+
+  /* Compact native mobile buttons */
+  .btn {
+    padding: 0.65rem 1.35rem !important;
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
+  }
+
+  /* Native Touch Ripple Feedback */
+  .btn:active, .hub-card:active, .gallery-filter-btn:active {
+    opacity: 0.9 !important;
+  }
+}

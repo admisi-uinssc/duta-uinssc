@@ -40,7 +40,7 @@ export default function MediaModal({ isOpen, onClose, item, fallbackTitle = '' }
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(11, 19, 41, 0.94)',
+        backgroundColor: 'rgba(0, 0, 0, 0.88)',
         zIndex: 99999,
         display: 'flex',
         alignItems: 'center',
@@ -56,11 +56,11 @@ export default function MediaModal({ isOpen, onClose, item, fallbackTitle = '' }
         style={{
           maxWidth: parsed.isVideo ? '860px' : '720px',
           width: '100%',
-          background: 'var(--navy)',
+          background: '#050505',
           borderRadius: '16px',
           overflow: 'hidden',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
-          border: '1px solid rgba(104, 61, 151, 0.35)',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 145, 255, 0.15)',
+          border: '1px solid rgba(0, 145, 255, 0.28)',
           position: 'relative'
         }}
       >
@@ -147,8 +147,8 @@ export default function MediaModal({ isOpen, onClose, item, fallbackTitle = '' }
           <div
             style={{
               padding: '0.9rem 1.25rem',
-              background: 'var(--navy)',
-              borderTop: '1px solid rgba(104, 61, 151, 0.2)',
+              background: 'linear-gradient(180deg, rgba(8, 24, 48, 0.9) 0%, rgba(2, 8, 18, 0.98) 100%)',
+              borderTop: '1px solid rgba(0, 145, 255, 0.25)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -166,8 +166,9 @@ export default function MediaModal({ isOpen, onClose, item, fallbackTitle = '' }
               style={{
                 fontSize: '0.7rem',
                 fontWeight: 700,
-                color: parsed.isVideo ? 'var(--blue-ice)' : 'var(--gold)',
-                background: parsed.isVideo ? 'rgba(104, 61, 151, 0.25)' : 'rgba(255, 255, 255, 0.08)',
+                color: '#ffffff',
+                background: parsed.isVideo ? '#0091ff' : '#db1f26',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
                 padding: '2px 8px',
                 borderRadius: '4px',
                 letterSpacing: '0.5px',

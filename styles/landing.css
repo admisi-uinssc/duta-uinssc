@@ -898,16 +898,41 @@
 }
 
 .mobile-nav-item:hover,
-.mobile-nav-item:active,
+.mobile-nav-item:active {
+  color: #0091ff;
+  transform: translateY(-1px);
+}
+
 .mobile-nav-item.active {
-  color: var(--white);
-  transform: translateY(-2px);
+  color: #0091ff !important;
+  font-weight: 700 !important;
+}
+
+/* Active indicator pill bar on top of the active menu icon */
+.mobile-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 3px;
+  border-radius: 0 0 4px 4px;
+  background: #0091ff;
+  box-shadow: 0 0 10px rgba(0, 145, 255, 0.8), 0 0 18px rgba(0, 145, 255, 0.4);
+}
+
+.mobile-nav-item.active svg {
+  color: #0091ff !important;
+  stroke: #0091ff !important;
+  stroke-width: 2.3px !important;
+  filter: drop-shadow(0 0 8px rgba(0, 145, 255, 0.5));
 }
 
 .mobile-nav-item:hover svg,
 .mobile-nav-item:active svg {
-  transform: scale(1.15);
-  stroke-width: 2.5px;
+  transform: scale(1.1);
+  stroke-width: 2.2px;
 }
 
 /* ── RESPONSIVE ── */
@@ -1390,13 +1415,16 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: var(--gold);
-  color: #fff;
-  padding: 3px 8px;
+  background: #0091ff;
+  color: #ffffff !important;
+  padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.72rem;
   font-weight: 700;
   z-index: 2;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 145, 255, 0.4);
+  letter-spacing: 0.4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .ambassador-info {
@@ -1796,17 +1824,34 @@
 
 .gallery-filter-btn {
   white-space: nowrap;
-  padding: 0.5rem 1.15rem;
+  padding: 0.45rem 1.1rem;
   border-radius: 9999px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.825rem;
+  font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
-  border: 1px solid var(--border);
-  background: #050505;
-  color: var(--muted);
-  transition: all 0.2s ease;
-  line-height: 1.2;
+  border: 1px solid rgba(0, 145, 255, 0.22);
+  background: linear-gradient(180deg, rgba(10, 26, 48, 0.6) 0%, rgba(2, 8, 18, 0.9) 100%);
+  color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1.25;
+  backdrop-filter: blur(8px);
+}
+
+.gallery-filter-btn:hover {
+  border-color: rgba(0, 145, 255, 0.6);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 145, 255, 0.3);
+}
+
+.gallery-filter-btn.active {
+  background: #0091ff !important;
+  color: #ffffff !important;
+  border-color: #0091ff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 16px rgba(0, 145, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
 }
 
 .gallery-filter-btn:hover {
@@ -1852,9 +1897,13 @@
   }
 
   .gallery-filter-btn {
-    padding: 0.38rem 0.85rem !important;
-    font-size: 0.76rem !important;
-    border-radius: 8px !important;
+    padding: 0.4rem 0.85rem !important;
+    font-size: 0.75rem !important;
+    border-radius: 9999px !important;
+    letter-spacing: -0.1px !important;
+  }
+  .gallery-filter-btn:active {
+    transform: scale(0.96) !important;
   }
 
   /* Fade indicator gradient di kanan filter HP */

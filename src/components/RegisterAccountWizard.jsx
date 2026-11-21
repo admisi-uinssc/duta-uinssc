@@ -378,10 +378,11 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
             style={{
               width: '100%',
               padding: '0.8rem',
-              borderRadius: '8px',
+              borderRadius: '9999px',
               fontWeight: 700,
               fontSize: '0.88rem',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              boxShadow: '0 4px 16px rgba(219, 31, 38, 0.45)'
             }}
           >
             Masuk ke Akun Peserta
@@ -566,7 +567,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
                 <span style={{ 
                   fontSize: '0.74rem', 
                   fontWeight: 600, 
-                  color: password === confirmPassword ? '#15803d' : '#dc2626' 
+                  color: password === confirmPassword ? '#4ade80' : '#f87171' 
                 }}>
                   {password === confirmPassword ? 'Kata sandi cocok' : 'Belum cocok'}
                 </span>
@@ -619,10 +620,11 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
             style={{
               width: '100%',
               marginTop: '0.5rem',
-              borderRadius: '8px',
-              padding: '0.85rem',
+              borderRadius: '9999px',
+              padding: '0.85rem 1.5rem',
               fontSize: '0.95rem',
               fontWeight: 600,
+              boxShadow: '0 4px 16px rgba(219, 31, 38, 0.45)',
             }}
           >
             Lanjut ke Informasi Pribadi

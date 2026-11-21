@@ -405,8 +405,9 @@ export default function LoginPage() {
               style={{
                 width: '100%',
                 marginTop: '0.5rem',
-                borderRadius: '8px',
-                padding: '0.85rem',
+                borderRadius: '9999px',
+                padding: '0.85rem 1.5rem',
+                boxShadow: '0 4px 16px rgba(219, 31, 38, 0.45)',
                 fontSize: '0.95rem',
                 fontWeight: 600,
                 opacity: isLoading ? 0.7 : 1,
