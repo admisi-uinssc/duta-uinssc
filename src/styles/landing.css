@@ -1971,3 +1971,71 @@
     letter-spacing: 0.2px !important;
   }
 }
+
+
+/* ==========================================================================
+   AMBIENT LUXURY GRADIENTS (ELEGANT COLOR FLOW ACROSS SECTIONS)
+   ========================================================================== */
+
+/* 1. Hub Section (Navigation Quick Hub) - Gentle Spectra Blue Glow */
+.hub-section {
+  background: radial-gradient(circle at 50% 0%, rgba(0, 145, 255, 0.12) 0%, rgba(0, 10, 25, 0.4) 60%, var(--black) 100%) !important;
+  border-bottom: 1px solid rgba(0, 145, 255, 0.12);
+  position: relative;
+}
+
+/* 2. About Section - Deep Indigo / Cyan Soft Ambient */
+#about {
+  background: radial-gradient(ellipse at 80% 20%, rgba(0, 145, 255, 0.09) 0%, rgba(0, 5, 15, 0.6) 50%, var(--black) 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+/* 3. Benefits Section ("Kenapa Harus Bergabung") - Deep Subtle Crimson / Red Ambient Glow */
+#benefits {
+  background: radial-gradient(circle at 20% 40%, rgba(219, 31, 38, 0.10) 0%, rgba(15, 2, 4, 0.5) 50%, var(--black) 100%) !important;
+  border-bottom: 1px solid rgba(219, 31, 38, 0.15);
+  position: relative;
+}
+
+/* 4. Requirements Section - Deep Blue Midnight Ambient */
+#requirements {
+  background: radial-gradient(circle at 70% 30%, rgba(0, 145, 255, 0.11) 0%, rgba(2, 10, 24, 0.5) 50%, var(--black) 100%) !important;
+  border-bottom: 1px solid rgba(0, 145, 255, 0.12);
+  position: relative;
+}
+
+/* 5. Timeline Section - Subtle Dual Ambient (Spectra Blue to Crimson) */
+#timeline {
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.08) 0%, rgba(20, 4, 8, 0.3) 60%, var(--black) 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+/* 6. Gallery Section - Rich Spectra Blue Stage Ambient */
+#gallery {
+  background: radial-gradient(circle at 50% 10%, rgba(0, 145, 255, 0.13) 0%, rgba(1, 8, 20, 0.6) 50%, var(--black) 100%) !important;
+  border-bottom: 1px solid rgba(0, 145, 255, 0.15);
+  position: relative;
+}
+
+/* 7. FAQ Section - Warm Subtle Amber/Red & Midnight Transition */
+#faq {
+  background: radial-gradient(ellipse at 30% 70%, rgba(219, 31, 38, 0.08) 0%, rgba(4, 10, 22, 0.5) 50%, var(--black) 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+/* 8. CTA Banner ("Daftarkan Dirimu Sekarang") - Electric Blue with Soft Red Border Glow */
+.cta-banner {
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.18) 0%, rgba(2, 9, 22, 0.8) 70%, var(--black) 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.25);
+  border-bottom: 1px solid rgba(219, 31, 38, 0.25);
+  position: relative;
+}
+
+/* 9. Footer - Darkest Velvet with Top Glow */
+.footer {
+  background: #000000 !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.15);
+}

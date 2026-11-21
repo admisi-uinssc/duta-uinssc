@@ -70,7 +70,7 @@ export default function FAQSection() {
       );
 
   return (
-    <section className="section-pad" id="faq" style={{ background: 'var(--bg-alt)' }}>
+    <section className="section-pad" id="faq">
       <div className="container">
         <div className="section-header text-center" style={{ maxWidth: '720px', margin: '0 auto 2.5rem' }}>
           <h2 className="heading-lg">Tanya Jawab <span>(FAQ)</span></h2>

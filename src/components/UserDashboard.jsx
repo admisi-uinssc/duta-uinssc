@@ -1015,7 +1015,7 @@ export default function UserDashboard({ user, onLogout }) {
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      <div className="user-dashboard-main">
+      <div className="user-dashboard-main" style={{ background: 'radial-gradient(circle at 80% 10%, rgba(0, 145, 255, 0.06) 0%, rgba(0, 0, 0, 0.95) 60%, #000000 100%)', minHeight: '100vh' }}>
         {/* DESKTOP TOPBAR */}
         <header
           className="user-dashboard-desktop-header"

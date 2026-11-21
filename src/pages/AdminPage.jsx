@@ -1309,7 +1309,7 @@ export default function AdminPage() {
       </aside>
 
       {/* MAIN CONTAINER (FULL WIDTH ON DESKTOP) */}
-      <main className="admin-main" style={{ overflowY: 'auto', flex: 1, width: '100%' }}>
+      <main className="admin-main" style={{ background: 'radial-gradient(circle at 85% 5%, rgba(0, 145, 255, 0.05) 0%, #000000 70%)' }} style={{ overflowY: 'auto', flex: 1, width: '100%' }}>
         {/* TOPBAR */}
         <div className="topbar">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
