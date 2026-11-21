@@ -795,7 +795,7 @@ export default function UserDashboard({ user, onLogout }) {
             <div style={{
               padding: '2px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #C49E59, #e0bf7a)',
+              background: 'linear-gradient(135deg, var(--gold), var(--blue-sky))',
               boxShadow: '0 2px 8px rgba(196, 158, 89, 0.3)',
               flexShrink: 0
             }}>
@@ -811,7 +811,7 @@ export default function UserDashboard({ user, onLogout }) {
               <div style={{ fontSize: '0.95rem', fontWeight: 700, letterSpacing: '-0.2px', color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 Portal Peserta
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#C49E59', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
                 Duta Kampus 2026
               </div>
             </div>
@@ -837,7 +837,7 @@ export default function UserDashboard({ user, onLogout }) {
                 borderRadius: '8px',
                 border: activeTab === 'beranda' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
                 background: activeTab === 'beranda' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
-                color: activeTab === 'beranda' ? '#ffd88a' : '#cbd5e1',
+                color: activeTab === 'beranda' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'beranda' ? 600 : 500,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
@@ -845,7 +845,7 @@ export default function UserDashboard({ user, onLogout }) {
                 transition: 'all 0.15s ease'
               }}
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'beranda' ? '#C49E59' : 'currentColor', flexShrink: 0 }}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'beranda' ? 'var(--gold)' : 'currentColor', flexShrink: 0 }}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
               <span>Beranda</span>
             </button>
 
@@ -861,7 +861,7 @@ export default function UserDashboard({ user, onLogout }) {
                 borderRadius: '8px',
                 border: activeTab === 'pendaftaran' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
                 background: activeTab === 'pendaftaran' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
-                color: activeTab === 'pendaftaran' ? '#ffd88a' : '#cbd5e1',
+                color: activeTab === 'pendaftaran' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'pendaftaran' ? 600 : 500,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
@@ -869,7 +869,7 @@ export default function UserDashboard({ user, onLogout }) {
                 transition: 'all 0.15s ease'
               }}
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'pendaftaran' ? '#C49E59' : 'currentColor', flexShrink: 0 }}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'pendaftaran' ? 'var(--gold)' : 'currentColor', flexShrink: 0 }}>
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
               </svg>
@@ -897,7 +897,7 @@ export default function UserDashboard({ user, onLogout }) {
                 borderRadius: '8px',
                 border: activeTab === 'riwayat' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
                 background: activeTab === 'riwayat' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
-                color: activeTab === 'riwayat' ? '#ffd88a' : '#cbd5e1',
+                color: activeTab === 'riwayat' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'riwayat' ? 600 : 500,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
@@ -905,10 +905,10 @@ export default function UserDashboard({ user, onLogout }) {
                 transition: 'all 0.15s ease'
               }}
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'riwayat' ? '#C49E59' : 'currentColor', flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'riwayat' ? 'var(--gold)' : 'currentColor', flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Riwayat Seleksi</span>
               {isFinalist ? (
-                <span style={{ marginLeft: 'auto', background: '#C49E59', color: '#16324A', fontSize: '0.62rem', padding: '2px 7px', borderRadius: '4px', fontWeight: 800 }}>
+                <span style={{ marginLeft: 'auto', background: 'var(--gold)', color: '#16324A', fontSize: '0.62rem', padding: '2px 7px', borderRadius: '4px', fontWeight: 800 }}>
                   Finalis
                 </span>
               ) : selectionStage === 'lolos' ? (
@@ -936,7 +936,7 @@ export default function UserDashboard({ user, onLogout }) {
                 borderRadius: '8px',
                 border: activeTab === 'pengaturan' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
                 background: activeTab === 'pengaturan' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
-                color: activeTab === 'pengaturan' ? '#ffd88a' : '#cbd5e1',
+                color: activeTab === 'pengaturan' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'pengaturan' ? 600 : 500,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
@@ -944,7 +944,7 @@ export default function UserDashboard({ user, onLogout }) {
                 transition: 'all 0.15s ease'
               }}
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'pengaturan' ? '#C49E59' : 'currentColor', flexShrink: 0 }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'pengaturan' ? 'var(--gold)' : 'currentColor', flexShrink: 0 }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <span>Email & Sandi</span>
             </button>
           </nav>
@@ -958,7 +958,7 @@ export default function UserDashboard({ user, onLogout }) {
                 width: 36,
                 height: 36,
                 borderRadius: '8px',
-                background: 'linear-gradient(135deg, #C49E59, #9e7b36)',
+                background: 'linear-gradient(135deg, var(--gold), var(--blue-dark))',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1129,7 +1129,7 @@ export default function UserDashboard({ user, onLogout }) {
                 padding: '0.9rem 1.35rem',
                 borderRadius: '8px',
                 boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-                borderLeft: `4px solid ${isErr ? '#ef4444' : '#C49E59'}`,
+                borderLeft: `4px solid ${isErr ? '#ef4444' : 'var(--gold)'}`,
                 fontSize: '0.86rem',
                 display: 'flex',
                 alignItems: 'center',
@@ -1197,7 +1197,7 @@ export default function UserDashboard({ user, onLogout }) {
               {isFinalist && (
                 <div style={{
                   background: 'linear-gradient(135deg, #16324A 0%, #0d2233 100%)',
-                  border: '1.5px solid #C49E59',
+                  border: '1.5px solid var(--gold)',
                   borderRadius: '12px',
                   padding: '1.5rem 1.75rem',
                   color: '#ffffff',
@@ -1205,7 +1205,7 @@ export default function UserDashboard({ user, onLogout }) {
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
                     <span style={{
-                      background: '#C49E59',
+                      background: 'var(--gold)',
                       color: '#16324A',
                       fontSize: '0.75rem',
                       fontWeight: 800,
@@ -1239,7 +1239,7 @@ export default function UserDashboard({ user, onLogout }) {
                       type="button"
                       onClick={() => setActiveTab('pendaftaran')}
                       className="btn btn-sm btn-outline-gold"
-                      style={{ padding: '0.45rem 1rem', fontSize: '0.82rem', fontWeight: 700, borderRadius: '4px', color: '#ffd88a', borderColor: '#C49E59' }}
+                      style={{ padding: '0.45rem 1rem', fontSize: '0.82rem', fontWeight: 700, borderRadius: '4px', color: 'var(--blue-ice)', borderColor: 'var(--gold)' }}
                     >
                       Kelola Foto Profil Finalis
                     </button>
@@ -1251,14 +1251,14 @@ export default function UserDashboard({ user, onLogout }) {
               {isFinalist && (
                 <div style={{
                   background: '#ffffff',
-                  border: '1.5px solid #C49E59',
+                  border: '1.5px solid var(--gold)',
                   borderRadius: '14px',
                   padding: '1.5rem',
                   boxShadow: '0 4px 18px rgba(196, 158, 89, 0.12)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#C49E59' }} />
+                      <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--gold)' }} />
                       <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#16324A' }}>
                         Foto Profil Resmi Finalis (Tampilan Publik)
                       </h4>
@@ -1596,7 +1596,7 @@ export default function UserDashboard({ user, onLogout }) {
                 <div className="user-warning-card user-closed-card" style={{
                   background: '#ffffff',
                   border: '1.5px solid #e2e8f0',
-                  borderLeft: '4px solid #C49E59',
+                  borderLeft: '4px solid var(--gold)',
                   borderRadius: '16px',
                   padding: '1.5rem',
                   boxShadow: 'var(--shadow-sm)'
@@ -1885,7 +1885,7 @@ export default function UserDashboard({ user, onLogout }) {
                     style={{
                       height: '100%',
                       width: `${dossierStatus.percent}%`,
-                      background: dossierStatus.isComplete ? '#16a34a' : '#C49E59',
+                      background: dossierStatus.isComplete ? '#16a34a' : 'var(--gold)',
                       borderRadius: '6px',
                       transition: 'width 0.4s ease'
                     }}
@@ -1916,7 +1916,7 @@ export default function UserDashboard({ user, onLogout }) {
               <div className="user-dashboard-card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.25rem' }}>
                   <div style={{ flex: 1, minWidth: '0' }}>
-                    <div style={{ fontSize: '0.78rem', color: '#C49E59', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
                       Program Resmi Universitas
                     </div>
                     <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#16324A', margin: '0 0 0.5rem' }}>
@@ -1995,7 +1995,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                   {isFinalist && (
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, background: '#C49E59', color: '#16324A', padding: '3px 8px', borderRadius: '4px' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, background: 'var(--gold)', color: '#16324A', padding: '3px 8px', borderRadius: '4px' }}>
                       Finalis Resmi
                     </span>
                   )}
@@ -2012,7 +2012,7 @@ export default function UserDashboard({ user, onLogout }) {
                 <div style={{
                   background: '#ffffff',
                   border: '1.5px solid #e2e8f0',
-                  borderLeft: '4px solid #C49E59',
+                  borderLeft: '4px solid var(--gold)',
                   borderRadius: '12px',
                   padding: '1.25rem 1.5rem',
                   marginBottom: '1.5rem',
@@ -2563,7 +2563,7 @@ export default function UserDashboard({ user, onLogout }) {
                   
                   <span
                     style={{
-                      background: isFinalist ? '#C49E59' : isNotFinalist ? '#991b1b' : selectionStage === 'lolos' ? '#166534' : selectionStage === 'tidak_lolos' ? '#991b1b' : isSubmitted ? '#b45309' : '#64748b',
+                      background: isFinalist ? 'var(--gold)' : isNotFinalist ? '#991b1b' : selectionStage === 'lolos' ? '#166534' : selectionStage === 'tidak_lolos' ? '#991b1b' : isSubmitted ? '#b45309' : '#64748b',
                       color: isFinalist ? '#16324A' : '#ffffff',
                       fontSize: '0.8rem',
                       fontWeight: 800,
@@ -2690,7 +2690,7 @@ export default function UserDashboard({ user, onLogout }) {
                           display: 'flex',
                           gap: '1.25rem',
                           alignItems: 'flex-start',
-                          borderLeft: `2.5px solid ${step.isDone ? '#16a34a' : step.isCurrent ? '#C49E59' : '#e2e8f0'}`,
+                          borderLeft: `2.5px solid ${step.isDone ? '#16a34a' : step.isCurrent ? 'var(--gold)' : '#e2e8f0'}`,
                           paddingLeft: '1.5rem',
                           position: 'relative'
                         }}
@@ -2703,7 +2703,7 @@ export default function UserDashboard({ user, onLogout }) {
                             width: '24px',
                             height: '24px',
                             borderRadius: '50%',
-                            background: step.isDone ? '#16a34a' : step.isCurrent ? '#C49E59' : '#e2e8f0',
+                            background: step.isDone ? '#16a34a' : step.isCurrent ? 'var(--gold)' : '#e2e8f0',
                             color: step.isDone || step.isCurrent ? '#ffffff' : '#64748b',
                             display: 'flex',
                             alignItems: 'center',
@@ -2722,7 +2722,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                         <div style={{ flex: 1 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            <span style={{ fontWeight: 700, color: step.isCurrent ? '#C49E59' : '#16324A', fontSize: '0.975rem' }}>
+                            <span style={{ fontWeight: 700, color: step.isCurrent ? 'var(--gold)' : '#16324A', fontSize: '0.975rem' }}>
                               {step.title}
                             </span>
                             <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>
@@ -2921,7 +2921,7 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 <div style={{ marginBottom: '1.25rem' }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(196, 158, 89, 0.15)', color: '#9e7b36', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(196, 158, 89, 0.15)', color: 'var(--blue-dark)', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
                     Keamanan Sandi
                   </div>
                   <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#16324A', margin: '0 0 6px 0' }}>

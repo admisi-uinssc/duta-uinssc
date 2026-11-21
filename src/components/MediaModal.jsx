@@ -166,7 +166,7 @@ export default function MediaModal({ isOpen, onClose, item, fallbackTitle = '' }
               style={{
                 fontSize: '0.7rem',
                 fontWeight: 700,
-                color: parsed.isVideo ? '#F8E7C9' : '#C49E59',
+                color: parsed.isVideo ? '#F8E7C9' : 'var(--gold)',
                 background: parsed.isVideo ? 'rgba(196, 158, 89, 0.25)' : 'rgba(255, 255, 255, 0.08)',
                 padding: '2px 8px',
                 borderRadius: '4px',

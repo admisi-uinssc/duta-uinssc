@@ -1,22 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap');
 
 :root {
-  --navy: #16324A;
-  --gold: #C49E59;
-  --gold-dark: #b58d4a;
+  /* Dynamic Blue Palette (Based on Ray Texture) */
+  --blue-deep: #051937;
+  --blue-night: #0A2540;
+  --blue-dark: #0f3d7a;
+  --blue-primary: #0056b3;
+  --blue-vibrant: #0077e6;
+  --blue-electric: #0091ff;
+  --blue-bright: #00b4d8;
+  --blue-sky: #38bdf8;
+  --blue-ice: #e0f2fe;
+  --blue-faint: rgba(0, 145, 255, 0.08);
+
+  /* Semantic Mappings */
+  --navy: var(--blue-night);
+  --gold: var(--blue-electric);
+  --gold-dark: var(--blue-vibrant);
+  --gold-faint: var(--blue-faint);
+
+  /* Accent Red */
+  --accent-red: #db1f26;
+  --accent-red-hover: #b8171d;
+  --accent-red-faint: rgba(219, 31, 38, 0.1);
+
   --bg: #ffffff;
   --bg-alt: #f8fafc;
   --white: #ffffff;
-  --text: #16324A;
-  --text-dark: #1f2937;
-  --text-mid: #4b5563;
-  --text-light: #9ca3af;
-  --border: #e5e7eb;
-  --border-soft: #f3f4f6;
+  --text: var(--blue-night);
+  --text-dark: #0f172a;
+  --text-mid: #334155;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+  --border-soft: #f1f5f9;
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-gold: 0 4px 14px rgba(0, 145, 255, 0.3);
   --radius: 12px;
   --radius-sm: 8px;
 
@@ -276,9 +297,16 @@ span, label, small, strong, li {
 .btn-lg { padding: 0.9rem 2.25rem; font-size: 0.95rem; }
 .btn-sm { padding: 0.45rem 1.15rem; font-size: 0.8rem; }
 .btn-gold { background: var(--gold); color: #fff; }
-.btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(196,158,89,0.35); }
+.btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0, 145, 255, 0.4); }
 .btn-outline-gold { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); }
 .btn-outline-gold:hover { background: var(--gold); color: #fff; }
+
+/* Red Accent Button & Badges */
+.btn-accent, .btn-red, .btn-danger { background: var(--accent-red); color: #fff; border: 1.5px solid var(--accent-red); }
+.btn-accent:hover, .btn-red:hover, .btn-danger:hover { background: var(--accent-red-hover); border-color: var(--accent-red-hover); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(219, 31, 38, 0.35); color: #fff; }
+.btn-outline-accent, .btn-outline-red, .btn-outline-danger { background: transparent; color: var(--accent-red); border: 1.5px solid var(--accent-red); }
+.btn-outline-accent:hover, .btn-outline-red:hover, .btn-outline-danger:hover { background: var(--accent-red); color: #fff; }
+.badge-accent, .tag-red { background: var(--accent-red); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; }
 
 .card {
   background: var(--white);
@@ -309,7 +337,7 @@ span, label, small, strong, li {
 .user-dashboard-sidebar {
   width: 260px;
   height: 100vh;
-  background: #16324A;
+  background: var(--navy);
   color: #ffffff;
   display: flex;
   flex-direction: column;

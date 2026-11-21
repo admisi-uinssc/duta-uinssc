@@ -3555,7 +3555,7 @@ export default function AdminPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', minWidth: '300px' }}>
                 <div style={{
                   width: 76, height: 76, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #16324A 0%, #C49E59 100%)',
+                  background: 'linear-gradient(135deg, #16324A 0%, var(--gold) 100%)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '1.85rem', fontWeight: 800, color: '#ffffff',
                   boxShadow: '0 6px 18px rgba(22, 50, 74, 0.25)', flexShrink: 0

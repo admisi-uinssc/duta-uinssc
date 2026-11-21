@@ -329,8 +329,8 @@
 
 .hub-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(22, 50, 74, 0.1);
-  border-color: rgba(196, 158, 89, 0.2);
+  box-shadow: 0 12px 30px rgba(0, 86, 179, 0.15);
+  border-color: rgba(0, 145, 255, 0.25);
 }
 
 .hub-card.highlight {
@@ -342,7 +342,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: rgba(196, 158, 89, 0.1);
+  background: rgba(0, 145, 255, 0.1);
   color: var(--gold);
   display: flex;
   align-items: center;
@@ -573,7 +573,7 @@
   top: 28px;
   bottom: 28px;
   width: 1.5px;
-  background: linear-gradient(to bottom, var(--gold), rgba(196, 158, 89, 0.15));
+  background: linear-gradient(to bottom, var(--gold), rgba(0, 145, 255, 0.15));
 }
 
 .timeline-item {
@@ -753,7 +753,7 @@
   font-size: 2.5rem;
   font-weight: 400;
   color: var(--gold);
-  background: rgba(196, 158, 89, 0.08);
+  background: rgba(0, 145, 255, 0.08);
   border-radius: 10px;
   padding: 0.5rem 1rem;
   min-width: 64px;
@@ -1342,7 +1342,7 @@
 
 .ambassador-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(196, 158, 89, 0.15);
+  box-shadow: 0 12px 30px rgba(0, 145, 255, 0.2);
 }
 
 .ambassador-img-wrapper {
@@ -1598,9 +1598,9 @@
 .finalist-slide-card {
   flex: 0 0 240px;
   scroll-snap-align: start;
-  background: #16324A;
+  background: var(--blue-night);
   border-radius: 16px;
-  border: 1px solid rgba(196, 158, 89, 0.22);
+  border: 1px solid rgba(0, 145, 255, 0.25);
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -1618,7 +1618,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
-  background: #0d1e2d;
+  background: var(--blue-deep);
   overflow: hidden;
 }
 
@@ -1629,7 +1629,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #16324A 0%, #0d1e2d 100%);
+  background: linear-gradient(135deg, var(--blue-night) 0%, var(--blue-deep) 100%);
   color: var(--gold);
   gap: 8px;
 }
@@ -1638,7 +1638,7 @@
   width: 58px;
   height: 58px;
   border-radius: 50%;
-  background: rgba(196, 158, 89, 0.15);
+  background: rgba(0, 145, 255, 0.15);
   border: 2px solid var(--gold);
   display: flex;
   align-items: center;
@@ -1842,8 +1842,8 @@
     /* Presisi kartu HP ala Shopee */
     border-radius: 12px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
-    background: #16324A !important;
-    border: 1px solid rgba(196, 158, 89, 0.25) !important;
+    background: var(--blue-night) !important;
+    border: 1px solid rgba(0, 145, 255, 0.25) !important;
   }
 
   .finalist-slide-card:hover,
