@@ -50,7 +50,7 @@
   --accent-red-faint: var(--red-faint);
 
   --bg: var(--black);
-  --bg-alt: radial-gradient(ellipse at 50% 0%, rgba(0, 145, 255, 0.06) 0%, rgba(0, 8, 20, 0.4) 50%, #000000 100%);
+  --bg-alt: radial-gradient(ellipse at 50% 0%, rgba(0, 145, 255, 0.18) 0%, rgba(0, 18, 48, 0.65) 50%, #000000 100%);
   --text: var(--white);
   --text-dark: var(--white);
   --text-mid: #dcd7e3;
@@ -273,7 +273,7 @@ span, label, small, strong, li {
     display: flex !important;
     flex-direction: column !important;
     margin-bottom: 0.6rem !important;
-    background: #110d17 !important;
+    background: linear-gradient(180deg, rgba(10, 26, 48, 0.65) 0%, rgba(2, 8, 18, 0.95) 100%) !important;
     border: 1px solid var(--border) !important;
     border-radius: 12px !important;
     padding: 0.75rem 0.85rem !important;
@@ -391,7 +391,7 @@ span, label, small, strong, li {
 .user-dashboard-sidebar {
   width: 260px;
   height: 100vh;
-  background: #0d0814;
+  background: rgba(0, 8, 20, 0.95);
   color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -441,7 +441,7 @@ span, label, small, strong, li {
     align-items: center;
     justify-content: space-between;
     padding: 0.875rem 1.25rem;
-    background: #0d0814;
+    background: rgba(0, 8, 20, 0.95);
     color: #ffffff;
     position: sticky;
     top: 0;
@@ -477,7 +477,7 @@ span, label, small, strong, li {
     left: 0;
     right: 0;
     height: 64px;
-    background: #0d0814;
+    background: rgba(0, 8, 20, 0.95);
     border-top: 1px solid var(--border);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
     z-index: 1000;
@@ -504,9 +504,31 @@ span, label, small, strong, li {
     font-family: inherit;
   }
 
+  .user-bottom-nav-item:hover,
+  .user-bottom-nav-item:active {
+    color: #0091ff !important;
+  }
   .user-bottom-nav-item.active {
-    color: var(--white) !important;
-    font-weight: 700;
+    color: #0091ff !important;
+    font-weight: 700 !important;
+    position: relative;
+  }
+  .user-bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 3px;
+    border-radius: 0 0 4px 4px;
+    background: #0091ff;
+    box-shadow: 0 1px 6px rgba(0, 145, 255, 0.4);
+  }
+  .user-bottom-nav-item.active svg {
+    color: #0091ff !important;
+    stroke: #0091ff !important;
+    stroke-width: 2.2px !important;
   }
 
   .user-bottom-nav-item svg {
@@ -612,7 +634,7 @@ span, label, small, strong, li {
 }
 
 .announcement-steps-box {
-  background: #110d17;
+  background: linear-gradient(180deg, rgba(10, 26, 48, 0.65) 0%, rgba(2, 8, 18, 0.95) 100%);
   border-radius: 12px;
   padding: 1rem 1.25rem;
   margin-bottom: 1.25rem;
@@ -758,9 +780,10 @@ span, label, small, strong, li {
    USER DASHBOARD WARNING CARD (DESKTOP STYLES - 100% PRESERVED)
    ========================================================================== */
 .user-warning-card {
-  background: #110d17;
-  border: 1.5px solid rgba(252,211,77,0.3);
-  border-left: 6px solid #d97706;
+  background: linear-gradient(180deg, rgba(10, 26, 48, 0.65) 0%, rgba(2, 8, 18, 0.95) 100%);
+  border: 1px solid rgba(252,211,77,0.25);
+  border-left: 4px solid #f59e0b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
   box-shadow: 0 2px 10px rgba(217, 119, 6, 0.06);
@@ -853,7 +876,7 @@ span, label, small, strong, li {
 }
 
 .user-warning-timer-box {
-  background: #0d0814;
+  background: rgba(0, 8, 20, 0.95);
   border: 1px solid rgba(252,211,77,0.3);
   border-radius: 10px;
   padding: 0.65rem 0.95rem;
@@ -879,7 +902,7 @@ span, label, small, strong, li {
 }
 
 .user-warning-timer-tile {
-  background: #110d17;
+  background: linear-gradient(180deg, rgba(10, 26, 48, 0.65) 0%, rgba(2, 8, 18, 0.95) 100%);
   border: 1px solid rgba(252,211,77,0.3);
   border-radius: 6px;
   min-width: 46px;
@@ -910,7 +933,7 @@ span, label, small, strong, li {
 }
 
 .user-warning-progress-box {
-  background: #0d0814;
+  background: rgba(0, 8, 20, 0.95);
   border: 1px solid rgba(252,211,77,0.3);
   border-radius: 10px;
   padding: 0.95rem 1.25rem;
@@ -1001,15 +1024,16 @@ span, label, small, strong, li {
   font-weight: 600;
   padding: 0.55rem 1rem;
   border-radius: 6px;
-  background: #110d17;
+  background: linear-gradient(180deg, rgba(10, 26, 48, 0.65) 0%, rgba(2, 8, 18, 0.95) 100%);
 }
 
 .user-dashboard-card {
-  background: #110d17;
-  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(12, 28, 52, 0.6) 0%, rgba(2, 9, 22, 0.95) 100%);
+  border: 1px solid rgba(0, 145, 255, 0.32); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 145, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
   width: 100%;
   box-sizing: border-box;
 }
@@ -1412,7 +1436,7 @@ span, label, small, strong, li {
     font-size: 0.74rem !important;
     font-weight: 600 !important;
     border-radius: 6px !important;
-    background: #110d17 !important;
+    background: linear-gradient(180deg, rgba(10, 26, 48, 0.65) 0%, rgba(2, 8, 18, 0.95) 100%) !important;
     border: 1px solid var(--border) !important;
     color: var(--white) !important;
     display: inline-flex !important;
@@ -1430,7 +1454,7 @@ span, label, small, strong, li {
     font-size: 0.72rem !important;
     font-weight: 600 !important;
     border-radius: 6px !important;
-    background: #110d17 !important;
+    background: linear-gradient(180deg, rgba(10, 26, 48, 0.65) 0%, rgba(2, 8, 18, 0.95) 100%) !important;
     border: 1px solid var(--border) !important;
     color: var(--muted) !important;
     white-space: nowrap !important;
@@ -1559,8 +1583,8 @@ span, label, small, strong, li {
     margin-right: 0 !important;
     padding: 1rem 0.85rem !important;
     border-radius: 10px !important;
-    border: 1px solid #edf2f7 !important;
-    background: #110d17 !important;
+    border: 1px solid rgba(0, 145, 255, 0.2) !important;
+    background: linear-gradient(180deg, rgba(10, 26, 48, 0.65) 0%, rgba(2, 8, 18, 0.95) 100%) !important;
     box-shadow: none !important;
   }
 
@@ -1605,7 +1629,7 @@ span, label, small, strong, li {
   }
 
   .user-form-section {
-    background: #110d17 !important;
+    background: linear-gradient(180deg, rgba(10, 26, 48, 0.65) 0%, rgba(2, 8, 18, 0.95) 100%) !important;
     border: 1px solid var(--border) !important;
     border-radius: 10px !important;
     padding: 1rem 0.85rem !important;
@@ -1642,7 +1666,7 @@ span, label, small, strong, li {
   }
 
   .dossier-item-card {
-    background: #0d0814 !important;
+    background: rgba(0, 8, 20, 0.95) !important;
     border: 1px solid var(--border) !important;
     border-radius: 8px !important;
     padding: 0.75rem 0.85rem !important;

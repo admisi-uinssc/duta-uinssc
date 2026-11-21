@@ -1575,7 +1575,7 @@ export default function AdminPage() {
                                 fontSize: '0.75rem', 
                                 fontWeight: 700, 
                                 padding: '3px 9px', 
-                                borderRadius: '6px',
+                                borderRadius: '9999px',
                                 background: evalData.bg,
                                 color: evalData.color,
                                 border: `1px solid ${evalData.border}`
@@ -1753,7 +1753,7 @@ export default function AdminPage() {
                                 fontSize: '0.75rem', 
                                 fontWeight: 700, 
                                 padding: '3px 9px', 
-                                borderRadius: '6px',
+                                borderRadius: '9999px',
                                 background: evalData.bg,
                                 color: evalData.color,
                                 border: `1px solid ${evalData.border}`
@@ -1979,7 +1979,7 @@ export default function AdminPage() {
                               fontSize: '0.75rem', 
                               fontWeight: 700, 
                               padding: '3px 8px', 
-                              borderRadius: '6px',
+                              borderRadius: '9999px',
                               background: evalData.bg,
                               color: evalData.color,
                               border: `1px solid ${evalData.border}`
@@ -2010,7 +2010,7 @@ export default function AdminPage() {
                           {(() => {
                             const fStatus = item.finalistStatus || (item.isFinalist ? 'finalis' : 'belum');
                             return (
-                              <div style={{ display: 'inline-flex', borderRadius: '6px', border: '1px solid var(--border)', overflow: 'hidden', background: '#000000' }}>
+                              <div style={{ display: 'inline-flex', borderRadius: '9999px', border: '1px solid var(--border)', overflow: 'hidden', background: '#000000' }}>
                                 <button
                                   type="button"
                                   onClick={(e) => { e.stopPropagation(); handleSetFinalistStatus(item.id, 'finalis'); }}
@@ -2244,7 +2244,7 @@ export default function AdminPage() {
                             <select 
                               value={slide.mediaType || 'auto'} 
                               onChange={e => updateSlide(idx, 'mediaType', e.target.value)}
-                              style={{ padding: '0.3rem 0.5rem', fontSize: '0.78rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                              style={{ padding: '0.3rem 0.5rem', fontSize: '0.78rem', borderRadius: '9999px', border: '1px solid var(--border)', background: 'var(--surface)' }}
                             >
                               <option value="auto">Deteksi Otomatis</option>
                               <option value="photo">Foto</option>
@@ -2256,7 +2256,7 @@ export default function AdminPage() {
                             return (
                               <div style={{ marginTop: '0.6rem' }}>
                                 <div 
-                                  style={{ borderRadius: '8px', overflow: 'hidden', height: '110px', width: '100%', position: 'relative', cursor: 'pointer', border: '1px solid var(--border)' }}
+                                  style={{ borderRadius: '12px', overflow: 'hidden', height: '110px', width: '100%', position: 'relative', cursor: 'pointer', border: '1px solid var(--border)' }}
                                   onClick={() => setAdminMediaPreview({ url: slide.img, title: slide.title1 || slide.tag || `Slide #${idx + 1}`, mediaType: slide.mediaType })}
                                   title="Pratinjau media"
                                 >
@@ -2361,7 +2361,7 @@ export default function AdminPage() {
                           <select 
                             value={item.mediaType || 'auto'} 
                             onChange={e => updatePromoBanner(idx, 'mediaType', e.target.value)}
-                            style={{ padding: '0.3rem 0.5rem', fontSize: '0.78rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                            style={{ padding: '0.3rem 0.5rem', fontSize: '0.78rem', borderRadius: '9999px', border: '1px solid var(--border)', background: 'var(--surface)' }}
                           >
                             <option value="auto">Deteksi Otomatis</option>
                             <option value="photo">Foto</option>
@@ -2380,7 +2380,7 @@ export default function AdminPage() {
                         return (
                           <div style={{ marginTop: '1rem' }}>
                             <div 
-                              style={{ borderRadius: '8px', overflow: 'hidden', height: '110px', position: 'relative', cursor: 'pointer', border: '1px solid var(--border)' }}
+                              style={{ borderRadius: '12px', overflow: 'hidden', height: '110px', position: 'relative', cursor: 'pointer', border: '1px solid var(--border)' }}
                               onClick={() => setAdminMediaPreview({ url: item.img, title: item.title || `Banner Promo #${idx + 1}`, mediaType: item.mediaType })}
                               title="Pratinjau media"
                             >
@@ -2461,7 +2461,7 @@ export default function AdminPage() {
                           style={{
                             width: '100%',
                             padding: '0.6rem 0.75rem',
-                            borderRadius: '8px',
+                            borderRadius: '12px',
                             border: '1px solid var(--border)',
                             background: '#050505',
                             fontWeight: 600,
@@ -2485,7 +2485,7 @@ export default function AdminPage() {
                           style={{
                             width: '100%',
                             padding: '0.6rem 0.75rem',
-                            borderRadius: '8px',
+                            borderRadius: '12px',
                             border: '1px solid var(--border)',
                             background: '#050505',
                             fontWeight: 600,
@@ -2602,7 +2602,7 @@ export default function AdminPage() {
                           }));
                           setHasUnsavedCms(true);
                         }}
-                        style={{ width: '100%', padding: '0.6rem 0.85rem', fontSize: '0.85rem', borderRadius: '8px', border: '1px solid var(--border)' }}
+                        style={{ width: '100%', padding: '0.6rem 0.85rem', fontSize: '0.85rem', borderRadius: '12px', border: '1px solid var(--border)' }}
                       />
                     </div>
                     <div>
@@ -2623,7 +2623,7 @@ export default function AdminPage() {
                           }));
                           setHasUnsavedCms(true);
                         }}
-                        style={{ width: '100%', padding: '0.6rem 0.85rem', fontSize: '0.85rem', borderRadius: '8px', border: '1px solid var(--border)' }}
+                        style={{ width: '100%', padding: '0.6rem 0.85rem', fontSize: '0.85rem', borderRadius: '12px', border: '1px solid var(--border)' }}
                       />
                     </div>
                   </div>
@@ -2677,7 +2677,7 @@ export default function AdminPage() {
                           <select 
                             value={item.mediaType || 'auto'} 
                             onChange={e => updateGallery(idx, 'mediaType', e.target.value)}
-                            style={{ padding: '0.25rem 0.5rem', fontSize: '0.78rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                            style={{ padding: '0.25rem 0.5rem', fontSize: '0.78rem', borderRadius: '9999px', border: '1px solid var(--border)', background: 'var(--surface)' }}
                           >
                             <option value="auto">Deteksi Otomatis</option>
                             <option value="photo">Foto</option>
@@ -2690,7 +2690,7 @@ export default function AdminPage() {
                           <select
                             value={item.category || 'sosialisasi'}
                             onChange={e => updateGallery(idx, 'category', e.target.value)}
-                            style={{ width: '100%', padding: '0.5rem 0.75rem', fontSize: '0.825rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                            style={{ width: '100%', padding: '0.5rem 0.75rem', fontSize: '0.825rem', borderRadius: '9999px', border: '1px solid var(--border)', background: 'var(--surface)' }}
                           >
                             <option value="sosialisasi">1. Sosialisasi</option>
                             <option value="pelayanan">2. Pelayanan</option>
@@ -2713,7 +2713,7 @@ export default function AdminPage() {
                         {item.img && (
                           <div style={{ marginTop: '0.5rem' }}>
                             <div 
-                              style={{ position: 'relative', width: '100%', height: '140px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)' }}
+                              style={{ position: 'relative', width: '100%', height: '140px', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)' }}
                               onClick={() => setAdminMediaPreview({ url: item.img, title: item.caption || 'Galeri Dokumentasi', caption: item.caption, mediaType: item.mediaType })}
                               title="Pratinjau media"
                             >
@@ -2776,7 +2776,7 @@ export default function AdminPage() {
                         <select 
                           value={cmsData.about?.mediaType || 'auto'} 
                           onChange={e => updateAbout('mediaType', e.target.value)}
-                          style={{ padding: '0.3rem 0.5rem', fontSize: '0.78rem', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)' }}
+                          style={{ padding: '0.3rem 0.5rem', fontSize: '0.78rem', borderRadius: '9999px', border: '1px solid var(--border)', background: 'var(--surface)' }}
                         >
                           <option value="auto">Deteksi Otomatis</option>
                           <option value="photo">Foto</option>
@@ -2813,7 +2813,7 @@ export default function AdminPage() {
                         value={cmsData.about?.desc || ''} 
                         onChange={e => updateAbout('desc', e.target.value)} 
                         placeholder="Deskripsi program duta kampus..."
-                        style={{ width: '100%', borderRadius: '8px', padding: '0.75rem', border: '1px solid var(--border)', fontFamily: 'inherit', fontSize: '0.9rem', lineHeight: 1.5 }}
+                        style={{ width: '100%', borderRadius: '12px', padding: '0.75rem', border: '1px solid var(--border)', fontFamily: 'inherit', fontSize: '0.9rem', lineHeight: 1.5 }}
                       />
                     </div>
 
@@ -2950,7 +2950,7 @@ export default function AdminPage() {
 
                         <div className="form-group">
                           <label style={{ fontWeight: 700 }}>Tampilkan Kepada</label>
-                          <div style={{ display: 'flex', border: '1px solid var(--border)', borderRadius: '6px', overflow: 'hidden' }}>
+                          <div style={{ display: 'flex', border: '1px solid var(--border)', borderRadius: '9999px', overflow: 'hidden' }}>
                             {[
                               { val: 'publik', label: 'Web Publik' },
                               { val: 'peserta', label: 'Peserta' },
@@ -3000,7 +3000,7 @@ export default function AdminPage() {
                           value={ann.content || ''} 
                           onChange={e => updateAnnouncement(idx, 'content', e.target.value)} 
                           placeholder="Tuliskan isi informasi, pengumuman nama pemenang, persyaratan kehadiran, atau pengantar..."
-                          style={{ width: '100%', borderRadius: '8px', padding: '0.75rem', border: '1px solid var(--border)', fontFamily: 'inherit', fontSize: '0.9rem', lineHeight: 1.5 }}
+                          style={{ width: '100%', borderRadius: '12px', padding: '0.75rem', border: '1px solid var(--border)', fontFamily: 'inherit', fontSize: '0.9rem', lineHeight: 1.5 }}
                         />
                       </div>
 
@@ -3431,7 +3431,7 @@ export default function AdminPage() {
                     <div style={{
                       marginTop: '1rem',
                       padding: '1rem',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       background: driveTestResult.success ? '#f0fdf4' : (driveTestResult.needsPermission ? '#fffbeb' : '#fef2f2'),
                       border: `1px solid ${driveTestResult.success ? '#bbf7d0' : (driveTestResult.needsPermission ? '#fde68a' : '#fecaca')}`,
                       borderLeft: `4px solid ${driveTestResult.success ? '#16a34a' : (driveTestResult.needsPermission ? '#d97706' : '#dc2626')}`,
@@ -3567,7 +3567,7 @@ export default function AdminPage() {
                     <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: 'var(--white)' }}>
                       {mergedSelectedItem.namaLengkap}
                     </h2>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, padding: '4px 12px', borderRadius: '6px', background: selectedDossier.bg, color: selectedDossier.color, border: `1px solid ${selectedDossier.border}` }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: selectedDossier.bg, color: selectedDossier.color, border: `1px solid ${selectedDossier.border}` }}>
                       <span style={{ width: 7, height: 7, borderRadius: '50%', background: selectedDossier.color }} />
                       {selectedDossier.statusLabel}
                     </span>
@@ -3589,8 +3589,8 @@ export default function AdminPage() {
                     {selectedDossier.filledCount} / {selectedDossier.totalCount} ({selectedDossier.percent}%)
                   </span>
                 </div>
-                <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${selectedDossier.percent}%`, background: selectedDossier.color, borderRadius: '6px', transition: 'width 0.4s ease' }} />
+                <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '9999px', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${selectedDossier.percent}%`, background: selectedDossier.color, borderRadius: '9999px', transition: 'width 0.4s ease' }} />
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
                   {selectedDossier.isComplete ? 'Seluruh berkas persyaratan telah lengkap.' : `Kurang ${selectedDossier.missingFields.length} berkas wajib.`}
@@ -3704,7 +3704,7 @@ export default function AdminPage() {
                     <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'var(--white)' }}>Direktori Berkas Dokumen Persyaratan</h3>
                     <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--text-light)' }}>Periksa kelengkapan berkas administrasi calon Duta Kampus UIN SSC 2026.</p>
                   </div>
-                  <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--white)', background: '#000000', padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--white)', background: '#000000', padding: '6px 14px', borderRadius: '12px', border: '1px solid var(--border)' }}>
                     Terunggah: <strong style={{ color: selectedDossier.color }}>{selectedDossier.filledCount} dari {selectedDossier.totalCount}</strong>
                   </div>
                 </div>
@@ -3789,7 +3789,7 @@ export default function AdminPage() {
                                   alignItems: 'center',
                                   gap: '5px',
                                   padding: '4px 8px',
-                                  borderRadius: '6px',
+                                  borderRadius: '9999px',
                                   background: '#fee2e2',
                                   border: '1px solid #fca5a5',
                                   color: '#991b1b',
@@ -3899,7 +3899,7 @@ export default function AdminPage() {
                         onClick={() => handleSetFinalistStatus(mergedSelectedItem.id, 'finalis')}
                         style={{
                           padding: '6px 14px',
-                          borderRadius: '8px',
+                          borderRadius: '12px',
                           border: mergedSelectedItem.finalistStatus === 'finalis' ? '1.5px solid #16a34a' : '1px solid #cbd5e1',
                           background: mergedSelectedItem.finalistStatus === 'finalis' ? '#16a34a' : '#fff',
                           color: mergedSelectedItem.finalistStatus === 'finalis' ? '#fff' : '#166534',
@@ -3916,7 +3916,7 @@ export default function AdminPage() {
                         onClick={() => handleSetFinalistStatus(mergedSelectedItem.id, 'tidak_lolos')}
                         style={{
                           padding: '6px 14px',
-                          borderRadius: '8px',
+                          borderRadius: '12px',
                           border: mergedSelectedItem.finalistStatus === 'tidak_lolos' ? '1.5px solid #dc2626' : '1px solid #cbd5e1',
                           background: mergedSelectedItem.finalistStatus === 'tidak_lolos' ? '#dc2626' : '#fff',
                           color: mergedSelectedItem.finalistStatus === 'tidak_lolos' ? '#fff' : '#991b1b',
@@ -3933,7 +3933,7 @@ export default function AdminPage() {
                         onClick={() => handleSetFinalistStatus(mergedSelectedItem.id, 'belum')}
                         style={{
                           padding: '6px 10px',
-                          borderRadius: '8px',
+                          borderRadius: '12px',
                           border: '1px solid var(--border)',
                           background: '#000000',
                           color: 'var(--white)',
@@ -3963,7 +3963,7 @@ export default function AdminPage() {
                       value={customMsg}
                       onChange={e => setCustomMsg(e.target.value)}
                       placeholder="Biarkan kosong untuk pesan default..."
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '0.85rem', boxSizing: 'border-box', fontFamily: 'inherit' }}
+                      style={{ width: '100%', padding: '0.75rem', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '0.85rem', boxSizing: 'border-box', fontFamily: 'inherit' }}
                     />
                   </div>
 
@@ -3971,7 +3971,7 @@ export default function AdminPage() {
                     <button
                       type="button"
                       className="btn"
-                      style={{ background: '#16a34a', color: '#fff', padding: '0.75rem 1.6rem', fontWeight: 700, borderRadius: '8px', border: 'none', cursor: 'pointer' }}
+                      style={{ background: '#16a34a', color: '#fff', padding: '0.75rem 1.6rem', fontWeight: 700, borderRadius: '12px', border: 'none', cursor: 'pointer' }}
                       onClick={() => { handleSetDossierStatus(mergedSelectedItem.id, 'lolos', customMsg); }}
                     >
                       Tetapkan Berkas Diterima
@@ -3989,7 +3989,7 @@ export default function AdminPage() {
                     <button
                       type="button"
                       className="btn"
-                      style={{ border: '1px solid var(--border)', background: '#050505', color: 'var(--white)', padding: '0.75rem 1.4rem', fontWeight: 600, borderRadius: '8px', cursor: 'pointer' }}
+                      style={{ border: '1px solid var(--border)', background: '#050505', color: 'var(--white)', padding: '0.75rem 1.4rem', fontWeight: 600, borderRadius: '12px', cursor: 'pointer' }}
                       onClick={() => { handleSetDossierStatus(mergedSelectedItem.id, 'review', customMsg); }}
                     >
                       Atur Dalam Peninjauan
@@ -4291,7 +4291,7 @@ export default function AdminPage() {
             </div>
 
             <form onSubmit={handleSaveUserPassword} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
-              <div style={{ background: '#000000', border: '1px solid var(--border)', borderRadius: '8px', padding: '0.75rem 1rem' }}>
+              <div style={{ background: '#000000', border: '1px solid var(--border)', borderRadius: '12px', padding: '0.75rem 1rem' }}>
                 <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--white)' }}>{editingPasswordUser.namaLengkap || editingPasswordUser.name}</div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-mid)', marginTop: '2px' }}>{editingPasswordUser.email}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '2px' }}>NIM: {editingPasswordUser.nim || '—'}</div>
@@ -4307,7 +4307,7 @@ export default function AdminPage() {
                   placeholder="Masukkan kata sandi baru..."
                   value={newPasswordVal}
                   onChange={e => setNewPasswordVal(e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem 0.85rem', borderRadius: '6px', border: '1px solid var(--border)', fontSize: '0.9rem', boxSizing: 'border-box' }}
+                  style={{ width: '100%', padding: '0.6rem 0.85rem', borderRadius: '9999px', border: '1px solid var(--border)', fontSize: '0.9rem', boxSizing: 'border-box' }}
                 />
                 <small style={{ color: 'var(--text-light)', fontSize: '0.72rem', marginTop: '4px', display: 'block' }}>
                   Kata sandi ini langsung tersimpan dan dapat dipakai peserta masuk ke dashboard profil.
@@ -4437,7 +4437,7 @@ export default function AdminPage() {
                 onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
                 style={{
                   padding: '0.75rem 1.25rem',
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   border: '1.5px solid var(--border)',
                   background: '#050505',
                   color: 'var(--muted)',
@@ -4457,7 +4457,7 @@ export default function AdminPage() {
                 }}
                 style={{
                   padding: '0.75rem 1.5rem',
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   border: 'none',
                   background: confirmModal.isDestructive ? '#dc2626' : 'var(--navy)',
                   color: '#ffffff',
@@ -4541,7 +4541,7 @@ export default function AdminPage() {
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', fontSize: '0.875rem' }}>
-              <div style={{ background: 'rgba(22,163,74,0.08)', border: '1px solid rgba(74,222,128,0.4)', padding: '1rem', borderRadius: '8px', marginBottom: '1.25rem', color: '#4ade80' }}>
+              <div style={{ background: 'rgba(22,163,74,0.08)', border: '1px solid rgba(74,222,128,0.4)', padding: '1rem', borderRadius: '12px', marginBottom: '1.25rem', color: '#4ade80' }}>
                 <strong>Langkah Mudah 3 Menit:</strong>
                 <ol style={{ margin: '0.5rem 0 0', paddingLeft: '1.25rem', lineHeight: 1.6 }}>
                   <li>Buka <a href="https://script.google.com/" target="_blank" rel="noreferrer" style={{ color: '#4ade80', fontWeight: 700 }}>script.google.com</a> &gt; Klik <strong>"New project"</strong>.</li>
@@ -4608,7 +4608,7 @@ function doPost(e) {
                 </button>
               </div>
 
-              <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '1rem', borderRadius: '8px', fontSize: '0.78rem', overflowX: 'auto', maxHeight: '280px', lineHeight: 1.5 }}>
+              <pre style={{ background: '#0f172a', color: '#f8fafc', padding: '1rem', borderRadius: '12px', fontSize: '0.78rem', overflowX: 'auto', maxHeight: '280px', lineHeight: 1.5 }}>
 {`// Salin file google-apps-script.js dari proyek atau klik tombol "Salin Seluruh Kode" di atas.`}
               </pre>
             </div>

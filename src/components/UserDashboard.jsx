@@ -841,7 +841,7 @@ export default function UserDashboard({ user, onLogout }) {
                 gap: '0.75rem',
                 width: '100%',
                 padding: '0.7rem 0.85rem',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 border: activeTab === 'beranda' ? '1px solid rgba(104, 61, 151, 0.35)' : '1px solid transparent',
                 background: activeTab === 'beranda' ? 'linear-gradient(90deg, rgba(104, 61, 151, 0.2) 0%, rgba(104, 61, 151, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'beranda' ? 'var(--blue-ice)' : '#cbd5e1',
@@ -865,7 +865,7 @@ export default function UserDashboard({ user, onLogout }) {
                 gap: '0.75rem',
                 width: '100%',
                 padding: '0.7rem 0.85rem',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 border: activeTab === 'pendaftaran' ? '1px solid rgba(104, 61, 151, 0.35)' : '1px solid transparent',
                 background: activeTab === 'pendaftaran' ? 'linear-gradient(90deg, rgba(104, 61, 151, 0.2) 0%, rgba(104, 61, 151, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'pendaftaran' ? 'var(--blue-ice)' : '#cbd5e1',
@@ -901,7 +901,7 @@ export default function UserDashboard({ user, onLogout }) {
                 gap: '0.75rem',
                 width: '100%',
                 padding: '0.7rem 0.85rem',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 border: activeTab === 'riwayat' ? '1px solid rgba(104, 61, 151, 0.35)' : '1px solid transparent',
                 background: activeTab === 'riwayat' ? 'linear-gradient(90deg, rgba(104, 61, 151, 0.2) 0%, rgba(104, 61, 151, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'riwayat' ? 'var(--blue-ice)' : '#cbd5e1',
@@ -940,7 +940,7 @@ export default function UserDashboard({ user, onLogout }) {
                 gap: '0.75rem',
                 width: '100%',
                 padding: '0.7rem 0.85rem',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 border: activeTab === 'pengaturan' ? '1px solid rgba(104, 61, 151, 0.35)' : '1px solid transparent',
                 background: activeTab === 'pengaturan' ? 'linear-gradient(90deg, rgba(104, 61, 151, 0.2) 0%, rgba(104, 61, 151, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'pengaturan' ? 'var(--blue-ice)' : '#cbd5e1',
@@ -964,7 +964,7 @@ export default function UserDashboard({ user, onLogout }) {
               style={{
                 width: 36,
                 height: 36,
-                borderRadius: '8px',
+                borderRadius: '12px',
                 background: 'linear-gradient(135deg, var(--gold), var(--blue-dark))',
                 display: 'flex',
                 alignItems: 'center',
@@ -1134,7 +1134,7 @@ export default function UserDashboard({ user, onLogout }) {
                 background: '#050505',
                 color: '#ffffff',
                 padding: '0.9rem 1.35rem',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
                 borderLeft: `4px solid ${isErr ? '#ef4444' : 'var(--gold)'}`,
                 fontSize: '0.86rem',
@@ -1259,7 +1259,7 @@ export default function UserDashboard({ user, onLogout }) {
                 <div style={{
                   background: '#050505',
                   border: '1.5px solid var(--border)',
-                  borderRadius: '14px',
+                  borderRadius: '16px',
                   padding: '1.5rem',
                   boxShadow: '0 4px 18px rgba(104, 61, 151, 0.2)'
                 }}>
@@ -1337,7 +1337,7 @@ export default function UserDashboard({ user, onLogout }) {
                               padding: '0.6rem 0.85rem',
                               fontSize: '0.825rem',
                               border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)',
-                              borderRadius: '8px',
+                              borderRadius: '12px',
                               outline: 'none'
                             }}
                           />
@@ -1352,7 +1352,7 @@ export default function UserDashboard({ user, onLogout }) {
                               }
                             }}
                             className="btn btn-sm btn-accent"
-                            style={{ whiteSpace: 'nowrap', borderRadius: '8px', padding: '0 1rem' }}
+                            style={{ whiteSpace: 'nowrap', borderRadius: '12px', padding: '0 1rem' }}
                           >
                             Simpan Link
                           </button>
@@ -1506,25 +1506,25 @@ export default function UserDashboard({ user, onLogout }) {
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
                             {ann.date && (
-                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '12px', border: '1px solid #dcfce7' }}>
                                 <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Hari & Tanggal</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.date}</div>
                               </div>
                             )}
                             {ann.time && (
-                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '12px', border: '1px solid #dcfce7' }}>
                                 <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Waktu</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.time}</div>
                               </div>
                             )}
                             {ann.location && (
-                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '12px', border: '1px solid #dcfce7' }}>
                                 <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Tempat / Lokasi</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.location}</div>
                               </div>
                             )}
                             {ann.dressCode && (
-                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '12px', border: '1px solid #dcfce7' }}>
                                 <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Dress Code</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.dressCode}</div>
                               </div>
@@ -1536,7 +1536,7 @@ export default function UserDashboard({ user, onLogout }) {
                         </div>
                       )}
 
-                      <div style={{ background: '#000000', borderRadius: '8px', padding: '1rem', border: '1px solid var(--border)' }}>
+                      <div style={{ background: '#000000', borderRadius: '12px', padding: '1rem', border: '1px solid var(--border)' }}>
                         <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.5rem' }}>
                           Hubungi panitia:
                         </div>
@@ -1663,7 +1663,7 @@ export default function UserDashboard({ user, onLogout }) {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       className="btn btn-gold btn-sm"
-                      style={{ padding: '0.6rem 1.25rem', borderRadius: '8px', fontWeight: 600 }}
+                      style={{ padding: '0.6rem 1.25rem', borderRadius: '12px', fontWeight: 600 }}
                     >
                       Lihat Berkas Saya
                     </button>
@@ -1675,7 +1675,7 @@ export default function UserDashboard({ user, onLogout }) {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       className="btn btn-outline-gold btn-sm"
-                      style={{ padding: '0.6rem 1.25rem', borderRadius: '8px', fontWeight: 600 }}
+                      style={{ padding: '0.6rem 1.25rem', borderRadius: '12px', fontWeight: 600 }}
                     >
                       Lihat Linimasa & Hasil Seleksi
                     </button>
@@ -1905,7 +1905,7 @@ export default function UserDashboard({ user, onLogout }) {
                   className="btn btn-gold"
                   style={{
                     padding: '0.85rem 1.75rem',
-                    borderRadius: '8px',
+                    borderRadius: '12px',
                     fontSize: '0.925rem',
                     fontWeight: 600
                   }}
@@ -1944,7 +1944,7 @@ export default function UserDashboard({ user, onLogout }) {
                       className="btn btn-gold"
                       style={{
                         padding: '0.85rem 1.75rem',
-                        borderRadius: '8px',
+                        borderRadius: '12px',
                         fontSize: '0.9rem',
                         fontWeight: 600
                       }}
@@ -2112,7 +2112,7 @@ export default function UserDashboard({ user, onLogout }) {
                         onChange={handleInputChange}
                         required
                         placeholder="Nama lengkap"
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '12px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2127,7 +2127,7 @@ export default function UserDashboard({ user, onLogout }) {
                         onChange={handleInputChange}
                         required
                         placeholder="NIM"
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '12px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2142,7 +2142,7 @@ export default function UserDashboard({ user, onLogout }) {
                         onChange={handleInputChange}
                         required
                         placeholder="Fakultas"
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '12px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2157,7 +2157,7 @@ export default function UserDashboard({ user, onLogout }) {
                         onChange={handleInputChange}
                         required
                         placeholder="Program studi"
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '12px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
                   </div>
@@ -2183,7 +2183,7 @@ export default function UserDashboard({ user, onLogout }) {
                         name="semester"
                         value={formData.semester}
                         onChange={handleInputChange}
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box', background: '#050505' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '12px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box', background: '#050505' }}
                       >
                         <option value="1">Semester 1</option>
                         <option value="2">Semester 2</option>
@@ -2205,7 +2205,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.ipk}
                         onChange={handleInputChange}
                         required
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '12px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2220,7 +2220,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.noHp}
                         onChange={handleInputChange}
                         required
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '12px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2235,7 +2235,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.alamat}
                         onChange={handleInputChange}
                         required
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '12px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
                   </div>
@@ -2481,7 +2481,7 @@ export default function UserDashboard({ user, onLogout }) {
                     className="save-draft-btn"
                     style={{
                       padding: '0.875rem 1.5rem',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)',
                       background: (isSavingDraft || isFormLocked) ? '#0d1522' : '#050505',
                       fontSize: '0.925rem',
@@ -2507,7 +2507,7 @@ export default function UserDashboard({ user, onLogout }) {
                     className="btn btn-gold submit-application-btn"
                     style={{
                       padding: '0.875rem 2rem',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       fontSize: '0.925rem',
                       fontWeight: 700,
                       flex: '2 1 auto',
@@ -2790,7 +2790,7 @@ export default function UserDashboard({ user, onLogout }) {
                   <div
                     style={{
                       padding: '0.75rem 1rem',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       marginBottom: '1.25rem',
                       fontSize: '0.85rem',
                       fontWeight: 500,
@@ -2815,7 +2815,7 @@ export default function UserDashboard({ user, onLogout }) {
                       style={{
                         width: '100%',
                         padding: '0.75rem 0.85rem',
-                        borderRadius: '8px',
+                        borderRadius: '12px',
                         border: '1px solid var(--border)',
                         background: '#000000',
                         color: 'var(--white)',
@@ -2839,7 +2839,7 @@ export default function UserDashboard({ user, onLogout }) {
                       style={{
                         width: '100%',
                         padding: '0.75rem 0.85rem',
-                        borderRadius: '8px',
+                        borderRadius: '12px',
                         border: '1px solid var(--border)',
                         fontSize: '0.9rem',
                         outline: 'none',
@@ -2862,7 +2862,7 @@ export default function UserDashboard({ user, onLogout }) {
                         style={{
                           width: '100%',
                           padding: '0.75rem 2.8rem 0.75rem 0.85rem',
-                          borderRadius: '8px',
+                          borderRadius: '12px',
                           border: '1px solid var(--border)',
                           fontSize: '0.9rem',
                           outline: 'none',
@@ -2907,7 +2907,7 @@ export default function UserDashboard({ user, onLogout }) {
                         padding: '0.75rem 1.75rem',
                         fontSize: '0.9rem',
                         fontWeight: 700,
-                        borderRadius: '8px',
+                        borderRadius: '12px',
                         cursor: emailLoading ? 'not-allowed' : 'pointer'
                       }}
                     >
@@ -2943,7 +2943,7 @@ export default function UserDashboard({ user, onLogout }) {
                   <div
                     style={{
                       padding: '0.75rem 1rem',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       marginBottom: '1.25rem',
                       fontSize: '0.85rem',
                       fontWeight: 500,
@@ -2971,7 +2971,7 @@ export default function UserDashboard({ user, onLogout }) {
                         style={{
                           width: '100%',
                           padding: '0.75rem 2.8rem 0.75rem 0.85rem',
-                          borderRadius: '8px',
+                          borderRadius: '12px',
                           border: '1px solid var(--border)',
                           fontSize: '0.9rem',
                           outline: 'none',
@@ -3017,7 +3017,7 @@ export default function UserDashboard({ user, onLogout }) {
                       style={{
                         width: '100%',
                         padding: '0.75rem 0.85rem',
-                        borderRadius: '8px',
+                        borderRadius: '12px',
                         border: '1px solid var(--border)',
                         fontSize: '0.9rem',
                         outline: 'none',
@@ -3035,7 +3035,7 @@ export default function UserDashboard({ user, onLogout }) {
                         padding: '0.75rem 1.75rem',
                         fontSize: '0.9rem',
                         fontWeight: 700,
-                        borderRadius: '8px',
+                        borderRadius: '12px',
                         cursor: passLoading ? 'not-allowed' : 'pointer'
                       }}
                     >
