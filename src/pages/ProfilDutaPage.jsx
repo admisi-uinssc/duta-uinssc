@@ -66,7 +66,7 @@ export default function ProfilDutaPage() {
           });
         });
 
-        setFinalists(Array.from(map.values()));
+        setFinalists(Array.from(map.values()).slice(0, 20));
       } catch (err) {}
     };
 
@@ -186,8 +186,8 @@ export default function ProfilDutaPage() {
                     border: 'none',
                     fontSize: '0.85rem',
                     fontWeight: activeMainTab === 'finalis' ? 700 : 500,
-                    background: activeMainTab === 'finalis' ? 'var(--gold)' : 'transparent',
-                    color: activeMainTab === 'finalis' ? 'var(--navy)' : 'var(--text-mid)',
+                    background: activeMainTab === 'finalis' ? 'var(--red)' : 'transparent',
+                    color: activeMainTab === 'finalis' ? 'var(--white)' : 'var(--white)',
                     cursor: 'pointer',
                     transition: 'all 0.2s'
                   }}
@@ -428,7 +428,7 @@ export default function ProfilDutaPage() {
                       </div>
                     )}
                     {duta.faculty && (
-                      <div className="ambassador-badge" style={{ background: activeMainTab === 'finalis' ? 'var(--navy)' : 'var(--gold)', color: '#ffffff' }}>
+                      <div className="ambassador-badge" style={{ background: activeMainTab === 'finalis' ? 'var(--red)' : 'var(--spectra-blue)', color: '#ffffff' }}>
                         {duta.faculty}
                       </div>
                     )}

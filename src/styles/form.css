@@ -20,7 +20,7 @@
 
 .form-wrapper {
   width: 100%; max-width: 820px;
-  background: #110d17; border-radius: 20px;
+  background: #050505; border-radius: 20px;
   border: 1px solid var(--border); box-shadow: var(--shadow-md);
   overflow: hidden;
 }
@@ -44,16 +44,16 @@
 .step-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; flex: 1; position: relative; z-index: 1; }
 .step-item::after { content: ''; position: absolute; top: 22px; left: 50%; right: -50%; height: 1.5px; background: var(--border); z-index: -1; }
 .step-item:last-child::after { display: none; }
-.step-circle { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--border); background: #110d17; color: var(--muted); font-size: 0.82rem; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all 0.35s; }
+.step-circle { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--border); background: #050505; color: var(--muted); font-size: 0.82rem; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all 0.35s; }
 .step-label { font-size: 0.72rem; color: var(--muted); font-weight: 500; text-align: center; transition: color 0.35s; }
-.step-item.active .step-circle { background: var(--purple); border-color: var(--purple); color: #fff; box-shadow: 0 0 0 4px rgba(104, 61, 151,0.25); }
+.step-item.active .step-circle { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 0 0 4px rgba(219, 31, 38, 0.25); }
 .step-item.active .step-label { color: var(--white); font-weight: 700; }
 .step-item.done .step-circle { background: var(--red); border-color: var(--red); color: #fff; font-size: 0; }
 .step-item.done .step-circle::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #ffffff; }
 .step-item.done .step-label { color: var(--white); }
 
 /* STEPS */
-.form-step { display: none; padding: 2.5rem; animation: fadeUp 0.35s ease; background: #110d17; color: var(--white); }
+.form-step { display: none; padding: 2.5rem; animation: fadeUp 0.35s ease; background: #050505; color: var(--white); }
 .form-step.active { display: block; }
 .step-title { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
 .step-num { font-size: 3.5rem; font-weight: 800; color: #291f36; line-height: 1; }
@@ -78,7 +78,7 @@
   border-color: var(--spectra-blue); background: #000; box-shadow: 0 0 0 3px rgba(0, 145, 255, 0.25);
 }
 .form-group input::placeholder, .form-group textarea::placeholder { color: var(--muted); }
-.form-group select option { background: #110d17; color: var(--white); }
+.form-group select option { background: #050505; color: var(--white); }
 .form-group textarea { resize: vertical; min-height: 90px; }
 .form-group input.error, .form-group select.error, .form-group textarea.error { border-color: var(--red); }
 .field-error { font-size: 0.76rem; color: #f87171; display: none; }
@@ -123,10 +123,10 @@
 .form-actions { display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; border-top: 1px solid var(--border); margin-top: 2rem; }
 
 /* CLOSED & SUCCESS */
-.closed-notice { text-align: center; padding: 4rem 2rem; max-width: 480px; background: #110d17; border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-md); margin: 0 1.5rem; color: var(--white); }
+.closed-notice { text-align: center; padding: 4rem 2rem; max-width: 480px; background: #050505; border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-md); margin: 0 1.5rem; color: var(--white); }
 .closed-notice h2 { font-size: 1.75rem; font-weight: 800; color: var(--white); margin: 1.5rem 0 0.75rem; }
 .closed-notice p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem; }
-.success-screen { text-align: center; padding: 4rem 2rem; max-width: 540px; background: #110d17; border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-md); margin: 0 1.5rem; animation: scaleIn 0.5s ease; color: var(--white); }
+.success-screen { text-align: center; padding: 4rem 2rem; max-width: 540px; background: #050505; border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-md); margin: 0 1.5rem; animation: scaleIn 0.5s ease; color: var(--white); }
 .success-screen h2 { font-size: 2rem; font-weight: 800; color: var(--white); margin-bottom: 0.75rem; }
 .success-screen p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
 .success-screen p strong { color: var(--white); }

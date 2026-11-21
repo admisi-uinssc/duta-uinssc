@@ -14,20 +14,20 @@
   /* Brand Master Palette (User Guidelines) */
   --black: #000;
   --white: #fff;
-  --muted: #b3adbb;
-  --soft: #e9e4ee;
+  --muted: #e2e8f0;
+  --soft: #111111;
   --red: #db1f26;
-  --purple: #683d97;
+  --purple: #0091ff;
   --serif: "Instrument Serif", "Times New Roman", Georgia, serif;
   --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --px: 100px;
   --tint: grayscale(1) contrast(1.1);
 
   /* Derived Palette Tones */
-  --purple-dark: #4b2574;
-  --purple-deep: #1e0e33;
-  --purple-light: #8352b8;
-  --purple-faint: rgba(104, 61, 151, 0.15);
+  --purple-dark: #0070c9;
+  --purple-deep: #050505;
+  --purple-light: #40b0ff;
+  --purple-faint: rgba(0, 145, 255, 0.15);
 
   --red-hover: #b8171d;
   --red-faint: rgba(219, 31, 38, 0.15);
@@ -39,7 +39,7 @@
 
   /* Semantic Mappings */
   --navy: var(--white);
-  --navy-bg: #110d17;
+  --navy-bg: #000000;
   --gold: var(--white);
   --gold-dark: #f0f0f0;
   --gold-faint: rgba(255, 255, 255, 0.1);
@@ -346,7 +346,7 @@ span, label, small, strong, li {
   color: #fff; 
 }
 
-.btn-purple { background: var(--purple); color: #fff; border: 1.5px solid var(--purple); }
+.btn-purple { background: var(--red); color: #fff; border: 1.5px solid var(--red); }
 .btn-purple:hover { background: var(--purple-dark); border-color: var(--purple-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(104, 61, 151, 0.35); }
 .btn-outline-purple { background: transparent; color: var(--purple); border: 1.5px solid var(--purple); }
 .btn-outline-purple:hover { background: var(--purple); color: #fff; }
@@ -357,8 +357,8 @@ span, label, small, strong, li {
 .btn-outline-accent, .btn-outline-red, .btn-outline-danger { background: transparent; color: var(--red); border: 1.5px solid var(--red); }
 .btn-outline-accent:hover, .btn-outline-red:hover, .btn-outline-danger:hover { background: var(--red); color: #fff; }
 .badge-accent, .tag-red { background: var(--red); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; }
-.badge-purple { background: var(--purple); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; }
-.badge-soft { background: var(--soft); color: var(--purple); border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
+.badge-purple { background: var(--red); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; }
+.badge-soft { background: #111111; color: var(--white); border: 1px solid #333333; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
 
 .card {
   background: #110d17;

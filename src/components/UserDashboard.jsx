@@ -386,12 +386,13 @@ export default function UserDashboard({ user, onLogout }) {
           if (localUser) syncUserToCloud(localUser);
           return;
         }
-        // Account has been deleted from server database!
-        Auth.logout();
-        const allUsers = Auth.getUsers().filter(u => (u.email || '').toLowerCase() !== (user.email || '').toLowerCase());
-        localStorage.setItem('dutauinssc_users', JSON.stringify(allUsers));
-        if (typeof onLogout === 'function') onLogout();
-        else window.location.href = '/login';
+        // Verify local existence before clearing
+        const localStillValid = Auth.getCurrentUser();
+        if (!localStillValid || (localStillValid.email || '').toLowerCase() !== (user.email || '').toLowerCase()) {
+          Auth.logout();
+          if (typeof onLogout === 'function') onLogout();
+          else window.location.href = '/login';
+        }
         return;
       }
       if (cloudUser) {
@@ -564,6 +565,9 @@ export default function UserDashboard({ user, onLogout }) {
 
       // Keep only active uploaded documents, never revive deleted documents
       cleanForm.berkas = {};
+      if (formData.fotoProfil) {
+        cleanForm.fotoProfil = formData.fotoProfil;
+      }
       DOSSIER_DOCUMENTS.forEach(d => {
         const val = cleanForm[d.key];
         if (val && val !== '' && val !== '-' && val !== 'null') {
@@ -675,6 +679,9 @@ export default function UserDashboard({ user, onLogout }) {
       delete cleanForm.status;
 
       cleanForm.berkas = {};
+      if (formData.fotoProfil) {
+        cleanForm.fotoProfil = formData.fotoProfil;
+      }
       DOSSIER_DOCUMENTS.forEach(d => {
         if (cleanForm[d.key]) {
           cleanForm.berkas[d.key] = cleanForm[d.key];
@@ -975,7 +982,7 @@ export default function UserDashboard({ user, onLogout }) {
               <div style={{ fontSize: '0.825rem', fontWeight: 600, color: '#ffffff', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                 {formData.namaLengkap || user.namaLengkap || user.fullName || user.name || user.email || 'Peserta'}
               </div>
-              <div style={{ fontSize: '0.7rem', color: '#94a3b8', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--white)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                 {user.email}
               </div>
             </div>
@@ -1013,7 +1020,7 @@ export default function UserDashboard({ user, onLogout }) {
         <header
           className="user-dashboard-desktop-header"
           style={{
-            background: '#0d0814',
+            background: '#000000',
             borderBottom: '1px solid var(--border)',
             padding: '1rem 2.5rem',
             display: 'flex',
@@ -1230,7 +1237,7 @@ export default function UserDashboard({ user, onLogout }) {
                       href={cmsData?.contacts?.whatsappUrl || 'https://wa.me/6285122927628'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-sm btn-gold"
+                      className="btn btn-sm btn-accent"
                       style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.82rem', fontWeight: 700, borderRadius: '4px' }}
                     >
                       Hubungi Panitia
@@ -1250,7 +1257,7 @@ export default function UserDashboard({ user, onLogout }) {
               {/* KARTU KHUSUS FINALIS: FOTO PROFIL UNTUK TAMPILAN PUBLIK */}
               {isFinalist && (
                 <div style={{
-                  background: '#110d17',
+                  background: '#050505',
                   border: '1.5px solid var(--border)',
                   borderRadius: '14px',
                   padding: '1.5rem',
@@ -1274,7 +1281,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
                     {/* Preview Foto */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#0d0814', padding: '1.25rem', borderRadius: '12px', border: '1px dashed var(--border)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#000000', padding: '1.25rem', borderRadius: '12px', border: '1px dashed var(--border)' }}>
                       <div style={{
                         width: '140px',
                         height: '175px',
@@ -1296,7 +1303,7 @@ export default function UserDashboard({ user, onLogout }) {
                             fallbackSrc="/assets/logo-circle.png"
                           />
                         ) : (
-                          <div style={{ textAlign: 'center', color: '#94a3b8', padding: '1rem' }}>
+                          <div style={{ textAlign: 'center', color: 'var(--white)', padding: '1rem' }}>
                             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto 6px' }}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <div style={{ fontSize: '0.72rem' }}>Belum ada foto profil</div>
                           </div>
@@ -1305,7 +1312,7 @@ export default function UserDashboard({ user, onLogout }) {
                       <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--white)', marginTop: '0.75rem' }}>
                         {participantName || 'Finalis Duta Kampus'}
                       </span>
-                      <span style={{ fontSize: '0.68rem', color: '#64748b' }}>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--white)' }}>
                         {formData.fakultas || formData.jurusan || 'UIN Siber Cirebon'}
                       </span>
                     </div>
@@ -1329,7 +1336,7 @@ export default function UserDashboard({ user, onLogout }) {
                               flex: 1,
                               padding: '0.6rem 0.85rem',
                               fontSize: '0.825rem',
-                              border: '1.5px solid #cbd5e1',
+                              border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)',
                               borderRadius: '8px',
                               outline: 'none'
                             }}
@@ -1344,13 +1351,13 @@ export default function UserDashboard({ user, onLogout }) {
                                 triggerAlert('Gagal menyimpan foto profil: ' + err.message, 'danger');
                               }
                             }}
-                            className="btn btn-sm btn-gold"
+                            className="btn btn-sm btn-accent"
                             style={{ whiteSpace: 'nowrap', borderRadius: '8px', padding: '0 1rem' }}
                           >
                             Simpan Link
                           </button>
                         </div>
-                        <small style={{ fontSize: '0.72rem', color: '#64748b', display: 'block', marginTop: '4px' }}>
+                        <small style={{ fontSize: '0.72rem', color: 'var(--white)', display: 'block', marginTop: '4px' }}>
                           *Pastikan akses sharing link Google Drive diatur ke <em>"Anyone with the link / Siapa saja yang memiliki link"</em>.
                         </small>
                       </div>
@@ -1538,7 +1545,7 @@ export default function UserDashboard({ user, onLogout }) {
                             href={waUrl} 
                             target="_blank" 
                             rel="noopener noreferrer" 
-                            className="btn btn-sm btn-gold"
+                            className="btn btn-sm btn-accent"
                             style={{ textDecoration: 'none', padding: '0.45rem 1rem', fontSize: '0.825rem', fontWeight: 700, borderRadius: '4px', display: 'inline-block' }}
                           >
                             WhatsApp: {ann.contactWa || contacts.whatsapp}
@@ -1605,7 +1612,7 @@ export default function UserDashboard({ user, onLogout }) {
                     <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#dc2626' }}>
                       Pendaftaran Ditutup
                     </div>
-                    <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--white)' }}>
                       25 Oktober 2026 · 23:59 WIB
                     </div>
                   </div>
@@ -1633,7 +1640,7 @@ export default function UserDashboard({ user, onLogout }) {
                     gap: '0.75rem'
                   }}>
                     <div>
-                      <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '2px' }}>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--white)', marginBottom: '2px' }}>
                         Status Berkas Anda Saat Penutupan:
                       </div>
                       <div style={{ fontSize: '0.95rem', fontWeight: 700, color: dossierStatus.isComplete ? '#16a34a' : '#b45309' }}>
@@ -1641,7 +1648,7 @@ export default function UserDashboard({ user, onLogout }) {
                       </div>
                     </div>
 
-                    <div style={{ fontSize: '0.825rem', color: '#64748b' }}>
+                    <div style={{ fontSize: '0.825rem', color: 'var(--white)' }}>
                       {dossierStatus.isComplete 
                         ? 'Dokumen persyaratan Anda telah lengkap untuk dinilai dalam seleksi administrasi.' 
                         : 'Catatan: Berkas yang telah terunggah akan dinilai kelayakannya oleh dewan juri.'}
@@ -1867,7 +1874,7 @@ export default function UserDashboard({ user, onLogout }) {
                     </span>
                   </div>
 
-                  <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--white)' }}>
                     Terkumpul: <strong>{dossierStatus.filledCount} dari {dossierStatus.totalCount} komponen</strong>
                   </div>
                 </div>
@@ -1928,7 +1935,7 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
 
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.825rem', color: '#64748b', marginBottom: '0.65rem' }}>
+                    <div style={{ fontSize: '0.825rem', color: 'var(--white)', marginBottom: '0.65rem' }}>
                       Status Pengiriman: <strong style={{ color: isSubmitted ? '#166534' : '#b45309' }}>{isSubmitted ? 'Telah Dikirimkan' : 'Belum Dikirim'}</strong>
                     </div>
                     <button
@@ -1957,7 +1964,7 @@ export default function UserDashboard({ user, onLogout }) {
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--white)', margin: '0' }}>
                   Profil & Berkas Pendaftaran
                 </h3>
-                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.35rem 0 0' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--white)', margin: '0.35rem 0 0' }}>
                   Lengkapi data profil identitas, data akademik, dan 10 berkas persyaratan calon duta kampus.
                 </p>
               </div>
@@ -2088,7 +2095,7 @@ export default function UserDashboard({ user, onLogout }) {
                     <h4 style={{ margin: '0 0 0.25rem', color: 'var(--white)', fontSize: '1.1rem', fontWeight: 700 }}>
                       1. Identitas Pribadi & Kemahasiswaan
                     </h4>
-                    <p style={{ margin: 0, fontSize: '0.825rem', color: '#64748b' }}>
+                    <p style={{ margin: 0, fontSize: '0.825rem', color: 'var(--white)' }}>
                       Data pokok yang telah diverifikasi saat pengajuan akun.
                     </p>
                   </div>
@@ -2105,7 +2112,7 @@ export default function UserDashboard({ user, onLogout }) {
                         onChange={handleInputChange}
                         required
                         placeholder="Nama lengkap"
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2120,7 +2127,7 @@ export default function UserDashboard({ user, onLogout }) {
                         onChange={handleInputChange}
                         required
                         placeholder="NIM"
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2135,7 +2142,7 @@ export default function UserDashboard({ user, onLogout }) {
                         onChange={handleInputChange}
                         required
                         placeholder="Fakultas"
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2150,7 +2157,7 @@ export default function UserDashboard({ user, onLogout }) {
                         onChange={handleInputChange}
                         required
                         placeholder="Program studi"
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
                   </div>
@@ -2162,7 +2169,7 @@ export default function UserDashboard({ user, onLogout }) {
                     <h4 style={{ margin: '0 0 0.25rem', color: 'var(--white)', fontSize: '1.1rem', fontWeight: 700 }}>
                       2. Data Akademik & Kontak Aktif
                     </h4>
-                    <p style={{ margin: 0, fontSize: '0.825rem', color: '#64748b' }}>
+                    <p style={{ margin: 0, fontSize: '0.825rem', color: 'var(--white)' }}>
                       Informasi semester, nilai IPK kumulatif, serta kontak WhatsApp aktif.
                     </p>
                   </div>
@@ -2176,7 +2183,7 @@ export default function UserDashboard({ user, onLogout }) {
                         name="semester"
                         value={formData.semester}
                         onChange={handleInputChange}
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box', background: '#fff' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box', background: '#fff' }}
                       >
                         <option value="1">Semester 1</option>
                         <option value="2">Semester 2</option>
@@ -2198,7 +2205,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.ipk}
                         onChange={handleInputChange}
                         required
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2213,7 +2220,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.noHp}
                         onChange={handleInputChange}
                         required
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -2228,7 +2235,7 @@ export default function UserDashboard({ user, onLogout }) {
                         value={formData.alamat}
                         onChange={handleInputChange}
                         required
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', fontSize: '0.925rem', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box' }}
                       />
                     </div>
                   </div>
@@ -2241,7 +2248,7 @@ export default function UserDashboard({ user, onLogout }) {
                       <h4 style={{ margin: '0 0 0.25rem', color: 'var(--white)', fontSize: '1.1rem', fontWeight: 700 }}>
                         3. Berkas Dokumen Persyaratan
                       </h4>
-                      <p style={{ margin: 0, fontSize: '0.825rem', color: '#64748b' }}>
+                      <p style={{ margin: 0, fontSize: '0.825rem', color: 'var(--white)' }}>
                         Lampirkan dokumen resmi persyaratan seleksi Pemilihan Duta Kampus 2026.
                       </p>
                     </div>
@@ -2288,7 +2295,7 @@ export default function UserDashboard({ user, onLogout }) {
                               >
                                 {isMandatory ? 'Wajib' : doc.conditionalNote || 'Tidak Wajib'}
                               </span>
-                              <span className="dossier-format-label" style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                              <span className="dossier-format-label" style={{ fontSize: '0.72rem', color: 'var(--white)' }}>
                                 {doc.formatLabel}
                               </span>
                             </div>
@@ -2296,7 +2303,7 @@ export default function UserDashboard({ user, onLogout }) {
                             <div className="dossier-card-title" style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.25rem' }}>
                               {idx + 1}. {doc.label}
                             </div>
-                            <div className="dossier-card-sublabel" style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.4 }}>
+                            <div className="dossier-card-sublabel" style={{ fontSize: '0.78rem', color: 'var(--white)', lineHeight: 1.4 }}>
                               {doc.sublabel}
                             </div>
                           </div>
@@ -2475,7 +2482,7 @@ export default function UserDashboard({ user, onLogout }) {
                     style={{
                       padding: '0.875rem 1.5rem',
                       borderRadius: '8px',
-                      border: '1.5px solid #cbd5e1',
+                      border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)',
                       background: (isSavingDraft || isFormLocked) ? '#f8fafc' : '#ffffff',
                       fontSize: '0.925rem',
                       fontWeight: 600,
@@ -2529,7 +2536,7 @@ export default function UserDashboard({ user, onLogout }) {
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--white)', margin: '0 0 0.35rem' }}>
                   Riwayat & Linimasa Seleksi Duta Kampus
                 </h3>
-                <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--white)', margin: 0 }}>
                   Pantau perkembangan tahapan seleksi Anda secara transparan.
                 </p>
               </div>
@@ -2595,7 +2602,7 @@ export default function UserDashboard({ user, onLogout }) {
                   )}
                 </p>
 
-                <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.825rem', color: '#64748b', borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '0.75rem' }}>
+                <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.825rem', color: 'var(--white)', borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '0.75rem' }}>
                   <div>Waktu Akun Dibuat: <strong>{user.createdAt ? formatDateTime(user.createdAt) : '—'}</strong></div>
                   <div>Status Dokumen: <strong style={{ color: dossierStatus.color }}>{dossierStatus.statusLabel}</strong></div>
                 </div>
@@ -2725,11 +2732,11 @@ export default function UserDashboard({ user, onLogout }) {
                             <span style={{ fontWeight: 700, color: step.isCurrent ? 'var(--gold)' : 'var(--navy)', fontSize: '0.975rem' }}>
                               {step.title}
                             </span>
-                            <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--white)', fontWeight: 500 }}>
                               {step.date}
                             </span>
                           </div>
-                          <p style={{ margin: '0.35rem 0', fontSize: '0.85rem', color: '#64748b', lineHeight: 1.5 }}>
+                          <p style={{ margin: '0.35rem 0', fontSize: '0.85rem', color: 'var(--white)', lineHeight: 1.5 }}>
                             {step.desc}
                           </p>
                           <span
@@ -2774,7 +2781,7 @@ export default function UserDashboard({ user, onLogout }) {
                   <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--white)', margin: '0 0 6px 0' }}>
                     Alamat Email Login
                   </h3>
-                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--white)', margin: 0, lineHeight: 1.5 }}>
                     Email ini digunakan sebagai identitas akun dan sarana masuk ke portal pendaftar Duta Kampus 2026.
                   </p>
                 </div>
@@ -2811,7 +2818,7 @@ export default function UserDashboard({ user, onLogout }) {
                         borderRadius: '8px',
                         border: '1px solid #e2e8f0',
                         background: '#f8fafc',
-                        color: '#64748b',
+                        color: 'var(--white)',
                         fontSize: '0.9rem',
                         boxSizing: 'border-box',
                         cursor: 'not-allowed'
@@ -2873,7 +2880,7 @@ export default function UserDashboard({ user, onLogout }) {
                           background: 'none',
                           border: 'none',
                           cursor: 'pointer',
-                          color: '#64748b',
+                          color: 'var(--white)',
                           display: 'flex',
                           alignItems: 'center'
                         }}
@@ -2886,7 +2893,7 @@ export default function UserDashboard({ user, onLogout }) {
                         )}
                       </button>
                     </div>
-                    <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>
+                    <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--white)', marginTop: '4px' }}>
                       Kata sandi Anda diperlukan untuk memverifikasi kepemilikan akun sebelum email diubah.
                     </span>
                   </div>
@@ -2927,7 +2934,7 @@ export default function UserDashboard({ user, onLogout }) {
                   <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--white)', margin: '0 0 6px 0' }}>
                     Pengaturan Kata Sandi
                   </h3>
-                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--white)', margin: 0, lineHeight: 1.5 }}>
                     Atur kata sandi akun Anda agar lebih mudah diingat dan tetap aman untuk masuk ke akun peserta.
                   </p>
                 </div>
@@ -2982,7 +2989,7 @@ export default function UserDashboard({ user, onLogout }) {
                           background: 'none',
                           border: 'none',
                           cursor: 'pointer',
-                          color: '#64748b',
+                          color: 'var(--white)',
                           display: 'flex',
                           alignItems: 'center'
                         }}

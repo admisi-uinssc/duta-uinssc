@@ -65,7 +65,7 @@ export default function FinalistShowcaseSlider() {
           });
         });
 
-        setFinalists(Array.from(map.values()));
+        setFinalists(Array.from(map.values()).slice(0, 20));
       } catch (err) {}
     };
 
