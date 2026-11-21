@@ -153,7 +153,7 @@ export default function AboutSection() {
                 <div style={{ width: '4px', height: '42px', background: 'var(--gold)', borderRadius: '2px', flexShrink: 0 }} />
                 <div className="about-point-text">
                   <strong style={{ color: 'var(--white)', fontSize: '0.95rem' }}>{aboutData.point1Title || 'Sosialisasi & Edukasi Calon Mahasiswa'}</strong>
-                  <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
+                  <p style={{ margin: 0, fontSize: '0.875rem', color: '#e2e8f0', lineHeight: 1.5 }}>
                     {aboutData.point1Desc || 'Mendampingi calon mahasiswa baru dari seleksi SPAN-PTKIN, UM-PTKIN, hingga SPMB Mandiri.'}
                   </p>
                 </div>
@@ -163,7 +163,7 @@ export default function AboutSection() {
                 <div style={{ width: '4px', height: '42px', background: 'var(--navy)', borderRadius: '2px', flexShrink: 0 }} />
                 <div className="about-point-text">
                   <strong style={{ color: 'var(--white)', fontSize: '0.95rem' }}>{aboutData.point2Title || 'Duta Promosi Multimedia & Humas'}</strong>
-                  <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
+                  <p style={{ margin: 0, fontSize: '0.875rem', color: '#e2e8f0', lineHeight: 1.5 }}>
                     {aboutData.point2Desc || 'Menghadirkan konten kreatif flyer, video promosi, dan aktivasi media sosial institusi.'}
                   </p>
                 </div>

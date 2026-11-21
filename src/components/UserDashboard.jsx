@@ -1495,7 +1495,7 @@ export default function UserDashboard({ user, onLogout }) {
                         {renderedGreeting}
                       </div>
 
-                      <p style={{ fontSize: '0.9rem', color: 'var(--text-mid)', lineHeight: 1.6, margin: '0 0 1.25rem 0', whiteSpace: 'pre-line' }}>
+                      <p style={{ fontSize: '0.9rem', color: '#e2e8f0', lineHeight: 1.6, margin: '0 0 1.25rem 0', whiteSpace: 'pre-line' }}>
                         {renderedContent}
                       </p>
 

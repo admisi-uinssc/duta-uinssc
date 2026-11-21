@@ -393,7 +393,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
               padding: '0.65rem',
               borderRadius: '8px',
               fontSize: '0.82rem',
-              color: 'var(--text-mid)',
+              color: '#e2e8f0',
               textDecoration: 'none',
               fontWeight: 600,
               display: 'block'
@@ -414,7 +414,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--white)' }}>
             Formulir Pendaftaran Akun
           </span>
-          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-mid)' }}>
+          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#e2e8f0' }}>
             Langkah {step} dari 2
           </span>
         </div>
@@ -456,7 +456,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
             <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--white)', margin: 0 }}>
               Informasi Akun
             </h3>
-            <p style={{ fontSize: '0.825rem', color: 'var(--text-mid)', margin: '0.25rem 0 0 0' }}>
+            <p style={{ fontSize: '0.825rem', color: '#e2e8f0', margin: '0.25rem 0 0 0' }}>
               Masukkan alamat email aktif dan kata sandi akun pendaftar.
             </p>
           </div>
@@ -506,7 +506,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
             {errors.email ? (
               <span style={{ fontSize: '0.78rem', color: '#dc2626' }}>{errors.email}</span>
             ) : (
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>
+              <span style={{ fontSize: '0.75rem', color: '#cbd5e1' }}>
                 Gunakan alamat email aktif.
               </span>
             )}
@@ -545,7 +545,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
                   position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
-                  background: 'none', border: 'none', color: 'var(--text-mid)', cursor: 'pointer',
+                  background: 'none', border: 'none', color: '#e2e8f0', cursor: 'pointer',
                   fontSize: '0.78rem', fontWeight: 600
                 }}
               >
@@ -601,7 +601,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 style={{
                   position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
-                  background: 'none', border: 'none', color: 'var(--text-mid)', cursor: 'pointer',
+                  background: 'none', border: 'none', color: '#e2e8f0', cursor: 'pointer',
                   fontSize: '0.78rem', fontWeight: 600
                 }}
               >
@@ -624,7 +624,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
               padding: '0.85rem 1.5rem',
               fontSize: '0.95rem',
               fontWeight: 600,
-              boxShadow: '0 4px 16px rgba(219, 31, 38, 0.45)',
+              boxShadow: '0 4px 16px rgba(0, 145, 255, 0.35)', background: '#0091ff', border: '1px solid #0091ff',
             }}
           >
             Lanjut ke Informasi Pribadi
@@ -639,7 +639,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
             <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--white)', margin: 0 }}>
               Informasi Pribadi
             </h3>
-            <p style={{ fontSize: '0.825rem', color: 'var(--text-mid)', margin: '0.25rem 0 0 0' }}>
+            <p style={{ fontSize: '0.825rem', color: '#e2e8f0', margin: '0.25rem 0 0 0' }}>
               Lengkapi data identitas calon pendaftar sesuai dengan data akademik.
             </p>
           </div>
@@ -931,7 +931,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
       )}
 
       {/* Switch to Login Link */}
-      <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem', color: 'var(--text-mid)' }}>
+      <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem', color: '#e2e8f0' }}>
         Sudah memiliki akun?{' '}
         <button
           type="button"

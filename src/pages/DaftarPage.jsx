@@ -160,7 +160,7 @@ export default function DaftarPage() {
             href="/"
             style={{
               fontSize: '0.85rem',
-              color: 'var(--text-mid)',
+              color: '#e2e8f0',
               textDecoration: 'none',
               display: 'inline-flex',
               alignItems: 'center',
@@ -196,7 +196,7 @@ export default function DaftarPage() {
             <h1 style={{ fontSize: '1.45rem', fontWeight: 700, color: 'var(--white)', margin: '0 0 0.35rem' }}>
               Pendaftaran Akun Baru
             </h1>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-mid)', margin: 0, lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.85rem', color: '#e2e8f0', margin: 0, lineHeight: 1.5 }}>
               Daftarkan akun untuk memulai proses pengajuan seleksi Duta Kampus 2026.
             </p>
           </div>
@@ -263,7 +263,7 @@ export default function DaftarPage() {
               Akun Anda Berhasil Diajukan!
             </h2>
 
-            <p style={{ color: 'var(--text-mid)', fontSize: '0.95rem', lineHeight: 1.6, maxWidth: '520px', margin: '0 auto 1.75rem' }}>
+            <p style={{ color: '#e2e8f0', fontSize: '0.95rem', lineHeight: 1.6, maxWidth: '520px', margin: '0 auto 1.75rem' }}>
               Halo <strong>{currentUser.namaLengkap || currentUser.name}</strong>, data pengajuan akun Anda telah kami terima.
               Panitia sedang memverifikasi NIM dan identitas mahasiswa Anda. Begitu akun Anda disetujui (di-ACC),
               formulir pemenuhan berkas persyaratan (Step 4) akan langsung terbuka untuk diisi.
@@ -281,7 +281,7 @@ export default function DaftarPage() {
               }}
             >
               <div style={{ fontWeight: 700, color: 'var(--white)', marginBottom: '0.5rem' }}>Ringkasan Akun:</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', color: 'var(--text-mid)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', color: '#e2e8f0' }}>
                 <div>NIM: <strong>{currentUser.nim || '-'}</strong></div>
                 <div>Fakultas: <strong>{currentUser.fakultas || '-'}</strong></div>
                 <div>Jurusan: <strong>{currentUser.jurusan || '-'}</strong></div>
@@ -327,7 +327,7 @@ export default function DaftarPage() {
           <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--white)', marginBottom: '0.75rem' }}>
             Pendaftaran Berhasil Dikirim!
           </h2>
-          <p style={{ color: 'var(--text-mid)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+          <p style={{ color: '#e2e8f0', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
             Seluruh berkas persyaratan Anda telah berhasil diunggah. Silakan pantau pengumuman hasil seleksi berkas di halaman profil Anda.
           </p>
           <Link href="/profil" className="btn btn-gold btn-lg">

@@ -192,7 +192,7 @@ export default function HomePage() {
                           <strong style={{ color: 'var(--white)', fontSize: '0.9rem', display: 'block', marginBottom: '2px' }}>
                             {ann.title}
                           </strong>
-                          <p style={{ margin: 0, fontSize: '0.825rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
+                          <p style={{ margin: 0, fontSize: '0.825rem', color: '#e2e8f0', lineHeight: 1.5 }}>
                             {ann.date ? `${ann.date} — ` : ''}{ann.content?.slice(0, 100)}...
                           </p>
                         </div>

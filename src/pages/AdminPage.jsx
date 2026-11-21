@@ -1518,7 +1518,7 @@ export default function AdminPage() {
                   <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--white)', margin: 0 }}>
                     Calon Duta Terdaftar Terbaru
                   </h3>
-                  <p style={{ margin: '4px 0 0', fontSize: '0.825rem', color: 'var(--text-light)' }}>
+                  <p style={{ margin: '4px 0 0', fontSize: '0.825rem', color: '#cbd5e1' }}>
                     Pantau kelengkapan berkas dan status akun secara real-time.
                   </p>
                 </div>
@@ -1559,10 +1559,10 @@ export default function AdminPage() {
 
                       return (
                         <tr key={u.id || idx}>
-                          <td style={{ color: 'var(--text-light)' }}>{idx + 1}</td>
+                          <td style={{ color: '#cbd5e1' }}>{idx + 1}</td>
                           <td>
                             <div className="td-name">{resolveApplicantName(u, u.email)}</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>{u.email}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#cbd5e1' }}>{u.email}</div>
                           </td>
                           <td className="td-nim">{u.nim || '—'}</td>
                           <td style={{ fontSize: '0.825rem' }}>{u.fakultas || u.jurusan || '—'}</td>
@@ -1703,10 +1703,10 @@ export default function AdminPage() {
 
                       return (
                         <tr key={u.id || idx}>
-                          <td style={{ color: 'var(--text-light)' }}>{idx + 1}</td>
+                          <td style={{ color: '#cbd5e1' }}>{idx + 1}</td>
                           <td>
                             <div className="td-name">{resolveApplicantName(u, u.email)}</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>{u.email}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#cbd5e1' }}>{u.email}</div>
                           </td>
                           <td>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
@@ -1716,7 +1716,7 @@ export default function AdminPage() {
                               <button
                                 type="button"
                                 onClick={() => toggleRevealPassword(u.email)}
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px', color: 'var(--text-mid)', display: 'inline-flex', alignItems: 'center' }}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px', color: '#e2e8f0', display: 'inline-flex', alignItems: 'center' }}
                                 title={revealedPasswords[u.email] ? "Sembunyikan Kata Sandi" : "Lihat Kata Sandi"}
                               >
                                 {revealedPasswords[u.email] ? (
@@ -1739,7 +1739,7 @@ export default function AdminPage() {
                           <td className="td-nim">{u.nim || '—'}</td>
                           <td style={{ fontSize: '0.825rem' }}>
                             <div>{u.fakultas || '—'}</div>
-                            <div style={{ fontSize: '0.72rem', color: 'var(--text-light)' }}>{u.jurusan}</div>
+                            <div style={{ fontSize: '0.72rem', color: '#cbd5e1' }}>{u.jurusan}</div>
                             <div style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, marginTop: '2px' }}>
                               Semester {u.semester && u.semester !== '—' ? u.semester : '—'}
                             </div>
@@ -1792,7 +1792,7 @@ export default function AdminPage() {
                               {status === 'approved' && (
                                 <button 
                                   className="btn btn-sm" 
-                                  style={{ padding: '4px 8px', fontSize: '0.75rem', border: '1px solid var(--border)', color: 'var(--text-mid)' }}
+                                  style={{ padding: '4px 8px', fontSize: '0.75rem', border: '1px solid var(--border)', color: '#e2e8f0' }}
                                   onClick={() => handleRejectUser(u.email)}
                                 >
                                   Batalkan
@@ -1927,17 +1927,17 @@ export default function AdminPage() {
 
                     return (
                       <tr key={item.id}>
-                        <td style={{ color: 'var(--text-light)' }}>{idx + 1}</td>
+                        <td style={{ color: '#cbd5e1' }}>{idx + 1}</td>
                         <td>
                           <div className="td-name">{item.namaLengkap}</div>
-                          <div style={{ fontSize: '0.72rem', color: 'var(--text-light)' }}>{item.email}</div>
+                          <div style={{ fontSize: '0.72rem', color: '#cbd5e1' }}>{item.email}</div>
                           {(() => {
                             const uMatch = registeredUsers.find(u => (u.email || '').toLowerCase() === (item.email || '').toLowerCase());
                             const pwd = item.password || uMatch?.password;
                             if (!pwd) return null;
                             return (
                               <div style={{ marginTop: '3px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                <span style={{ fontSize: '0.68rem', color: 'var(--text-light)' }}>Sandi:</span>
+                                <span style={{ fontSize: '0.68rem', color: '#cbd5e1' }}>Sandi:</span>
                                 <code style={{ fontSize: '0.72rem', background: '#0d0814', padding: '1px 5px', borderRadius: '3px', color: 'var(--white)', fontWeight: 600 }}>
                                   {revealedPasswords[item.email] ? pwd : '••••••'}
                                 </code>
@@ -1962,7 +1962,7 @@ export default function AdminPage() {
                         <td className="td-nim">{item.nim}</td>
                         <td style={{ fontSize: '0.8rem', maxWidth: 190 }}>
                           <div>{item.fakultas || '—'}</div>
-                          <div style={{ fontSize: '0.72rem', color: 'var(--text-light)' }}>{item.prodi || item.jurusan}</div>
+                          <div style={{ fontSize: '0.72rem', color: '#cbd5e1' }}>{item.prodi || item.jurusan}</div>
                           <div style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, marginTop: '2px' }}>
                             Semester {item.semester && item.semester !== '—' ? item.semester : '—'}
                           </div>
@@ -2121,7 +2121,7 @@ export default function AdminPage() {
           <div className="page active" style={{ width: '100%', boxSizing: 'border-box', textAlign: 'center', padding: '5rem 2rem' }}>
             <div style={{ width: '38px', height: '38px', border: '3px solid #e2e8f0', borderTopColor: 'var(--gold)', borderRadius: '50%', margin: '0 auto 1.25rem', animation: 'spin 0.8s linear infinite' }} />
             <h3 style={{ color: 'var(--white)', fontWeight: 800, margin: '0 0 0.5rem' }}>Memuat Konten Website...</h3>
-            <p style={{ color: 'var(--text-light)', fontSize: '0.875rem', margin: 0 }}>Mengambil data konten dan tautan foto terkini dari server.</p>
+            <p style={{ color: '#cbd5e1', fontSize: '0.875rem', margin: 0 }}>Mengambil data konten dan tautan foto terkini dari server.</p>
           </div>
         )}
 
@@ -2320,7 +2320,7 @@ export default function AdminPage() {
                       </div>
                     </div>
                   ))}
-                  {cmsData.slider.length === 0 && <p style={{ color: 'var(--text-light)', textAlign: 'center' }}>Tidak ada slide hero. Silakan klik tambah slide.</p>}
+                  {cmsData.slider.length === 0 && <p style={{ color: '#cbd5e1', textAlign: 'center' }}>Tidak ada slide hero. Silakan klik tambah slide.</p>}
                 </div>
               </div>
             )}
@@ -2412,7 +2412,7 @@ export default function AdminPage() {
                       })()}
                     </div>
                   ))}
-                  {(!cmsData.promoBanners || cmsData.promoBanners.length === 0) && <div style={{ textAlign: 'center', color: 'var(--text-light)', gridColumn: '1 / -1' }}>Belum ada banner promo.</div>}
+                  {(!cmsData.promoBanners || cmsData.promoBanners.length === 0) && <div style={{ textAlign: 'center', color: '#cbd5e1', gridColumn: '1 / -1' }}>Belum ada banner promo.</div>}
                 </div>
               </div>
             )}
@@ -2514,7 +2514,7 @@ export default function AdminPage() {
                             >
                               <Image src={media.thumbnailUrl || item.img} alt="" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '50%', border: '2px solid var(--gold)' }} />
                             </div>
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-mid)', flex: 1 }}>
+                            <div style={{ fontSize: '0.8rem', color: '#e2e8f0', flex: 1 }}>
                               <strong>{item.name || 'Nama'}</strong>
                               <div style={{ color: 'var(--gold)', fontWeight: 600, fontSize: '0.75rem' }}>
                                 {getAmbassadorCategoryLabel(item.category || 'winner')} · Angkatan {item.year || '2026'}
@@ -2536,7 +2536,7 @@ export default function AdminPage() {
                       })()}
                     </div>
                   ))}
-                  {(!cmsData.ambassadors || cmsData.ambassadors.length === 0) && <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)' }}>Belum ada profil duta.</div>}
+                  {(!cmsData.ambassadors || cmsData.ambassadors.length === 0) && <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#cbd5e1' }}>Belum ada profil duta.</div>}
                 </div>
               </div>
             )}
@@ -2559,7 +2559,7 @@ export default function AdminPage() {
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
                     <div>
                       <strong style={{ fontSize: '0.95rem', color: 'var(--white)' }}>Status Tampil di Halaman Utama (Slider Beranda)</strong>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-mid)', marginTop: '2px' }}>
+                      <div style={{ fontSize: '0.8rem', color: '#e2e8f0', marginTop: '2px' }}>
                         {cmsData.finalistShowcase?.enabled !== false ? 'Aktif — Ditampilkan sebagai sorotan utama tepat di bawah hero slider.' : 'Nonaktif — Slider finalis disembunyikan dari halaman depan.'}
                       </div>
                     </div>
@@ -2585,7 +2585,7 @@ export default function AdminPage() {
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-soft)' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-mid)', marginBottom: '0.35rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#e2e8f0', marginBottom: '0.35rem' }}>
                         Judul Bagian Showcase
                       </label>
                       <input
@@ -2606,7 +2606,7 @@ export default function AdminPage() {
                       />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-mid)', marginBottom: '0.35rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#e2e8f0', marginBottom: '0.35rem' }}>
                         Subjudul / Keterangan Singkat
                       </label>
                       <input
@@ -2673,7 +2673,7 @@ export default function AdminPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', alignItems: 'center' }}>
-                          <label style={{ fontSize: '0.78rem', color: 'var(--text-mid)', margin: 0 }}>Tipe:</label>
+                          <label style={{ fontSize: '0.78rem', color: '#e2e8f0', margin: 0 }}>Tipe:</label>
                           <select 
                             value={item.mediaType || 'auto'} 
                             onChange={e => updateGallery(idx, 'mediaType', e.target.value)}
@@ -2746,7 +2746,7 @@ export default function AdminPage() {
                       </div>
                     );
                   })}
-                  {cmsData.gallery.length === 0 && <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)' }}>Galeri kosong.</div>}
+                  {cmsData.gallery.length === 0 && <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#cbd5e1' }}>Galeri kosong.</div>}
                 </div>
               </div>
             )}
@@ -2887,7 +2887,7 @@ export default function AdminPage() {
                         </div>
                       );
                     })()}
-                    <p style={{ fontSize: '0.825rem', color: 'var(--text-light)', marginTop: '0.75rem', lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '0.825rem', color: '#cbd5e1', marginTop: '0.75rem', lineHeight: 1.5 }}>
                       Media ini tampil di halaman Beranda publik (seksi "Program Duta Kampus") dan di halaman Tentang (`/about`).
                     </p>
                   </div>
@@ -2987,7 +2987,7 @@ export default function AdminPage() {
                             onChange={e => updateAnnouncement(idx, 'greeting', e.target.value)} 
                             placeholder="Contoh: Halo, {nama}! (Gunakan {nama} untuk menyebut nama peserta)" 
                           />
-                          <small style={{ color: 'var(--text-light)', fontSize: '0.78rem', marginTop: '4px', display: 'block' }}>
+                          <small style={{ color: '#cbd5e1', fontSize: '0.78rem', marginTop: '4px', display: 'block' }}>
                             Gunakan kode <code>{'{nama}'}</code> di salam atau isi agar otomatis menampilkan nama lengkap masing-masing peserta.
                           </small>
                         </div>
@@ -3072,7 +3072,7 @@ export default function AdminPage() {
                   ))}
 
                   {(!cmsData.announcements || cmsData.announcements.length === 0) && (
-                    <p style={{ color: 'var(--text-light)', textAlign: 'center', padding: '2rem 0' }}>Tidak ada pengumuman. Silakan klik tombol "+ Tambah Pengumuman Baru".</p>
+                    <p style={{ color: '#cbd5e1', textAlign: 'center', padding: '2rem 0' }}>Tidak ada pengumuman. Silakan klik tombol "+ Tambah Pengumuman Baru".</p>
                   )}
 
                   {(cmsData.announcements && cmsData.announcements.length > 0) && (
@@ -3103,7 +3103,7 @@ export default function AdminPage() {
                       onChange={e => updateContacts('whatsapp', e.target.value)} 
                       placeholder="0851-2292-7628" 
                     />
-                    <small style={{ color: 'var(--text-light)', fontSize: '0.78rem' }}>Tautan chat: {cmsData.contacts?.whatsappUrl || 'https://wa.me/6285122927628'}</small>
+                    <small style={{ color: '#cbd5e1', fontSize: '0.78rem' }}>Tautan chat: {cmsData.contacts?.whatsappUrl || 'https://wa.me/6285122927628'}</small>
                   </div>
 
                   <div className="form-group">
@@ -3114,7 +3114,7 @@ export default function AdminPage() {
                       onChange={e => updateContacts('instagram', e.target.value)} 
                       placeholder="@duta_uinssc" 
                     />
-                    <small style={{ color: 'var(--text-light)', fontSize: '0.78rem' }}>Tautan profil: {cmsData.contacts?.instagramUrl || 'https://www.instagram.com/duta_uinssc'}</small>
+                    <small style={{ color: '#cbd5e1', fontSize: '0.78rem' }}>Tautan profil: {cmsData.contacts?.instagramUrl || 'https://www.instagram.com/duta_uinssc'}</small>
                   </div>
 
                   <div className="form-group">
@@ -3125,7 +3125,7 @@ export default function AdminPage() {
                       onChange={e => updateContacts('tiktok', e.target.value)} 
                       placeholder="@duta.uin.ssc" 
                     />
-                    <small style={{ color: 'var(--text-light)', fontSize: '0.78rem' }}>Tautan profil: {cmsData.contacts?.tiktokUrl || 'https://www.tiktok.com/@duta.uin.ssc'}</small>
+                    <small style={{ color: '#cbd5e1', fontSize: '0.78rem' }}>Tautan profil: {cmsData.contacts?.tiktokUrl || 'https://www.tiktok.com/@duta.uin.ssc'}</small>
                   </div>
 
                   <div className="form-group">
@@ -3299,7 +3299,7 @@ export default function AdminPage() {
                         <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#16a34a' }}></span>
                         <span>Penyelarasan Otomatis: Aktif & Terpantau Real-time</span>
                       </div>
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-light)', display: 'block', marginTop: '2px' }}>
+                      <span style={{ fontSize: '0.78rem', color: '#cbd5e1', display: 'block', marginTop: '2px' }}>
                         Penyelarasan data otomatis. Terakhir diperbarui: <strong>{lastSyncDisplay}</strong>
                       </span>
                     </div>
@@ -3327,7 +3327,7 @@ export default function AdminPage() {
                     <strong style={{ fontSize: '0.9rem', color: 'var(--white)', display: 'block', marginBottom: '0.5rem' }}>
                       Panduan 4 Langkah Menghubungkan Firebase:
                     </strong>
-                    <ol style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.85rem', color: 'var(--text-mid)', lineHeight: 1.6 }}>
+                    <ol style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.85rem', color: '#e2e8f0', lineHeight: 1.6 }}>
                       <li>Buka <strong>Firebase Console</strong> (<a href="https://console.firebase.google.com/" target="_blank" rel="noreferrer" style={{ color: 'var(--gold)' }}>console.firebase.google.com</a>) dan buat/pilih project.</li>
                       <li>Aktifkan <strong>Cloud Firestore</strong> (mode Test atau Production) di menu <i>Build &gt; Firestore Database</i>.</li>
                       <li>Di <strong>Project Settings</strong> &gt; <strong>General</strong> &gt; <strong>Your Apps</strong>, buat web app (ikon <code>&lt;/&gt;</code>) dan salin kredensial <code>firebaseConfig</code>.</li>
@@ -3492,9 +3492,9 @@ export default function AdminPage() {
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                   <span>Kembali ke Daftar</span>
                 </button>
-                <div style={{ fontSize: '0.825rem', color: 'var(--text-light)' }}>
+                <div style={{ fontSize: '0.825rem', color: '#cbd5e1' }}>
                   <span>Admin Panel</span> <span style={{ margin: '0 4px' }}>/</span> 
-                  <span style={{ color: 'var(--text-mid)', fontWeight: 600 }}>Direktori Berkas</span> <span style={{ margin: '0 4px' }}>/</span> 
+                  <span style={{ color: '#e2e8f0', fontWeight: 600 }}>Direktori Berkas</span> <span style={{ margin: '0 4px' }}>/</span> 
                   <strong style={{ color: 'var(--white)' }}>{mergedSelectedItem.namaLengkap}</strong>
                 </div>
               </div>
@@ -3572,10 +3572,10 @@ export default function AdminPage() {
                       {selectedDossier.statusLabel}
                     </span>
                   </div>
-                  <div style={{ fontSize: '0.9rem', color: 'var(--text-mid)', marginTop: '4px' }}>
+                  <div style={{ fontSize: '0.9rem', color: '#e2e8f0', marginTop: '4px' }}>
                     NIM: <strong>{mergedSelectedItem.nim || '—'}</strong> · {mergedSelectedItem.prodi || mergedSelectedItem.jurusan || 'Program Studi'} · {mergedSelectedItem.fakultas || '—'}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '3px' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#cbd5e1', marginTop: '3px' }}>
                     Terdaftar: {formatDateTime(mergedSelectedItem.createdAt)} · Semester: <strong>{mergedSelectedItem.semester || '—'}</strong>
                   </div>
                 </div>
@@ -3592,7 +3592,7 @@ export default function AdminPage() {
                 <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '9999px', overflow: 'hidden' }}>
                   <div style={{ height: '100%', width: `${selectedDossier.percent}%`, background: selectedDossier.color, borderRadius: '9999px', transition: 'width 0.4s ease' }} />
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
+                <div style={{ fontSize: '0.72rem', color: '#cbd5e1', marginTop: '0.5rem' }}>
                   {selectedDossier.isComplete ? 'Seluruh berkas persyaratan telah lengkap.' : `Kurang ${selectedDossier.missingFields.length} berkas wajib.`}
                 </div>
               </div>
@@ -3610,17 +3610,17 @@ export default function AdminPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
                     {[['NIM', mergedSelectedItem.nim], ['Fakultas', mergedSelectedItem.fakultas], ['Program Studi', mergedSelectedItem.prodi || mergedSelectedItem.jurusan]].map(([lbl, val]) => (
                       <div key={lbl}>
-                        <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>{lbl}</div>
+                        <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>{lbl}</div>
                         <div style={{ fontWeight: 700, color: 'var(--white)' }}>{val || '—'}</div>
                       </div>
                     ))}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                       <div>
-                        <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Semester</div>
+                        <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>Semester</div>
                         <div style={{ fontWeight: 700, color: 'var(--white)' }}>Semester {mergedSelectedItem.semester || '—'}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>IPK</div>
+                        <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>IPK</div>
                         <div style={{ fontWeight: 800, color: 'var(--gold)', fontSize: '1rem' }}>{mergedSelectedItem.ipk || '—'}</div>
                       </div>
                     </div>
@@ -3634,11 +3634,11 @@ export default function AdminPage() {
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
                     <div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Email</div>
+                      <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>Email</div>
                       <div style={{ fontWeight: 600, color: 'var(--white)', wordBreak: 'break-all' }}>{mergedSelectedItem.email}</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Kata Sandi Akun Peserta</div>
+                      <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>Kata Sandi Akun Peserta</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
                         <code style={{ fontSize: '0.85rem', background: '#0d0814', padding: '3px 8px', borderRadius: '4px', color: 'var(--white)', fontWeight: 600 }}>
                           {revealedPasswords[mergedSelectedItem.email] ? (matchingRegUser?.password || mergedSelectedItem.password || '—') : '••••••••'}
@@ -3662,7 +3662,7 @@ export default function AdminPage() {
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Nomor WhatsApp</div>
+                      <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>Nomor WhatsApp</div>
                       <div style={{ fontWeight: 600, color: 'var(--white)' }}>
                         {mergedSelectedItem.noHp ? (
                           <a href={`https://wa.me/${mergedSelectedItem.noHp.replace(/^0/, '62').replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#4ade80', fontWeight: 700 }}>
@@ -3672,14 +3672,14 @@ export default function AdminPage() {
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>TTL</div>
+                      <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>TTL</div>
                       <div style={{ fontWeight: 600, color: 'var(--white)' }}>
                         {mergedSelectedItem.ttl || (mergedSelectedItem.tempatLahir ? `${mergedSelectedItem.tempatLahir}, ${mergedSelectedItem.tanggalLahir}` : '—')}
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Alamat</div>
-                      <div style={{ fontWeight: 500, color: 'var(--text-mid)' }}>{mergedSelectedItem.alamat || '—'}</div>
+                      <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>Alamat</div>
+                      <div style={{ fontWeight: 500, color: '#e2e8f0' }}>{mergedSelectedItem.alamat || '—'}</div>
                     </div>
                   </div>
                 </div>
@@ -3690,9 +3690,9 @@ export default function AdminPage() {
                     <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', borderBottom: '1px solid var(--border)', paddingBottom: '0.625rem' }}>
                       Prestasi & Esai Motivasi
                     </h4>
-                    {mergedSelectedItem.prestasi && <div style={{ marginBottom: '0.875rem' }}><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Prestasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '2px' }}>{mergedSelectedItem.prestasi}</div></div>}
-                    {mergedSelectedItem.organisasi && <div style={{ marginBottom: '0.875rem' }}><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Organisasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '2px' }}>{mergedSelectedItem.organisasi}</div></div>}
-                    {mergedSelectedItem.motivasi && <div><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Esai Motivasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '4px', lineHeight: 1.65, fontStyle: 'italic', borderLeft: '3px solid var(--gold)', paddingLeft: '0.75rem' }}>{mergedSelectedItem.motivasi}</div></div>}
+                    {mergedSelectedItem.prestasi && <div style={{ marginBottom: '0.875rem' }}><div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>Prestasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '2px' }}>{mergedSelectedItem.prestasi}</div></div>}
+                    {mergedSelectedItem.organisasi && <div style={{ marginBottom: '0.875rem' }}><div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>Organisasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '2px' }}>{mergedSelectedItem.organisasi}</div></div>}
+                    {mergedSelectedItem.motivasi && <div><div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 700, textTransform: 'uppercase' }}>Esai Motivasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '4px', lineHeight: 1.65, fontStyle: 'italic', borderLeft: '3px solid var(--gold)', paddingLeft: '0.75rem' }}>{mergedSelectedItem.motivasi}</div></div>}
                   </div>
                 )}
               </div>
@@ -3702,7 +3702,7 @@ export default function AdminPage() {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div>
                     <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'var(--white)' }}>Direktori Berkas Dokumen Persyaratan</h3>
-                    <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--text-light)' }}>Periksa kelengkapan berkas administrasi calon Duta Kampus UIN SSC 2026.</p>
+                    <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: '#cbd5e1' }}>Periksa kelengkapan berkas administrasi calon Duta Kampus UIN SSC 2026.</p>
                   </div>
                   <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--white)', background: '#000000', padding: '6px 14px', borderRadius: '12px', border: '1px solid var(--border)' }}>
                     Terunggah: <strong style={{ color: selectedDossier.color }}>{selectedDossier.filledCount} dari {selectedDossier.totalCount}</strong>
@@ -4293,8 +4293,8 @@ export default function AdminPage() {
             <form onSubmit={handleSaveUserPassword} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
               <div style={{ background: '#000000', border: '1px solid var(--border)', borderRadius: '12px', padding: '0.75rem 1rem' }}>
                 <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--white)' }}>{editingPasswordUser.namaLengkap || editingPasswordUser.name}</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-mid)', marginTop: '2px' }}>{editingPasswordUser.email}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '2px' }}>NIM: {editingPasswordUser.nim || '—'}</div>
+                <div style={{ fontSize: '0.78rem', color: '#e2e8f0', marginTop: '2px' }}>{editingPasswordUser.email}</div>
+                <div style={{ fontSize: '0.75rem', color: '#cbd5e1', marginTop: '2px' }}>NIM: {editingPasswordUser.nim || '—'}</div>
               </div>
 
               <div className="form-group">
@@ -4309,7 +4309,7 @@ export default function AdminPage() {
                   onChange={e => setNewPasswordVal(e.target.value)}
                   style={{ width: '100%', padding: '0.6rem 0.85rem', borderRadius: '9999px', border: '1px solid var(--border)', fontSize: '0.9rem', boxSizing: 'border-box' }}
                 />
-                <small style={{ color: 'var(--text-light)', fontSize: '0.72rem', marginTop: '4px', display: 'block' }}>
+                <small style={{ color: '#cbd5e1', fontSize: '0.72rem', marginTop: '4px', display: 'block' }}>
                   Kata sandi ini langsung tersimpan dan dapat dipakai peserta masuk ke dashboard profil.
                 </small>
               </div>

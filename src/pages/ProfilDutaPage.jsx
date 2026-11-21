@@ -282,7 +282,7 @@ export default function ProfilDutaPage() {
               gap: '0.75rem',
               marginLeft: 'auto'
             }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-light)', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.8rem', color: '#cbd5e1', fontWeight: 600 }}>
                 {filteredAmbassadors.length} Profil
               </span>
               <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
@@ -313,7 +313,7 @@ export default function ProfilDutaPage() {
                   position: 'absolute',
                   right: '10px',
                   pointerEvents: 'none',
-                  color: 'var(--text-light)',
+                  color: '#cbd5e1',
                   display: 'flex',
                   alignItems: 'center'
                 }}>
@@ -481,11 +481,11 @@ export default function ProfilDutaPage() {
               );
             })}
             {(activeMainTab === 'finalis' ? finalists : filteredAmbassadors).length === 0 && (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)', padding: '3.5rem 1rem' }}>
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#cbd5e1', padding: '3.5rem 1rem' }}>
                 <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--white)', marginBottom: '0.5rem' }}>
                   {activeMainTab === 'finalis' ? 'Belum ada data finalis yang dipublikasikan.' : 'Tidak ada data profil Duta Kampus untuk filter ini.'}
                 </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-mid)', maxWidth: '400px', margin: '0 auto 1.5rem' }}>
+                <p style={{ fontSize: '0.85rem', color: '#e2e8f0', maxWidth: '400px', margin: '0 auto 1.5rem' }}>
                   {activeMainTab === 'finalis' ? 'Silakan periksa kembali berkala atau kembali ke profil duta resmi.' : 'Silakan pilih kombinasi tahun angkatan atau kategori lainnya.'}
                 </p>
                 {activeMainTab !== 'finalis' && (

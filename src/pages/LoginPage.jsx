@@ -174,7 +174,7 @@ export default function LoginPage() {
           href="/"
           style={{
             fontSize: '0.85rem',
-            color: 'var(--text-mid)',
+            color: '#e2e8f0',
             textDecoration: 'none',
             display: 'inline-flex',
             alignItems: 'center',
@@ -216,7 +216,7 @@ export default function LoginPage() {
           <h1 style={{ fontSize: '1.45rem', fontWeight: 700, color: 'var(--white)', margin: '0 0 0.35rem' }}>
             {isLogin ? 'Masuk ke Portal Pendaftar' : 'Pendaftaran Akun Baru'}
           </h1>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-mid)', margin: 0, lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.85rem', color: '#e2e8f0', margin: 0, lineHeight: 1.5 }}>
             {isLogin
               ? 'Silakan masuk menggunakan email dan kata sandi yang telah didaftarkan.'
               : 'Daftarkan akun untuk memulai proses pengajuan seleksi Duta Kampus 2026.'}
@@ -387,7 +387,7 @@ export default function LoginPage() {
                     transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
-                    color: 'var(--text-mid)',
+                    color: '#e2e8f0',
                     cursor: 'pointer',
                     fontSize: '0.78rem',
                     fontWeight: 600
@@ -407,7 +407,7 @@ export default function LoginPage() {
                 marginTop: '0.5rem',
                 borderRadius: '9999px',
                 padding: '0.85rem 1.5rem',
-                boxShadow: '0 4px 16px rgba(219, 31, 38, 0.45)',
+                boxShadow: '0 4px 16px rgba(0, 145, 255, 0.35)', background: '#0091ff', border: '1px solid #0091ff',
                 fontSize: '0.95rem',
                 fontWeight: 600,
                 opacity: isLoading ? 0.7 : 1,
@@ -417,7 +417,7 @@ export default function LoginPage() {
               {isLoading ? 'Memverifikasi Akun...' : 'Masuk'}
             </button>
 
-            <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: 'var(--text-mid)' }}>
+            <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: '#e2e8f0' }}>
               {Settings.isRegistrationClosed() ? (
                 <span>
                   Pendaftaran akun baru sudah ditutup.{' '}
@@ -476,7 +476,7 @@ export default function LoginPage() {
             }}>
               <div style={{ 
                 fontSize: '0.8rem', 
-                color: 'var(--text-mid)', 
+                color: '#e2e8f0', 
                 marginBottom: '0.6rem', 
                 fontWeight: 600 
               }}>
