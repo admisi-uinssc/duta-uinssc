@@ -1973,69 +1973,90 @@
 }
 
 
+
 /* ==========================================================================
-   AMBIENT LUXURY GRADIENTS (ELEGANT COLOR FLOW ACROSS SECTIONS)
+   AMBIENT BLUE THEME (RICHER, VIBRANT BLUE AMBIENT ACROSS ALL SECTIONS)
    ========================================================================== */
 
-/* 1. Hub Section (Navigation Quick Hub) - Gentle Spectra Blue Glow */
+/* 1. Quick Hub Section (Menu Informasi) */
 .hub-section {
-  background: radial-gradient(circle at 50% 0%, rgba(0, 145, 255, 0.12) 0%, rgba(0, 10, 25, 0.4) 60%, var(--black) 100%) !important;
-  border-bottom: 1px solid rgba(0, 145, 255, 0.12);
-  position: relative;
-}
-
-/* 2. About Section - Deep Indigo / Cyan Soft Ambient */
-#about {
-  background: radial-gradient(ellipse at 80% 20%, rgba(0, 145, 255, 0.09) 0%, rgba(0, 5, 15, 0.6) 50%, var(--black) 100%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
-}
-
-/* 3. Benefits Section ("Kenapa Harus Bergabung") - Deep Subtle Crimson / Red Ambient Glow */
-#benefits {
-  background: radial-gradient(circle at 20% 40%, rgba(219, 31, 38, 0.10) 0%, rgba(15, 2, 4, 0.5) 50%, var(--black) 100%) !important;
-  border-bottom: 1px solid rgba(219, 31, 38, 0.15);
-  position: relative;
-}
-
-/* 4. Requirements Section - Deep Blue Midnight Ambient */
-#requirements {
-  background: radial-gradient(circle at 70% 30%, rgba(0, 145, 255, 0.11) 0%, rgba(2, 10, 24, 0.5) 50%, var(--black) 100%) !important;
-  border-bottom: 1px solid rgba(0, 145, 255, 0.12);
-  position: relative;
-}
-
-/* 5. Timeline Section - Subtle Dual Ambient (Spectra Blue to Crimson) */
-#timeline {
-  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.08) 0%, rgba(20, 4, 8, 0.3) 60%, var(--black) 100%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
-}
-
-/* 6. Gallery Section - Rich Spectra Blue Stage Ambient */
-#gallery {
-  background: radial-gradient(circle at 50% 10%, rgba(0, 145, 255, 0.13) 0%, rgba(1, 8, 20, 0.6) 50%, var(--black) 100%) !important;
-  border-bottom: 1px solid rgba(0, 145, 255, 0.15);
-  position: relative;
-}
-
-/* 7. FAQ Section - Warm Subtle Amber/Red & Midnight Transition */
-#faq {
-  background: radial-gradient(ellipse at 30% 70%, rgba(219, 31, 38, 0.08) 0%, rgba(4, 10, 22, 0.5) 50%, var(--black) 100%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
-}
-
-/* 8. CTA Banner ("Daftarkan Dirimu Sekarang") - Electric Blue with Soft Red Border Glow */
-.cta-banner {
-  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.18) 0%, rgba(2, 9, 22, 0.8) 70%, var(--black) 100%) !important;
+  background: radial-gradient(circle at 50% 0%, rgba(0, 145, 255, 0.22) 0%, rgba(0, 20, 50, 0.7) 45%, #000000 100%) !important;
   border-top: 1px solid rgba(0, 145, 255, 0.25);
-  border-bottom: 1px solid rgba(219, 31, 38, 0.25);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.2);
   position: relative;
 }
 
-/* 9. Footer - Darkest Velvet with Top Glow */
-.footer {
-  background: #000000 !important;
+/* 2. About Section (Tentang Program Duta) */
+#about {
+  background: radial-gradient(ellipse at 80% 25%, rgba(0, 145, 255, 0.20) 0%, rgba(0, 18, 45, 0.7) 45%, #000000 100%) !important;
   border-top: 1px solid rgba(0, 145, 255, 0.15);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.2);
+  position: relative;
+}
+
+/* 3. Benefits Section (Kenapa Harus Bergabung) - Rich Blue with Crimson Edge Accent */
+#benefits {
+  background: radial-gradient(circle at 25% 30%, rgba(0, 145, 255, 0.18) 0%, rgba(0, 15, 40, 0.7) 45%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.2);
+  position: relative;
+}
+
+/* 4. Featured Ambassadors Section (Profil Duta di Beranda) */
+.home-ambassadors-section {
+  background: radial-gradient(circle at 50% 20%, rgba(0, 145, 255, 0.24) 0%, rgba(0, 18, 48, 0.75) 50%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.25);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.2);
+  position: relative;
+}
+
+/* 5. Requirements Section (Persyaratan Pendaftaran) */
+#requirements {
+  background: radial-gradient(circle at 75% 35%, rgba(0, 145, 255, 0.20) 0%, rgba(0, 16, 42, 0.7) 50%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.2);
+  position: relative;
+}
+
+/* 6. Timeline Section (Tahapan & Jadwal Seleksi) */
+#timeline {
+  background: radial-gradient(ellipse at 50% 40%, rgba(0, 145, 255, 0.18) 0%, rgba(0, 14, 38, 0.65) 50%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.15);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.2);
+  position: relative;
+}
+
+/* 7. Gallery Section (Galeri Duta Kampus) */
+#gallery {
+  background: radial-gradient(circle at 50% 15%, rgba(0, 145, 255, 0.22) 0%, rgba(0, 18, 45, 0.7) 50%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.2);
+  position: relative;
+}
+
+/* 8. FAQ Section (Pusat Bantuan & Tanya Jawab) */
+#faq {
+  background: radial-gradient(ellipse at 40% 50%, rgba(0, 145, 255, 0.19) 0%, rgba(0, 15, 40, 0.7) 50%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.15);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.2);
+  position: relative;
+}
+
+/* 9. Promo Banner Slider Section */
+.promo-banner-section {
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.15) 0%, rgba(0, 12, 32, 0.6) 60%, #000000 100%) !important;
+}
+
+/* 10. CTA Banner Section (Ayo Bergabung) */
+.cta-banner {
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.28) 0%, rgba(0, 16, 42, 0.85) 60%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.35) !important;
+  border-bottom: 1px solid rgba(219, 31, 38, 0.3) !important;
+  position: relative;
+}
+
+/* 11. Footer */
+.footer {
+  background: radial-gradient(ellipse at 50% 0%, rgba(0, 145, 255, 0.12) 0%, #000000 70%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.25) !important;
 }

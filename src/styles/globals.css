@@ -50,7 +50,7 @@
   --accent-red-faint: var(--red-faint);
 
   --bg: var(--black);
-  --bg-alt: #110d17;
+  --bg-alt: radial-gradient(ellipse at 50% 0%, rgba(0, 145, 255, 0.14) 0%, rgba(0, 15, 35, 0.6) 50%, #000000 100%);
   --text: var(--white);
   --text-dark: var(--white);
   --text-mid: #dcd7e3;
@@ -303,7 +303,7 @@ span, label, small, strong, li {
 }
 
 .bg-alt {
-  background-color: var(--bg-alt);
+  background: var(--bg-alt) !important;
 }
 
 .btn {

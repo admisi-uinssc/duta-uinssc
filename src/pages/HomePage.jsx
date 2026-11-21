@@ -204,7 +204,7 @@ export default function HomePage() {
 
       {/* Featured Ambassadors Showcase (CMS synced) */}
       {ambassadors.length > 0 && (
-        <section className="section-pad bg-alt" style={{ padding: '4rem 0' }}>
+        <section className="section-pad home-ambassadors-section" style={{ padding: '4.5rem 0' }}>
           <div className="container">
             <div className="section-header" style={{ marginBottom: '2.5rem' }}>
               <h2 className="heading-lg" style={{ fontSize: '2.2rem', marginBottom: '0.75rem' }}>
