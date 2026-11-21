@@ -41,13 +41,13 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden-nav' : ''}`} id="navbar">
       <div className="container nav-inner" style={{ maxWidth: '1440px' }}>
         <Link href="/" className="nav-logo">
-          <Image src="/assets/logo-circle.png" alt="Logo" width={38} height={38} style={{ filter: 'drop-shadow(0 0 8px rgba(104, 61, 151,0.35))', height: 38, width: 'auto', borderRadius: '50%' }} />
+          <Image src="/assets/logo-circle.png" alt="Logo" width={38} height={38} style={{ filter: 'brightness(0) invert(1)', height: 38, width: 'auto', borderRadius: '50%' }} />
           <div className="nav-logo-text">
-            <span className="nav-logo-title desktop-only">Duta Kampus</span>
-            <span className="nav-logo-title mobile-only" style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '0.4px' }}>
-              <span style={{ color: 'var(--gold)', fontWeight: 800 }}>PADUKA</span> <span style={{ opacity: 0.4, fontWeight: 400 }}>|</span> dutauinssc
+            <span className="nav-logo-title desktop-only" style={{ color: 'var(--white)' }}>Duta Kampus</span>
+            <span className="nav-logo-title mobile-only" style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', letterSpacing: '0.4px' }}>
+              <span style={{ color: 'var(--white)', fontWeight: 800 }}>PADUKA</span> <span style={{ opacity: 0.5, fontWeight: 400 }}>|</span> dutauinssc
             </span>
-            <span className="nav-logo-sub desktop-only">UIN Siber Syekh Nurjati Cirebon</span>
+            <span className="nav-logo-sub desktop-only" style={{ color: 'var(--muted)' }}>UIN Siber Syekh Nurjati Cirebon</span>
           </div>
         </Link>
 

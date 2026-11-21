@@ -34,9 +34,9 @@
 
   /* Semantic Mappings */
   --navy: #0d0814;
-  --gold: var(--red);
-  --gold-dark: var(--red-hover);
-  --gold-faint: var(--red-faint);
+  --gold: var(--white);
+  --gold-dark: #f0f0f0;
+  --gold-faint: rgba(255, 255, 255, 0.1);
 
   /* Accent Red */
   --accent-red: var(--red);
@@ -47,7 +47,7 @@
   --bg-alt: #110d17;
   --text: var(--white);
   --text-dark: var(--white);
-  --text-mid: var(--muted);
+  --text-mid: #dcd7e3;
   --text-light: var(--muted);
   --border: #291f36;
   --border-soft: #1d1627;
@@ -184,7 +184,8 @@ span, label, small, strong, li {
 .lead {
   font-family: var(--font-sans);
   font-size: 1.05rem;
-  color: var(--text-mid);
+  color: var(--white);
+  opacity: 0.92;
   line-height: 1.75;
   font-weight: 400;
   margin-bottom: 2.5rem;
@@ -314,10 +315,29 @@ span, label, small, strong, li {
 }
 .btn-lg { padding: 0.9rem 2.25rem; font-size: 0.95rem; }
 .btn-sm { padding: 0.45rem 1.15rem; font-size: 0.8rem; }
-.btn-gold { background: var(--red); color: #fff; border: 1.5px solid var(--red); }
-.btn-gold:hover { background: var(--red-hover); border-color: var(--red-hover); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(219, 31, 38, 0.35); }
-.btn-outline-gold { background: transparent; color: var(--red); border: 1.5px solid var(--red); }
-.btn-outline-gold:hover { background: var(--red); color: #fff; }
+.btn-gold { 
+  background: var(--red); 
+  color: #fff; 
+  border: 1.5px solid var(--red); 
+  font-weight: 600;
+}
+.btn-gold:hover { 
+  background: var(--red-hover); 
+  border-color: var(--red-hover); 
+  transform: translateY(-1px); 
+  box-shadow: 0 4px 14px rgba(219, 31, 38, 0.45); 
+  color: #fff;
+}
+.btn-outline-gold { 
+  background: transparent; 
+  color: var(--white); 
+  border: 1.5px solid rgba(255, 255, 255, 0.35); 
+}
+.btn-outline-gold:hover { 
+  background: rgba(255, 255, 255, 0.1); 
+  border-color: var(--white); 
+  color: #fff; 
+}
 
 .btn-purple { background: var(--purple); color: #fff; border: 1.5px solid var(--purple); }
 .btn-purple:hover { background: var(--purple-dark); border-color: var(--purple-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(104, 61, 151, 0.35); }
