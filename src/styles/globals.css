@@ -1,62 +1,77 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap');
 
+@font-face {
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxTKYbSB4ZhRNU.woff2) format('woff2');
+    unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
 :root {
   /* Brand Master Palette (User Guidelines) */
+  --black: #000;
   --white: #fff;
   --muted: #b3adbb;
   --soft: #e9e4ee;
   --red: #db1f26;
   --purple: #683d97;
+  --serif: "Instrument Serif", "Times New Roman", Georgia, serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --px: 100px;
+  --tint: grayscale(1) contrast(1.1);
 
   /* Derived Palette Tones */
   --purple-dark: #4b2574;
-  --purple-deep: #2d134b;
-  --purple-light: #7c4cae;
-  --purple-faint: rgba(104, 61, 151, 0.08);
+  --purple-deep: #1e0e33;
+  --purple-light: #8352b8;
+  --purple-faint: rgba(104, 61, 151, 0.15);
 
   --red-hover: #b8171d;
-  --red-faint: rgba(219, 31, 38, 0.1);
+  --red-faint: rgba(219, 31, 38, 0.15);
 
   /* Semantic Mappings */
-  --navy: var(--purple-deep);
-  --gold: var(--purple);
-  --gold-dark: var(--purple-dark);
-  --gold-faint: var(--purple-faint);
+  --navy: #0d0814;
+  --gold: var(--red);
+  --gold-dark: var(--red-hover);
+  --gold-faint: var(--red-faint);
 
   /* Accent Red */
   --accent-red: var(--red);
   --accent-red-hover: var(--red-hover);
   --accent-red-faint: var(--red-faint);
 
-  --bg: #ffffff;
-  --bg-alt: var(--soft);
-  --text: var(--purple-deep);
-  --text-dark: #1f1a24;
-  --text-mid: #544961;
+  --bg: var(--black);
+  --bg-alt: #110d17;
+  --text: var(--white);
+  --text-dark: var(--white);
+  --text-mid: var(--muted);
   --text-light: var(--muted);
-  --border: #dcd5e4;
-  --border-soft: var(--soft);
+  --border: #291f36;
+  --border-soft: #1d1627;
   
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 4px 6px -1px rgb(104 61 151 / 0.1), 0 2px 4px -2px rgb(104 61 151 / 0.06);
-  --shadow-md: 0 10px 15px -3px rgb(104 61 151 / 0.12), 0 4px 6px -4px rgb(104 61 151 / 0.08);
-  --shadow-gold: 0 4px 14px rgba(219, 31, 38, 0.35);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow: 0 4px 12px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(104 61 151 / 0.2);
+  --shadow-md: 0 10px 25px -3px rgb(0 0 0 / 0.7), 0 4px 6px -4px rgb(104 61 151 / 0.3);
+  --shadow-gold: 0 4px 14px rgba(219, 31, 38, 0.45);
   --radius: 12px;
   --radius-sm: 8px;
 
   /* Typography Design Tokens */
-  --font-serif: "Instrument Serif", "Times New Roman", Georgia, serif;
-  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-main: "Instrument Serif", "Times New Roman", Georgia, serif;
-  --font: "Instrument Serif", "Times New Roman", Georgia, serif;
+  --font-serif: var(--serif);
+  --font-sans: var(--sans);
+  --font-main: var(--serif);
+  --font: var(--sans);
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  font-family: "Instrument Serif", "Times New Roman", Georgia, serif !important;
-  color: var(--text-dark);
-  background-color: var(--white);
+  font-family: var(--sans);
+  background: var(--black);
+  color: var(--white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
@@ -319,15 +334,16 @@ span, label, small, strong, li {
 .badge-soft { background: var(--soft); color: var(--purple); border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
 
 .card {
-  background: var(--white);
+  background: #110d17;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--border);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 .card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
+  border-color: var(--purple);
 }
 
 /* ========================================================
