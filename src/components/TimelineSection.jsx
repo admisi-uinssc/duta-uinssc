@@ -50,7 +50,7 @@ export default function TimelineSection() {
             <div key={idx} className="timeline-item">
               <div className="timeline-dot">{step.num}</div>
               <div className="timeline-body">
-                <div className="timeline-date">{step.date}</div>
+                <div className="timeline-date" style={{ color: '#0091ff', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.3px', marginBottom: '2px', textTransform: 'uppercase' }}>{step.date}</div>
                 <h3>{step.title}</h3>
                 <p>{step.desc}</p>
               </div>
@@ -62,7 +62,7 @@ export default function TimelineSection() {
         {announcements.length > 0 && (
           <div style={{ marginTop: '4rem', borderTop: '2px solid var(--border)', paddingTop: '3rem' }}>
             <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--white)', margin: '0 0 0.5rem 0' }}>
+              <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--white)', margin: '0 0 0.5rem 0' }}>
                 Pengumuman Pelaksanaan Seleksi
               </h3>
               <p style={{ color: 'var(--text-mid)', fontSize: '0.95rem', margin: 0 }}>
@@ -83,13 +83,14 @@ export default function TimelineSection() {
                 return (
                   <div 
                     key={ann.id || idx}
+                    className="timeline-announcement-card"
                     style={{
-                      background: '#050505',
-                      border: '1.5px solid var(--border)',
-                      borderLeft: '5px solid var(--gold)',
-                      borderRadius: '8px',
-                      padding: '2rem',
-                      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)'
+                      background: 'linear-gradient(180deg, rgba(8, 24, 48, 0.6) 0%, rgba(2, 8, 18, 0.95) 100%)',
+                      border: '1px solid rgba(0, 145, 255, 0.25)',
+                      borderLeft: '4px solid #0091ff',
+                      borderRadius: '12px',
+                      padding: '1.75rem',
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)'
                     }}
                   >
                     <h4 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--white)', margin: '0 0 0.75rem 0' }}>
