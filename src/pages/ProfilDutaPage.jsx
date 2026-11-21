@@ -281,7 +281,7 @@ export default function ProfilDutaPage() {
                     background: '#ffffff',
                     fontSize: '0.825rem',
                     fontWeight: 700,
-                    color: 'var(--navy)',
+                    color: 'var(--white)',
                     cursor: 'pointer',
                     outline: 'none',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
@@ -457,7 +457,7 @@ export default function ProfilDutaPage() {
             })}
             {(activeMainTab === 'finalis' ? finalists : filteredAmbassadors).length === 0 && (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--text-light)', padding: '3.5rem 1rem' }}>
-                <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--navy)', marginBottom: '0.5rem' }}>
+                <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--white)', marginBottom: '0.5rem' }}>
                   {activeMainTab === 'finalis' ? 'Belum ada data finalis yang dipublikasikan.' : 'Tidak ada data profil Duta Kampus untuk filter ini.'}
                 </div>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-mid)', maxWidth: '400px', margin: '0 auto 1.5rem' }}>

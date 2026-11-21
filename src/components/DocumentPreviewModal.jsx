@@ -140,7 +140,7 @@ export default function DocumentPreviewModal({
                 </span>
               )}
             </div>
-            <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: 'var(--white)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {docLabel}
             </h3>
             <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b' }}>
@@ -303,13 +303,13 @@ export default function DocumentPreviewModal({
         {/* Edit Form Panel (if toggled) */}
         {editing && canEdit && (
           <div style={{ padding: '1rem 1.5rem', background: '#fffbeb', borderBottom: '1px solid #fef3c7' }}>
-            <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+            <div style={{ fontWeight: 700, color: 'var(--white)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
               Pilih Cara Pembaruan Dokumen:
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
               {/* Opsi 1: Upload File */}
               <div style={{ background: '#ffffff', padding: '0.875rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', display: 'block', marginBottom: '0.4rem' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--white)', display: 'block', marginBottom: '0.4rem' }}>
                   1. Unggah File Baru (PDF / JPG / PNG)
                 </label>
                 <input
@@ -323,7 +323,7 @@ export default function DocumentPreviewModal({
 
               {/* Opsi 2: Link Google Drive */}
               <form onSubmit={handleLinkSubmit} style={{ background: '#ffffff', padding: '0.875rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', display: 'block', marginBottom: '0.4rem' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--white)', display: 'block', marginBottom: '0.4rem' }}>
                   2. Tautkan Link Google Drive
                 </label>
                 <div style={{ display: 'flex', gap: '6px' }}>

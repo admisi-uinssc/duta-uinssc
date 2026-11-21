@@ -174,7 +174,7 @@ export default function HomePage() {
                       <div className="news-item">
                         <div className="news-dot"></div>
                         <div>
-                          <strong style={{ color: 'var(--navy)', fontSize: '0.9rem', display: 'block', marginBottom: '2px' }}>
+                          <strong style={{ color: 'var(--white)', fontSize: '0.9rem', display: 'block', marginBottom: '2px' }}>
                             {ann.title}
                           </strong>
                           <p style={{ margin: 0, fontSize: '0.825rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>

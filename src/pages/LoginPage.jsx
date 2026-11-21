@@ -213,7 +213,7 @@ export default function LoginPage() {
               style={{ margin: '0 auto', display: 'block' }}
             />
           </div>
-          <h1 style={{ fontSize: '1.45rem', fontWeight: 700, color: 'var(--navy)', margin: '0 0 0.35rem' }}>
+          <h1 style={{ fontSize: '1.45rem', fontWeight: 700, color: 'var(--white)', margin: '0 0 0.35rem' }}>
             {isLogin ? 'Masuk ke Portal Pendaftar' : 'Pendaftaran Akun Baru'}
           </h1>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-mid)', margin: 0, lineHeight: 1.5 }}>
@@ -329,7 +329,7 @@ export default function LoginPage() {
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <label htmlFor="loginEmailInput" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+              <label htmlFor="loginEmailInput" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
                 Alamat Email atau Username <span style={{ color: '#dc2626' }}>*</span>
               </label>
               <input
@@ -353,7 +353,7 @@ export default function LoginPage() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <label htmlFor="loginPasswordInput" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+              <label htmlFor="loginPasswordInput" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
                 Kata Sandi <span style={{ color: '#dc2626' }}>*</span>
               </label>
               <div style={{ position: 'relative' }}>
@@ -549,7 +549,7 @@ export default function LoginPage() {
                         style={{ borderRadius: '50%', border: '2px solid var(--gold)' }}
                       />
                       <div>
-                        <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)' }}>
+                        <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--white)' }}>
                           Pasang Aplikasi PADUKA
                         </div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--gold)', fontWeight: 600 }}>
@@ -569,7 +569,7 @@ export default function LoginPage() {
                       </div>
                     ) : isIosDevice ? (
                       <div style={{ padding: '0.5rem 0 1rem' }}>
-                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.4rem' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.4rem' }}>
                           Pasang di Layar Utama iPhone
                         </div>
                         <p style={{ fontSize: '0.825rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
@@ -578,7 +578,7 @@ export default function LoginPage() {
                       </div>
                     ) : (
                       <div style={{ padding: '0.5rem 0 1rem' }}>
-                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.4rem' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.4rem' }}>
                           Pasang di Layar Utama HP
                         </div>
                         <p style={{ fontSize: '0.825rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>

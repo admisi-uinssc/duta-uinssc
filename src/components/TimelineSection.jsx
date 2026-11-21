@@ -62,7 +62,7 @@ export default function TimelineSection() {
         {announcements.length > 0 && (
           <div style={{ marginTop: '4rem', borderTop: '2px solid var(--border)', paddingTop: '3rem' }}>
             <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 0.5rem 0' }}>
+              <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--white)', margin: '0 0 0.5rem 0' }}>
                 Pengumuman Pelaksanaan Seleksi
               </h3>
               <p style={{ color: 'var(--text-mid)', fontSize: '0.95rem', margin: 0 }}>
@@ -92,12 +92,12 @@ export default function TimelineSection() {
                       boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)'
                     }}
                   >
-                    <h4 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 0.75rem 0' }}>
+                    <h4 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--white)', margin: '0 0 0.75rem 0' }}>
                       {ann.title}
                     </h4>
 
                     {ann.greeting && (
-                      <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem' }}>
+                      <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.75rem' }}>
                         {ann.greeting}
                       </p>
                     )}
@@ -108,32 +108,32 @@ export default function TimelineSection() {
 
                     {(ann.date || ann.time || ann.location || ann.dressCode) && (
                       <div style={{ background: 'var(--bg-alt)', borderRadius: '6px', padding: '1.25rem', border: '1px solid var(--border)', marginBottom: '1.5rem' }}>
-                        <div style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '0.95rem', marginBottom: '0.85rem' }}>
+                        <div style={{ fontWeight: 800, color: 'var(--white)', fontSize: '0.95rem', marginBottom: '0.85rem' }}>
                           Informasi Pelaksanaan yang Perlu Diperhatikan:
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.85rem' }}>
                           {ann.date && (
                             <div style={{ background: '#ffffff', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
                               <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontWeight: 700 }}>Hari & Tanggal</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.date}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.date}</div>
                             </div>
                           )}
                           {ann.time && (
                             <div style={{ background: '#ffffff', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
                               <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontWeight: 700 }}>Waktu</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.time}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.time}</div>
                             </div>
                           )}
                           {ann.location && (
                             <div style={{ background: '#ffffff', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
                               <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontWeight: 700 }}>Tempat / Lokasi</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.location}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.location}</div>
                             </div>
                           )}
                           {ann.dressCode && (
                             <div style={{ background: '#ffffff', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
                               <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontWeight: 700 }}>Dress Code</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', marginTop: '2px' }}>{ann.dressCode}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.dressCode}</div>
                             </div>
                           )}
                         </div>
@@ -144,7 +144,7 @@ export default function TimelineSection() {
                     )}
 
                     <div style={{ paddingTop: '1.25rem', borderTop: '1px solid var(--border)' }}>
-                      <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.65rem' }}>
+                      <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.65rem' }}>
                         Hubungi panitia:
                       </div>
                       <div>

@@ -140,10 +140,10 @@ export default function AboutSection() {
 
           <div className="about-content">
             <div className="section-header">
-              <h2 className="heading-lg" style={{ color: 'var(--navy)', marginTop: '0.25rem', marginBottom: '1.25rem' }}>
+              <h2 className="heading-lg" style={{ color: 'var(--white)', marginTop: '0.25rem', marginBottom: '1.25rem' }}>
                 Program <span>Duta Kampus</span>
               </h2>
-              <p className="lead" style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-dark)' }}>
+              <p className="lead" style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--white)' }}>
                 {aboutData.desc || 'Melakukan Expo & Sosialisasi ke sekolah-sekolah se-Ciayumajakuning bahkan lebih tentang UIN Siber Syekh Nurjati Cirebon, melakukan promosi dalam bentuk video atau flyer melalui laman Instagram UPT Admisi dan Promosi, pelayanan Admisi untuk mensosialisasi calon mahasiswa baru UIN Siber Syekh Nurjati Cirebon selama periode SPAN-PTKIN sampai SPMB MANDIRI, serta mengayomi Paguyuban Duta dalam lingkungan UIN Siber Syekh Nurjati Cirebon.'}
               </p>
             </div>
@@ -152,7 +152,7 @@ export default function AboutSection() {
               <div className="about-point" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <div style={{ width: '4px', height: '42px', background: 'var(--gold)', borderRadius: '2px', flexShrink: 0 }} />
                 <div className="about-point-text">
-                  <strong style={{ color: 'var(--navy)', fontSize: '0.95rem' }}>{aboutData.point1Title || 'Sosialisasi & Edukasi Calon Mahasiswa'}</strong>
+                  <strong style={{ color: 'var(--white)', fontSize: '0.95rem' }}>{aboutData.point1Title || 'Sosialisasi & Edukasi Calon Mahasiswa'}</strong>
                   <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
                     {aboutData.point1Desc || 'Mendampingi calon mahasiswa baru dari seleksi SPAN-PTKIN, UM-PTKIN, hingga SPMB Mandiri.'}
                   </p>
@@ -162,7 +162,7 @@ export default function AboutSection() {
               <div className="about-point" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <div style={{ width: '4px', height: '42px', background: 'var(--navy)', borderRadius: '2px', flexShrink: 0 }} />
                 <div className="about-point-text">
-                  <strong style={{ color: 'var(--navy)', fontSize: '0.95rem' }}>{aboutData.point2Title || 'Duta Promosi Multimedia & Humas'}</strong>
+                  <strong style={{ color: 'var(--white)', fontSize: '0.95rem' }}>{aboutData.point2Title || 'Duta Promosi Multimedia & Humas'}</strong>
                   <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-mid)', lineHeight: 1.5 }}>
                     {aboutData.point2Desc || 'Menghadirkan konten kreatif flyer, video promosi, dan aktivasi media sosial institusi.'}
                   </p>
@@ -184,7 +184,7 @@ export default function AboutSection() {
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '1px', textTransform: 'uppercase' }}>
               Kepengurusan Resmi
             </span>
-            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--navy)', margin: '0.25rem 0 0.5rem' }}>
+            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--white)', margin: '0.25rem 0 0.5rem' }}>
               Struktur Organisasi Paguyuban Duta Kampus
             </h3>
             <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>
@@ -211,7 +211,7 @@ export default function AboutSection() {
                 <span style={{ display: 'block', fontSize: '0.72rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 700, marginBottom: '0.25rem' }}>
                   {item.role}
                 </span>
-                <div style={{ fontSize: '0.925rem', fontWeight: 700, color: 'var(--navy)' }}>{item.name}</div>
+                <div style={{ fontSize: '0.925rem', fontWeight: 700, color: 'var(--white)' }}>{item.name}</div>
               </div>
             ))}
           </div>
@@ -222,7 +222,7 @@ export default function AboutSection() {
               <div key={i} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.85rem', paddingBottom: '0.5rem', borderBottom: '1px solid #e2e8f0' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--gold)' }} />
-                  <h4 style={{ margin: 0, fontSize: '0.925rem', fontWeight: 700, color: 'var(--navy)' }}>{div.name}</h4>
+                  <h4 style={{ margin: 0, fontSize: '0.925rem', fontWeight: 700, color: 'var(--white)' }}>{div.name}</h4>
                 </div>
                 <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {div.members.map((m, mi) => (

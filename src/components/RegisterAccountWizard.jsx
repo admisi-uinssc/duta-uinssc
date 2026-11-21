@@ -250,7 +250,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
         <h3 style={{
           fontSize: '1.2rem',
           fontWeight: 700,
-          color: 'var(--navy)',
+          color: 'var(--white)',
           marginBottom: '0.65rem',
           lineHeight: 1.35
         }}>
@@ -278,7 +278,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           width: '100%',
           boxSizing: 'border-box'
         }}>
-          <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.88rem', marginBottom: '8px' }}>
+          <div style={{ fontWeight: 700, color: 'var(--white)', fontSize: '0.88rem', marginBottom: '8px' }}>
             Cek Nomor Pendaftaran
           </div>
 
@@ -364,7 +364,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           marginBottom: '1.25rem',
           textAlign: 'left'
         }}>
-          <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '4px' }}>
+          <div style={{ fontWeight: 700, color: 'var(--white)', marginBottom: '4px' }}>
             Bagi Calon Duta yang Sudah Mendaftar:
           </div>
           Silakan masuk ke akun Anda untuk mengecek kelengkapan berkas dan melihat informasi pengumuman tahap berikutnya.
@@ -410,7 +410,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
       {/* 2-Step Simple Header Tracker */}
       <div style={{ marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '4px' }}>
-          <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--navy)' }}>
+          <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--white)' }}>
             Formulir Pendaftaran Akun
           </span>
           <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-mid)' }}>
@@ -452,7 +452,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
       {step === 1 && (
         <form onSubmit={handleNextToStep2} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ borderBottom: '1px solid var(--border-soft)', paddingBottom: '0.75rem' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--navy)', margin: 0 }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--white)', margin: 0 }}>
               Informasi Akun
             </h3>
             <p style={{ fontSize: '0.825rem', color: 'var(--text-mid)', margin: '0.25rem 0 0 0' }}>
@@ -463,7 +463,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           {/* Email Field with smart validation */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label htmlFor={emailInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+              <label htmlFor={emailInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
                 Alamat Email <span style={{ color: '#dc2626' }}>*</span>
               </label>
               {email.trim() && (
@@ -513,7 +513,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
           {/* Password Field */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <label htmlFor={passwordInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+            <label htmlFor={passwordInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
               Kata Sandi <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <div style={{ position: 'relative' }}>
@@ -559,7 +559,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           {/* Confirm Password Field */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label htmlFor={confirmPasswordInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+              <label htmlFor={confirmPasswordInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
                 Konfirmasi Kata Sandi <span style={{ color: '#dc2626' }}>*</span>
               </label>
               {confirmPassword && (
@@ -634,7 +634,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
       {step === 2 && (
         <form onSubmit={handleFinalSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ borderBottom: '1px solid var(--border-soft)', paddingBottom: '0.75rem' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--navy)', margin: 0 }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--white)', margin: 0 }}>
               Informasi Pribadi
             </h3>
             <p style={{ fontSize: '0.825rem', color: 'var(--text-mid)', margin: '0.25rem 0 0 0' }}>
@@ -644,7 +644,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
           {/* Kewarganegaraan */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <label htmlFor={kewarganegaraanSelectId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+            <label htmlFor={kewarganegaraanSelectId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
               Kewarganegaraan <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <select
@@ -666,7 +666,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
           {/* Nama Lengkap */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <label htmlFor={namaInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+            <label htmlFor={namaInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
               Nama Lengkap <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <input
@@ -690,7 +690,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
           {/* NIM */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <label htmlFor={nimInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+            <label htmlFor={nimInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
               Nomor Induk Mahasiswa (NIM) <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <input
@@ -714,7 +714,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
           {/* Fakultas Dropdown */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <label htmlFor={fakultasSelectId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+            <label htmlFor={fakultasSelectId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
               Fakultas <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <select
@@ -740,7 +740,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
           {/* Jurusan / Program Studi Dropdown (Dinamis sesuai fakultas) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <label htmlFor={jurusanSelectId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+            <label htmlFor={jurusanSelectId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
               Program Studi / Jurusan <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <select
@@ -775,7 +775,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
           {/* Semester Saat Ini */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <label htmlFor={semesterSelectId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+            <label htmlFor={semesterSelectId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
               Semester Saat Ini <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <select
@@ -807,7 +807,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           {/* Tempat Lahir & Tanggal Lahir in 2 columns */}
           <div className="wizard-two-cols" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <label htmlFor={tempatLahirInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+              <label htmlFor={tempatLahirInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
                 Tempat Lahir <span style={{ color: '#dc2626' }}>*</span>
               </label>
               <input
@@ -830,7 +830,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <label htmlFor={tanggalLahirInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+              <label htmlFor={tanggalLahirInputId} style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
                 Tanggal Lahir <span style={{ color: '#dc2626' }}>*</span>
               </label>
               <input
@@ -854,7 +854,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
           {/* Jenis Kelamin */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)' }}>
               Jenis Kelamin <span style={{ color: '#dc2626' }}>*</span>
             </label>
             <div className="wizard-two-cols" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem' }}>

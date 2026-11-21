@@ -1402,7 +1402,7 @@ export default function AdminPage() {
                       }}
                     >
                       <div>
-                        <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '0.875rem' }}>{resolveApplicantName(u, u.email)}</div>
+                        <div style={{ fontWeight: 700, color: 'var(--white)', fontSize: '0.875rem' }}>{resolveApplicantName(u, u.email)}</div>
                         <div style={{ fontSize: '0.75rem', color: '#64748b' }}>NIM: {u.nim || '—'} · {u.fakultas || u.jurusan}</div>
                       </div>
                       <div style={{ display: 'flex', gap: '6px' }}>
@@ -1441,7 +1441,7 @@ export default function AdminPage() {
                 style={{ cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
                 title="Klik untuk melihat semua akun pelamar"
               >
-                <div className="stat-card-icon" style={{ background: 'rgba(45, 19, 75,0.1)', color: 'var(--navy)' }}>
+                <div className="stat-card-icon" style={{ background: 'rgba(45, 19, 75,0.1)', color: 'var(--white)' }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </div>
                 <div>
@@ -1501,7 +1501,7 @@ export default function AdminPage() {
                 style={{ cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
                 title="Klik untuk melihat peserta yang lolos seleksi berkas"
               >
-                <div className="stat-card-icon" style={{ background: 'rgba(45, 19, 75,0.15)', color: 'var(--navy)' }}>
+                <div className="stat-card-icon" style={{ background: 'rgba(45, 19, 75,0.15)', color: 'var(--white)' }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 </div>
                 <div>
@@ -1515,7 +1515,7 @@ export default function AdminPage() {
             <div style={{ marginTop: '2rem', background: '#fff', border: '1px solid var(--border)', borderRadius: '16px', padding: '1.75rem', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', margin: 0 }}>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--white)', margin: 0 }}>
                     Calon Duta Terdaftar Terbaru
                   </h3>
                   <p style={{ margin: '4px 0 0', fontSize: '0.825rem', color: 'var(--text-light)' }}>
@@ -1729,7 +1729,7 @@ export default function AdminPage() {
                                 type="button"
                                 onClick={() => handleOpenChangePassword(u)}
                                 className="btn btn-sm"
-                                style={{ padding: '2px 7px', fontSize: '0.72rem', border: '1px solid #cbd5e1', background: '#fff', color: 'var(--navy)', fontWeight: 600 }}
+                                style={{ padding: '2px 7px', fontSize: '0.72rem', border: '1px solid #cbd5e1', background: '#fff', color: 'var(--white)', fontWeight: 600 }}
                                 title="Ubah Kata Sandi Calon Duta"
                               >
                                 Ubah
@@ -1951,7 +1951,7 @@ export default function AdminPage() {
                                 <button
                                   type="button"
                                   onClick={() => handleOpenChangePassword(uMatch || item)}
-                                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px', fontSize: '0.68rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'underline' }}
+                                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px', fontSize: '0.68rem', color: 'var(--white)', fontWeight: 600, textDecoration: 'underline' }}
                                 >
                                   Ubah
                                 </button>
@@ -1967,7 +1967,7 @@ export default function AdminPage() {
                             Semester {item.semester && item.semester !== '—' ? item.semester : '—'}
                           </div>
                         </td>
-                        <td style={{ fontWeight: 700, color: 'var(--navy)' }}>
+                        <td style={{ fontWeight: 700, color: 'var(--white)' }}>
                           {item.ipk || '—'}
                         </td>
                         <td>
@@ -2120,7 +2120,7 @@ export default function AdminPage() {
         {page === 'cms' && !cmsData && (
           <div className="page active" style={{ width: '100%', boxSizing: 'border-box', textAlign: 'center', padding: '5rem 2rem' }}>
             <div style={{ width: '38px', height: '38px', border: '3px solid #e2e8f0', borderTopColor: 'var(--gold)', borderRadius: '50%', margin: '0 auto 1.25rem', animation: 'spin 0.8s linear infinite' }} />
-            <h3 style={{ color: 'var(--navy)', fontWeight: 800, margin: '0 0 0.5rem' }}>Memuat Konten Website...</h3>
+            <h3 style={{ color: 'var(--white)', fontWeight: 800, margin: '0 0 0.5rem' }}>Memuat Konten Website...</h3>
             <p style={{ color: 'var(--text-light)', fontSize: '0.875rem', margin: 0 }}>Mengambil data konten dan tautan foto terkini dari server.</p>
           </div>
         )}
@@ -2130,7 +2130,7 @@ export default function AdminPage() {
             {/* CMS Top Header & Instant Sync Action */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', background: '#f8fafc', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border)' }}>
               <div>
-                <div style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1rem' }}>Manajemen Konten Publik (CMS)</div>
+                <div style={{ fontWeight: 800, color: 'var(--white)', fontSize: '1rem' }}>Manajemen Konten Publik (CMS)</div>
                 <div style={{ fontSize: '0.8rem', color: hasUnsavedCms ? '#b45309' : '#16a34a', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
                   <span style={{ width: 8, height: 8, borderRadius: '50%', background: hasUnsavedCms ? '#f59e0b' : '#22c55e', display: 'inline-block' }} />
                   {hasUnsavedCms 
@@ -2217,7 +2217,7 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Slider Hero Beranda</h3>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>Slider Hero Beranda</h3>
                     <p>Atur foto atau video latar, judul, deskripsi, dan tombol aksi di beranda. Jika judul, deskripsi, dan tombol dikosongkan, slide hanya akan menampilkan video atau foto secara penuh.</p>
                   </div>
                   <button className="btn btn-sm btn-outline-gold" onClick={addSlide}>+ Tambah Slide Baru</button>
@@ -2227,7 +2227,7 @@ export default function AdminPage() {
                   {cmsData.slider.map((slide, idx) => (
                     <div key={slide.id || idx} style={{ background: 'var(--bg-alt)', padding: '1.75rem', borderRadius: '16px', border: '1.5px solid var(--border)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem', alignItems: 'center' }}>
-                        <h4 style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1.1rem', margin: 0 }}>Slide #{idx + 1}</h4>
+                        <h4 style={{ fontWeight: 800, color: 'var(--white)', fontSize: '1.1rem', margin: 0 }}>Slide #{idx + 1}</h4>
                         <button className="btn btn-sm btn-danger" onClick={() => removeSlide(idx)}>Hapus Slide</button>
                       </div>
 
@@ -2330,7 +2330,7 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Banner Promo Slider</h3>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>Banner Promo Slider</h3>
                     <p>Atur banner slide promosi di beranda. Mendukung foto maupun video.</p>
                   </div>
                   <button className="btn btn-sm btn-outline-gold" onClick={addPromoBanner}>+ Tambah Banner Promo</button>
@@ -2340,7 +2340,7 @@ export default function AdminPage() {
                   {cmsData.promoBanners?.map((item, idx) => (
                     <div key={item.id || idx} style={{ background: 'var(--bg-alt)', padding: '1.5rem', borderRadius: '16px', border: '1.5px solid var(--border)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
-                        <h4 style={{ fontWeight: 800, color: 'var(--navy)', margin: 0 }}>Banner #{idx + 1}</h4>
+                        <h4 style={{ fontWeight: 800, color: 'var(--white)', margin: 0 }}>Banner #{idx + 1}</h4>
                         <button className="btn btn-sm btn-danger" onClick={() => removePromoBanner(idx)}>Hapus</button>
                       </div>
 
@@ -2422,7 +2422,7 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Profil Duta Kampus</h3>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>Profil Duta Kampus</h3>
                     <p>Atur daftar profil duta mahasiswa yang ditampilkan di halaman publik Profil Duta dan showcase Beranda.</p>
                   </div>
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -2434,7 +2434,7 @@ export default function AdminPage() {
                   {cmsData.ambassadors?.map((item, idx) => (
                     <div key={item.id || idx} style={{ background: 'var(--bg-alt)', padding: '1.5rem', borderRadius: '16px', border: '1.5px solid var(--border)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
-                        <h4 style={{ fontWeight: 800, color: 'var(--navy)', margin: 0 }}>Duta #{idx + 1}</h4>
+                        <h4 style={{ fontWeight: 800, color: 'var(--white)', margin: 0 }}>Duta #{idx + 1}</h4>
                         <button className="btn btn-sm btn-danger" onClick={() => removeAmbassador(idx)}>Hapus</button>
                       </div>
 
@@ -2465,7 +2465,7 @@ export default function AdminPage() {
                             border: '1px solid var(--border)',
                             background: '#ffffff',
                             fontWeight: 600,
-                            color: 'var(--navy)'
+                            color: 'var(--white)'
                           }}
                         >
                           {AMBASSADOR_YEARS.map(y => (
@@ -2489,7 +2489,7 @@ export default function AdminPage() {
                             border: '1px solid var(--border)',
                             background: '#ffffff',
                             fontWeight: 600,
-                            color: 'var(--navy)'
+                            color: 'var(--white)'
                           }}
                         >
                           {AMBASSADOR_CATEGORIES.filter(c => c.id !== 'all').map(c => (
@@ -2546,7 +2546,7 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>
                       Pengaturan Showcase Slider Finalis di Beranda Utama
                     </h3>
                     <p>
@@ -2558,7 +2558,7 @@ export default function AdminPage() {
                 <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)', marginBottom: '1.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
                     <div>
-                      <strong style={{ fontSize: '0.95rem', color: 'var(--navy)' }}>Status Tampil di Halaman Utama (Slider Beranda)</strong>
+                      <strong style={{ fontSize: '0.95rem', color: 'var(--white)' }}>Status Tampil di Halaman Utama (Slider Beranda)</strong>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-mid)', marginTop: '2px' }}>
                         {cmsData.finalistShowcase?.enabled !== false ? 'Aktif — Ditampilkan sebagai sorotan utama tepat di bawah hero slider.' : 'Nonaktif — Slider finalis disembunyikan dari halaman depan.'}
                       </div>
@@ -2651,7 +2651,7 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Galeri Foto & Video Dokumentasi</h3>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>Galeri Foto & Video Dokumentasi</h3>
                     <p>Atur dokumentasi momen dan kegiatan Duta Kampus. Mendukung tautan foto maupun video.</p>
                   </div>
                   <button className="btn btn-sm btn-outline-gold" onClick={addGallery}>+ Tambah Media (Foto / Video)</button>
@@ -2756,7 +2756,7 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Media Showcase & Konten Program (Tentang)</h3>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>Media Showcase & Konten Program (Tentang)</h3>
                     <p>Atur media visual utama (foto atau video), lencana tahun, deskripsi, dan poin kegiatan yang tampil di seksi Program Duta Kampus.</p>
                   </div>
                 </div>
@@ -2900,7 +2900,7 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Pengumuman & Agenda Seleksi</h3>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>Pengumuman & Agenda Seleksi</h3>
                     <p>Tambah, edit, atau hapus pengumuman. Setiap pengumuman dapat ditampilkan ke publik, khusus peserta, atau keduanya.</p>
                   </div>
                   <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -2913,7 +2913,7 @@ export default function AdminPage() {
                     <div key={ann.id || idx} style={{ background: 'var(--bg-alt)', padding: '1.75rem', borderRadius: '16px', border: '1.5px solid var(--border)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                          <h4 style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1.1rem', margin: 0 }}>Pengumuman #{idx + 1}</h4>
+                          <h4 style={{ fontWeight: 800, color: 'var(--white)', fontSize: '1.1rem', margin: 0 }}>Pengumuman #{idx + 1}</h4>
                           <span style={{
                             padding: '3px 10px',
                             borderRadius: '4px',
@@ -3005,7 +3005,7 @@ export default function AdminPage() {
                       </div>
 
                       <div style={{ marginTop: '1.25rem', background: 'var(--surface)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)' }}>
-                        <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Detail Pelaksanaan / Agenda Resmi (Opsional)</div>
+                        <div style={{ fontWeight: 700, color: 'var(--white)', marginBottom: '0.75rem', fontSize: '0.95rem' }}>Detail Pelaksanaan / Agenda Resmi (Opsional)</div>
                         <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
                           <div className="form-group">
                             <label style={{ fontSize: '0.85rem' }}>Hari & Tanggal</label>
@@ -3089,7 +3089,7 @@ export default function AdminPage() {
               <div className="settings-card" style={{ marginBottom: '2rem', width: '100%' }}>
                 <div className="settings-card-header">
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Kontak & Media Sosial</h3>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>Kontak & Media Sosial</h3>
                     <p>Atur kontak (WhatsApp, Instagram, TikTok, Email) yang tampil di footer dan dashboard peserta.</p>
                   </div>
                 </div>
@@ -3154,7 +3154,7 @@ export default function AdminPage() {
             {/* SAVE BUTTON FOR CMS */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: '#f8fafc', padding: '1.25rem 1.5rem', borderRadius: '14px', border: '1px solid var(--border)', marginBottom: '4rem' }}>
               <div>
-                <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '1rem' }}>Publikasikan Konten Website</div>
+                <div style={{ fontWeight: 700, color: 'var(--white)', fontSize: '1rem' }}>Publikasikan Konten Website</div>
                 <div style={{ fontSize: '0.825rem', color: hasUnsavedCms ? '#b45309' : 'var(--text-light)', marginTop: '2px' }}>
                   {hasUnsavedCms 
                     ? 'Pastikan seluruh teks dan tautan foto sudah sesuai sebelum mempublikasikan.' 
@@ -3324,7 +3324,7 @@ export default function AdminPage() {
 
                 {!isFirebaseConfigured && (
                   <div style={{ background: 'var(--bg-alt)', padding: '1.25rem', borderRadius: '10px', marginTop: '1rem', border: '1px solid var(--border-soft)' }}>
-                    <strong style={{ fontSize: '0.9rem', color: 'var(--navy)', display: 'block', marginBottom: '0.5rem' }}>
+                    <strong style={{ fontSize: '0.9rem', color: 'var(--white)', display: 'block', marginBottom: '0.5rem' }}>
                       Panduan 4 Langkah Menghubungkan Firebase:
                     </strong>
                     <ol style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.85rem', color: 'var(--text-mid)', lineHeight: 1.6 }}>
@@ -3495,7 +3495,7 @@ export default function AdminPage() {
                 <div style={{ fontSize: '0.825rem', color: 'var(--text-light)' }}>
                   <span>Admin Panel</span> <span style={{ margin: '0 4px' }}>/</span> 
                   <span style={{ color: 'var(--text-mid)', fontWeight: 600 }}>Direktori Berkas</span> <span style={{ margin: '0 4px' }}>/</span> 
-                  <strong style={{ color: 'var(--navy)' }}>{mergedSelectedItem.namaLengkap}</strong>
+                  <strong style={{ color: 'var(--white)' }}>{mergedSelectedItem.namaLengkap}</strong>
                 </div>
               </div>
 
@@ -3564,7 +3564,7 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                    <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: 'var(--navy)' }}>
+                    <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: 'var(--white)' }}>
                       {mergedSelectedItem.namaLengkap}
                     </h2>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, padding: '4px 12px', borderRadius: '6px', background: selectedDossier.bg, color: selectedDossier.color, border: `1px solid ${selectedDossier.border}` }}>
@@ -3584,7 +3584,7 @@ export default function AdminPage() {
               {/* Completeness Indicator Widget */}
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.125rem 1.5rem', minWidth: '260px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)' }}>Kelengkapan Berkas</span>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--white)' }}>Kelengkapan Berkas</span>
                   <span style={{ fontSize: '0.95rem', fontWeight: 800, color: selectedDossier.color }}>
                     {selectedDossier.filledCount} / {selectedDossier.totalCount} ({selectedDossier.percent}%)
                   </span>
@@ -3604,20 +3604,20 @@ export default function AdminPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 {/* Card: Identitas Akademik */}
                 <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
-                  <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.625rem' }}>
+                  <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.625rem' }}>
                     Data Akademik Mahasiswa
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
                     {[['NIM', mergedSelectedItem.nim], ['Fakultas', mergedSelectedItem.fakultas], ['Program Studi', mergedSelectedItem.prodi || mergedSelectedItem.jurusan]].map(([lbl, val]) => (
                       <div key={lbl}>
                         <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>{lbl}</div>
-                        <div style={{ fontWeight: 700, color: 'var(--navy)' }}>{val || '—'}</div>
+                        <div style={{ fontWeight: 700, color: 'var(--white)' }}>{val || '—'}</div>
                       </div>
                     ))}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                       <div>
                         <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Semester</div>
-                        <div style={{ fontWeight: 700, color: 'var(--navy)' }}>Semester {mergedSelectedItem.semester || '—'}</div>
+                        <div style={{ fontWeight: 700, color: 'var(--white)' }}>Semester {mergedSelectedItem.semester || '—'}</div>
                       </div>
                       <div>
                         <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>IPK</div>
@@ -3629,13 +3629,13 @@ export default function AdminPage() {
 
                 {/* Card: Kontak & Domisili */}
                 <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
-                  <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.625rem' }}>
+                  <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.625rem' }}>
                     Kontak & Domisili
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
                     <div>
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Email</div>
-                      <div style={{ fontWeight: 600, color: 'var(--navy)', wordBreak: 'break-all' }}>{mergedSelectedItem.email}</div>
+                      <div style={{ fontWeight: 600, color: 'var(--white)', wordBreak: 'break-all' }}>{mergedSelectedItem.email}</div>
                     </div>
                     <div>
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Kata Sandi Akun Peserta</div>
@@ -3663,7 +3663,7 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Nomor WhatsApp</div>
-                      <div style={{ fontWeight: 600, color: 'var(--navy)' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--white)' }}>
                         {mergedSelectedItem.noHp ? (
                           <a href={`https://wa.me/${mergedSelectedItem.noHp.replace(/^0/, '62').replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#16a34a', fontWeight: 700 }}>
                             {mergedSelectedItem.noHp} (Hubungi WA)
@@ -3673,7 +3673,7 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>TTL</div>
-                      <div style={{ fontWeight: 600, color: 'var(--navy)' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--white)' }}>
                         {mergedSelectedItem.ttl || (mergedSelectedItem.tempatLahir ? `${mergedSelectedItem.tempatLahir}, ${mergedSelectedItem.tanggalLahir}` : '—')}
                       </div>
                     </div>
@@ -3687,12 +3687,12 @@ export default function AdminPage() {
                 {/* Card: Portofolio & Esai */}
                 {(mergedSelectedItem.prestasi || mergedSelectedItem.organisasi || mergedSelectedItem.motivasi) && (
                   <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
-                    <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.625rem' }}>
+                    <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.625rem' }}>
                       Prestasi & Esai Motivasi
                     </h4>
-                    {mergedSelectedItem.prestasi && <div style={{ marginBottom: '0.875rem' }}><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Prestasi</div><div style={{ fontSize: '0.825rem', color: 'var(--navy)', marginTop: '2px' }}>{mergedSelectedItem.prestasi}</div></div>}
-                    {mergedSelectedItem.organisasi && <div style={{ marginBottom: '0.875rem' }}><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Organisasi</div><div style={{ fontSize: '0.825rem', color: 'var(--navy)', marginTop: '2px' }}>{mergedSelectedItem.organisasi}</div></div>}
-                    {mergedSelectedItem.motivasi && <div><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Esai Motivasi</div><div style={{ fontSize: '0.825rem', color: 'var(--navy)', marginTop: '4px', lineHeight: 1.65, fontStyle: 'italic', borderLeft: '3px solid var(--gold)', paddingLeft: '0.75rem' }}>{mergedSelectedItem.motivasi}</div></div>}
+                    {mergedSelectedItem.prestasi && <div style={{ marginBottom: '0.875rem' }}><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Prestasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '2px' }}>{mergedSelectedItem.prestasi}</div></div>}
+                    {mergedSelectedItem.organisasi && <div style={{ marginBottom: '0.875rem' }}><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Organisasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '2px' }}>{mergedSelectedItem.organisasi}</div></div>}
+                    {mergedSelectedItem.motivasi && <div><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Esai Motivasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '4px', lineHeight: 1.65, fontStyle: 'italic', borderLeft: '3px solid var(--gold)', paddingLeft: '0.75rem' }}>{mergedSelectedItem.motivasi}</div></div>}
                   </div>
                 )}
               </div>
@@ -3701,10 +3701,10 @@ export default function AdminPage() {
               <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.75rem', boxShadow: 'var(--shadow-sm)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div>
-                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'var(--navy)' }}>Direktori Berkas Dokumen Persyaratan</h3>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'var(--white)' }}>Direktori Berkas Dokumen Persyaratan</h3>
                     <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--text-light)' }}>Periksa kelengkapan berkas administrasi calon Duta Kampus UIN SSC 2026.</p>
                   </div>
-                  <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--navy)', background: '#f8fafc', padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--white)', background: '#f8fafc', padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                     Terunggah: <strong style={{ color: selectedDossier.color }}>{selectedDossier.filledCount} dari {selectedDossier.totalCount}</strong>
                   </div>
                 </div>
@@ -3734,7 +3734,7 @@ export default function AdminPage() {
                             ) : idx + 1}
                           </span>
                           <div>
-                            <div style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '0.9rem' }}>{idx + 1}. {doc.label}</div>
+                            <div style={{ fontWeight: 800, color: 'var(--white)', fontSize: '0.9rem' }}>{idx + 1}. {doc.label}</div>
                             <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>{doc.sublabel}</div>
                           </div>
                         </div>
@@ -3880,7 +3880,7 @@ export default function AdminPage() {
                           borderRadius: '50%',
                           background: mergedSelectedItem.finalistStatus === 'finalis' ? '#16a34a' : mergedSelectedItem.finalistStatus === 'tidak_lolos' ? '#dc2626' : '#94a3b8'
                         }} />
-                        <h5 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)' }}>
+                        <h5 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)' }}>
                           Keputusan Menuju Babak Final
                         </h5>
                       </div>
@@ -3947,7 +3947,7 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 800, color: 'var(--navy)' }}>
+                  <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 800, color: 'var(--white)' }}>
                     Keputusan Kelayakan Berkas
                   </h4>
                   <p style={{ margin: '0 0 1rem', fontSize: '0.825rem', color: '#64748b' }}>
@@ -3955,7 +3955,7 @@ export default function AdminPage() {
                   </p>
 
                   <div style={{ marginBottom: '1.25rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.4rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.4rem' }}>
                       Pesan untuk Peserta (opsional):
                     </label>
                     <textarea
@@ -4292,13 +4292,13 @@ export default function AdminPage() {
 
             <form onSubmit={handleSaveUserPassword} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.75rem 1rem' }}>
-                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--navy)' }}>{editingPasswordUser.namaLengkap || editingPasswordUser.name}</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--white)' }}>{editingPasswordUser.namaLengkap || editingPasswordUser.name}</div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-mid)', marginTop: '2px' }}>{editingPasswordUser.email}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '2px' }}>NIM: {editingPasswordUser.nim || '—'}</div>
               </div>
 
               <div className="form-group">
-                <label style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '4px', display: 'block' }}>
+                <label style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--white)', marginBottom: '4px', display: 'block' }}>
                   Kata Sandi Baru
                 </label>
                 <input
@@ -4424,7 +4424,7 @@ export default function AdminPage() {
               )}
             </div>
             
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '0.5rem' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)', marginBottom: '0.5rem' }}>
               {confirmModal.title}
             </h3>
             <p style={{ fontSize: '0.9rem', color: '#64748b', lineHeight: 1.6, marginBottom: '1.75rem' }}>
@@ -4525,7 +4525,7 @@ export default function AdminPage() {
           >
             <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-alt)' }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)' }}>
+                <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: 'var(--white)' }}>
                   Kode Google Apps Script (Backend Google Drive)
                 </h3>
                 <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: '#64748b' }}>
@@ -4553,7 +4553,7 @@ export default function AdminPage() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <span style={{ fontWeight: 700, color: 'var(--navy)' }}>File: google-apps-script.js</span>
+                <span style={{ fontWeight: 700, color: 'var(--white)' }}>File: google-apps-script.js</span>
                 <button
                   type="button"
                   className="btn btn-sm btn-gold"

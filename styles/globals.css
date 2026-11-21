@@ -32,8 +32,14 @@
   --red-hover: #b8171d;
   --red-faint: rgba(219, 31, 38, 0.15);
 
+  /* Spectra Blue Hover Tokens */
+  --spectra-blue: #0091ff;
+  --spectra-blue-glow: 0 0 20px rgba(0, 145, 255, 0.45);
+  --spectra-blue-border: #0091ff;
+
   /* Semantic Mappings */
-  --navy: #0d0814;
+  --navy: var(--white);
+  --navy-bg: #110d17;
   --gold: var(--white);
   --gold-dark: #f0f0f0;
   --gold-faint: rgba(255, 255, 255, 0.1);
@@ -48,6 +54,7 @@
   --text: var(--white);
   --text-dark: var(--white);
   --text-mid: #dcd7e3;
+  --text-light: #b3adbb;
   --text-light: var(--muted);
   --border: #291f36;
   --border-soft: #1d1627;
@@ -374,21 +381,21 @@ span, label, small, strong, li {
   height: 100vh;
   max-height: 100vh;
   width: 100vw;
-  background: #f8fafc;
+  background: var(--black);
   font-family: var(--font-sans);
-  color: #1e293b;
+  color: var(--white);
   overflow: hidden;
 }
 
 .user-dashboard-sidebar {
   width: 260px;
   height: 100vh;
-  background: var(--navy);
+  background: #0d0814;
   color: #ffffff;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid var(--border);
   position: sticky;
   top: 0;
   left: 0;
@@ -469,9 +476,9 @@ span, label, small, strong, li {
     left: 0;
     right: 0;
     height: 64px;
-    background: #ffffff;
-    border-top: 1px solid #e2e8f0;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    background: #0d0814;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
     z-index: 1000;
     align-items: stretch;
     justify-content: space-around;
@@ -489,7 +496,7 @@ span, label, small, strong, li {
     border: none;
     font-size: 0.68rem;
     font-weight: 500;
-    color: #64748b;
+    color: var(--muted);
     cursor: pointer;
     transition: all 0.2s ease;
     padding: 6px 0;
@@ -497,7 +504,7 @@ span, label, small, strong, li {
   }
 
   .user-bottom-nav-item.active {
-    color: var(--gold) !important;
+    color: var(--white) !important;
     font-weight: 700;
   }
 

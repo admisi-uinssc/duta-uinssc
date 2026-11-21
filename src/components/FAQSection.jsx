@@ -124,7 +124,7 @@ export default function FAQSection() {
                   onClick={() => setOpenIdx(isOpen ? null : idx)}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', textAlign: 'left', width: '100%' }}
                 >
-                  <span style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '0.975rem' }}>{item.q}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--white)', fontSize: '0.975rem' }}>{item.q}</span>
                   <span
                     className="faq-icon"
                     style={{

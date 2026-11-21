@@ -40,7 +40,7 @@ export default function RequirementsSection() {
           <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.25rem' }}>
               <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--gold)' }} />
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>Kriteria Umum Peserta</h3>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>Kriteria Umum Peserta</h3>
             </div>
             <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               {generalCriteria.map((crit, i) => (
@@ -56,13 +56,13 @@ export default function RequirementsSection() {
           <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.25rem' }}>
               <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--navy)' }} />
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)' }}>10 Berkas Dokumen Persyaratan</h3>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)' }}>10 Berkas Dokumen Persyaratan</h3>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '420px', overflowY: 'auto', paddingRight: '4px' }}>
               {documentList.map((doc, i) => (
                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', padding: '0.6rem 0.75rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
                   <div>
-                    <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--navy)' }}>
+                    <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--white)' }}>
                       {i + 1}. {doc.title}
                     </div>
                     <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>

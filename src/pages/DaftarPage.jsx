@@ -193,7 +193,7 @@ export default function DaftarPage() {
               height={56}
               style={{ margin: '0 auto 0.75rem', display: 'block' }}
             />
-            <h1 style={{ fontSize: '1.45rem', fontWeight: 700, color: 'var(--navy)', margin: '0 0 0.35rem' }}>
+            <h1 style={{ fontSize: '1.45rem', fontWeight: 700, color: 'var(--white)', margin: '0 0 0.35rem' }}>
               Pendaftaran Akun Baru
             </h1>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-mid)', margin: 0, lineHeight: 1.5 }}>
@@ -259,7 +259,7 @@ export default function DaftarPage() {
               Menunggu ACC Panitia
             </div>
 
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '0.75rem' }}>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--white)', marginBottom: '0.75rem' }}>
               Akun Anda Berhasil Diajukan!
             </h2>
 
@@ -280,7 +280,7 @@ export default function DaftarPage() {
                 fontSize: '0.875rem',
               }}
             >
-              <div style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>Ringkasan Akun:</div>
+              <div style={{ fontWeight: 700, color: 'var(--white)', marginBottom: '0.5rem' }}>Ringkasan Akun:</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', color: 'var(--text-mid)' }}>
                 <div>NIM: <strong>{currentUser.nim || '-'}</strong></div>
                 <div>Fakultas: <strong>{currentUser.fakultas || '-'}</strong></div>
@@ -324,7 +324,7 @@ export default function DaftarPage() {
               <polyline points="22 4 12 14.01 9 11.01" />
             </svg>
           </div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '0.75rem' }}>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--white)', marginBottom: '0.75rem' }}>
             Pendaftaran Berhasil Dikirim!
           </h2>
           <p style={{ color: 'var(--text-mid)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>

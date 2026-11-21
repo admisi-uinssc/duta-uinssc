@@ -38,7 +38,7 @@ export default function BenefitsSection() {
           {items.map((item, idx) => (
             <div key={idx} className="benefit-card card" style={{ background: '#ffffff', borderRadius: '14px', border: '1px solid #e2e8f0', padding: '1.75rem 1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
               <div className="benefit-num" style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--gold)', marginBottom: '0.75rem' }}>{item.num}</div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.75rem' }}>{item.title}</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.75rem' }}>{item.title}</h3>
               <div className="benefit-divider" style={{ width: '40px', height: '2px', background: 'var(--gold)', marginBottom: '0.75rem' }}></div>
               <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: 1.6, margin: 0 }}>{item.desc}</p>
             </div>
