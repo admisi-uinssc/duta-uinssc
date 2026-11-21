@@ -1067,7 +1067,7 @@ export default function UserDashboard({ user, onLogout }) {
                 gap: '6px',
                 padding: '4px 10px',
                 borderRadius: '6px',
-                background: '#f1f5f9',
+                background: '#000000',
                 fontSize: '0.78rem',
                 fontWeight: 600,
                 color: 'var(--muted)'
@@ -1475,7 +1475,7 @@ export default function UserDashboard({ user, onLogout }) {
                       key={ann.id || aIdx}
                       style={{
                         marginTop: '0.5rem',
-                        background: '#ffffff',
+                        background: '#050505',
                         borderRadius: '10px',
                         border: '1.5px solid #86efac',
                         padding: '1.5rem',
@@ -1506,25 +1506,25 @@ export default function UserDashboard({ user, onLogout }) {
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
                             {ann.date && (
-                              <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
                                 <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Hari & Tanggal</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.date}</div>
                               </div>
                             )}
                             {ann.time && (
-                              <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
                                 <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Waktu</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.time}</div>
                               </div>
                             )}
                             {ann.location && (
-                              <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
                                 <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Tempat / Lokasi</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.location}</div>
                               </div>
                             )}
                             {ann.dressCode && (
-                              <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
+                              <div style={{ background: '#050505', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
                                 <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Dress Code</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.dressCode}</div>
                               </div>
@@ -1536,7 +1536,7 @@ export default function UserDashboard({ user, onLogout }) {
                         </div>
                       )}
 
-                      <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '1rem', border: '1px solid var(--border)' }}>
+                      <div style={{ background: '#000000', borderRadius: '8px', padding: '1rem', border: '1px solid var(--border)' }}>
                         <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.5rem' }}>
                           Hubungi panitia:
                         </div>
@@ -1601,14 +1601,14 @@ export default function UserDashboard({ user, onLogout }) {
               {/* === PENGINGAT BATAS WAKTU & KELENGKAPAN BERKAS (OFFICIAL WARNING STYLE ATAU KARTU PENUTUPAN) === */}
               {isRegistrationClosed ? (
                 <div className="user-warning-card user-closed-card" style={{
-                  background: '#ffffff',
-                  border: '1.5px solid #e2e8f0',
+                  background: '#050505',
+                  border: '1.5px solid var(--border)',
                   borderLeft: '4px solid var(--gold)',
                   borderRadius: '16px',
                   padding: '1.5rem',
                   boxShadow: 'var(--shadow-sm)'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.85rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.85rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
                     <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#dc2626' }}>
                       Pendaftaran Ditutup
                     </div>
@@ -1628,8 +1628,8 @@ export default function UserDashboard({ user, onLogout }) {
 
                   {/* Ringkasan Status Berkas Peserta */}
                   <div style={{
-                    background: '#f8fafc',
-                    border: '1px solid #e2e8f0',
+                    background: '#000000',
+                    border: '1px solid var(--border)',
                     borderRadius: '12px',
                     padding: '1rem 1.25rem',
                     marginBottom: '1.25rem',
@@ -1887,7 +1887,7 @@ export default function UserDashboard({ user, onLogout }) {
                 </p>
 
                 {/* Progress track */}
-                <div style={{ background: '#f1f5f9', borderRadius: '6px', height: '8px', overflow: 'hidden', marginBottom: '1.5rem', maxWidth: '600px' }}>
+                <div style={{ background: '#000000', borderRadius: '6px', height: '8px', overflow: 'hidden', marginBottom: '1.5rem', maxWidth: '600px' }}>
                   <div
                     style={{
                       height: '100%',
@@ -2017,8 +2017,8 @@ export default function UserDashboard({ user, onLogout }) {
               {/* UCAPAN TERIMA KASIH DARI PANITIA SELEKSI (HANYA JIKA BUKAN FINALIS) */}
               {isRegistrationClosed && !isFinalist && (
                 <div style={{
-                  background: '#ffffff',
-                  border: '1.5px solid #e2e8f0',
+                  background: '#050505',
+                  border: '1.5px solid var(--border)',
                   borderLeft: '4px solid var(--gold)',
                   borderRadius: '12px',
                   padding: '1.25rem 1.5rem',
@@ -2077,8 +2077,8 @@ export default function UserDashboard({ user, onLogout }) {
                 onSubmit={handleSubmitApplication}
                 className="user-registration-form"
                 style={{
-                  background: '#ffffff',
-                  border: '1px solid #e2e8f0',
+                  background: '#050505',
+                  border: '1px solid var(--border)',
                   borderRadius: '16px',
                   padding: '2.5rem',
                   boxShadow: 'var(--shadow-sm)',
@@ -2183,7 +2183,7 @@ export default function UserDashboard({ user, onLogout }) {
                         name="semester"
                         value={formData.semester}
                         onChange={handleInputChange}
-                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box', background: '#fff' }}
+                        style={{ width: '100%', padding: '0.875rem 1rem', borderRadius: '8px', border: '1.5px solid var(--border)', background: '#000000', color: 'var(--white)', fontSize: '0.925rem', boxSizing: 'border-box', background: '#050505' }}
                       >
                         <option value="1">Semester 1</option>
                         <option value="2">Semester 2</option>
@@ -2415,7 +2415,7 @@ export default function UserDashboard({ user, onLogout }) {
                                   gap: '5px',
                                   padding: '5px 10px',
                                   borderRadius: '6px',
-                                  border: '1px solid #cbd5e1',
+                                  border: '1px solid var(--border)',
                                   background: isFormLocked ? '#f8fafc' : '#ffffff',
                                   fontSize: '0.75rem',
                                   fontWeight: 600,
@@ -2452,7 +2452,7 @@ export default function UserDashboard({ user, onLogout }) {
                                 style={{
                                   padding: '5px 8px',
                                   borderRadius: '6px',
-                                  border: '1px solid #cbd5e1',
+                                  border: '1px solid var(--border)',
                                   background: isFormLocked ? '#f8fafc' : '#ffffff',
                                   fontSize: '0.72rem',
                                   color: isFormLocked ? '#94a3b8' : 'var(--navy)',
@@ -2612,8 +2612,8 @@ export default function UserDashboard({ user, onLogout }) {
               <div
                 className="history-timeline-card"
                 style={{
-                  background: '#ffffff',
-                  border: '1px solid #e2e8f0',
+                  background: '#050505',
+                  border: '1px solid var(--border)',
                   borderRadius: '16px',
                   padding: '2rem',
                   boxShadow: 'var(--shadow-sm)'
@@ -2767,9 +2767,9 @@ export default function UserDashboard({ user, onLogout }) {
               {/* Card 1: Pengaturan Email Login */}
               <div
                 style={{
-                  background: '#ffffff',
+                  background: '#050505',
                   borderRadius: '16px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid var(--border)',
                   padding: '2rem',
                   boxShadow: '0 4px 16px rgba(0,0,0,0.04)'
                 }}
@@ -2816,8 +2816,8 @@ export default function UserDashboard({ user, onLogout }) {
                         width: '100%',
                         padding: '0.75rem 0.85rem',
                         borderRadius: '8px',
-                        border: '1px solid #e2e8f0',
-                        background: '#f8fafc',
+                        border: '1px solid var(--border)',
+                        background: '#000000',
                         color: 'var(--white)',
                         fontSize: '0.9rem',
                         boxSizing: 'border-box',
@@ -2840,7 +2840,7 @@ export default function UserDashboard({ user, onLogout }) {
                         width: '100%',
                         padding: '0.75rem 0.85rem',
                         borderRadius: '8px',
-                        border: '1px solid #cbd5e1',
+                        border: '1px solid var(--border)',
                         fontSize: '0.9rem',
                         outline: 'none',
                         boxSizing: 'border-box'
@@ -2863,7 +2863,7 @@ export default function UserDashboard({ user, onLogout }) {
                           width: '100%',
                           padding: '0.75rem 2.8rem 0.75rem 0.85rem',
                           borderRadius: '8px',
-                          border: '1px solid #cbd5e1',
+                          border: '1px solid var(--border)',
                           fontSize: '0.9rem',
                           outline: 'none',
                           boxSizing: 'border-box'
@@ -2920,9 +2920,9 @@ export default function UserDashboard({ user, onLogout }) {
               {/* Card 2: Pengaturan Kata Sandi */}
               <div
                 style={{
-                  background: '#ffffff',
+                  background: '#050505',
                   borderRadius: '16px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid var(--border)',
                   padding: '2rem',
                   boxShadow: '0 4px 16px rgba(0,0,0,0.04)'
                 }}
@@ -2972,7 +2972,7 @@ export default function UserDashboard({ user, onLogout }) {
                           width: '100%',
                           padding: '0.75rem 2.8rem 0.75rem 0.85rem',
                           borderRadius: '8px',
-                          border: '1px solid #cbd5e1',
+                          border: '1px solid var(--border)',
                           fontSize: '0.9rem',
                           outline: 'none',
                           boxSizing: 'border-box'
@@ -3018,7 +3018,7 @@ export default function UserDashboard({ user, onLogout }) {
                         width: '100%',
                         padding: '0.75rem 0.85rem',
                         borderRadius: '8px',
-                        border: '1px solid #cbd5e1',
+                        border: '1px solid var(--border)',
                         fontSize: '0.9rem',
                         outline: 'none',
                         boxSizing: 'border-box'

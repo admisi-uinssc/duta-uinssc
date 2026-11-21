@@ -84,7 +84,7 @@ export default function TimelineSection() {
                   <div 
                     key={ann.id || idx}
                     style={{
-                      background: '#ffffff',
+                      background: '#050505',
                       border: '1.5px solid var(--border)',
                       borderLeft: '5px solid var(--gold)',
                       borderRadius: '8px',
@@ -113,25 +113,25 @@ export default function TimelineSection() {
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.85rem' }}>
                           {ann.date && (
-                            <div style={{ background: '#ffffff', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                            <div style={{ background: '#050505', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
                               <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontWeight: 700 }}>Hari & Tanggal</div>
                               <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.date}</div>
                             </div>
                           )}
                           {ann.time && (
-                            <div style={{ background: '#ffffff', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                            <div style={{ background: '#050505', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
                               <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontWeight: 700 }}>Waktu</div>
                               <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.time}</div>
                             </div>
                           )}
                           {ann.location && (
-                            <div style={{ background: '#ffffff', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                            <div style={{ background: '#050505', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
                               <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontWeight: 700 }}>Tempat / Lokasi</div>
                               <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.location}</div>
                             </div>
                           )}
                           {ann.dressCode && (
-                            <div style={{ background: '#ffffff', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                            <div style={{ background: '#050505', padding: '0.85rem', borderRadius: '4px', border: '1px solid var(--border)' }}>
                               <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontWeight: 700 }}>Dress Code</div>
                               <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.dressCode}</div>
                             </div>

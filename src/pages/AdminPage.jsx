@@ -1391,7 +1391,7 @@ export default function AdminPage() {
                     <div
                       key={u.id}
                       style={{
-                        background: '#ffffff',
+                        background: '#050505',
                         border: '1px solid #fcd34d',
                         borderRadius: '10px',
                         padding: '0.875rem 1rem',
@@ -1403,7 +1403,7 @@ export default function AdminPage() {
                     >
                       <div>
                         <div style={{ fontWeight: 700, color: 'var(--white)', fontSize: '0.875rem' }}>{resolveApplicantName(u, u.email)}</div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>NIM: {u.nim || '—'} · {u.fakultas || u.jurusan}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--white)' }}>NIM: {u.nim || '—'} · {u.fakultas || u.jurusan}</div>
                       </div>
                       <div style={{ display: 'flex', gap: '6px' }}>
                         <button
@@ -1512,7 +1512,7 @@ export default function AdminPage() {
             </div>
 
             {/* Quick Actions & Recent Applicants */}
-            <div style={{ marginTop: '2rem', background: '#fff', border: '1px solid var(--border)', borderRadius: '16px', padding: '1.75rem', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ marginTop: '2rem', background: '#050505', border: '1px solid var(--border)', borderRadius: '16px', padding: '1.75rem', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
                   <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--white)', margin: 0 }}>
@@ -1659,7 +1659,7 @@ export default function AdminPage() {
                   type="button"
                   className="btn btn-outline-danger btn-sm" 
                   onClick={handleClearDemoData}
-                  style={{ border: '1px solid #fca5a5', color: '#dc2626', background: '#fff', fontWeight: 600, padding: '0.45rem 0.85rem' }}
+                  style={{ border: '1px solid #fca5a5', color: '#dc2626', background: '#050505', fontWeight: 600, padding: '0.45rem 0.85rem' }}
                   title="Bersihkan semua data pendaftar untuk menguji dari awal"
                 >
                   Bersihkan Semua Data (Uji dari Nol)
@@ -1729,7 +1729,7 @@ export default function AdminPage() {
                                 type="button"
                                 onClick={() => handleOpenChangePassword(u)}
                                 className="btn btn-sm"
-                                style={{ padding: '2px 7px', fontSize: '0.72rem', border: '1px solid #cbd5e1', background: '#fff', color: 'var(--white)', fontWeight: 600 }}
+                                style={{ padding: '2px 7px', fontSize: '0.72rem', border: '1px solid var(--border)', background: '#050505', color: 'var(--white)', fontWeight: 600 }}
                                 title="Ubah Kata Sandi Calon Duta"
                               >
                                 Ubah
@@ -2010,7 +2010,7 @@ export default function AdminPage() {
                           {(() => {
                             const fStatus = item.finalistStatus || (item.isFinalist ? 'finalis' : 'belum');
                             return (
-                              <div style={{ display: 'inline-flex', borderRadius: '6px', border: '1px solid var(--border)', overflow: 'hidden', background: '#f8fafc' }}>
+                              <div style={{ display: 'inline-flex', borderRadius: '6px', border: '1px solid var(--border)', overflow: 'hidden', background: '#000000' }}>
                                 <button
                                   type="button"
                                   onClick={(e) => { e.stopPropagation(); handleSetFinalistStatus(item.id, 'finalis'); }}
@@ -2128,7 +2128,7 @@ export default function AdminPage() {
         {page === 'cms' && cmsData && (
           <div className="page active" style={{ width: '100%', boxSizing: 'border-box' }}>
             {/* CMS Top Header & Instant Sync Action */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', background: '#f8fafc', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', background: '#000000', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border)' }}>
               <div>
                 <div style={{ fontWeight: 800, color: 'var(--white)', fontSize: '1rem' }}>Manajemen Konten Publik (CMS)</div>
                 <div style={{ fontSize: '0.8rem', color: hasUnsavedCms ? '#b45309' : '#16a34a', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
@@ -2463,7 +2463,7 @@ export default function AdminPage() {
                             padding: '0.6rem 0.75rem',
                             borderRadius: '8px',
                             border: '1px solid var(--border)',
-                            background: '#ffffff',
+                            background: '#050505',
                             fontWeight: 600,
                             color: 'var(--white)'
                           }}
@@ -2487,7 +2487,7 @@ export default function AdminPage() {
                             padding: '0.6rem 0.75rem',
                             borderRadius: '8px',
                             border: '1px solid var(--border)',
-                            background: '#ffffff',
+                            background: '#050505',
                             fontWeight: 600,
                             color: 'var(--white)'
                           }}
@@ -2555,7 +2555,7 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)', marginBottom: '1.5rem' }}>
+                <div style={{ background: '#000000', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-soft)', marginBottom: '1.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
                     <div>
                       <strong style={{ fontSize: '0.95rem', color: 'var(--white)' }}>Status Tampil di Halaman Utama (Slider Beranda)</strong>
@@ -3152,7 +3152,7 @@ export default function AdminPage() {
             )}
 
             {/* SAVE BUTTON FOR CMS */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: '#f8fafc', padding: '1.25rem 1.5rem', borderRadius: '14px', border: '1px solid var(--border)', marginBottom: '4rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: '#000000', padding: '1.25rem 1.5rem', borderRadius: '14px', border: '1px solid var(--border)', marginBottom: '4rem' }}>
               <div>
                 <div style={{ fontWeight: 700, color: 'var(--white)', fontSize: '1rem' }}>Publikasikan Konten Website</div>
                 <div style={{ fontSize: '0.825rem', color: hasUnsavedCms ? '#b45309' : 'var(--text-light)', marginTop: '2px' }}>
@@ -3373,7 +3373,7 @@ export default function AdminPage() {
                       onChange={(e) => setDriveConfig(prev => ({ ...prev, scriptUrl: e.target.value }))}
                       style={{ width: '100%' }}
                     />
-                    <small style={{ color: '#64748b' }}>URL Web App hasil deployment dari Google Apps Script.</small>
+                    <small style={{ color: 'var(--white)' }}>URL Web App hasil deployment dari Google Apps Script.</small>
                   </div>
 
                   <div className="form-group">
@@ -3385,7 +3385,7 @@ export default function AdminPage() {
                       onChange={(e) => setDriveConfig(prev => ({ ...prev, folderId: e.target.value }))}
                       style={{ width: '100%' }}
                     />
-                    <small style={{ color: '#64748b' }}>Folder Google Drive yang menampung subfolder berkas tiap pelamar.</small>
+                    <small style={{ color: 'var(--white)' }}>Folder Google Drive yang menampung subfolder berkas tiap pelamar.</small>
                   </div>
 
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -3521,7 +3521,7 @@ export default function AdminPage() {
                     type="button"
                     className="btn btn-sm"
                     onClick={() => { handleRejectUser(mergedSelectedItem.email); }}
-                    style={{ border: '1px solid #fca5a5', color: '#dc2626', background: '#fff', padding: '6px 12px', fontSize: '0.75rem' }}
+                    style={{ border: '1px solid #fca5a5', color: '#dc2626', background: '#050505', padding: '6px 12px', fontSize: '0.75rem' }}
                   >
                     Batalkan Persetujuan
                   </button>
@@ -3530,7 +3530,7 @@ export default function AdminPage() {
                 <button
                   type="button"
                   className="btn btn-sm"
-                  style={{ border: '1px solid #fca5a5', color: '#dc2626', background: '#fff', padding: '6px 10px', fontSize: '0.75rem' }}
+                  style={{ border: '1px solid #fca5a5', color: '#dc2626', background: '#050505', padding: '6px 10px', fontSize: '0.75rem' }}
                   onClick={() => handleDeleteUser(mergedSelectedItem.email)}
                 >
                   Hapus Akun
@@ -3540,8 +3540,8 @@ export default function AdminPage() {
 
             {/* Expansive Header Banner Card (Full Width) */}
             <div style={{
-              background: '#ffffff',
-              border: '1.5px solid #e2e8f0',
+              background: '#050505',
+              border: '1.5px solid var(--border)',
               borderRadius: '16px',
               padding: '1.75rem 2rem',
               marginBottom: '1.75rem',
@@ -3582,7 +3582,7 @@ export default function AdminPage() {
               </div>
 
               {/* Completeness Indicator Widget */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.125rem 1.5rem', minWidth: '260px' }}>
+              <div style={{ background: '#000000', border: '1px solid var(--border)', borderRadius: '12px', padding: '1.125rem 1.5rem', minWidth: '260px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                   <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--white)' }}>Kelengkapan Berkas</span>
                   <span style={{ fontSize: '0.95rem', fontWeight: 800, color: selectedDossier.color }}>
@@ -3603,8 +3603,8 @@ export default function AdminPage() {
               {/* LEFT COLUMN: Data Mahasiswa, Kontak, Prestasi */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 {/* Card: Identitas Akademik */}
-                <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
-                  <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.625rem' }}>
+                <div style={{ background: '#050505', border: '1px solid var(--border)', borderRadius: '14px', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
+                  <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid var(--border)', paddingBottom: '0.625rem' }}>
                     Data Akademik Mahasiswa
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
@@ -3628,8 +3628,8 @@ export default function AdminPage() {
                 </div>
 
                 {/* Card: Kontak & Domisili */}
-                <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
-                  <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.625rem' }}>
+                <div style={{ background: '#050505', border: '1px solid var(--border)', borderRadius: '14px', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
+                  <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', borderBottom: '1px solid var(--border)', paddingBottom: '0.625rem' }}>
                     Kontak & Domisili
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
@@ -3647,7 +3647,7 @@ export default function AdminPage() {
                           type="button"
                           onClick={() => toggleRevealPassword(mergedSelectedItem.email)}
                           className="btn btn-sm"
-                          style={{ padding: '3px 8px', fontSize: '0.72rem', border: '1px solid #cbd5e1', background: '#fff' }}
+                          style={{ padding: '3px 8px', fontSize: '0.72rem', border: '1px solid var(--border)', background: '#050505' }}
                         >
                           {revealedPasswords[mergedSelectedItem.email] ? 'Sembunyikan' : 'Lihat'}
                         </button>
@@ -3686,8 +3686,8 @@ export default function AdminPage() {
 
                 {/* Card: Portofolio & Esai */}
                 {(mergedSelectedItem.prestasi || mergedSelectedItem.organisasi || mergedSelectedItem.motivasi) && (
-                  <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
-                    <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.625rem' }}>
+                  <div style={{ background: '#050505', border: '1px solid var(--border)', borderRadius: '14px', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
+                    <h4 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 800, color: 'var(--white)', borderBottom: '1px solid var(--border)', paddingBottom: '0.625rem' }}>
                       Prestasi & Esai Motivasi
                     </h4>
                     {mergedSelectedItem.prestasi && <div style={{ marginBottom: '0.875rem' }}><div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Prestasi</div><div style={{ fontSize: '0.825rem', color: 'var(--white)', marginTop: '2px' }}>{mergedSelectedItem.prestasi}</div></div>}
@@ -3698,13 +3698,13 @@ export default function AdminPage() {
               </div>
 
               {/* RIGHT COLUMN: DIREKTORI 10 DOKUMEN PERSYARATAN */}
-              <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.75rem', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ background: '#050505', border: '1px solid var(--border)', borderRadius: '16px', padding: '1.75rem', boxShadow: 'var(--shadow-sm)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div>
                     <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'var(--white)' }}>Direktori Berkas Dokumen Persyaratan</h3>
                     <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--text-light)' }}>Periksa kelengkapan berkas administrasi calon Duta Kampus UIN SSC 2026.</p>
                   </div>
-                  <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--white)', background: '#f8fafc', padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--white)', background: '#000000', padding: '6px 14px', borderRadius: '8px', border: '1px solid var(--border)' }}>
                     Terunggah: <strong style={{ color: selectedDossier.color }}>{selectedDossier.filledCount} dari {selectedDossier.totalCount}</strong>
                   </div>
                 </div>
@@ -3735,7 +3735,7 @@ export default function AdminPage() {
                           </span>
                           <div>
                             <div style={{ fontWeight: 800, color: 'var(--white)', fontSize: '0.9rem' }}>{idx + 1}. {doc.label}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>{doc.sublabel}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--white)', marginTop: '2px' }}>{doc.sublabel}</div>
                           </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
@@ -3858,7 +3858,7 @@ export default function AdminPage() {
                 </div>
 
                 {/* BOTTOM DECISION CONSOLE */}
-                <div style={{ marginTop: '2rem', background: '#f8fafc', border: '1.5px solid #e2e8f0', borderRadius: '14px', padding: '1.5rem' }}>
+                <div style={{ marginTop: '2rem', background: '#000000', border: '1.5px solid var(--border)', borderRadius: '14px', padding: '1.5rem' }}>
                   {/* KEPUTUSAN STATUS FINALIS */}
                   <div style={{
                     display: 'flex',
@@ -3867,9 +3867,9 @@ export default function AdminPage() {
                     flexWrap: 'wrap',
                     gap: '1rem',
                     padding: '1rem 1.25rem',
-                    background: '#ffffff',
+                    background: '#050505',
                     borderRadius: '10px',
-                    border: '1.5px solid #e2e8f0',
+                    border: '1.5px solid var(--border)',
                     marginBottom: '1.5rem'
                   }}>
                     <div>
@@ -3884,7 +3884,7 @@ export default function AdminPage() {
                           Keputusan Menuju Babak Final
                         </h5>
                       </div>
-                      <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: '#64748b' }}>
+                      <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--white)' }}>
                         {mergedSelectedItem.finalistStatus === 'finalis' 
                           ? 'Peserta dinyatakan LOLOS sebagai Finalis Duta Kampus 2026.' 
                           : mergedSelectedItem.finalistStatus === 'tidak_lolos'
@@ -3934,9 +3934,9 @@ export default function AdminPage() {
                         style={{
                           padding: '6px 10px',
                           borderRadius: '8px',
-                          border: '1px solid #cbd5e1',
-                          background: '#f8fafc',
-                          color: '#64748b',
+                          border: '1px solid var(--border)',
+                          background: '#000000',
+                          color: 'var(--white)',
                           fontWeight: 600,
                           fontSize: '0.8rem',
                           cursor: 'pointer'
@@ -3950,7 +3950,7 @@ export default function AdminPage() {
                   <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 800, color: 'var(--white)' }}>
                     Keputusan Kelayakan Berkas
                   </h4>
-                  <p style={{ margin: '0 0 1rem', fontSize: '0.825rem', color: '#64748b' }}>
+                  <p style={{ margin: '0 0 1rem', fontSize: '0.825rem', color: 'var(--white)' }}>
                     Tentukan kelayakan dokumen administrasi calon duta ini. Status akan langsung tampil di dashboard peserta secara real-time.
                   </p>
 
@@ -3963,7 +3963,7 @@ export default function AdminPage() {
                       value={customMsg}
                       onChange={e => setCustomMsg(e.target.value)}
                       placeholder="Biarkan kosong untuk pesan default..."
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem', boxSizing: 'border-box', fontFamily: 'inherit' }}
+                      style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '0.85rem', boxSizing: 'border-box', fontFamily: 'inherit' }}
                     />
                   </div>
 
@@ -3989,7 +3989,7 @@ export default function AdminPage() {
                     <button
                       type="button"
                       className="btn"
-                      style={{ border: '1px solid #cbd5e1', background: '#fff', color: '#64748b', padding: '0.75rem 1.4rem', fontWeight: 600, borderRadius: '8px', cursor: 'pointer' }}
+                      style={{ border: '1px solid var(--border)', background: '#050505', color: 'var(--white)', padding: '0.75rem 1.4rem', fontWeight: 600, borderRadius: '8px', cursor: 'pointer' }}
                       onClick={() => { handleSetDossierStatus(mergedSelectedItem.id, 'review', customMsg); }}
                     >
                       Atur Dalam Peninjauan
@@ -4291,7 +4291,7 @@ export default function AdminPage() {
             </div>
 
             <form onSubmit={handleSaveUserPassword} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.75rem 1rem' }}>
+              <div style={{ background: '#000000', border: '1px solid var(--border)', borderRadius: '8px', padding: '0.75rem 1rem' }}>
                 <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--white)' }}>{editingPasswordUser.namaLengkap || editingPasswordUser.name}</div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-mid)', marginTop: '2px' }}>{editingPasswordUser.email}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '2px' }}>NIM: {editingPasswordUser.nim || '—'}</div>
@@ -4307,7 +4307,7 @@ export default function AdminPage() {
                   placeholder="Masukkan kata sandi baru..."
                   value={newPasswordVal}
                   onChange={e => setNewPasswordVal(e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem 0.85rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.9rem', boxSizing: 'border-box' }}
+                  style={{ width: '100%', padding: '0.6rem 0.85rem', borderRadius: '6px', border: '1px solid var(--border)', fontSize: '0.9rem', boxSizing: 'border-box' }}
                 />
                 <small style={{ color: 'var(--text-light)', fontSize: '0.72rem', marginTop: '4px', display: 'block' }}>
                   Kata sandi ini langsung tersimpan dan dapat dipakai peserta masuk ke dashboard profil.
@@ -4397,13 +4397,13 @@ export default function AdminPage() {
           padding: '1.5rem'
         }}>
           <div style={{
-            background: '#ffffff',
+            background: '#050505',
             borderRadius: '16px',
             maxWidth: '460px',
             width: '100%',
             padding: '2rem',
             boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
-            border: '1px solid #e2e8f0',
+            border: '1px solid var(--border)',
             textAlign: 'center'
           }}>
             <div style={{
@@ -4427,7 +4427,7 @@ export default function AdminPage() {
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--white)', marginBottom: '0.5rem' }}>
               {confirmModal.title}
             </h3>
-            <p style={{ fontSize: '0.9rem', color: '#64748b', lineHeight: 1.6, marginBottom: '1.75rem' }}>
+            <p style={{ fontSize: '0.9rem', color: 'var(--white)', lineHeight: 1.6, marginBottom: '1.75rem' }}>
               {confirmModal.message}
             </p>
 
@@ -4438,8 +4438,8 @@ export default function AdminPage() {
                 style={{
                   padding: '0.75rem 1.25rem',
                   borderRadius: '8px',
-                  border: '1.5px solid #cbd5e1',
-                  background: '#ffffff',
+                  border: '1.5px solid var(--border)',
+                  background: '#050505',
                   color: 'var(--muted)',
                   fontWeight: 600,
                   fontSize: '0.875rem',
@@ -4510,7 +4510,7 @@ export default function AdminPage() {
         >
           <div
             style={{
-              background: '#ffffff',
+              background: '#050505',
               borderRadius: '16px',
               width: '100%',
               maxWidth: '840px',
@@ -4519,22 +4519,22 @@ export default function AdminPage() {
               flexDirection: 'column',
               boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
               overflow: 'hidden',
-              border: '1px solid #e2e8f0'
+              border: '1px solid var(--border)'
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-alt)' }}>
+            <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-alt)' }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: 'var(--white)' }}>
                   Kode Google Apps Script (Backend Google Drive)
                 </h3>
-                <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: '#64748b' }}>
+                <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--white)' }}>
                   Deploy kode ini di Google Apps Script akun Google Anda agar berkas pendaftar otomatis masuk ke Google Drive.
                 </p>
               </div>
               <button
                 onClick={() => setShowScriptModal(false)}
-                style={{ background: '#0d0814', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 700 }}
+                style={{ background: '#0d0814', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--white)', fontWeight: 700 }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>

@@ -85,7 +85,7 @@ export default function RegistrationClosedModal() {
             borderRadius: '6px',
             border: 'none',
             background: 'transparent',
-            color: '#64748b',
+            color: 'var(--white)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -140,13 +140,13 @@ export default function RegistrationClosedModal() {
         <p
           style={{
             fontSize: '0.84rem',
-            color: '#64748b',
+            color: 'var(--white)',
             lineHeight: 1.5,
             margin: '0 0 1.5rem',
             padding: '0.75rem 1rem',
             background: '#0d0814',
             borderRadius: '10px',
-            border: '1px solid #e2e8f0'
+            border: '1px solid var(--border)'
           }}
         >
           Bagi calon duta yang sudah mendaftar, silakan masuk ke akun Anda untuk melihat kelengkapan berkas.
@@ -180,7 +180,7 @@ export default function RegistrationClosedModal() {
               borderRadius: '10px',
               border: 'none',
               background: 'transparent',
-              color: '#64748b',
+              color: 'var(--white)',
               fontSize: '0.88rem',
               fontWeight: 600,
               cursor: 'pointer'

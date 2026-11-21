@@ -40,7 +40,7 @@ export default function BenefitsSection() {
               <div className="benefit-num" style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--gold)', marginBottom: '0.75rem' }}>{item.num}</div>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.75rem' }}>{item.title}</h3>
               <div className="benefit-divider" style={{ width: '40px', height: '2px', background: 'var(--gold)', marginBottom: '0.75rem' }}></div>
-              <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: 1.6, margin: 0 }}>{item.desc}</p>
+              <p style={{ fontSize: '0.875rem', color: 'var(--white)', lineHeight: 1.6, margin: 0 }}>{item.desc}</p>
             </div>
           ))}
         </div>

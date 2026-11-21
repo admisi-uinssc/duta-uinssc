@@ -179,7 +179,7 @@ export default function AboutSection() {
         </div>
 
         {/* STRUKTUR ORGANISASI PAGUYUBAN DUTA KAMPUS */}
-        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '2.5rem 2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+        <div style={{ background: '#050505', border: '1px solid var(--border)', borderRadius: '16px', padding: '2.5rem 2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
           <div className="section-header text-center" style={{ maxWidth: '640px', margin: '0 auto 2rem' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '1px', textTransform: 'uppercase' }}>
               Kepengurusan Resmi
@@ -187,7 +187,7 @@ export default function AboutSection() {
             <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--white)', margin: '0.25rem 0 0.5rem' }}>
               Struktur Organisasi Paguyuban Duta Kampus
             </h3>
-            <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>
+            <p style={{ fontSize: '0.9rem', color: 'var(--white)', margin: 0 }}>
               Jajaran pengurus yang menggerakkan program kerja dan representasi mahasiswa UIN Siber Syekh Nurjati Cirebon.
             </p>
           </div>
@@ -195,7 +195,7 @@ export default function AboutSection() {
           {/* KETUA & WAKIL */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', maxWidth: '640px', margin: '0 auto 1.5rem' }}>
             {orgStructure.executive.map((item, i) => (
-              <div key={i} style={{ background: 'var(--navy)', color: '#fff', borderRadius: '12px', padding: '1.25rem', textAlign: 'center', border: '1px solid rgba(104, 61, 151,0.3)' }}>
+              <div key={i} style={{ background: '#050505', color: '#fff', borderRadius: '12px', padding: '1.25rem', textAlign: 'center', border: '1px solid var(--border)' }}>
                 <span style={{ display: 'inline-block', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--gold)', fontWeight: 700, marginBottom: '0.35rem' }}>
                   {item.role}
                 </span>
@@ -207,8 +207,8 @@ export default function AboutSection() {
           {/* SEKRETARIS & BENDAHARA */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', maxWidth: '820px', margin: '0 auto 2rem' }}>
             {orgStructure.admin.map((item, i) => (
-              <div key={i} style={{ background: 'var(--bg-alt)', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '1rem', textAlign: 'center' }}>
-                <span style={{ display: 'block', fontSize: '0.72rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 700, marginBottom: '0.25rem' }}>
+              <div key={i} style={{ background: 'var(--bg-alt)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1rem', textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--white)', fontWeight: 700, marginBottom: '0.25rem' }}>
                   {item.role}
                 </span>
                 <div style={{ fontSize: '0.925rem', fontWeight: 700, color: 'var(--white)' }}>{item.name}</div>
@@ -219,15 +219,15 @@ export default function AboutSection() {
           {/* DIVISI */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
             {orgStructure.divisions.map((div, i) => (
-              <div key={i} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.85rem', paddingBottom: '0.5rem', borderBottom: '1px solid #e2e8f0' }}>
+              <div key={i} style={{ background: '#000000', border: '1px solid var(--border)', borderRadius: '12px', padding: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.85rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border)' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--gold)' }} />
                   <h4 style={{ margin: 0, fontSize: '0.925rem', fontWeight: 700, color: 'var(--white)' }}>{div.name}</h4>
                 </div>
                 <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {div.members.map((m, mi) => (
                     <li key={mi} style={{ fontSize: '0.85rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>•</span>
+                      <span style={{ color: 'var(--white)', fontSize: '0.75rem' }}>•</span>
                       <span>{m}</span>
                     </li>
                   ))}

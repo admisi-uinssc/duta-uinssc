@@ -231,7 +231,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
       <div className="closed-container" style={{
         padding: '1.75rem 1.25rem',
         textAlign: 'center',
-        background: '#ffffff',
+        background: '#050505',
         borderRadius: '14px',
         border: '1px solid rgba(104, 61, 151, 0.3)',
         boxShadow: '0 4px 20px rgba(10, 25, 47, 0.06)',
@@ -270,9 +270,9 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
         {/* Cek Nomor Pendaftaran Form */}
         <div className="token-box-wrapper" style={{
           padding: '1rem',
-          background: '#f8fafc',
+          background: '#000000',
           borderRadius: '10px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border)',
           marginBottom: '1.25rem',
           textAlign: 'left',
           width: '100%',
@@ -355,9 +355,9 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
         <div className="info-box-wrapper" style={{
           padding: '0.9rem',
-          background: '#f8fafc',
+          background: '#000000',
           borderRadius: '10px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border)',
           fontSize: '0.82rem',
           color: 'var(--white)',
           lineHeight: 1.55,

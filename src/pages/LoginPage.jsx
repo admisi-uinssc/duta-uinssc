@@ -159,7 +159,7 @@ export default function LoginPage() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#f8fafc',
+        background: '#000000',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -194,7 +194,7 @@ export default function LoginPage() {
           width: '100%',
           maxWidth: isLogin ? '440px' : '580px',
           padding: '2.5rem 2rem',
-          background: '#ffffff',
+          background: '#050505',
           border: '1px solid var(--border)',
           borderRadius: '14px',
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
@@ -226,7 +226,7 @@ export default function LoginPage() {
           <div
             style={{
               display: 'flex',
-              background: '#f1f5f9',
+              background: '#000000',
               padding: '4px',
               borderRadius: '8px',
               marginTop: '1.25rem',
@@ -529,7 +529,7 @@ export default function LoginPage() {
                 >
                   <div
                     style={{
-                      background: '#ffffff',
+                      background: '#050505',
                       borderRadius: '16px',
                       maxWidth: '420px',
                       width: '100%',

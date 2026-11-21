@@ -146,7 +146,7 @@ export default function DaftarPage() {
       <div
         style={{
           minHeight: '100vh',
-          background: '#f8fafc',
+          background: '#000000',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -178,7 +178,7 @@ export default function DaftarPage() {
             width: '100%',
             maxWidth: '580px',
             padding: '2.5rem 2rem',
-            background: '#ffffff',
+            background: '#050505',
             border: '1px solid var(--border)',
             borderRadius: '14px',
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',

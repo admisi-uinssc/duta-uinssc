@@ -88,10 +88,10 @@ export default function FAQSection() {
                 width: '100%',
                 padding: '0.85rem 1.25rem 0.85rem 2.75rem',
                 borderRadius: '8px',
-                border: '1.5px solid #cbd5e1',
+                border: '1.5px solid var(--border)',
                 fontSize: '0.9rem',
                 outline: 'none',
-                background: '#ffffff',
+                background: '#050505',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 boxSizing: 'border-box'
               }}
@@ -165,7 +165,7 @@ export default function FAQSection() {
             );
           })}
           {filteredItems.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--white)' }}>
               Tidak ditemukan pertanyaan yang cocok dengan pencarian &ldquo;{searchTerm}&rdquo;.
             </div>
           )}

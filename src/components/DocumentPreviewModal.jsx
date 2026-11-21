@@ -113,7 +113,7 @@ export default function DocumentPreviewModal({
           flexDirection: 'column',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
           overflow: 'hidden',
-          border: '1px solid #e2e8f0'
+          border: '1px solid var(--border)'
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -121,7 +121,7 @@ export default function DocumentPreviewModal({
         <div
           style={{
             padding: '1.25rem 1.5rem',
-            borderBottom: '1px solid #e2e8f0',
+            borderBottom: '1px solid var(--border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -143,7 +143,7 @@ export default function DocumentPreviewModal({
             <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: 'var(--white)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {docLabel}
             </h3>
-            <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b' }}>
+            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--white)' }}>
               Nama File: <strong>{doc?.name || 'Dokumen'}</strong> {applicantName ? `· Pelamar: ${applicantName}` : ''}
             </p>
           </div>
@@ -187,7 +187,7 @@ export default function DocumentPreviewModal({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#64748b',
+                color: 'var(--white)',
                 fontWeight: 700
               }}
               title="Tutup"
@@ -245,7 +245,7 @@ export default function DocumentPreviewModal({
                 style={{
                   background: '#110d17',
                   color: 'var(--muted)',
-                  border: '1px solid #cbd5e1',
+                  border: '1px solid var(--border)',
                   padding: '6px 14px',
                   borderRadius: '6px',
                   fontSize: '0.78rem',
@@ -262,7 +262,7 @@ export default function DocumentPreviewModal({
 
         {/* Action Bar (CRUD: Edit / Replace / Delete) */}
         {canEdit && (
-          <div style={{ padding: '0.75rem 1.5rem', background: '#0d0814', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div style={{ padding: '0.75rem 1.5rem', background: '#0d0814', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <button
                 type="button"
@@ -308,7 +308,7 @@ export default function DocumentPreviewModal({
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
               {/* Opsi 1: Upload File */}
-              <div style={{ background: '#110d17', padding: '0.875rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+              <div style={{ background: '#110d17', padding: '0.875rem', borderRadius: '8px', border: '1px solid var(--border)' }}>
                 <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--white)', display: 'block', marginBottom: '0.4rem' }}>
                   1. Unggah File Baru (PDF / JPG / PNG)
                 </label>
@@ -322,7 +322,7 @@ export default function DocumentPreviewModal({
               </div>
 
               {/* Opsi 2: Link Google Drive */}
-              <form onSubmit={handleLinkSubmit} style={{ background: '#110d17', padding: '0.875rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+              <form onSubmit={handleLinkSubmit} style={{ background: '#110d17', padding: '0.875rem', borderRadius: '8px', border: '1px solid var(--border)' }}>
                 <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--white)', display: 'block', marginBottom: '0.4rem' }}>
                   2. Tautkan Link Google Drive
                 </label>
@@ -332,7 +332,7 @@ export default function DocumentPreviewModal({
                     placeholder="https://drive.google.com/file/d/.../view"
                     value={driveUrlInput}
                     onChange={(e) => setDriveUrlInput(e.target.value)}
-                    style={{ flex: 1, padding: '6px 10px', fontSize: '0.8rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                    style={{ flex: 1, padding: '6px 10px', fontSize: '0.8rem', borderRadius: '6px', border: '1px solid var(--border)' }}
                   />
                   <button type="submit" className="btn btn-sm btn-gold" style={{ padding: '6px 12px', fontSize: '0.78rem' }}>
                     Simpan
@@ -346,7 +346,7 @@ export default function DocumentPreviewModal({
         {/* Viewer Area */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '1rem', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '480px' }}>
           {!doc ? (
-            <div style={{ textAlign: 'center', color: '#94a3b8', padding: '3rem' }}>
+            <div style={{ textAlign: 'center', color: 'var(--white)', padding: '3rem' }}>
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto 1rem', opacity: 0.6 }}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               <h4 style={{ margin: '0 0 0.5rem', color: '#e2e8f0', fontSize: '1.1rem' }}>Belum Ada Berkas</h4>
               <p style={{ margin: 0, fontSize: '0.85rem' }}>Dokumen ini belum dilampirkan atau diunggah oleh pelamar.</p>

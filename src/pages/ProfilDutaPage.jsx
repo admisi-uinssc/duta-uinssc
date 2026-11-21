@@ -278,7 +278,7 @@ export default function ProfilDutaPage() {
                     padding: '0.5rem 2.2rem 0.5rem 0.9rem',
                     borderRadius: '8px',
                     border: '1px solid var(--border)',
-                    background: '#ffffff',
+                    background: '#050505',
                     fontSize: '0.825rem',
                     fontWeight: 700,
                     color: 'var(--white)',
@@ -448,7 +448,7 @@ export default function ProfilDutaPage() {
                     )}
                     <h3>{duta.name}</h3>
                     <p>{duta.major || duta.faculty || (activeMainTab === 'finalis' ? 'Finalis Duta Kampus 2026' : 'Duta Kampus')}</p>
-                    <span style={{ display: 'inline-block', marginTop: '6px', fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>
+                    <span style={{ display: 'inline-block', marginTop: '6px', fontSize: '0.72rem', color: 'var(--white)', fontWeight: 600 }}>
                       {activeMainTab === 'finalis' ? 'Tahun Seleksi 2026' : `Angkatan ${dutaYear}`}
                     </span>
                   </div>
