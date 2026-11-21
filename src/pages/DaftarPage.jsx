@@ -312,7 +312,7 @@ export default function DaftarPage() {
               height: '64px',
               borderRadius: '50%',
               background: '#dcfce7',
-              color: '#16a34a',
+              color: '#4ade80',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

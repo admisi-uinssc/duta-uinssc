@@ -560,10 +560,10 @@ export default function LoginPage() {
 
                     {isInstalled ? (
                       <div style={{ padding: '0.85rem', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '10px', marginBottom: '1.25rem' }}>
-                        <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#166534', marginBottom: '4px' }}>
+                        <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#4ade80', marginBottom: '4px' }}>
                           Aplikasi Siap Digunakan
                         </div>
-                        <p style={{ fontSize: '0.825rem', color: '#15803d', margin: 0, lineHeight: 1.5 }}>
+                        <p style={{ fontSize: '0.825rem', color: '#4ade80', margin: 0, lineHeight: 1.5 }}>
                           Aplikasi PADUKA sudah terpasang pada perangkat Anda. Anda dapat langsung membukanya melalui layar utama HP.
                         </p>
                       </div>
@@ -572,7 +572,7 @@ export default function LoginPage() {
                         <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.4rem' }}>
                           Pasang di Layar Utama iPhone
                         </div>
-                        <p style={{ fontSize: '0.825rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                        <p style={{ fontSize: '0.825rem', color: 'var(--muted)', lineHeight: 1.5, margin: 0 }}>
                           Ketuk tombol <strong>Bagikan</strong> (ikon kotak panah ke atas di bilah bawah Safari), lalu pilih <strong>"Tambah ke Layar Utama"</strong>.
                         </p>
                       </div>
@@ -581,7 +581,7 @@ export default function LoginPage() {
                         <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--white)', marginBottom: '0.4rem' }}>
                           Pasang di Layar Utama HP
                         </div>
-                        <p style={{ fontSize: '0.825rem', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+                        <p style={{ fontSize: '0.825rem', color: 'var(--muted)', lineHeight: 1.5, margin: 0 }}>
                           Ketuk menu titik tiga (<strong>⋮</strong>) di sudut kanan atas browser, lalu pilih <strong>"Instal aplikasi"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.
                         </p>
                       </div>

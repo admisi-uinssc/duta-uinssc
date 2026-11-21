@@ -104,7 +104,7 @@ export default function DocumentPreviewModal({
     >
       <div
         style={{
-          background: '#ffffff',
+          background: '#110d17',
           borderRadius: '16px',
           width: '100%',
           maxWidth: '920px',
@@ -135,7 +135,7 @@ export default function DocumentPreviewModal({
                 Pratinjau Dokumen
               </span>
               {doc?.isDrive && (
-                <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', background: '#e0f2fe', color: '#0369a1' }}>
+                <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', background: 'rgba(0,145,255,0.15)', color: '#0091ff' }}>
                   Google Drive
                 </span>
               )}
@@ -178,7 +178,7 @@ export default function DocumentPreviewModal({
             <button
               onClick={onClose}
               style={{
-                background: '#f1f5f9',
+                background: '#0d0814',
                 border: 'none',
                 borderRadius: '50%',
                 width: '32px',
@@ -201,7 +201,7 @@ export default function DocumentPreviewModal({
         {showConfirmDelete && (
           <div style={{
             padding: '1rem 1.5rem',
-            background: '#fff1f2',
+            background: 'rgba(219,31,38,0.1)',
             borderBottom: '1px solid #fecdd3',
             borderLeft: '4px solid #e11d48',
             display: 'flex',
@@ -243,8 +243,8 @@ export default function DocumentPreviewModal({
                 type="button"
                 className="btn btn-sm"
                 style={{
-                  background: '#ffffff',
-                  color: '#475569',
+                  background: '#110d17',
+                  color: 'var(--muted)',
                   border: '1px solid #cbd5e1',
                   padding: '6px 14px',
                   borderRadius: '6px',
@@ -262,7 +262,7 @@ export default function DocumentPreviewModal({
 
         {/* Action Bar (CRUD: Edit / Replace / Delete) */}
         {canEdit && (
-          <div style={{ padding: '0.75rem 1.5rem', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div style={{ padding: '0.75rem 1.5rem', background: '#0d0814', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <button
                 type="button"
@@ -289,7 +289,7 @@ export default function DocumentPreviewModal({
                 fontSize: '0.78rem', 
                 color: notice.includes('Kendala') || notice.includes('Gagal') ? '#b91c1c' : '#15803d', 
                 fontWeight: 600,
-                background: notice.includes('Kendala') || notice.includes('Gagal') ? '#fef2f2' : '#f0fdf4',
+                background: notice.includes('Kendala') || notice.includes('Gagal') ? 'rgba(220,38,38,0.1)' : 'rgba(22,163,74,0.1)',
                 padding: '4px 10px',
                 borderRadius: '6px',
                 border: `1px solid ${notice.includes('Kendala') || notice.includes('Gagal') ? '#fecaca' : '#bbf7d0'}`
@@ -302,13 +302,13 @@ export default function DocumentPreviewModal({
 
         {/* Edit Form Panel (if toggled) */}
         {editing && canEdit && (
-          <div style={{ padding: '1rem 1.5rem', background: '#fffbeb', borderBottom: '1px solid #fef3c7' }}>
+          <div style={{ padding: '1rem 1.5rem', background: 'rgba(252,211,77,0.08)', borderBottom: '1px solid rgba(252,211,77,0.2)' }}>
             <div style={{ fontWeight: 700, color: 'var(--white)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
               Pilih Cara Pembaruan Dokumen:
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
               {/* Opsi 1: Upload File */}
-              <div style={{ background: '#ffffff', padding: '0.875rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+              <div style={{ background: '#110d17', padding: '0.875rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                 <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--white)', display: 'block', marginBottom: '0.4rem' }}>
                   1. Unggah File Baru (PDF / JPG / PNG)
                 </label>
@@ -322,7 +322,7 @@ export default function DocumentPreviewModal({
               </div>
 
               {/* Opsi 2: Link Google Drive */}
-              <form onSubmit={handleLinkSubmit} style={{ background: '#ffffff', padding: '0.875rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+              <form onSubmit={handleLinkSubmit} style={{ background: '#110d17', padding: '0.875rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                 <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--white)', display: 'block', marginBottom: '0.4rem' }}>
                   2. Tautkan Link Google Drive
                 </label>
@@ -365,14 +365,14 @@ export default function DocumentPreviewModal({
             <iframe
               src={doc.previewUrl}
               title={doc.name}
-              style={{ width: '100%', height: '580px', border: 'none', borderRadius: '8px', background: '#ffffff' }}
+              style={{ width: '100%', height: '580px', border: 'none', borderRadius: '8px', background: '#110d17' }}
               allow="autoplay"
             />
           ) : doc.type === 'application/pdf' || doc.url?.startsWith('data:application/pdf') ? (
             <iframe
               src={doc.previewUrl}
               title={doc.name}
-              style={{ width: '100%', height: '580px', border: 'none', borderRadius: '8px', background: '#ffffff' }}
+              style={{ width: '100%', height: '580px', border: 'none', borderRadius: '8px', background: '#110d17' }}
             />
           ) : (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>

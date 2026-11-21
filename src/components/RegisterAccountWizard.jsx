@@ -259,7 +259,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
 
         <p style={{
           fontSize: '0.88rem',
-          color: '#475569',
+          color: 'var(--muted)',
           lineHeight: 1.6,
           maxWidth: '460px',
           margin: '0 auto 1.25rem'
@@ -341,7 +341,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
             {tokenSuccess && (
               <div style={{
                 fontSize: '0.78rem',
-                color: '#15803d',
+                color: '#4ade80',
                 background: '#f0fdf4',
                 border: '1px solid #bbf7d0',
                 padding: '6px 10px',
@@ -359,7 +359,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
           borderRadius: '10px',
           border: '1px solid #e2e8f0',
           fontSize: '0.82rem',
-          color: '#334155',
+          color: 'var(--white)',
           lineHeight: 1.55,
           marginBottom: '1.25rem',
           textAlign: 'left'

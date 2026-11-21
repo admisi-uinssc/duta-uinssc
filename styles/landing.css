@@ -176,7 +176,7 @@
   height: auto !important;
   min-height: unset !important;
   max-height: unset !important;
-  background: var(--navy);
+  background: #000;
   overflow: hidden;
   margin-top: 66px;
 }
@@ -604,23 +604,23 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: var(--white);
-  border: 2px solid var(--gold);
+  background: var(--purple);
+  border: 2px solid var(--purple);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.78rem;
   font-weight: 800;
-  color: var(--gold);
+  color: var(--white);
   position: relative;
   z-index: 1;
 }
 
 .timeline-body {
-  background: var(--white);
+  background: #110d17;
   border-radius: var(--radius);
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow);
   padding: 1.5rem;
   flex: 1;
@@ -734,7 +734,7 @@
 
 /* ── CTA BANNER ── */
 .cta-banner {
-  background: var(--navy);
+  background: #110d17;
   padding: 5rem 0;
   text-align: center;
 }
@@ -795,7 +795,7 @@
 
 /* ── FOOTER ── */
 .footer {
-  background: var(--navy);
+  background: #0d0814;
   padding: 4rem 0 0;
   font-family: var(--font-sans);
 }
@@ -1118,7 +1118,7 @@
   /* Hero Slider tweaks */
   .slide {
     display: block;
-    background: var(--navy);
+    background: #000;
     width: 100% !important;
     height: 100% !important;
     aspect-ratio: 1920 / 1080 !important;
@@ -1248,7 +1248,7 @@
     overflow: hidden !important;
     position: relative !important;
     aspect-ratio: 4 / 3 !important;
-    background: #e2e8f0;
+    background: #110d17;
     cursor: pointer;
   }
 
@@ -1498,7 +1498,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 1;
-  background: var(--navy);
+  background: #110d17;
   border-radius: 16px;
   overflow: hidden;
 }
@@ -1798,13 +1798,13 @@
 
 .gallery-filter-btn:hover {
   border-color: var(--gold);
-  color: var(--navy);
+  color: var(--white);
 }
 
 .gallery-filter-btn.active {
-  background: var(--navy);
+  background: var(--purple);
   color: #ffffff;
-  border-color: var(--navy);
+  border-color: var(--purple);
   font-weight: 600;
 }
 
@@ -1944,7 +1944,7 @@
     height: auto !important;
     padding: 4px 10px !important;
     border-radius: 6px !important;
-    background: var(--navy) !important;
+    background: #000 !important;
   }
 
   .about-img-accent strong {

@@ -226,7 +226,7 @@ export default function AboutSection() {
                 </div>
                 <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {div.members.map((m, mi) => (
-                    <li key={mi} style={{ fontSize: '0.85rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <li key={mi} style={{ fontSize: '0.85rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>•</span>
                       <span>{m}</span>
                     </li>

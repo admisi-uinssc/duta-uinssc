@@ -1471,7 +1471,7 @@ export default function AdminPage() {
                 style={{ cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
                 title="Klik untuk melihat berkas pendaftar yang 100% lengkap"
               >
-                <div className="stat-card-icon" style={{ background: 'rgba(22,163,74,0.15)', color: '#16a34a' }}>
+                <div className="stat-card-icon" style={{ background: 'rgba(22,163,74,0.15)', color: '#4ade80' }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 </div>
                 <div>
@@ -1710,7 +1710,7 @@ export default function AdminPage() {
                           </td>
                           <td>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                              <code style={{ fontSize: '0.8rem', background: '#f1f5f9', padding: '3px 7px', borderRadius: '4px', color: '#0f172a', fontWeight: 600 }}>
+                              <code style={{ fontSize: '0.8rem', background: '#0d0814', padding: '3px 7px', borderRadius: '4px', color: 'var(--white)', fontWeight: 600 }}>
                                 {revealedPasswords[u.email] ? (u.password || '—') : '••••••••'}
                               </code>
                               <button
@@ -1938,7 +1938,7 @@ export default function AdminPage() {
                             return (
                               <div style={{ marginTop: '3px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                                 <span style={{ fontSize: '0.68rem', color: 'var(--text-light)' }}>Sandi:</span>
-                                <code style={{ fontSize: '0.72rem', background: '#f1f5f9', padding: '1px 5px', borderRadius: '3px', color: '#0f172a', fontWeight: 600 }}>
+                                <code style={{ fontSize: '0.72rem', background: '#0d0814', padding: '1px 5px', borderRadius: '3px', color: 'var(--white)', fontWeight: 600 }}>
                                   {revealedPasswords[item.email] ? pwd : '••••••'}
                                 </code>
                                 <button
@@ -1991,7 +1991,7 @@ export default function AdminPage() {
                         </td>
                         <td>
                           {stage === 'lolos' && (
-                            <span className="badge" style={{ background: '#dcfce7', color: '#166534', border: '1px solid #86efac', fontWeight: 800 }}>
+                            <span className="badge" style={{ background: 'rgba(22,163,74,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.4)', fontWeight: 800 }}>
                               BERKAS DITERIMA
                             </span>
                           )}
@@ -2630,7 +2630,7 @@ export default function AdminPage() {
                 </div>
 
                 <div style={{
-                  background: '#f0fdf4',
+                  background: 'rgba(22,163,74,0.08)',
                   border: '1.5px solid #86efac',
                   borderRadius: '12px',
                   padding: '1rem 1.25rem',
@@ -2639,7 +2639,7 @@ export default function AdminPage() {
                   gap: '0.75rem'
                 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-                  <div style={{ fontSize: '0.825rem', color: '#166534', lineHeight: 1.5 }}>
+                  <div style={{ fontSize: '0.825rem', color: '#4ade80', lineHeight: 1.5 }}>
                     <strong>Otomatis Terhubung:</strong> Setiap peserta yang Anda tetapkan sebagai <em>"Lolos Finalis"</em> dan telah memasukkan foto profil di dashboard mereka akan otomatis tampil pada slider beranda ini tanpa perlu input ulang manual.
                   </div>
                 </div>
@@ -3295,7 +3295,7 @@ export default function AdminPage() {
                 {isFirebaseConfigured && (
                   <div style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-soft)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#15803d', fontWeight: 700 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#4ade80', fontWeight: 700 }}>
                         <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#16a34a' }}></span>
                         <span>Penyelarasan Otomatis: Aktif & Terpantau Real-time</span>
                       </div>
@@ -3420,7 +3420,7 @@ export default function AdminPage() {
                     </button>
 
                     {driveSaveStatus && (
-                      <span style={{ fontSize: '0.85rem', color: '#16a34a', fontWeight: 700 }}>
+                      <span style={{ fontSize: '0.85rem', color: '#4ade80', fontWeight: 700 }}>
                         {driveSaveStatus}
                       </span>
                     )}
@@ -3445,7 +3445,7 @@ export default function AdminPage() {
                         {driveTestResult.success ? (
                           <>
                             Folder Target: <strong>{driveTestResult.folderName}</strong> (ID: <code>{driveTestResult.folderId}</code>).<br />
-                            <a href={driveTestResult.folderUrl} target="_blank" rel="noreferrer" style={{ color: '#16a34a', textDecoration: 'underline', fontWeight: 600 }}>
+                            <a href={driveTestResult.folderUrl} target="_blank" rel="noreferrer" style={{ color: '#4ade80', textDecoration: 'underline', fontWeight: 600 }}>
                               Buka Folder Google Drive ↗
                             </a>
                           </>
@@ -3640,7 +3640,7 @@ export default function AdminPage() {
                     <div>
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Kata Sandi Akun Peserta</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
-                        <code style={{ fontSize: '0.85rem', background: '#f1f5f9', padding: '3px 8px', borderRadius: '4px', color: '#0f172a', fontWeight: 600 }}>
+                        <code style={{ fontSize: '0.85rem', background: '#0d0814', padding: '3px 8px', borderRadius: '4px', color: 'var(--white)', fontWeight: 600 }}>
                           {revealedPasswords[mergedSelectedItem.email] ? (matchingRegUser?.password || mergedSelectedItem.password || '—') : '••••••••'}
                         </code>
                         <button
@@ -3665,7 +3665,7 @@ export default function AdminPage() {
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-light)', fontWeight: 700, textTransform: 'uppercase' }}>Nomor WhatsApp</div>
                       <div style={{ fontWeight: 600, color: 'var(--white)' }}>
                         {mergedSelectedItem.noHp ? (
-                          <a href={`https://wa.me/${mergedSelectedItem.noHp.replace(/^0/, '62').replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#16a34a', fontWeight: 700 }}>
+                          <a href={`https://wa.me/${mergedSelectedItem.noHp.replace(/^0/, '62').replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ color: '#4ade80', fontWeight: 700 }}>
                             {mergedSelectedItem.noHp} (Hubungi WA)
                           </a>
                         ) : '—'}
@@ -4440,7 +4440,7 @@ export default function AdminPage() {
                   borderRadius: '8px',
                   border: '1.5px solid #cbd5e1',
                   background: '#ffffff',
-                  color: '#475569',
+                  color: 'var(--muted)',
                   fontWeight: 600,
                   fontSize: '0.875rem',
                   cursor: 'pointer'
@@ -4534,17 +4534,17 @@ export default function AdminPage() {
               </div>
               <button
                 onClick={() => setShowScriptModal(false)}
-                style={{ background: '#f1f5f9', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 700 }}
+                style={{ background: '#0d0814', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 700 }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', fontSize: '0.875rem' }}>
-              <div style={{ background: '#f0fdf4', border: '1px solid #86efac', padding: '1rem', borderRadius: '8px', marginBottom: '1.25rem', color: '#166534' }}>
+              <div style={{ background: 'rgba(22,163,74,0.08)', border: '1px solid rgba(74,222,128,0.4)', padding: '1rem', borderRadius: '8px', marginBottom: '1.25rem', color: '#4ade80' }}>
                 <strong>Langkah Mudah 3 Menit:</strong>
                 <ol style={{ margin: '0.5rem 0 0', paddingLeft: '1.25rem', lineHeight: 1.6 }}>
-                  <li>Buka <a href="https://script.google.com/" target="_blank" rel="noreferrer" style={{ color: '#15803d', fontWeight: 700 }}>script.google.com</a> &gt; Klik <strong>"New project"</strong>.</li>
+                  <li>Buka <a href="https://script.google.com/" target="_blank" rel="noreferrer" style={{ color: '#4ade80', fontWeight: 700 }}>script.google.com</a> &gt; Klik <strong>"New project"</strong>.</li>
                   <li>Hapus semua teks, lalu tempel kode di bawah ini.</li>
                   <li>Klik <strong>Deploy &gt; New deployment</strong> &gt; Pilih type <strong>Web app</strong>.</li>
                   <li>Set: <i>Execute as</i>: <strong>Me</strong> dan <i>Who has access</i>: <strong>Anyone</strong>.</li>

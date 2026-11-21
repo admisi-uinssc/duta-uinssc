@@ -157,7 +157,7 @@ export default function FAQSection() {
                   </span>
                 </button>
                 {isOpen && (
-                  <div className="faq-answer" style={{ padding: '0.75rem 1.25rem 1.25rem', color: '#475569', fontSize: '0.925rem', lineHeight: 1.65 }}>
+                  <div className="faq-answer" style={{ padding: '0.75rem 1.25rem 1.25rem', color: 'var(--muted)', fontSize: '0.925rem', lineHeight: 1.65 }}>
                     <p>{item.a}</p>
                   </div>
                 )}

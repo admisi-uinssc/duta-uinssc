@@ -1013,8 +1013,8 @@ export default function UserDashboard({ user, onLogout }) {
         <header
           className="user-dashboard-desktop-header"
           style={{
-            background: '#ffffff',
-            borderBottom: '1px solid #e2e8f0',
+            background: '#0d0814',
+            borderBottom: '1px solid var(--border)',
             padding: '1rem 2.5rem',
             display: 'flex',
             alignItems: 'center',
@@ -1063,7 +1063,7 @@ export default function UserDashboard({ user, onLogout }) {
                 background: '#f1f5f9',
                 fontSize: '0.78rem',
                 fontWeight: 600,
-                color: '#475569'
+                color: 'var(--muted)'
               }}
             >
               <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e' }} />
@@ -1162,7 +1162,7 @@ export default function UserDashboard({ user, onLogout }) {
                   justifyContent: 'space-between',
                   flexWrap: 'wrap',
                   gap: '0.75rem',
-                  background: '#f0fdf4',
+                  background: 'rgba(22,163,74,0.08)',
                   border: '1.5px solid #86efac',
                   borderRadius: '10px',
                   padding: '0.85rem 1.25rem'
@@ -1176,7 +1176,7 @@ export default function UserDashboard({ user, onLogout }) {
                       boxShadow: '0 0 0 3px rgba(34, 197, 94, 0.25)',
                       flexShrink: 0
                     }} />
-                    <span style={{ fontWeight: 700, color: '#166534', fontSize: '0.9rem' }}>
+                    <span style={{ fontWeight: 700, color: '#4ade80', fontSize: '0.9rem' }}>
                       Status Kelengkapan: Berkas Diterima
                     </span>
                   </div>
@@ -1250,31 +1250,31 @@ export default function UserDashboard({ user, onLogout }) {
               {/* KARTU KHUSUS FINALIS: FOTO PROFIL UNTUK TAMPILAN PUBLIK */}
               {isFinalist && (
                 <div style={{
-                  background: '#ffffff',
-                  border: '1.5px solid var(--gold)',
+                  background: '#110d17',
+                  border: '1.5px solid var(--border)',
                   borderRadius: '14px',
                   padding: '1.5rem',
-                  boxShadow: '0 4px 18px rgba(104, 61, 151, 0.12)'
+                  boxShadow: '0 4px 18px rgba(104, 61, 151, 0.2)'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--gold)' }} />
                       <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--white)' }}>
                         Foto Profil Resmi Finalis (Tampilan Publik)
                       </h4>
                     </div>
-                    <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
                       Mendukung Google Drive Link / Upload Foto
                     </span>
                   </div>
 
-                  <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--muted)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
                     Foto ini akan menjadi representasi resmi Anda pada halaman <strong>Profil Duta & Finalis Kampus</strong> yang dapat diakses oleh publik. Anda dapat memasukkan link foto dari Google Drive pribadi Anda, atau mengunggah file foto langsung.
                   </p>
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
                     {/* Preview Foto */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#0d0814', padding: '1.25rem', borderRadius: '12px', border: '1px dashed var(--border)' }}>
                       <div style={{
                         width: '140px',
                         height: '175px',
@@ -1387,7 +1387,7 @@ export default function UserDashboard({ user, onLogout }) {
                           }}
                           style={{
                             fontSize: '0.8rem',
-                            color: '#475569',
+                            color: 'var(--muted)',
                             width: '100%'
                           }}
                         />
@@ -1479,12 +1479,12 @@ export default function UserDashboard({ user, onLogout }) {
                         <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--white)', margin: 0 }}>
                           {renderedTitle}
                         </h4>
-                        <span style={{ fontSize: '0.72rem', background: '#dcfce7', color: '#166534', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                        <span style={{ fontSize: '0.72rem', background: 'rgba(22,163,74,0.15)', color: '#4ade80', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
                           Pengumuman Peserta
                         </span>
                       </div>
 
-                      <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#15803d', marginBottom: '0.5rem' }}>
+                      <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#4ade80', marginBottom: '0.5rem' }}>
                         {renderedGreeting}
                       </div>
 
@@ -1493,37 +1493,37 @@ export default function UserDashboard({ user, onLogout }) {
                       </p>
 
                       {(ann.date || ann.time || ann.location || ann.dressCode) && (
-                        <div style={{ background: '#f0fdf4', borderRadius: '12px', padding: '1.25rem', border: '1px solid #bbf7d0', marginBottom: '1.25rem' }}>
-                          <div style={{ fontWeight: 800, color: '#166534', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                        <div style={{ background: 'rgba(22,163,74,0.08)', borderRadius: '12px', padding: '1.25rem', border: '1px solid #bbf7d0', marginBottom: '1.25rem' }}>
+                          <div style={{ fontWeight: 800, color: '#4ade80', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
                             Informasi Pelaksanaan yang Perlu Diperhatikan:
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
                             {ann.date && (
                               <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
-                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Hari & Tanggal</div>
+                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Hari & Tanggal</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.date}</div>
                               </div>
                             )}
                             {ann.time && (
                               <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
-                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Waktu</div>
+                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Waktu</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.time}</div>
                               </div>
                             )}
                             {ann.location && (
                               <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
-                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Tempat / Lokasi</div>
+                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Tempat / Lokasi</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.location}</div>
                               </div>
                             )}
                             {ann.dressCode && (
                               <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '8px', border: '1px solid #dcfce7' }}>
-                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#15803d', fontWeight: 700 }}>Dress Code</div>
+                                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#4ade80', fontWeight: 700 }}>Dress Code</div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--white)', marginTop: '2px' }}>{ann.dressCode}</div>
                               </div>
                             )}
                           </div>
-                          <div style={{ marginTop: '0.85rem', fontSize: '0.825rem', color: '#166534', fontWeight: 600 }}>
+                          <div style={{ marginTop: '0.85rem', fontSize: '0.825rem', color: '#4ade80', fontWeight: 600 }}>
                             Wajib hadir tepat waktu.
                           </div>
                         </div>
@@ -1614,7 +1614,7 @@ export default function UserDashboard({ user, onLogout }) {
                     <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--white)', margin: '0 0 0.4rem', lineHeight: 1.35 }}>
                       Terima Kasih, {greetingName}
                     </h3>
-                    <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, maxWidth: '880px' }}>
+                    <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--muted)', lineHeight: 1.6, maxWidth: '880px' }}>
                       Pendaftaran telah ditutup. Terima kasih {participantName ? `${participantName} ` : ''}dan seluruh {applicantCount} calon duta yang telah mendaftar. Seluruh berkas Anda sudah tersimpan dan saat ini panitia sedang memeriksa kelengkapan berkas untuk tahap berikutnya.
                     </p>
                   </div>
@@ -1840,8 +1840,8 @@ export default function UserDashboard({ user, onLogout }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span
                       style={{
-                        background: '#dcfce7',
-                        color: '#166534',
+                        background: 'rgba(22,163,74,0.15)',
+                        color: '#4ade80',
                         border: '1px solid #86efac',
                         fontSize: '0.75rem',
                         fontWeight: 700,
@@ -1875,7 +1875,7 @@ export default function UserDashboard({ user, onLogout }) {
                 <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--white)', margin: '0 0 0.5rem' }}>
                   Lengkapi dokumen sebelum mendaftar.
                 </h3>
-                <p style={{ fontSize: '0.925rem', color: '#475569', lineHeight: 1.6, margin: '0 0 1.5rem', maxWidth: '850px' }}>
+                <p style={{ fontSize: '0.925rem', color: 'var(--muted)', lineHeight: 1.6, margin: '0 0 1.5rem', maxWidth: '850px' }}>
                   Profil dan dokumen wajib dilengkapi untuk melanjutkan pendaftaran duta kampus. Isi data diri anda agar kami dapat menilai sesuai ketentuan dan persyaratan duta. Jika sudah lengkap, silakan lanjutkan ke tahap pendaftaran.
                 </p>
 
@@ -1922,7 +1922,7 @@ export default function UserDashboard({ user, onLogout }) {
                     <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--white)', margin: '0 0 0.5rem' }}>
                       Program Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026
                     </h3>
-                    <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, margin: 0, maxWidth: '850px' }}>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.6, margin: 0, maxWidth: '850px' }}>
                       Program pencarian representasi mahasiswa unggul UIN Siber Syekh Nurjati Cirebon angkatan 2026 yang memiliki integritas keilmuan, kepemimpinan, kepribadian santun, dan wawasan keislaman siber.
                     </p>
                   </div>
@@ -2000,7 +2000,7 @@ export default function UserDashboard({ user, onLogout }) {
                     </span>
                   )}
                   {isSubmitted && (
-                    <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#166534' }}>
+                    <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#4ade80' }}>
                       Berkas Telah Diterima Panitia
                     </div>
                   )}
@@ -2024,7 +2024,7 @@ export default function UserDashboard({ user, onLogout }) {
                   <h4 style={{ margin: '0 0 0.35rem', color: 'var(--white)', fontSize: '1.05rem', fontWeight: 700 }}>
                     Terima Kasih, {greetingName}
                   </h4>
-                  <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
+                  <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--muted)', lineHeight: 1.6 }}>
                     Terima kasih {participantName ? `${participantName} ` : ''}telah melengkapi berkas pendaftaran bersama {applicantCount} calon duta lainnya. Karena pendaftaran sudah ditutup, seluruh berkas telah dikunci untuk proses seleksi. Anda tetap dapat melihat kembali berkas yang telah Anda unggah di bawah ini.
                   </p>
                 </div>
@@ -2350,9 +2350,9 @@ export default function UserDashboard({ user, onLogout }) {
                                     applicantName: formData.namaLengkap
                                   })}
                                   style={{
-                                    background: '#dcfce7',
+                                    background: 'rgba(22,163,74,0.15)',
                                     border: '1px solid #86efac',
-                                    color: '#166534',
+                                    color: '#4ade80',
                                     cursor: 'pointer',
                                     fontSize: '0.75rem',
                                     fontWeight: 700,
@@ -2583,7 +2583,7 @@ export default function UserDashboard({ user, onLogout }) {
                   </span>
                 </div>
 
-                <p style={{ fontSize: '0.925rem', color: '#334155', lineHeight: 1.6, margin: '0 0 1rem' }}>
+                <p style={{ fontSize: '0.925rem', color: 'var(--white)', lineHeight: 1.6, margin: '0 0 1rem' }}>
                   {isFinalist && 'Selamat, Anda dinyatakan resmi terpilih sebagai Finalis Pemilihan Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026. Persiapkan diri Anda untuk tahapan berikutnya.'}
                   {isNotFinalist && 'Terima kasih atas partisipasi Anda dalam seleksi Duta Kampus 2026. Berdasarkan hasil penilaian dewan juri, Anda belum berhasil melangkah ke babak Grand Final.'}
                   {!isFinalist && !isNotFinalist && selectionStage === 'lolos' && 'Berkas persyaratan administrasi Anda telah diverifikasi dan dinyatakan diterima oleh panitia seleksi.'}
@@ -2798,7 +2798,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                 <form onSubmit={handleChangeEmail} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)', marginBottom: '6px' }}>
                       Alamat Email Saat Ini
                     </label>
                     <input
@@ -2820,7 +2820,7 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)', marginBottom: '6px' }}>
                       Alamat Email Baru <span style={{ color: '#dc2626' }}>*</span>
                     </label>
                     <input
@@ -2842,7 +2842,7 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)', marginBottom: '6px' }}>
                       Konfirmasi Kata Sandi Akun <span style={{ color: '#dc2626' }}>*</span>
                     </label>
                     <div style={{ position: 'relative' }}>
@@ -2951,7 +2951,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                 <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)', marginBottom: '6px' }}>
                       Kata Sandi Baru <span style={{ color: '#dc2626' }}>*</span>
                     </label>
                     <div style={{ position: 'relative' }}>
@@ -2998,7 +2998,7 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--white)', marginBottom: '6px' }}>
                       Konfirmasi Kata Sandi Baru <span style={{ color: '#dc2626' }}>*</span>
                     </label>
                     <input

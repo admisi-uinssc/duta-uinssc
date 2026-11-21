@@ -60,7 +60,7 @@ export default function RegistrationClosedModal() {
     >
       <div
         style={{
-          background: '#ffffff',
+          background: '#110d17',
           borderRadius: '16px',
           width: '100%',
           maxWidth: '460px',
@@ -129,7 +129,7 @@ export default function RegistrationClosedModal() {
         <p
           style={{
             fontSize: '0.94rem',
-            color: '#475569',
+            color: 'var(--muted)',
             lineHeight: 1.6,
             margin: '0 0 1.25rem'
           }}
@@ -144,7 +144,7 @@ export default function RegistrationClosedModal() {
             lineHeight: 1.5,
             margin: '0 0 1.5rem',
             padding: '0.75rem 1rem',
-            background: '#f8fafc',
+            background: '#0d0814',
             borderRadius: '10px',
             border: '1px solid #e2e8f0'
           }}
