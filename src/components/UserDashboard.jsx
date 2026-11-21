@@ -1424,14 +1424,14 @@ export default function UserDashboard({ user, onLogout }) {
                     }}>
                       HASIL SELEKSI FINALIS
                     </span>
-                    <span style={{ fontSize: '0.75rem', color: '#7f1d1d' }}>
+                    <span style={{ fontSize: '0.75rem', color: '#fca5a5' }}>
                       UIN Siber Syekh Nurjati Cirebon
                     </span>
                   </div>
                   <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#991b1b', margin: '0 0 0.35rem 0' }}>
                     Pemberitahuan Hasil Seleksi Finalis
                   </h4>
-                  <p style={{ fontSize: '0.88rem', color: '#7f1d1d', lineHeight: 1.55, margin: 0 }}>
+                  <p style={{ fontSize: '0.88rem', color: '#fca5a5', lineHeight: 1.55, margin: 0 }}>
                     Terima kasih atas partisipasi dan dedikasi {participantName} dalam mengikuti rangkaian tahapan seleksi Duta Kampus 2026. Berdasarkan hasil penilaian dewan juri, Anda belum berhasil melangkah ke babak Grand Final. Terus kembangkan potensi dan prestasi terbaik Anda di kampus tercinta.
                   </p>
                 </div>

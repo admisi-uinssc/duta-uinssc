@@ -1535,12 +1535,24 @@
    FINALIST SHOWCASE SLIDER (EDITORIAL WCCE + GOJEK/SHOPEE APP-CARD)
    ======================================================== */
 .finalist-showcase-section {
-  padding: 3.5rem 0 3.75rem;
-  background: #0f2233;
+  padding: 4.5rem 0 5rem;
+  background: radial-gradient(circle at 50% 0%, #001a38 0%, #000c1a 60%, #000000 100%);
   color: #ffffff;
   position: relative;
   overflow: hidden;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(0, 145, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.15);
+}
+
+.finalist-showcase-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #0091ff 50%, transparent 100%);
+  pointer-events: none;
 }
 
 .finalist-header-row {
@@ -1593,14 +1605,15 @@
 }
 
 .finalist-arrow-btn.active {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--navy);
+  background: #0091ff;
+  border-color: #0091ff;
+  color: #ffffff;
   cursor: pointer;
 }
 
 .finalist-arrow-btn.active:hover {
-  background: var(--gold-dark);
+  background: #0077d6;
+  box-shadow: 0 0 15px rgba(0, 145, 255, 0.6);
   transform: scale(1.05);
 }
 
@@ -1622,14 +1635,15 @@
 .finalist-slide-card {
   flex: 0 0 240px;
   scroll-snap-align: start;
-  background: var(--blue-night);
+  background: linear-gradient(180deg, rgba(8, 24, 48, 0.85) 0%, rgba(2, 8, 18, 0.95) 100%);
   border-radius: 16px;
-  border: 1px solid rgba(104, 61, 151, 0.25);
+  border: 1px solid rgba(0, 145, 255, 0.25);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
   position: relative;
   cursor: pointer;
+  backdrop-filter: blur(10px);
 }
 
 .finalist-slide-card:hover {
@@ -1646,7 +1660,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
-  background: var(--blue-deep);
+  background: #020b17;
   overflow: hidden;
 }
 
@@ -1657,7 +1671,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--blue-night) 0%, var(--blue-deep) 100%);
+  background: linear-gradient(135deg, #04142b 0%, #010710 100%);
   color: var(--gold);
   gap: 8px;
 }
@@ -1715,7 +1729,7 @@
   display: inline-block;
   margin-top: 5px;
   font-size: 0.68rem;
-  color: var(--blue-sky);
+  color: #0091ff;
   font-weight: 600;
 }
 
@@ -1882,7 +1896,7 @@
     /* Presisi kartu HP ala Shopee */
     border-radius: 12px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
-    background: var(--blue-night) !important;
+    background: linear-gradient(180deg, rgba(8, 24, 48, 0.9) 0%, rgba(2, 8, 18, 0.98) 100%) !important;
     border: 1px solid rgba(104, 61, 151, 0.25) !important;
   }
 
