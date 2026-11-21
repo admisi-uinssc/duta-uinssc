@@ -775,7 +775,7 @@ export default function UserDashboard({ user, onLogout }) {
           justifyContent: 'space-between',
           flexShrink: 0,
           background: 'linear-gradient(180deg, var(--navy) 0%, #0f2436 100%)',
-          borderRight: '1px solid rgba(0, 145, 255, 0.2)',
+          borderRight: '1px solid rgba(104, 61, 151, 0.2)',
           boxShadow: '4px 0 24px rgba(0, 0, 0, 0.25)',
           zIndex: 40
         }}
@@ -785,18 +785,18 @@ export default function UserDashboard({ user, onLogout }) {
           <div
             style={{
               padding: '1.25rem 1.25rem',
-              borderBottom: '1px solid rgba(0, 145, 255, 0.15)',
+              borderBottom: '1px solid rgba(104, 61, 151, 0.15)',
               display: 'flex',
               alignItems: 'center',
               gap: '0.85rem',
-              background: 'rgba(10, 37, 64, 0.5)'
+              background: 'rgba(45, 19, 75, 0.5)'
             }}
           >
             <div style={{
               padding: '2px',
               borderRadius: '50%',
               background: 'linear-gradient(135deg, var(--gold), var(--blue-sky))',
-              boxShadow: '0 2px 8px rgba(0, 145, 255, 0.3)',
+              boxShadow: '0 2px 8px rgba(104, 61, 151, 0.3)',
               flexShrink: 0
             }}>
               <Image
@@ -835,8 +835,8 @@ export default function UserDashboard({ user, onLogout }) {
                 width: '100%',
                 padding: '0.7rem 0.85rem',
                 borderRadius: '8px',
-                border: activeTab === 'beranda' ? '1px solid rgba(0, 145, 255, 0.35)' : '1px solid transparent',
-                background: activeTab === 'beranda' ? 'linear-gradient(90deg, rgba(0, 145, 255, 0.2) 0%, rgba(0, 145, 255, 0.08) 100%)' : 'transparent',
+                border: activeTab === 'beranda' ? '1px solid rgba(104, 61, 151, 0.35)' : '1px solid transparent',
+                background: activeTab === 'beranda' ? 'linear-gradient(90deg, rgba(104, 61, 151, 0.2) 0%, rgba(104, 61, 151, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'beranda' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'beranda' ? 600 : 500,
                 fontSize: '0.85rem',
@@ -859,8 +859,8 @@ export default function UserDashboard({ user, onLogout }) {
                 width: '100%',
                 padding: '0.7rem 0.85rem',
                 borderRadius: '8px',
-                border: activeTab === 'pendaftaran' ? '1px solid rgba(0, 145, 255, 0.35)' : '1px solid transparent',
-                background: activeTab === 'pendaftaran' ? 'linear-gradient(90deg, rgba(0, 145, 255, 0.2) 0%, rgba(0, 145, 255, 0.08) 100%)' : 'transparent',
+                border: activeTab === 'pendaftaran' ? '1px solid rgba(104, 61, 151, 0.35)' : '1px solid transparent',
+                background: activeTab === 'pendaftaran' ? 'linear-gradient(90deg, rgba(104, 61, 151, 0.2) 0%, rgba(104, 61, 151, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'pendaftaran' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'pendaftaran' ? 600 : 500,
                 fontSize: '0.85rem',
@@ -895,8 +895,8 @@ export default function UserDashboard({ user, onLogout }) {
                 width: '100%',
                 padding: '0.7rem 0.85rem',
                 borderRadius: '8px',
-                border: activeTab === 'riwayat' ? '1px solid rgba(0, 145, 255, 0.35)' : '1px solid transparent',
-                background: activeTab === 'riwayat' ? 'linear-gradient(90deg, rgba(0, 145, 255, 0.2) 0%, rgba(0, 145, 255, 0.08) 100%)' : 'transparent',
+                border: activeTab === 'riwayat' ? '1px solid rgba(104, 61, 151, 0.35)' : '1px solid transparent',
+                background: activeTab === 'riwayat' ? 'linear-gradient(90deg, rgba(104, 61, 151, 0.2) 0%, rgba(104, 61, 151, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'riwayat' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'riwayat' ? 600 : 500,
                 fontSize: '0.85rem',
@@ -934,8 +934,8 @@ export default function UserDashboard({ user, onLogout }) {
                 width: '100%',
                 padding: '0.7rem 0.85rem',
                 borderRadius: '8px',
-                border: activeTab === 'pengaturan' ? '1px solid rgba(0, 145, 255, 0.35)' : '1px solid transparent',
-                background: activeTab === 'pengaturan' ? 'linear-gradient(90deg, rgba(0, 145, 255, 0.2) 0%, rgba(0, 145, 255, 0.08) 100%)' : 'transparent',
+                border: activeTab === 'pengaturan' ? '1px solid rgba(104, 61, 151, 0.35)' : '1px solid transparent',
+                background: activeTab === 'pengaturan' ? 'linear-gradient(90deg, rgba(104, 61, 151, 0.2) 0%, rgba(104, 61, 151, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'pengaturan' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'pengaturan' ? 600 : 500,
                 fontSize: '0.85rem',
@@ -951,7 +951,7 @@ export default function UserDashboard({ user, onLogout }) {
         </div>
 
         {/* User Card & Logout (Sidebar Footer) */}
-        <div style={{ padding: '1rem', borderTop: '1px solid rgba(0, 145, 255, 0.15)', background: 'rgba(15, 36, 54, 0.7)' }}>
+        <div style={{ padding: '1rem', borderTop: '1px solid rgba(104, 61, 151, 0.15)', background: 'rgba(15, 36, 54, 0.7)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
             <div
               style={{
@@ -1201,7 +1201,7 @@ export default function UserDashboard({ user, onLogout }) {
                   borderRadius: '12px',
                   padding: '1.5rem 1.75rem',
                   color: '#ffffff',
-                  boxShadow: '0 8px 24px rgba(10, 37, 64, 0.15)'
+                  boxShadow: '0 8px 24px rgba(45, 19, 75, 0.15)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
                     <span style={{
@@ -1254,7 +1254,7 @@ export default function UserDashboard({ user, onLogout }) {
                   border: '1.5px solid var(--gold)',
                   borderRadius: '14px',
                   padding: '1.5rem',
-                  boxShadow: '0 4px 18px rgba(0, 145, 255, 0.12)'
+                  boxShadow: '0 4px 18px rgba(104, 61, 151, 0.12)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -2768,7 +2768,7 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 <div style={{ marginBottom: '1.25rem' }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(10, 37, 64, 0.08)', color: 'var(--navy)', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(45, 19, 75, 0.08)', color: 'var(--navy)', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
                     Akses Masuk Akun
                   </div>
                   <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--navy)', margin: '0 0 6px 0' }}>
@@ -2921,7 +2921,7 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 <div style={{ marginBottom: '1.25rem' }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 145, 255, 0.15)', color: 'var(--blue-dark)', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(104, 61, 151, 0.15)', color: 'var(--blue-dark)', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
                     Keamanan Sandi
                   </div>
                   <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--navy)', margin: '0 0 6px 0' }}>

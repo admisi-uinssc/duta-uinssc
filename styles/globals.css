@@ -1,43 +1,46 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap');
 
 :root {
-  /* Dynamic Blue Palette (Based on Ray Texture) */
-  --blue-deep: #051937;
-  --blue-night: #0A2540;
-  --blue-dark: #0f3d7a;
-  --blue-primary: #0056b3;
-  --blue-vibrant: #0077e6;
-  --blue-electric: #0091ff;
-  --blue-bright: #00b4d8;
-  --blue-sky: #38bdf8;
-  --blue-ice: #e0f2fe;
-  --blue-faint: rgba(0, 145, 255, 0.08);
+  /* Brand Master Palette (User Guidelines) */
+  --white: #fff;
+  --muted: #b3adbb;
+  --soft: #e9e4ee;
+  --red: #db1f26;
+  --purple: #683d97;
+
+  /* Derived Palette Tones */
+  --purple-dark: #4b2574;
+  --purple-deep: #2d134b;
+  --purple-light: #7c4cae;
+  --purple-faint: rgba(104, 61, 151, 0.08);
+
+  --red-hover: #b8171d;
+  --red-faint: rgba(219, 31, 38, 0.1);
 
   /* Semantic Mappings */
-  --navy: var(--blue-night);
-  --gold: var(--blue-electric);
-  --gold-dark: var(--blue-vibrant);
-  --gold-faint: var(--blue-faint);
+  --navy: var(--purple-deep);
+  --gold: var(--purple);
+  --gold-dark: var(--purple-dark);
+  --gold-faint: var(--purple-faint);
 
   /* Accent Red */
-  --accent-red: #db1f26;
-  --accent-red-hover: #b8171d;
-  --accent-red-faint: rgba(219, 31, 38, 0.1);
+  --accent-red: var(--red);
+  --accent-red-hover: var(--red-hover);
+  --accent-red-faint: var(--red-faint);
 
   --bg: #ffffff;
-  --bg-alt: #f8fafc;
-  --white: #ffffff;
-  --text: var(--blue-night);
-  --text-dark: #0f172a;
-  --text-mid: #334155;
-  --text-light: #64748b;
-  --border: #e2e8f0;
-  --border-soft: #f1f5f9;
+  --bg-alt: var(--soft);
+  --text: var(--purple-deep);
+  --text-dark: #1f1a24;
+  --text-mid: #544961;
+  --text-light: var(--muted);
+  --border: #dcd5e4;
+  --border-soft: var(--soft);
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-gold: 0 4px 14px rgba(0, 145, 255, 0.3);
+  --shadow: 0 4px 6px -1px rgb(104 61 151 / 0.1), 0 2px 4px -2px rgb(104 61 151 / 0.06);
+  --shadow-md: 0 10px 15px -3px rgb(104 61 151 / 0.12), 0 4px 6px -4px rgb(104 61 151 / 0.08);
+  --shadow-gold: 0 4px 14px rgba(219, 31, 38, 0.35);
   --radius: 12px;
   --radius-sm: 8px;
 
@@ -296,17 +299,24 @@ span, label, small, strong, li {
 }
 .btn-lg { padding: 0.9rem 2.25rem; font-size: 0.95rem; }
 .btn-sm { padding: 0.45rem 1.15rem; font-size: 0.8rem; }
-.btn-gold { background: var(--gold); color: #fff; }
-.btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0, 145, 255, 0.4); }
-.btn-outline-gold { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); }
-.btn-outline-gold:hover { background: var(--gold); color: #fff; }
+.btn-gold { background: var(--red); color: #fff; border: 1.5px solid var(--red); }
+.btn-gold:hover { background: var(--red-hover); border-color: var(--red-hover); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(219, 31, 38, 0.35); }
+.btn-outline-gold { background: transparent; color: var(--red); border: 1.5px solid var(--red); }
+.btn-outline-gold:hover { background: var(--red); color: #fff; }
+
+.btn-purple { background: var(--purple); color: #fff; border: 1.5px solid var(--purple); }
+.btn-purple:hover { background: var(--purple-dark); border-color: var(--purple-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(104, 61, 151, 0.35); }
+.btn-outline-purple { background: transparent; color: var(--purple); border: 1.5px solid var(--purple); }
+.btn-outline-purple:hover { background: var(--purple); color: #fff; }
 
 /* Red Accent Button & Badges */
-.btn-accent, .btn-red, .btn-danger { background: var(--accent-red); color: #fff; border: 1.5px solid var(--accent-red); }
-.btn-accent:hover, .btn-red:hover, .btn-danger:hover { background: var(--accent-red-hover); border-color: var(--accent-red-hover); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(219, 31, 38, 0.35); color: #fff; }
-.btn-outline-accent, .btn-outline-red, .btn-outline-danger { background: transparent; color: var(--accent-red); border: 1.5px solid var(--accent-red); }
-.btn-outline-accent:hover, .btn-outline-red:hover, .btn-outline-danger:hover { background: var(--accent-red); color: #fff; }
-.badge-accent, .tag-red { background: var(--accent-red); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; }
+.btn-accent, .btn-red, .btn-danger { background: var(--red); color: #fff; border: 1.5px solid var(--red); }
+.btn-accent:hover, .btn-red:hover, .btn-danger:hover { background: var(--red-hover); border-color: var(--red-hover); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(219, 31, 38, 0.35); color: #fff; }
+.btn-outline-accent, .btn-outline-red, .btn-outline-danger { background: transparent; color: var(--red); border: 1.5px solid var(--red); }
+.btn-outline-accent:hover, .btn-outline-red:hover, .btn-outline-danger:hover { background: var(--red); color: #fff; }
+.badge-accent, .tag-red { background: var(--red); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; }
+.badge-purple { background: var(--purple); color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; }
+.badge-soft { background: var(--soft); color: var(--purple); border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
 
 .card {
   background: var(--white);

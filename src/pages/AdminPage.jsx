@@ -1441,7 +1441,7 @@ export default function AdminPage() {
                 style={{ cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
                 title="Klik untuk melihat semua akun pelamar"
               >
-                <div className="stat-card-icon" style={{ background: 'rgba(10, 37, 64,0.1)', color: 'var(--navy)' }}>
+                <div className="stat-card-icon" style={{ background: 'rgba(45, 19, 75,0.1)', color: 'var(--navy)' }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </div>
                 <div>
@@ -1501,7 +1501,7 @@ export default function AdminPage() {
                 style={{ cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
                 title="Klik untuk melihat peserta yang lolos seleksi berkas"
               >
-                <div className="stat-card-icon" style={{ background: 'rgba(10, 37, 64,0.15)', color: 'var(--navy)' }}>
+                <div className="stat-card-icon" style={{ background: 'rgba(45, 19, 75,0.15)', color: 'var(--navy)' }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 </div>
                 <div>
@@ -2143,7 +2143,7 @@ export default function AdminPage() {
                 className="btn btn-gold btn-sm" 
                 onClick={handleCmsSave} 
                 disabled={isSavingCms}
-                style={{ fontWeight: 700, padding: '0.55rem 1.5rem', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: hasUnsavedCms ? '0 0 0 3px rgba(0, 145, 255,0.3)' : 'none' }}
+                style={{ fontWeight: 700, padding: '0.55rem 1.5rem', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: hasUnsavedCms ? '0 0 0 3px rgba(104, 61, 151,0.3)' : 'none' }}
               >
                 {isSavingCms ? (
                   <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" /></svg>
@@ -2265,7 +2265,7 @@ export default function AdminPage() {
                                     position: 'absolute',
                                     bottom: '6px',
                                     left: '6px',
-                                    background: media.isVideo ? 'rgba(10, 37, 64, 0.9)' : 'rgba(15, 23, 42, 0.85)',
+                                    background: media.isVideo ? 'rgba(45, 19, 75, 0.9)' : 'rgba(15, 23, 42, 0.85)',
                                     color: '#fff',
                                     fontSize: '0.68rem',
                                     fontWeight: 700,
@@ -2389,7 +2389,7 @@ export default function AdminPage() {
                                 position: 'absolute',
                                 bottom: '6px',
                                 left: '6px',
-                                background: media.isVideo ? 'rgba(10, 37, 64, 0.9)' : 'rgba(15, 23, 42, 0.85)',
+                                background: media.isVideo ? 'rgba(45, 19, 75, 0.9)' : 'rgba(15, 23, 42, 0.85)',
                                 color: '#fff',
                                 fontSize: '0.68rem',
                                 fontWeight: 700,
@@ -2722,7 +2722,7 @@ export default function AdminPage() {
                                 position: 'absolute',
                                 bottom: '6px',
                                 left: '6px',
-                                background: media.isVideo ? 'rgba(10, 37, 64, 0.9)' : 'rgba(15, 23, 42, 0.85)',
+                                background: media.isVideo ? 'rgba(45, 19, 75, 0.9)' : 'rgba(15, 23, 42, 0.85)',
                                 color: '#fff',
                                 fontSize: '0.68rem',
                                 fontWeight: 700,
@@ -3200,7 +3200,7 @@ export default function AdminPage() {
               {/* Toggle Tampilkan Finalis di Public View */}
               <div className="settings-card">
                 <div className="settings-card-header">
-                  <div className="settings-card-icon" style={{ background: 'rgba(0, 145, 255, 0.15)', color: 'var(--gold)' }}>
+                  <div className="settings-card-icon" style={{ background: 'rgba(104, 61, 151, 0.15)', color: 'var(--gold)' }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                   </div>
                   <div>
@@ -3558,7 +3558,7 @@ export default function AdminPage() {
                   background: 'linear-gradient(135deg, var(--navy) 0%, var(--gold) 100%)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '1.85rem', fontWeight: 800, color: '#ffffff',
-                  boxShadow: '0 6px 18px rgba(10, 37, 64, 0.25)', flexShrink: 0
+                  boxShadow: '0 6px 18px rgba(45, 19, 75, 0.25)', flexShrink: 0
                 }}>
                   {mergedSelectedItem.namaLengkap?.charAt(0) || 'U'}
                 </div>

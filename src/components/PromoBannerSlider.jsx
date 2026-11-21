@@ -141,7 +141,7 @@ export default function PromoBannerSlider() {
                     style={{
                       position: 'absolute',
                       inset: 0,
-                      background: 'linear-gradient(to right, rgba(10, 37, 64, 0.75) 0%, rgba(10, 37, 64, 0.25) 60%, transparent 100%)',
+                      background: 'linear-gradient(to right, rgba(45, 19, 75, 0.75) 0%, rgba(45, 19, 75, 0.25) 60%, transparent 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       padding: '1.5rem 2.5rem'
@@ -170,7 +170,7 @@ export default function PromoBannerSlider() {
               position: 'relative',
               borderRadius: '16px',
               overflow: 'hidden',
-              boxShadow: '0 4px 16px rgba(10, 37, 64, 0.08)',
+              boxShadow: '0 4px 16px rgba(45, 19, 75, 0.08)',
               display: 'block',
               textDecoration: 'none',
               cursor: banner.link ? 'pointer' : 'default'
@@ -214,7 +214,7 @@ export default function PromoBannerSlider() {
                   width: activeIndex === idx ? '24px' : '8px',
                   height: '8px',
                   borderRadius: '4px',
-                  background: activeIndex === idx ? 'var(--gold)' : 'rgba(10, 37, 64, 0.2)',
+                  background: activeIndex === idx ? 'var(--gold)' : 'rgba(45, 19, 75, 0.2)',
                   transition: 'all 0.3s ease'
                 }}
               />

@@ -41,7 +41,7 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden-nav' : ''}`} id="navbar">
       <div className="container nav-inner" style={{ maxWidth: '1440px' }}>
         <Link href="/" className="nav-logo">
-          <Image src="/assets/logo-circle.png" alt="Logo" width={38} height={38} style={{ filter: 'drop-shadow(0 0 8px rgba(0, 145, 255,0.35))', height: 38, width: 'auto', borderRadius: '50%' }} />
+          <Image src="/assets/logo-circle.png" alt="Logo" width={38} height={38} style={{ filter: 'drop-shadow(0 0 8px rgba(104, 61, 151,0.35))', height: 38, width: 'auto', borderRadius: '50%' }} />
           <div className="nav-logo-text">
             <span className="nav-logo-title desktop-only">Duta Kampus</span>
             <span className="nav-logo-title mobile-only" style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '0.4px' }}>

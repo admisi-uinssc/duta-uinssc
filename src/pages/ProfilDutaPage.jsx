@@ -410,7 +410,7 @@ export default function ProfilDutaPage() {
                           width: '64px',
                           height: '64px',
                           borderRadius: '50%',
-                          background: 'rgba(0, 145, 255, 0.15)',
+                          background: 'rgba(104, 61, 151, 0.15)',
                           border: '2px solid var(--gold)',
                           display: 'flex',
                           alignItems: 'center',

@@ -12,7 +12,7 @@
   padding: 0.875rem 0;
   transition: transform 0.35s ease;
   background: var(--white);
-  box-shadow: 0 2px 24px rgba(10, 37, 64, 0.06);
+  box-shadow: 0 2px 24px rgba(45, 19, 75, 0.06);
 }
 
 .navbar.hidden-nav {
@@ -106,7 +106,7 @@
   background: var(--navy);
   color: #fff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(10, 37, 64, 0.15);
+  box-shadow: 0 4px 14px rgba(45, 19, 75, 0.15);
 }
 
 .nav-item-dropdown {
@@ -201,7 +201,7 @@
 .slide-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(10, 37, 64, 0.85) 0%, rgba(10, 37, 64, 0.4) 60%, transparent 100%);
+  background: linear-gradient(to right, rgba(45, 19, 75, 0.85) 0%, rgba(45, 19, 75, 0.4) 60%, transparent 100%);
 }
 
 .slide-content {
@@ -322,7 +322,7 @@
   text-align: center;
   gap: 1rem;
   text-decoration: none;
-  box-shadow: 0 4px 20px rgba(10, 37, 64, 0.05);
+  box-shadow: 0 4px 20px rgba(45, 19, 75, 0.05);
   transition: all 0.25s;
   border: 1.5px solid transparent;
 }
@@ -330,7 +330,7 @@
 .hub-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 30px rgba(0, 86, 179, 0.15);
-  border-color: rgba(0, 145, 255, 0.25);
+  border-color: rgba(104, 61, 151, 0.25);
 }
 
 .hub-card.highlight {
@@ -342,7 +342,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: rgba(0, 145, 255, 0.1);
+  background: rgba(104, 61, 151, 0.1);
   color: var(--gold);
   display: flex;
   align-items: center;
@@ -508,7 +508,7 @@
   font-size: 3.5rem;
   font-weight: 400;
   font-style: italic;
-  color: rgba(0, 145, 255, 0.25);
+  color: rgba(104, 61, 151, 0.25);
   line-height: 1;
   margin-bottom: 0.5rem;
   letter-spacing: -1px;
@@ -546,7 +546,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, rgba(10, 37, 64, 0.9), transparent);
+  background: linear-gradient(to top, rgba(45, 19, 75, 0.9), transparent);
   padding: 2rem 1rem 1rem;
   color: #fff;
   font-size: 0.85rem;
@@ -573,7 +573,7 @@
   top: 28px;
   bottom: 28px;
   width: 1.5px;
-  background: linear-gradient(to bottom, var(--gold), rgba(0, 145, 255, 0.15));
+  background: linear-gradient(to bottom, var(--gold), rgba(104, 61, 151, 0.15));
 }
 
 .timeline-item {
@@ -753,7 +753,7 @@
   font-size: 2.5rem;
   font-weight: 400;
   color: var(--gold);
-  background: rgba(0, 145, 255, 0.08);
+  background: rgba(104, 61, 151, 0.08);
   border-radius: 10px;
   padding: 0.5rem 1rem;
   min-width: 64px;
@@ -852,7 +852,7 @@
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
   border-top: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 -4px 30px rgba(10, 37, 64, 0.08);
+  box-shadow: 0 -4px 30px rgba(45, 19, 75, 0.08);
   height: 68px;
   align-items: stretch;
   justify-content: space-around;
@@ -964,7 +964,7 @@
     display: flex !important;
     position: relative !important;
     background: var(--white) !important;
-    box-shadow: 0 2px 8px rgba(10, 37, 64, 0.04) !important;
+    box-shadow: 0 2px 8px rgba(45, 19, 75, 0.04) !important;
     border-bottom: 1px solid var(--border-soft) !important;
     padding: 0.65rem 1rem !important;
     justify-content: center;
@@ -976,7 +976,7 @@
     /* prevents sticky behavior */
     backdrop-filter: none;
     background: var(--white);
-    box-shadow: 0 2px 8px rgba(10, 37, 64, 0.04);
+    box-shadow: 0 2px 8px rgba(45, 19, 75, 0.04);
   }
 
   .nav-inner {
@@ -1063,7 +1063,7 @@
     padding: 0.65rem 0.35rem !important;
     border-radius: 10px !important;
     gap: 0.35rem !important;
-    box-shadow: 0 1px 4px rgba(10, 37, 64, 0.04) !important;
+    box-shadow: 0 1px 4px rgba(45, 19, 75, 0.04) !important;
     border: 1px solid #edf2f7 !important;
   }
 
@@ -1118,7 +1118,7 @@
 
   .slide-overlay {
     display: block;
-    background: rgba(10, 37, 64, 0.6);
+    background: rgba(45, 19, 75, 0.6);
   }
 
   .slide-content {
@@ -1342,7 +1342,7 @@
 
 .ambassador-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(0, 145, 255, 0.2);
+  box-shadow: 0 12px 30px rgba(104, 61, 151, 0.2);
 }
 
 .ambassador-img-wrapper {
@@ -1399,7 +1399,7 @@
     height: auto !important;
     border-radius: 14px !important;
     border: 1px solid var(--border-soft) !important;
-    box-shadow: 0 2px 8px rgba(10, 37, 64, 0.05) !important;
+    box-shadow: 0 2px 8px rgba(45, 19, 75, 0.05) !important;
     overflow: hidden !important;
   }
 
@@ -1600,7 +1600,7 @@
   scroll-snap-align: start;
   background: var(--blue-night);
   border-radius: 16px;
-  border: 1px solid rgba(0, 145, 255, 0.25);
+  border: 1px solid rgba(104, 61, 151, 0.25);
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -1638,7 +1638,7 @@
   width: 58px;
   height: 58px;
   border-radius: 50%;
-  background: rgba(0, 145, 255, 0.15);
+  background: rgba(104, 61, 151, 0.15);
   border: 2px solid var(--gold);
   display: flex;
   align-items: center;
@@ -1843,7 +1843,7 @@
     border-radius: 12px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
     background: var(--blue-night) !important;
-    border: 1px solid rgba(0, 145, 255, 0.25) !important;
+    border: 1px solid rgba(104, 61, 151, 0.25) !important;
   }
 
   .finalist-slide-card:hover,
@@ -1893,7 +1893,7 @@
     width: 100% !important;
     aspect-ratio: 16 / 10 !important;
     border-radius: 12px !important;
-    box-shadow: 0 4px 14px rgba(10, 37, 64, 0.08) !important;
+    box-shadow: 0 4px 14px rgba(45, 19, 75, 0.08) !important;
   }
 
   .about-img-accent {
