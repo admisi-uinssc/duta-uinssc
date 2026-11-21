@@ -56,11 +56,11 @@ export default function MediaModal({ isOpen, onClose, item, fallbackTitle = '' }
         style={{
           maxWidth: parsed.isVideo ? '860px' : '720px',
           width: '100%',
-          background: '#16324a',
+          background: 'var(--navy)',
           borderRadius: '16px',
           overflow: 'hidden',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
-          border: '1px solid rgba(196, 158, 89, 0.35)',
+          border: '1px solid rgba(0, 145, 255, 0.35)',
           position: 'relative'
         }}
       >
@@ -147,8 +147,8 @@ export default function MediaModal({ isOpen, onClose, item, fallbackTitle = '' }
           <div
             style={{
               padding: '0.9rem 1.25rem',
-              background: '#16324a',
-              borderTop: '1px solid rgba(196, 158, 89, 0.2)',
+              background: 'var(--navy)',
+              borderTop: '1px solid rgba(0, 145, 255, 0.2)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -166,8 +166,8 @@ export default function MediaModal({ isOpen, onClose, item, fallbackTitle = '' }
               style={{
                 fontSize: '0.7rem',
                 fontWeight: 700,
-                color: parsed.isVideo ? '#F8E7C9' : 'var(--gold)',
-                background: parsed.isVideo ? 'rgba(196, 158, 89, 0.25)' : 'rgba(255, 255, 255, 0.08)',
+                color: parsed.isVideo ? 'var(--blue-ice)' : 'var(--gold)',
+                background: parsed.isVideo ? 'rgba(0, 145, 255, 0.25)' : 'rgba(255, 255, 255, 0.08)',
                 padding: '2px 8px',
                 borderRadius: '4px',
                 letterSpacing: '0.5px',

@@ -774,8 +774,8 @@ export default function UserDashboard({ user, onLogout }) {
           flexDirection: 'column',
           justifyContent: 'space-between',
           flexShrink: 0,
-          background: 'linear-gradient(180deg, #16324A 0%, #0f2436 100%)',
-          borderRight: '1px solid rgba(196, 158, 89, 0.2)',
+          background: 'linear-gradient(180deg, var(--navy) 0%, #0f2436 100%)',
+          borderRight: '1px solid rgba(0, 145, 255, 0.2)',
           boxShadow: '4px 0 24px rgba(0, 0, 0, 0.25)',
           zIndex: 40
         }}
@@ -785,18 +785,18 @@ export default function UserDashboard({ user, onLogout }) {
           <div
             style={{
               padding: '1.25rem 1.25rem',
-              borderBottom: '1px solid rgba(196, 158, 89, 0.15)',
+              borderBottom: '1px solid rgba(0, 145, 255, 0.15)',
               display: 'flex',
               alignItems: 'center',
               gap: '0.85rem',
-              background: 'rgba(22, 50, 74, 0.5)'
+              background: 'rgba(10, 37, 64, 0.5)'
             }}
           >
             <div style={{
               padding: '2px',
               borderRadius: '50%',
               background: 'linear-gradient(135deg, var(--gold), var(--blue-sky))',
-              boxShadow: '0 2px 8px rgba(196, 158, 89, 0.3)',
+              boxShadow: '0 2px 8px rgba(0, 145, 255, 0.3)',
               flexShrink: 0
             }}>
               <Image
@@ -835,8 +835,8 @@ export default function UserDashboard({ user, onLogout }) {
                 width: '100%',
                 padding: '0.7rem 0.85rem',
                 borderRadius: '8px',
-                border: activeTab === 'beranda' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
-                background: activeTab === 'beranda' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
+                border: activeTab === 'beranda' ? '1px solid rgba(0, 145, 255, 0.35)' : '1px solid transparent',
+                background: activeTab === 'beranda' ? 'linear-gradient(90deg, rgba(0, 145, 255, 0.2) 0%, rgba(0, 145, 255, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'beranda' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'beranda' ? 600 : 500,
                 fontSize: '0.85rem',
@@ -859,8 +859,8 @@ export default function UserDashboard({ user, onLogout }) {
                 width: '100%',
                 padding: '0.7rem 0.85rem',
                 borderRadius: '8px',
-                border: activeTab === 'pendaftaran' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
-                background: activeTab === 'pendaftaran' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
+                border: activeTab === 'pendaftaran' ? '1px solid rgba(0, 145, 255, 0.35)' : '1px solid transparent',
+                background: activeTab === 'pendaftaran' ? 'linear-gradient(90deg, rgba(0, 145, 255, 0.2) 0%, rgba(0, 145, 255, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'pendaftaran' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'pendaftaran' ? 600 : 500,
                 fontSize: '0.85rem',
@@ -895,8 +895,8 @@ export default function UserDashboard({ user, onLogout }) {
                 width: '100%',
                 padding: '0.7rem 0.85rem',
                 borderRadius: '8px',
-                border: activeTab === 'riwayat' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
-                background: activeTab === 'riwayat' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
+                border: activeTab === 'riwayat' ? '1px solid rgba(0, 145, 255, 0.35)' : '1px solid transparent',
+                background: activeTab === 'riwayat' ? 'linear-gradient(90deg, rgba(0, 145, 255, 0.2) 0%, rgba(0, 145, 255, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'riwayat' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'riwayat' ? 600 : 500,
                 fontSize: '0.85rem',
@@ -908,7 +908,7 @@ export default function UserDashboard({ user, onLogout }) {
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: activeTab === 'riwayat' ? 'var(--gold)' : 'currentColor', flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Riwayat Seleksi</span>
               {isFinalist ? (
-                <span style={{ marginLeft: 'auto', background: 'var(--gold)', color: '#16324A', fontSize: '0.62rem', padding: '2px 7px', borderRadius: '4px', fontWeight: 800 }}>
+                <span style={{ marginLeft: 'auto', background: 'var(--gold)', color: 'var(--navy)', fontSize: '0.62rem', padding: '2px 7px', borderRadius: '4px', fontWeight: 800 }}>
                   Finalis
                 </span>
               ) : selectionStage === 'lolos' ? (
@@ -934,8 +934,8 @@ export default function UserDashboard({ user, onLogout }) {
                 width: '100%',
                 padding: '0.7rem 0.85rem',
                 borderRadius: '8px',
-                border: activeTab === 'pengaturan' ? '1px solid rgba(196, 158, 89, 0.35)' : '1px solid transparent',
-                background: activeTab === 'pengaturan' ? 'linear-gradient(90deg, rgba(196, 158, 89, 0.2) 0%, rgba(196, 158, 89, 0.08) 100%)' : 'transparent',
+                border: activeTab === 'pengaturan' ? '1px solid rgba(0, 145, 255, 0.35)' : '1px solid transparent',
+                background: activeTab === 'pengaturan' ? 'linear-gradient(90deg, rgba(0, 145, 255, 0.2) 0%, rgba(0, 145, 255, 0.08) 100%)' : 'transparent',
                 color: activeTab === 'pengaturan' ? 'var(--blue-ice)' : '#cbd5e1',
                 fontWeight: activeTab === 'pengaturan' ? 600 : 500,
                 fontSize: '0.85rem',
@@ -951,7 +951,7 @@ export default function UserDashboard({ user, onLogout }) {
         </div>
 
         {/* User Card & Logout (Sidebar Footer) */}
-        <div style={{ padding: '1rem', borderTop: '1px solid rgba(196, 158, 89, 0.15)', background: 'rgba(15, 36, 54, 0.7)' }}>
+        <div style={{ padding: '1rem', borderTop: '1px solid rgba(0, 145, 255, 0.15)', background: 'rgba(15, 36, 54, 0.7)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
             <div
               style={{
@@ -1025,7 +1025,7 @@ export default function UserDashboard({ user, onLogout }) {
           }}
         >
           <div>
-            <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#16324A', margin: 0 }}>
+            <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--navy)', margin: 0 }}>
               {activeTab === 'beranda' && 'Beranda'}
               {activeTab === 'pendaftaran' && 'Profil & Berkas'}
               {activeTab === 'riwayat' && 'Riwayat & Linimasa'}
@@ -1124,7 +1124,7 @@ export default function UserDashboard({ user, onLogout }) {
                 top: '1.25rem',
                 right: '1.25rem',
                 zIndex: 9999,
-                background: '#16324A',
+                background: 'var(--navy)',
                 color: '#ffffff',
                 padding: '0.9rem 1.35rem',
                 borderRadius: '8px',
@@ -1196,17 +1196,17 @@ export default function UserDashboard({ user, onLogout }) {
               {/* STATUS TERPILIH SEBAGAI FINALIS (JIKA STATUS FINALIS ON) */}
               {isFinalist && (
                 <div style={{
-                  background: 'linear-gradient(135deg, #16324A 0%, #0d2233 100%)',
+                  background: 'linear-gradient(135deg, var(--navy) 0%, #0d2233 100%)',
                   border: '1.5px solid var(--gold)',
                   borderRadius: '12px',
                   padding: '1.5rem 1.75rem',
                   color: '#ffffff',
-                  boxShadow: '0 8px 24px rgba(22, 50, 74, 0.15)'
+                  boxShadow: '0 8px 24px rgba(10, 37, 64, 0.15)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
                     <span style={{
                       background: 'var(--gold)',
-                      color: '#16324A',
+                      color: 'var(--navy)',
                       fontSize: '0.75rem',
                       fontWeight: 800,
                       padding: '3px 10px',
@@ -1254,12 +1254,12 @@ export default function UserDashboard({ user, onLogout }) {
                   border: '1.5px solid var(--gold)',
                   borderRadius: '14px',
                   padding: '1.5rem',
-                  boxShadow: '0 4px 18px rgba(196, 158, 89, 0.12)'
+                  boxShadow: '0 4px 18px rgba(0, 145, 255, 0.12)'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--gold)' }} />
-                      <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#16324A' }}>
+                      <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--navy)' }}>
                         Foto Profil Resmi Finalis (Tampilan Publik)
                       </h4>
                     </div>
@@ -1281,7 +1281,7 @@ export default function UserDashboard({ user, onLogout }) {
                         borderRadius: '10px',
                         overflow: 'hidden',
                         position: 'relative',
-                        background: '#16324A',
+                        background: 'var(--navy)',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                         display: 'flex',
                         alignItems: 'center',
@@ -1302,7 +1302,7 @@ export default function UserDashboard({ user, onLogout }) {
                           </div>
                         )}
                       </div>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#16324A', marginTop: '0.75rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--navy)', marginTop: '0.75rem' }}>
                         {participantName || 'Finalis Duta Kampus'}
                       </span>
                       <span style={{ fontSize: '0.68rem', color: '#64748b' }}>
@@ -1313,7 +1313,7 @@ export default function UserDashboard({ user, onLogout }) {
                     {/* Input Link Drive & Upload */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#16324A', marginBottom: '0.35rem' }}>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.35rem' }}>
                           Tautan Foto Google Drive (Rekomendasi)
                         </label>
                         <div style={{ display: 'flex', gap: '6px' }}>
@@ -1356,7 +1356,7 @@ export default function UserDashboard({ user, onLogout }) {
                       </div>
 
                       <div style={{ borderTop: '1px dashed #e2e8f0', paddingTop: '0.75rem' }}>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#16324A', marginBottom: '0.35rem' }}>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.35rem' }}>
                           Atau Unggah Langsung File Foto (JPG / PNG):
                         </label>
                         <input
@@ -1611,7 +1611,7 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
 
                   <div style={{ marginBottom: '1.25rem' }}>
-                    <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#16324A', margin: '0 0 0.4rem', lineHeight: 1.35 }}>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--navy)', margin: '0 0 0.4rem', lineHeight: 1.35 }}>
                       Terima Kasih, {greetingName}
                     </h3>
                     <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6, maxWidth: '880px' }}>
@@ -1872,7 +1872,7 @@ export default function UserDashboard({ user, onLogout }) {
                   </div>
                 </div>
 
-                <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#16324A', margin: '0 0 0.5rem' }}>
+                <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 0.5rem' }}>
                   Lengkapi dokumen sebelum mendaftar.
                 </h3>
                 <p style={{ fontSize: '0.925rem', color: '#475569', lineHeight: 1.6, margin: '0 0 1.5rem', maxWidth: '850px' }}>
@@ -1919,7 +1919,7 @@ export default function UserDashboard({ user, onLogout }) {
                     <div style={{ fontSize: '0.78rem', color: 'var(--gold)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
                       Program Resmi Universitas
                     </div>
-                    <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#16324A', margin: '0 0 0.5rem' }}>
+                    <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--navy)', margin: '0 0 0.5rem' }}>
                       Program Duta Kampus UIN Siber Syekh Nurjati Cirebon 2026
                     </h3>
                     <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, margin: 0, maxWidth: '850px' }}>
@@ -1954,7 +1954,7 @@ export default function UserDashboard({ user, onLogout }) {
           {activeTab === 'pendaftaran' && (
             <div style={{ width: '100%', boxSizing: 'border-box' }}>
               <div style={{ marginBottom: '1.75rem' }}>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#16324A', margin: '0' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--navy)', margin: '0' }}>
                   Profil & Berkas Pendaftaran
                 </h3>
                 <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.35rem 0 0' }}>
@@ -1995,7 +1995,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                   {isFinalist && (
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, background: 'var(--gold)', color: '#16324A', padding: '3px 8px', borderRadius: '4px' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, background: 'var(--gold)', color: 'var(--navy)', padding: '3px 8px', borderRadius: '4px' }}>
                       Finalis Resmi
                     </span>
                   )}
@@ -2021,7 +2021,7 @@ export default function UserDashboard({ user, onLogout }) {
                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#92400e', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
                     Pendaftaran Ditutup
                   </div>
-                  <h4 style={{ margin: '0 0 0.35rem', color: '#16324A', fontSize: '1.05rem', fontWeight: 700 }}>
+                  <h4 style={{ margin: '0 0 0.35rem', color: 'var(--navy)', fontSize: '1.05rem', fontWeight: 700 }}>
                     Terima Kasih, {greetingName}
                   </h4>
                   <p style={{ margin: 0, fontSize: '0.88rem', color: '#475569', lineHeight: 1.6 }}>
@@ -2085,7 +2085,7 @@ export default function UserDashboard({ user, onLogout }) {
                 {/* SECTION 1: DATA PRIBADI & MAHASISWA */}
                 <div className="user-form-section" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem' }}>
-                    <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
+                    <h4 style={{ margin: '0 0 0.25rem', color: 'var(--navy)', fontSize: '1.1rem', fontWeight: 700 }}>
                       1. Identitas Pribadi & Kemahasiswaan
                     </h4>
                     <p style={{ margin: 0, fontSize: '0.825rem', color: '#64748b' }}>
@@ -2095,7 +2095,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                   <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
                         Nama Lengkap Sesuai KTM <span style={{ color: '#dc2626' }}>*</span>
                       </label>
                       <input
@@ -2110,7 +2110,7 @@ export default function UserDashboard({ user, onLogout }) {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
                         Nomor Induk Mahasiswa (NIM) <span style={{ color: '#dc2626' }}>*</span>
                       </label>
                       <input
@@ -2125,7 +2125,7 @@ export default function UserDashboard({ user, onLogout }) {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
                         Fakultas <span style={{ color: '#dc2626' }}>*</span>
                       </label>
                       <input
@@ -2140,7 +2140,7 @@ export default function UserDashboard({ user, onLogout }) {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
                         Program Studi / Jurusan <span style={{ color: '#dc2626' }}>*</span>
                       </label>
                       <input
@@ -2159,7 +2159,7 @@ export default function UserDashboard({ user, onLogout }) {
                 {/* SECTION 2: DATA AKADEMIK & KONTAK */}
                 <div className="user-form-section" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem' }}>
-                    <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
+                    <h4 style={{ margin: '0 0 0.25rem', color: 'var(--navy)', fontSize: '1.1rem', fontWeight: 700 }}>
                       2. Data Akademik & Kontak Aktif
                     </h4>
                     <p style={{ margin: 0, fontSize: '0.825rem', color: '#64748b' }}>
@@ -2169,7 +2169,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                   <div className="form-responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
                         Semester Berjalan <span style={{ color: '#dc2626' }}>*</span>
                       </label>
                       <select
@@ -2188,7 +2188,7 @@ export default function UserDashboard({ user, onLogout }) {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
                         Indeks Prestasi Kumulatif (IPK) <span style={{ color: '#dc2626' }}>*</span>
                       </label>
                       <input
@@ -2203,7 +2203,7 @@ export default function UserDashboard({ user, onLogout }) {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
                         Nomor WhatsApp Aktif <span style={{ color: '#dc2626' }}>*</span>
                       </label>
                       <input
@@ -2218,7 +2218,7 @@ export default function UserDashboard({ user, onLogout }) {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#16324A', marginBottom: '0.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem' }}>
                         Alamat Domisili <span style={{ color: '#dc2626' }}>*</span>
                       </label>
                       <input
@@ -2238,7 +2238,7 @@ export default function UserDashboard({ user, onLogout }) {
                 <div className="user-form-section user-form-section-dossier" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div className="dossier-section-header" style={{ borderBottom: '1.5px solid #f1f5f9', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                     <div>
-                      <h4 style={{ margin: '0 0 0.25rem', color: '#16324A', fontSize: '1.1rem', fontWeight: 700 }}>
+                      <h4 style={{ margin: '0 0 0.25rem', color: 'var(--navy)', fontSize: '1.1rem', fontWeight: 700 }}>
                         3. Berkas Dokumen Persyaratan
                       </h4>
                       <p style={{ margin: 0, fontSize: '0.825rem', color: '#64748b' }}>
@@ -2293,7 +2293,7 @@ export default function UserDashboard({ user, onLogout }) {
                               </span>
                             </div>
 
-                            <div className="dossier-card-title" style={{ fontSize: '0.9rem', fontWeight: 700, color: '#16324A', marginBottom: '0.25rem' }}>
+                            <div className="dossier-card-title" style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.25rem' }}>
                               {idx + 1}. {doc.label}
                             </div>
                             <div className="dossier-card-sublabel" style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.4 }}>
@@ -2526,7 +2526,7 @@ export default function UserDashboard({ user, onLogout }) {
           {activeTab === 'riwayat' && (
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1.75rem', boxSizing: 'border-box' }}>
               <div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#16324A', margin: '0 0 0.35rem' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 0.35rem' }}>
                   Riwayat & Linimasa Seleksi Duta Kampus
                 </h3>
                 <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>
@@ -2557,14 +2557,14 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  <div style={{ fontWeight: 800, color: '#16324A', fontSize: '1.1rem' }}>
+                  <div style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1.1rem' }}>
                     Status Seleksi Administrasi Berkas
                   </div>
                   
                   <span
                     style={{
                       background: isFinalist ? 'var(--gold)' : isNotFinalist ? '#991b1b' : selectionStage === 'lolos' ? '#166534' : selectionStage === 'tidak_lolos' ? '#991b1b' : isSubmitted ? '#b45309' : '#64748b',
-                      color: isFinalist ? '#16324A' : '#ffffff',
+                      color: isFinalist ? 'var(--navy)' : '#ffffff',
                       fontSize: '0.8rem',
                       fontWeight: 800,
                       padding: '4px 12px',
@@ -2612,7 +2612,7 @@ export default function UserDashboard({ user, onLogout }) {
                   boxShadow: 'var(--shadow-sm)'
                 }}
               >
-                <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#16324A', margin: '0 0 1.5rem' }}>
+                <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 1.5rem' }}>
                   Linimasa Rangkaian Seleksi Duta Kampus 2026
                 </h4>
 
@@ -2722,7 +2722,7 @@ export default function UserDashboard({ user, onLogout }) {
 
                         <div style={{ flex: 1 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            <span style={{ fontWeight: 700, color: step.isCurrent ? 'var(--gold)' : '#16324A', fontSize: '0.975rem' }}>
+                            <span style={{ fontWeight: 700, color: step.isCurrent ? 'var(--gold)' : 'var(--navy)', fontSize: '0.975rem' }}>
                               {step.title}
                             </span>
                             <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>
@@ -2768,10 +2768,10 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 <div style={{ marginBottom: '1.25rem' }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(22, 50, 74, 0.08)', color: '#16324A', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(10, 37, 64, 0.08)', color: 'var(--navy)', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
                     Akses Masuk Akun
                   </div>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#16324A', margin: '0 0 6px 0' }}>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--navy)', margin: '0 0 6px 0' }}>
                     Alamat Email Login
                   </h3>
                   <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>
@@ -2921,10 +2921,10 @@ export default function UserDashboard({ user, onLogout }) {
                 }}
               >
                 <div style={{ marginBottom: '1.25rem' }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(196, 158, 89, 0.15)', color: 'var(--blue-dark)', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(0, 145, 255, 0.15)', color: 'var(--blue-dark)', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
                     Keamanan Sandi
                   </div>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#16324A', margin: '0 0 6px 0' }}>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--navy)', margin: '0 0 6px 0' }}>
                     Pengaturan Kata Sandi
                   </h3>
                   <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0, lineHeight: 1.5 }}>

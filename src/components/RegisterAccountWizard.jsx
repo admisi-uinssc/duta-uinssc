@@ -233,7 +233,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
         textAlign: 'center',
         background: '#ffffff',
         borderRadius: '14px',
-        border: '1px solid rgba(196, 158, 89, 0.3)',
+        border: '1px solid rgba(0, 145, 255, 0.3)',
         boxShadow: '0 4px 20px rgba(10, 25, 47, 0.06)',
         width: '100%',
         boxSizing: 'border-box'
@@ -862,7 +862,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
                 display: 'flex', alignItems: 'center', gap: '0.5rem',
                 padding: '0.75rem 1rem', borderRadius: '8px',
                 border: `1px solid ${jenisKelamin === 'Laki-laki' ? 'var(--gold)' : 'var(--border)'}`,
-                background: jenisKelamin === 'Laki-laki' ? 'rgba(196,158,89,0.06)' : 'var(--bg)',
+                background: jenisKelamin === 'Laki-laki' ? 'rgba(0, 145, 255,0.06)' : 'var(--bg)',
                 cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500, boxSizing: 'border-box'
               }}>
                 <input
@@ -880,7 +880,7 @@ export default function RegisterAccountWizard({ onSwitchToLogin }) {
                 display: 'flex', alignItems: 'center', gap: '0.5rem',
                 padding: '0.75rem 1rem', borderRadius: '8px',
                 border: `1px solid ${jenisKelamin === 'Perempuan' ? 'var(--gold)' : 'var(--border)'}`,
-                background: jenisKelamin === 'Perempuan' ? 'rgba(196,158,89,0.06)' : 'var(--bg)',
+                background: jenisKelamin === 'Perempuan' ? 'rgba(0, 145, 255,0.06)' : 'var(--bg)',
                 cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500, boxSizing: 'border-box'
               }}>
                 <input

@@ -187,7 +187,7 @@ export default function ProfilDutaPage() {
                     fontSize: '0.85rem',
                     fontWeight: activeMainTab === 'finalis' ? 700 : 500,
                     background: activeMainTab === 'finalis' ? 'var(--gold)' : 'transparent',
-                    color: activeMainTab === 'finalis' ? '#16324A' : 'var(--text-mid)',
+                    color: activeMainTab === 'finalis' ? 'var(--navy)' : 'var(--text-mid)',
                     cursor: 'pointer',
                     transition: 'all 0.2s'
                   }}
@@ -399,7 +399,7 @@ export default function ProfilDutaPage() {
                         position: 'absolute',
                         top: 0,
                         left: 0,
-                        background: 'linear-gradient(135deg, #16324A 0%, #0d1e2d 100%)',
+                        background: 'linear-gradient(135deg, var(--navy) 0%, #0d1e2d 100%)',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -410,7 +410,7 @@ export default function ProfilDutaPage() {
                           width: '64px',
                           height: '64px',
                           borderRadius: '50%',
-                          background: 'rgba(196, 158, 89, 0.15)',
+                          background: 'rgba(0, 145, 255, 0.15)',
                           border: '2px solid var(--gold)',
                           display: 'flex',
                           alignItems: 'center',
@@ -428,7 +428,7 @@ export default function ProfilDutaPage() {
                       </div>
                     )}
                     {duta.faculty && (
-                      <div className="ambassador-badge" style={{ background: activeMainTab === 'finalis' ? '#16324A' : 'var(--gold)', color: '#ffffff' }}>
+                      <div className="ambassador-badge" style={{ background: activeMainTab === 'finalis' ? 'var(--navy)' : 'var(--gold)', color: '#ffffff' }}>
                         {duta.faculty}
                       </div>
                     )}

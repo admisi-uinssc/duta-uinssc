@@ -228,7 +228,7 @@ export default function DaftarPage() {
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'rgba(196,158,89,0.15)',
+                background: 'rgba(0, 145, 255,0.15)',
                 color: 'var(--gold-dark)',
                 display: 'flex',
                 alignItems: 'center',

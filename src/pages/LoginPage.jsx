@@ -489,9 +489,9 @@ export default function LoginPage() {
                   width: '100%',
                   padding: '0.8rem 1rem',
                   borderRadius: '8px',
-                  background: isInstalled ? 'rgba(196, 158, 89, 0.08)' : 'var(--navy)',
+                  background: isInstalled ? 'rgba(0, 145, 255, 0.08)' : 'var(--navy)',
                   color: isInstalled ? 'var(--navy)' : 'var(--gold)',
-                  border: isInstalled ? '1px solid rgba(196, 158, 89, 0.4)' : '1px solid var(--gold)',
+                  border: isInstalled ? '1px solid rgba(0, 145, 255, 0.4)' : '1px solid var(--gold)',
                   fontSize: '0.85rem',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -535,7 +535,7 @@ export default function LoginPage() {
                       width: '100%',
                       padding: '1.5rem',
                       boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
-                      border: '1px solid rgba(196,158,89,0.3)',
+                      border: '1px solid rgba(0, 145, 255,0.3)',
                       position: 'relative'
                     }}
                     onClick={e => e.stopPropagation()}

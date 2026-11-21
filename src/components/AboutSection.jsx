@@ -195,7 +195,7 @@ export default function AboutSection() {
           {/* KETUA & WAKIL */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', maxWidth: '640px', margin: '0 auto 1.5rem' }}>
             {orgStructure.executive.map((item, i) => (
-              <div key={i} style={{ background: 'var(--navy)', color: '#fff', borderRadius: '12px', padding: '1.25rem', textAlign: 'center', border: '1px solid rgba(196,158,89,0.3)' }}>
+              <div key={i} style={{ background: 'var(--navy)', color: '#fff', borderRadius: '12px', padding: '1.25rem', textAlign: 'center', border: '1px solid rgba(0, 145, 255,0.3)' }}>
                 <span style={{ display: 'inline-block', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--gold)', fontWeight: 700, marginBottom: '0.35rem' }}>
                   {item.role}
                 </span>

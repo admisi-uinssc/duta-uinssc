@@ -141,7 +141,7 @@
 .success-id { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.875rem 1.5rem; font-size: 0.875rem; color: var(--text-mid); margin: 1.5rem 0; }
 .success-id strong { color: var(--gold); }
 .success-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
-.success-icon-wrap { width: 80px; height: 80px; border-radius: 50%; background: var(--gold-faint); border: 2px solid rgba(196,158,89,0.25); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+.success-icon-wrap { width: 80px; height: 80px; border-radius: 50%; background: var(--gold-faint); border: 2px solid rgba(0, 145, 255,0.25); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
 
 @media (max-width: 768px) {
   .form-page.container { padding-left: 0; padding-right: 0; }

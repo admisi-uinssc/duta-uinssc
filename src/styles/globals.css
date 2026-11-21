@@ -387,7 +387,7 @@ span, label, small, strong, li {
     align-items: center;
     justify-content: space-between;
     padding: 0.875rem 1.25rem;
-    background: #16324A;
+    background: var(--navy);
     color: #ffffff;
     position: sticky;
     top: 0;
@@ -451,7 +451,7 @@ span, label, small, strong, li {
   }
 
   .user-bottom-nav-item.active {
-    color: #C49E59 !important;
+    color: var(--gold) !important;
     font-weight: 700;
   }
 
@@ -1312,7 +1312,7 @@ span, label, small, strong, li {
   .dossier-card-title {
     font-size: 0.82rem !important;
     font-weight: 700 !important;
-    color: #16324A !important;
+    color: var(--navy) !important;
     line-height: 1.35 !important;
     margin-bottom: 2px !important;
   }
@@ -1360,7 +1360,7 @@ span, label, small, strong, li {
     border-radius: 6px !important;
     background: #ffffff !important;
     border: 1px solid #cbd5e1 !important;
-    color: #16324A !important;
+    color: var(--navy) !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
