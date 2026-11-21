@@ -331,7 +331,7 @@ export default function HomePage() {
                           background: 'rgba(0, 145, 255, 0.9)',
                           color: '#ffffff',
                           border: '1px solid rgba(255, 255, 255, 0.25)',
-                          boxShadow: '0 2px 10px rgba(0, 145, 255, 0.4)',
+                          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.4)',
                           letterSpacing: '0.5px',
                           textTransform: 'uppercase',
                           fontWeight: 700

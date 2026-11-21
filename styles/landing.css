@@ -331,14 +331,14 @@
   gap: 0.85rem;
   text-decoration: none;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(0, 145, 255, 0.25);
+  border: 1px solid rgba(0, 145, 255, 0.08);
   backdrop-filter: blur(10px);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .hub-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 145, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 145, 255, 0.12);
   border-color: var(--spectra-blue);
 }
 
@@ -352,8 +352,8 @@
   width: 64px;
   height: 64px;
   border-radius: 14px;
-  background: rgba(0, 145, 255, 0.12);
-  border: 1px solid rgba(0, 145, 255, 0.25);
+  background: rgba(0, 145, 255, 0.05);
+  border: 1px solid rgba(0, 145, 255, 0.08);
   color: var(--spectra-blue);
   display: flex;
   align-items: center;
@@ -546,7 +546,7 @@
 
 .gallery-item:hover {
   border-color: var(--spectra-blue);
-  box-shadow: 0 8px 25px rgba(0, 145, 255, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
 .gallery-item img {
@@ -919,14 +919,14 @@
   height: 3px;
   border-radius: 0 0 4px 4px;
   background: #0091ff;
-  box-shadow: 0 0 10px rgba(0, 145, 255, 0.8), 0 0 18px rgba(0, 145, 255, 0.4);
+  box-shadow: 0 1px 6px rgba(0, 145, 255, 0.4);
 }
 
 .mobile-nav-item.active svg {
   color: #0091ff !important;
   stroke: #0091ff !important;
   stroke-width: 2.3px !important;
-  filter: drop-shadow(0 0 8px rgba(0, 145, 255, 0.5));
+  filter: drop-shadow(0 1px 3px rgba(0, 145, 255, 0.3));
 }
 
 .mobile-nav-item:hover svg,
@@ -1110,7 +1110,7 @@
     gap: 0.45rem !important;
     background: linear-gradient(180deg, rgba(12, 32, 64, 0.75) 0%, rgba(2, 9, 22, 0.95) 100%) !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
-    border: 1px solid rgba(0, 145, 255, 0.25) !important;
+    border: 1px solid rgba(0, 145, 255, 0.08) !important;
     backdrop-filter: blur(8px) !important;
     transition: transform 0.2s ease, border-color 0.2s ease !important;
   }
@@ -1131,7 +1131,7 @@
     height: 34px !important;
     border-radius: 9px !important;
     margin-bottom: 0 !important;
-    background: rgba(0, 145, 255, 0.15) !important;
+    background: rgba(0, 145, 255, 0.05) !important;
     border: 1px solid rgba(0, 145, 255, 0.3) !important;
   }
 
@@ -1422,7 +1422,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   z-index: 2;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 145, 255, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   letter-spacing: 0.4px;
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
@@ -1580,7 +1580,7 @@
   position: relative;
   overflow: hidden;
   border-top: 1px solid rgba(0, 145, 255, 0.2);
-  border-bottom: 1px solid rgba(0, 145, 255, 0.15);
+  border-bottom: 1px solid rgba(0, 145, 255, 0.05);
 }
 
 .finalist-showcase-section::before {
@@ -1652,7 +1652,7 @@
 
 .finalist-arrow-btn.active:hover {
   background: #0077d6;
-  box-shadow: 0 0 15px rgba(0, 145, 255, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 145, 255, 0.25);
   transform: scale(1.05);
 }
 
@@ -1676,7 +1676,7 @@
   scroll-snap-align: start;
   background: linear-gradient(180deg, rgba(8, 24, 48, 0.85) 0%, rgba(2, 8, 18, 0.95) 100%);
   border-radius: 16px;
-  border: 1px solid rgba(0, 145, 255, 0.25);
+  border: 1px solid rgba(0, 145, 255, 0.08);
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
@@ -1687,7 +1687,7 @@
 
 .finalist-slide-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 14px 32px rgba(0, 145, 255, 0.4);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 145, 255, 0.14);
   border-color: var(--spectra-blue);
 }
 
@@ -1830,7 +1830,7 @@
   font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
-  border: 1px solid rgba(0, 145, 255, 0.22);
+  border: 1px solid rgba(0, 145, 255, 0.08);
   background: linear-gradient(180deg, rgba(10, 26, 48, 0.6) 0%, rgba(2, 8, 18, 0.9) 100%);
   color: #e2e8f0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -1843,7 +1843,7 @@
   border-color: rgba(0, 145, 255, 0.6);
   color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0, 145, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 145, 255, 0.15);
 }
 
 .gallery-filter-btn.active {
@@ -1851,7 +1851,7 @@
   color: #ffffff !important;
   border-color: #0091ff !important;
   font-weight: 700 !important;
-  box-shadow: 0 4px 16px rgba(0, 145, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 2px 8px rgba(0, 145, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
 }
 
 .gallery-filter-btn:hover {
@@ -2040,23 +2040,23 @@
 
 /* 1. Quick Hub Section (Menu Informasi) */
 .hub-section {
-  background: radial-gradient(circle at 50% 0%, rgba(0, 145, 255, 0.22) 0%, rgba(0, 20, 50, 0.7) 45%, #000000 100%) !important;
-  border-top: 1px solid rgba(0, 145, 255, 0.25);
+  background: radial-gradient(circle at 50% 0%, rgba(0, 145, 255, 0.08) 0%, rgba(0, 12, 28, 0.5) 45%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.08);
   border-bottom: 1px solid rgba(0, 145, 255, 0.2);
   position: relative;
 }
 
 /* 2. About Section (Tentang Program Duta) */
 #about {
-  background: radial-gradient(ellipse at 80% 25%, rgba(0, 145, 255, 0.20) 0%, rgba(0, 18, 45, 0.7) 45%, #000000 100%) !important;
-  border-top: 1px solid rgba(0, 145, 255, 0.15);
+  background: radial-gradient(ellipse at 80% 25%, rgba(0, 145, 255, 0.08) 0%, rgba(0, 10, 24, 0.45) 45%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.05);
   border-bottom: 1px solid rgba(0, 145, 255, 0.2);
   position: relative;
 }
 
 /* 3. Benefits Section (Kenapa Harus Bergabung) - Rich Blue with Crimson Edge Accent */
 #benefits {
-  background: radial-gradient(circle at 25% 30%, rgba(0, 145, 255, 0.18) 0%, rgba(0, 15, 40, 0.7) 45%, #000000 100%) !important;
+  background: radial-gradient(circle at 25% 30%, rgba(0, 145, 255, 0.07) 0%, rgba(0, 15, 40, 0.7) 45%, #000000 100%) !important;
   border-top: 1px solid rgba(0, 145, 255, 0.2);
   border-bottom: 1px solid rgba(0, 145, 255, 0.2);
   position: relative;
@@ -2064,15 +2064,15 @@
 
 /* 4. Featured Ambassadors Section (Profil Duta di Beranda) */
 .home-ambassadors-section {
-  background: radial-gradient(circle at 50% 20%, rgba(0, 145, 255, 0.24) 0%, rgba(0, 18, 48, 0.75) 50%, #000000 100%) !important;
-  border-top: 1px solid rgba(0, 145, 255, 0.25);
+  background: radial-gradient(circle at 50% 20%, rgba(0, 145, 255, 0.08) 0%, rgba(0, 10, 24, 0.45) 50%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.08);
   border-bottom: 1px solid rgba(0, 145, 255, 0.2);
   position: relative;
 }
 
 /* 5. Requirements Section (Persyaratan Pendaftaran) */
 #requirements {
-  background: radial-gradient(circle at 75% 35%, rgba(0, 145, 255, 0.20) 0%, rgba(0, 16, 42, 0.7) 50%, #000000 100%) !important;
+  background: radial-gradient(circle at 75% 35%, rgba(0, 145, 255, 0.08) 0%, rgba(0, 16, 42, 0.7) 50%, #000000 100%) !important;
   border-top: 1px solid rgba(0, 145, 255, 0.2);
   border-bottom: 1px solid rgba(0, 145, 255, 0.2);
   position: relative;
@@ -2080,15 +2080,15 @@
 
 /* 6. Timeline Section (Tahapan & Jadwal Seleksi) */
 #timeline {
-  background: radial-gradient(ellipse at 50% 40%, rgba(0, 145, 255, 0.18) 0%, rgba(0, 14, 38, 0.65) 50%, #000000 100%) !important;
-  border-top: 1px solid rgba(0, 145, 255, 0.15);
+  background: radial-gradient(ellipse at 50% 40%, rgba(0, 145, 255, 0.07) 0%, rgba(0, 14, 38, 0.65) 50%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.05);
   border-bottom: 1px solid rgba(0, 145, 255, 0.2);
   position: relative;
 }
 
 /* 7. Gallery Section (Galeri Duta Kampus) */
 #gallery {
-  background: radial-gradient(circle at 50% 15%, rgba(0, 145, 255, 0.22) 0%, rgba(0, 18, 45, 0.7) 50%, #000000 100%) !important;
+  background: radial-gradient(circle at 50% 15%, rgba(0, 145, 255, 0.08) 0%, rgba(0, 10, 24, 0.45) 50%, #000000 100%) !important;
   border-top: 1px solid rgba(0, 145, 255, 0.2);
   border-bottom: 1px solid rgba(0, 145, 255, 0.2);
   position: relative;
@@ -2096,20 +2096,20 @@
 
 /* 8. FAQ Section (Pusat Bantuan & Tanya Jawab) */
 #faq {
-  background: radial-gradient(ellipse at 40% 50%, rgba(0, 145, 255, 0.19) 0%, rgba(0, 15, 40, 0.7) 50%, #000000 100%) !important;
-  border-top: 1px solid rgba(0, 145, 255, 0.15);
+  background: radial-gradient(ellipse at 40% 50%, rgba(0, 145, 255, 0.07) 0%, rgba(0, 15, 40, 0.7) 50%, #000000 100%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.05);
   border-bottom: 1px solid rgba(0, 145, 255, 0.2);
   position: relative;
 }
 
 /* 9. Promo Banner Slider Section */
 .promo-banner-section {
-  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.15) 0%, rgba(0, 12, 32, 0.6) 60%, #000000 100%) !important;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.05) 0%, rgba(0, 12, 32, 0.6) 60%, #000000 100%) !important;
 }
 
 /* 10. CTA Banner Section (Ayo Bergabung) */
 .cta-banner {
-  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.28) 0%, rgba(0, 16, 42, 0.85) 60%, #000000 100%) !important;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 145, 255, 0.08) 0%, rgba(0, 10, 24, 0.5) 60%, #000000 100%) !important;
   border-top: 1px solid rgba(0, 145, 255, 0.35) !important;
   border-bottom: 1px solid rgba(219, 31, 38, 0.3) !important;
   position: relative;
@@ -2117,8 +2117,8 @@
 
 /* 11. Footer */
 .footer {
-  background: radial-gradient(ellipse at 50% 0%, rgba(0, 145, 255, 0.12) 0%, #000000 70%) !important;
-  border-top: 1px solid rgba(0, 145, 255, 0.25) !important;
+  background: radial-gradient(ellipse at 50% 0%, rgba(0, 145, 255, 0.05) 0%, #000000 70%) !important;
+  border-top: 1px solid rgba(0, 145, 255, 0.08) !important;
 }
 
 
@@ -2148,7 +2148,7 @@
     font-size: 0.72rem !important;
     font-weight: 700 !important;
     border-width: 1.5px !important;
-    box-shadow: 0 0 10px rgba(0, 145, 255, 0.4) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
   }
 
   .timeline-body {

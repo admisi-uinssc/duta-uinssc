@@ -254,7 +254,7 @@ export default function ProfilDutaPage() {
                         border: isActive ? '1px solid #0091ff' : '1px solid rgba(0, 145, 255, 0.22)',
                         background: isActive ? '#0091ff' : 'linear-gradient(180deg, rgba(10, 26, 48, 0.6) 0%, rgba(2, 8, 18, 0.9) 100%)',
                         color: isActive ? '#ffffff' : '#e2e8f0',
-                        boxShadow: isActive ? '0 4px 16px rgba(0, 145, 255, 0.45)' : '0 2px 8px rgba(0,0,0,0.3)',
+                        boxShadow: isActive ? '0 2px 8px rgba(0, 145, 255, 0.25)' : '0 1px 4px rgba(0,0,0,0.3)',
                         borderRadius: '9999px',
                         transition: 'all 0.15s ease'
                       }}
@@ -432,7 +432,7 @@ export default function ProfilDutaPage() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: '#0091ff', textShadow: '0 0 12px rgba(0,145,255,0.4)',
+                          color: '#0091ff', 
                           fontWeight: 800,
                           fontSize: '1.25rem',
                           letterSpacing: '1px'
@@ -449,7 +449,7 @@ export default function ProfilDutaPage() {
                         background: 'rgba(0, 145, 255, 0.9)',
                         color: '#ffffff',
                         border: '1px solid rgba(255, 255, 255, 0.25)',
-                        boxShadow: '0 2px 10px rgba(0, 145, 255, 0.4)',
+                        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.4)',
                         letterSpacing: '0.5px',
                         textTransform: 'uppercase',
                         fontWeight: 700
@@ -463,7 +463,7 @@ export default function ProfilDutaPage() {
                       <div style={{
                         fontSize: '0.68rem',
                         fontWeight: 700,
-                        color: '#0091ff', textShadow: '0 0 12px rgba(0,145,255,0.4)',
+                        color: '#0091ff', 
                         textTransform: 'uppercase',
                         letterSpacing: '0.5px',
                         marginBottom: '4px'

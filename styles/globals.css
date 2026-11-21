@@ -34,7 +34,7 @@
 
   /* Spectra Blue Hover Tokens */
   --spectra-blue: #0091ff;
-  --spectra-blue-glow: 0 0 20px rgba(0, 145, 255, 0.45);
+  --spectra-blue-glow: 0 4px 16px rgba(0, 145, 255, 0.18);
   --spectra-blue-border: #0091ff;
 
   /* Semantic Mappings */
@@ -50,7 +50,7 @@
   --accent-red-faint: var(--red-faint);
 
   --bg: var(--black);
-  --bg-alt: radial-gradient(ellipse at 50% 0%, rgba(0, 145, 255, 0.14) 0%, rgba(0, 15, 35, 0.6) 50%, #000000 100%);
+  --bg-alt: radial-gradient(ellipse at 50% 0%, rgba(0, 145, 255, 0.06) 0%, rgba(0, 8, 20, 0.4) 50%, #000000 100%);
   --text: var(--white);
   --text-dark: var(--white);
   --text-mid: #dcd7e3;
@@ -370,8 +370,8 @@ span, label, small, strong, li {
 }
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 32px rgba(0, 145, 255, 0.35);
-  border-color: rgba(0, 145, 255, 0.6);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 145, 255, 0.14);
+  border-color: rgba(0, 145, 255, 0.35);
 }
 
 /* ========================================================
