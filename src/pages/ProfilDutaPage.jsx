@@ -1,3 +1,18 @@
+
+const abbreviateFaculty = (faculty = '') => {
+  if (!faculty) return '';
+  const f = faculty.trim().toUpperCase();
+  if (f.includes('TARBIYAH') || f.includes('FITK') || f.includes('KEGURUAN')) return 'FITK';
+  if (f.includes('SYARIAH') || f.includes('FASYA') || f.includes('HUKUM')) return 'FASYA';
+  if (f.includes('USHULUDDIN') || f.includes('FUAD') || f.includes('DAKWAH') || f.includes('ADAB')) return 'FUAD';
+  if (f.includes('EKONOMI') || f.includes('FEBI') || f.includes('BISNIS')) return 'FEBI';
+  if (f.includes('SAINS') || f.includes('FST') || f.includes('TEKNOLOGI')) return 'FST';
+  if (f.length > 8) {
+    const words = faculty.split(' ').filter(w => !['DAN', '&', 'ILMU'].includes(w.toUpperCase()));
+    if (words.length > 1) return words.map(w => w[0].toUpperCase()).join('');
+  }
+  return faculty;
+};
 import React, { useState, useEffect, useMemo } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -186,7 +201,7 @@ export default function ProfilDutaPage() {
                     border: 'none',
                     fontSize: '0.85rem',
                     fontWeight: activeMainTab === 'finalis' ? 700 : 500,
-                    background: activeMainTab === 'finalis' ? 'var(--red)' : 'transparent',
+                    background: activeMainTab === 'finalis' ? '#0091ff' : 'transparent', boxShadow: activeMainTab === 'finalis' ? '0 2px 10px rgba(0, 145, 255, 0.45)' : 'none',
                     color: activeMainTab === 'finalis' ? 'var(--white)' : 'var(--white)',
                     cursor: 'pointer',
                     transition: 'all 0.2s'
@@ -430,8 +445,16 @@ export default function ProfilDutaPage() {
                       </div>
                     )}
                     {duta.faculty && (
-                      <div className="ambassador-badge" style={{ background: activeMainTab === 'finalis' ? 'var(--red)' : 'var(--spectra-blue)', color: '#ffffff' }}>
-                        {duta.faculty}
+                      <div className="ambassador-badge" style={{
+                        background: 'rgba(0, 145, 255, 0.9)',
+                        color: '#ffffff',
+                        border: '1px solid rgba(255, 255, 255, 0.25)',
+                        boxShadow: '0 2px 10px rgba(0, 145, 255, 0.4)',
+                        letterSpacing: '0.5px',
+                        textTransform: 'uppercase',
+                        fontWeight: 700
+                      }}>
+                        {abbreviateFaculty(duta.faculty)}
                       </div>
                     )}
                   </div>

@@ -2871,7 +2871,7 @@ export default function AdminPage() {
                               fill
                               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
-                            <div style={{ position: 'absolute', bottom: '1.25rem', right: '1.25rem', background: 'var(--navy)', color: '#fff', padding: '12px 18px', borderRadius: '10px', zIndex: 2, textAlign: 'center' }}>
+                            <div style={{ position: 'absolute', bottom: '1.25rem', right: '1.25rem', background: '#050505', color: '#fff', padding: '12px 18px', borderRadius: '10px', zIndex: 2, textAlign: 'center' }}>
                               <strong style={{ color: 'var(--gold)', fontSize: '1.25rem', display: 'block', lineHeight: 1 }}>{cmsData.about?.badgeYear || '2026'}</strong>
                               <span style={{ fontSize: '0.75rem', opacity: 0.9 }}>{cmsData.about?.badgeText || 'Pemilihan Resmi'}</span>
                             </div>
@@ -3555,7 +3555,7 @@ export default function AdminPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', minWidth: '300px' }}>
                 <div style={{
                   width: 76, height: 76, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, var(--navy) 0%, var(--gold) 100%)',
+                  background: 'linear-gradient(135deg, #001f3f 0%, #0091ff 100%)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '1.85rem', fontWeight: 800, color: '#ffffff',
                   boxShadow: '0 6px 18px rgba(45, 19, 75, 0.25)', flexShrink: 0
@@ -4630,7 +4630,7 @@ function doPost(e) {
           position: 'fixed',
           bottom: '24px',
           right: '24px',
-          background: 'var(--navy)',
+          background: '#050505',
           color: '#fff',
           padding: '12px 20px',
           borderRadius: '10px',

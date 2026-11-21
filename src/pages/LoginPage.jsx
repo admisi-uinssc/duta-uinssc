@@ -241,16 +241,16 @@ export default function LoginPage() {
               }}
               style={{
                 flex: 1,
-                padding: '8px 12px',
+                padding: '8px 14px',
                 borderRadius: '6px',
                 border: 'none',
-                background: isLogin ? '#ffffff' : 'transparent',
-                color: isLogin ? 'var(--navy)' : 'var(--text-mid)',
-                fontWeight: isLogin ? 600 : 500,
+                background: isLogin ? '#0091ff' : 'transparent',
+                color: isLogin ? '#ffffff' : '#a0aec0',
+                fontWeight: isLogin ? 700 : 500,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
-                boxShadow: isLogin ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-                transition: 'all 0.2s'
+                boxShadow: isLogin ? '0 2px 10px rgba(0, 145, 255, 0.45)' : 'none',
+                transition: 'all 0.2s ease'
               }}
             >
               Masuk
@@ -263,16 +263,16 @@ export default function LoginPage() {
               }}
               style={{
                 flex: 1,
-                padding: '8px 12px',
+                padding: '8px 14px',
                 borderRadius: '6px',
                 border: 'none',
-                background: !isLogin ? '#ffffff' : 'transparent',
-                color: !isLogin ? 'var(--navy)' : 'var(--text-mid)',
-                fontWeight: !isLogin ? 600 : 500,
+                background: !isLogin ? '#0091ff' : 'transparent',
+                color: !isLogin ? '#ffffff' : '#a0aec0',
+                fontWeight: !isLogin ? 700 : 500,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
-                boxShadow: !isLogin ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-                transition: 'all 0.2s'
+                boxShadow: !isLogin ? '0 2px 10px rgba(0, 145, 255, 0.45)' : 'none',
+                transition: 'all 0.2s ease'
               }}
             >
               Daftar Akun
@@ -311,9 +311,9 @@ export default function LoginPage() {
                       setIsNotFound(false);
                     }}
                     style={{
-                      background: 'var(--navy)',
-                      color: 'var(--gold)',
-                      border: '1px solid var(--gold)',
+                      background: '#0091ff',
+                      color: '#ffffff',
+                      border: '1px solid #0091ff',
                       padding: '5px 10px',
                       borderRadius: '6px',
                       fontSize: '0.75rem',
